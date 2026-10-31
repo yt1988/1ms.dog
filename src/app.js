@@ -9,7 +9,7 @@
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
-  const K = { theme: "1ms:theme", lang: "1ms:lang", last: "1ms:last", pack: "1ms:pack", mask: "1ms:mask" };
+  const K = { theme: "1ms:theme", lang: "1ms:lang", pack: "1ms:pack", mask: "1ms:mask" };
   const country = cc => { try { return new Intl.DisplayNames([LANG], { type: "region" }).of(cc); } catch (e) { return cc; } };
   const flag = cc => /^[A-Z]{2}$/.test(cc || "") ? `<img class="flag" src="/flags/${cc.toLowerCase()}.svg" alt="" width="20" height="15">` : "";
   const fmt = ms => ms < 10 ? ms.toFixed(1) : String(Math.round(ms));
@@ -56,7 +56,7 @@
     for (const [a, d] of durs) a.setAttribute("dur", (d / f).toFixed(3) + "s");
     dogSvg.unpauseAnimations();
   }
-  const SPEED = { sniff: 0.6, run: 1.15, legend: 2.6, zoom: 1.7, sprint: 1.25, trot: 0.85, stroll: 0.5, nap: 0, lost: 0 };
+  const SPEED = { sniff: 0.6, run: 1.15, legend: 2.6, zoom: 1.7, sprint: 1.25, trot: 0.85, stroll: 0.5, nap: 0, lost: 0, far: 1, odd: 0.85 };
   function setMood(m) { stage.dataset.mood = m; dogSpeed(SPEED[m] ?? 1); }
   let pets = 0, petT = 0;
   $("#dog").onclick = () => {
@@ -309,32 +309,71 @@
   function setBusy(b) { $("#run span").textContent = t(b ? "stop" : "run"); $("#deep").disabled = b; }
   let lastSum = null;
   const moodKey = () => lastSum ? "mood_" + lastSum.mood : RUN ? "mood_run" : "mood_sniff";
-  function summarize(complete) {
+  function summarize() {
     const meds = allServices().map(s => R.get(s.id)).filter(Boolean).map(r => median(r.s));
     const ok = meds.filter(v => v != null), n = meds.length;
     const md = median(ok), [tk, cls] = tierOf(md);
-    const mood = !ok.length || 1 - ok.length / n > 0.4 ? "lost" : tk;
-    lastSum = { md, ok: ok.length, n, tier: tk, mood };
+    // The overall median only describes this sample of services. The verdict below, which splits local favorites,
+    // global services and failures, decides what the dog says.
+    const v = verdict();
+    lastSum = { md, ok: ok.length, n, tier: tk, mood: v.mood, v };
     $("#sumMs").textContent = md != null ? fmt(md) : "–"; $("#sumMs").className = cls;
     $("#sumTier").textContent = t("tier_" + tk); $("#sumTier").className = "tier " + cls;
     $("#sumBack").textContent = t("back", { ok: ok.length, n }) + (n - ok.length ? " · " + t("lost_n", { n: n - ok.length }) : "");
-    setMood(mood); say("mood_" + mood);
+    setMood(v.mood); say("mood_" + v.mood);
     hiddenExit();
-    if (complete) remember(md);
+    renderVerdict(v);
   }
-  // the dog remembers the last visit (in this browser only) and notices changes
-  function remember(md) {
-    let prev = null; try { prev = JSON.parse(store.get(K.last) || "null"); } catch (e) {}
-    const main = NET.groups[0], ip = main ? main.ips[0] : "", cc = main ? main.cc : "";
-    let msg = "";
-    if (prev && prev.cc && cc && prev.cc !== cc) msg = t("new_exit", { a: prev.cc, b: cc });
-    else if (prev && prev.md != null && md != null && Math.abs(md - prev.md) >= 5) msg = t(md < prev.md ? "faster" : "slower", { d: Math.round(Math.abs(md - prev.md)) });
-    $("#sumHist").textContent = msg;
-    store.set(K.last, JSON.stringify({ ts: Date.now(), md, ip, cc }));
+
+  /* ---------- verdict: where it's fast, where it's slow, what that means ---------- */
+  // A segment's median in ms → good (zoomies, sprint), ok (trot) or slow (stroll, nap)
+  const grade = md => md == null ? "blocked" : md <= 80 ? "good" : md <= 150 ? "ok" : "slow";
+  // everyday uses: [use, services, smooth up to, fine up to] in ms. Streaming buffers and AI answers take seconds
+  // anyway, so they tolerate more; games and calls feel every round trip.
+  const USES = [["game", ["steam", "playstation", "xbox", "epic"], 80, 150], ["call", ["zoom", "whatsapp", "discord", "telegram"], 150, 250],
+    ["stream", ["youtube", "netflix", "twitch", "tiktok", "spotify"], 200, 400], ["ai", ["chatgpt", "claude", "gemini", "copilot", "grok", "deepseek"], 200, 400],
+    ["dev", ["github", "npm", "dockerhub", "pypi", "huggingface"], 150, 300]];
+  const doneOf = list => list.filter(s => s && R.get(s.id) && R.get(s.id).st === "done");
+  function segment(list) {
+    const svcs = doneOf(list), meds = svcs.map(s => median(R.get(s.id).s)), ok = meds.filter(v => v != null);
+    return { n: svcs.length, ok: ok.length, md: median(ok), lost: svcs.filter((s, i) => meds[i] == null).map(s => s.name) };
+  }
+  function verdict() {
+    const local = segment(PACKS[pack] || []), global = segment(SVC.list), lost = [...local.lost, ...global.lost];
+    const lg = local.ok >= local.n / 2 ? grade(local.md) : "blocked", gg = global.ok >= global.n / 2 ? grade(global.md) : "blocked";
+    const fine = g => g === "good" || g === "ok";
+    // the diagnosis: which side the slowness is on
+    let key, mood;
+    if (lg === "blocked" && gg === "blocked") { key = "v_down"; mood = "lost"; }
+    else if (fine(lg) && fine(gg)) { key = "v_allgood"; mood = tierOf(median([local.md, global.md]))[0]; }
+    else if (fine(lg)) { key = "v_far"; mood = "far"; }                      // near is fast, far is slow or walled off
+    else if (fine(gg)) { key = "v_odd"; mood = "odd"; }                      // far faster than near: everything proxied
+    else { key = "v_near_slow"; mood = tierOf(local.md)[0]; }                // even nearby is slow: the local network
+    const uses = USES.map(([k, ids, good, ok]) => {
+      const sg = segment(ids.map(id => SVC.list.find(s => s.id === id)));
+      if (!sg.n) return null;
+      return { k, lost: sg.lost, st: sg.ok < sg.n / 2 ? "blocked" : sg.md <= good ? "great" : sg.md <= ok ? "ok" : "slow" };
+    }).filter(Boolean);
+    return { key, mood, local, global, lg, gg, lost, uses };
+  }
+  function verdictText(v) {
+    let s = t(v.key, { l: v.local.md != null ? fmt(v.local.md) : "–", g: v.global.md != null ? fmt(v.global.md) : "–" });
+    if (v.lost.length) s += " " + t("v_fail", { list: v.lost.slice(0, 4).join(t("v_join")) + (v.lost.length > 4 ? "…" : "") });
+    return s;
+  }
+  function renderVerdict(v) {
+    const box = $("#verdict");
+    if (!v) { box.hidden = true; return; }
+    $("#vText").textContent = verdictText(v);
+    const seg = (k, sg, g) => `<span class="seg s-${g}"><em>${esc(t(k))}</em><b class="${tierOf(sg.md)[1]}">${sg.md != null ? fmt(sg.md) + " ms" : "✕"}</b>${sg.md != null ? `<i>${esc(t("tier_" + tierOf(sg.md)[0]))}</i>` : ""}</span>`;
+    $("#vSegs").innerHTML = seg("seg_local", v.local, v.lg) + seg("seg_global", v.global, v.gg) +
+      (v.lost.length ? `<span class="seg s-blocked"><em>${esc(t("tier_lost"))}</em><b>${v.lost.length}</b><i title="${esc(v.lost.join(", "))}">${esc(v.lost.slice(0, 3).join(", ") + (v.lost.length > 3 ? "…" : ""))}</i></span>` : "");
+    $("#vUses").innerHTML = v.uses.map(u => `<span class="use s-${u.st}"${u.lost.length ? ` title="${esc(t("tier_lost") + ": " + u.lost.join(", "))}"` : ""}>${esc(t("use_" + u.k))}<b>${esc(t("st_" + u.st))}</b></span>`).join("");
+    box.hidden = false;
   }
 
   /* ---------- controls ---------- */
-  const start = n => { for (const s of allServices()) { R.delete(s.id); paintRow(s); } lastSum = null; runList(allServices(), n, true); };
+  const start = n => { for (const s of allServices()) { R.delete(s.id); paintRow(s); } lastSum = null; renderVerdict(null); runList(allServices(), n, true); };
   $("#run").onclick = () => { if (RUN) { RUN.ctl.abort(); return; } leaveShared(); start(3); };
   $("#deep").title = t("deep_t");
   $("#deep").onclick = () => { leaveShared(); start(10); };
@@ -426,12 +465,19 @@
     let ci = 0, hcol = 0;
     for (const g of groups) { const h = GH + g.items.length * RH; if (hcol && hcol + h / 2 > total / 3 && ci < 2) { ci++; hcol = 0; } cols[ci].push(g); hcol += h; }
     const colH = Math.max(...cols.map(c => c.reduce((a, g) => a + GH + g.items.length * RH, 0)));
-    const exits = NET.groups.slice(0, 3), top = 300 + exits.length * 40, H = top + colH + 90;
+    const F = "Geist, 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans', 'Malgun Gothic', sans-serif", M = "'Geist Mono', Consolas, monospace";
+    // the verdict, wrapped to the card width (measured before the canvas size is known)
+    const vText = s0 => { const m = document.createElement("canvas").getContext("2d"); m.font = `500 24px ${F}`; return wrap(m, s0, W - P * 2); };
+    const vLines = lastSum.v ? vText(verdictText(lastSum.v)) : [];
+    const exits = NET.groups.slice(0, 3), vTop = 316, eTop = vTop + vLines.length * 34 + 30, top = eTop + exits.length * 40 - 18, H = top + colH + 90;
     const c = document.createElement("canvas"); c.width = W; c.height = H;
-    const x = c.getContext("2d"), F = "Geist, 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans', 'Malgun Gothic', sans-serif", M = "'Geist Mono', Consolas, monospace";
-    const C = { bg: "#1c1c1c", panel: "#232323", line: "#363636", fg: "#ededed", muted: "#a0a0a0", c0: "#c4a7ff", c1: "#3ecf8e", c2: "#9fd356", c3: "#f5c524", c4: "#f59e42", c5: "#f56565", cx: "#a0a0a0", gold: "#ffb63f", warn: "#f5a524" };
+    const x = c.getContext("2d");
+    // the page's own theme colors, so the card matches what the visitor sees (light or dark)
+    const css = getComputedStyle(document.documentElement), v = n => css.getPropertyValue("--" + n).trim();
+    const dark = css.colorScheme === "dark";
+    const C = { bg: v("bg"), panel: v("panel"), line: v("line"), fg: v("fg"), muted: v("muted"), c0: v("t0"), c1: v("t1"), c2: v("t2"), c3: v("t3"), c4: v("t4"), c5: v("t5"), cx: v("muted"), gold: v("ink"), warn: v("warn") };
     x.fillStyle = C.bg; x.fillRect(0, 0, W, H);
-    const [logo, dog] = await Promise.all([img("/assets/logo-dark.svg"), img("/assets/shiba-run.svg")]);
+    const [logo, dog] = await Promise.all([img(dark ? "/assets/logo-dark.svg" : "/assets/logo-light.svg"), img("/assets/shiba-run.svg")]);
     x.drawImage(logo, P, 44, 150, 60);
     x.drawImage(dog, 150, 20, 700, 420, W - P - 330, 24, 330, 198);
     const s = lastSum, [, cls] = tierOf(s.md);
@@ -442,12 +488,14 @@
     x.fillStyle = C[cls]; x.font = `700 30px ${F}`; x.fillText(t("tier_" + s.tier), P, 272);
     const tw = x.measureText(t("tier_" + s.tier)).width;
     x.fillStyle = C.muted; x.font = `400 22px ${F}`; x.fillText(t("back", { ok: s.ok, n: s.n }), P + tw + 20, 272);
+    x.fillStyle = C.fg; x.font = `500 24px ${F}`;
+    vLines.forEach((l, i) => x.fillText(l, P, vTop + 24 + i * 34));
     // exits, without IPs
-    let y = 318;
+    let y = eTop;
     for (const g of exits) {
       const k = t(g.proxy ? "k_proxy" : "k_local");
       x.font = `600 18px ${F}`; const kw = x.measureText(k).width + 20;
-      x.fillStyle = g.proxy ? "#f5a52430" : "#3ecf8e2a"; roundRect(x, P, y - 22, kw, 30, 7); x.fill();
+      x.fillStyle = (g.proxy ? C.warn : C.c1) + "30"; roundRect(x, P, y - 22, kw, 30, 7); x.fill();
       x.fillStyle = g.proxy ? C.warn : C.c1; x.fillText(k, P + 10, y);
       let xx = P + kw + 12;
       if (g.cc) { try { const f = await img(`/flags/${g.cc.toLowerCase()}.svg`); x.drawImage(f, xx, y - 19, 32, 24); xx += 42; } catch (e) {} }
@@ -482,6 +530,15 @@
     return c;
   }
   function roundRect(x, l, t0, w, h, r) { x.beginPath(); x.moveTo(l + r, t0); x.arcTo(l + w, t0, l + w, t0 + h, r); x.arcTo(l + w, t0 + h, l, t0 + h, r); x.arcTo(l, t0 + h, l, t0, r); x.arcTo(l, t0, l + w, t0, r); x.closePath(); }
+  // lines that fit width w: break at spaces, or anywhere in CJK text
+  function wrap(x, s, w) {
+    const out = []; let line = "";
+    for (const tok of s.match(/[　-鿿가-힯＀-￯]|[^\s　-鿿가-힯＀-￯]+\s*|\s+/g) || []) {
+      if (line && x.measureText(line + tok).width > w) { out.push(line.trimEnd()); line = tok.trimStart(); } else line += tok;
+    }
+    if (line.trim()) out.push(line.trimEnd());
+    return out;
+  }
   function clip(x, s, w) { if (x.measureText(s).width <= w) return s; while (s.length > 1 && x.measureText(s + "…").width > w) s = s.slice(0, -1); return s + "…"; }
 
   /* ---------- a shared result ---------- */
