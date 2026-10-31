@@ -1,6 +1,9 @@
 // The services the dog plays fetch with. Every visitor gets the global groups; one local pack is added by the exit
 // country (the visitor can switch it). Each url is a small, cacheable, same-host answer: no redirect, so the timing
-// is one round trip on a reused connection. `npm run verify` checks them all.
+// is one round trip on a reused connection. No Cross-Origin-Resource-Policy: same-origin/same-site either, or the
+// browser blocks the answer and the service looks unreachable (claude.ai and Epic send it on every file,
+// hence their /cdn-cgi/trace URLs: same host and edge, without the header).
+// `npm run verify` checks all of this.
 //
 // id     stable key (results, landing pages /<id>/)
 // name   brand name as the brand writes it
@@ -8,21 +11,20 @@
 // url    what the browser requests (a random query string is added to skip caches)
 // m      request method: GET (default), HEAD, or IMG (an <img> load, for hosts that reset fetch)
 // c      tile accent color
-// land   true → gets its own landing page (/<id>/), for the services people search latency for
 
 export const CATS = ["ai", "web", "video", "social", "dev", "game", "cdn"];
 
 export const SERVICES = [
   // AI
-  { id: "chatgpt", name: "ChatGPT", cat: "ai", url: "https://chatgpt.com/favicon.ico", c: "#10a37f", land: true },
-  { id: "claude", name: "Claude", cat: "ai", url: "https://claude.ai/favicon.ico", c: "#d97757", land: true },
-  { id: "gemini", name: "Gemini", cat: "ai", url: "https://gemini.google.com/favicon.ico", c: "#4f7cf5", land: true },
+  { id: "chatgpt", name: "ChatGPT", cat: "ai", url: "https://chatgpt.com/favicon.ico", c: "#10a37f" },
+  { id: "claude", name: "Claude", cat: "ai", url: "https://claude.ai/cdn-cgi/trace", c: "#d97757" },
+  { id: "gemini", name: "Gemini", cat: "ai", url: "https://gemini.google.com/favicon.ico", c: "#4f7cf5" },
   { id: "copilot", name: "Copilot", cat: "ai", url: "https://copilot.microsoft.com/favicon.ico", c: "#2a84e8" },
   { id: "grok", name: "Grok", cat: "ai", url: "https://grok.com/robots.txt", c: "#8b8b8b" },
-  { id: "deepseek", name: "DeepSeek", cat: "ai", url: "https://chat.deepseek.com/favicon.svg", c: "#4d6bfe", land: true },
+  { id: "deepseek", name: "DeepSeek", cat: "ai", url: "https://chat.deepseek.com/favicon.svg", c: "#4d6bfe" },
 
   // Search & everyday web
-  { id: "google", name: "Google", cat: "web", url: "https://www.google.com/generate_204", c: "#4285f4", land: true },
+  { id: "google", name: "Google", cat: "web", url: "https://www.google.com/generate_204", c: "#4285f4" },
   { id: "apple", name: "Apple", cat: "web", url: "https://www.apple.com/favicon.ico", c: "#8e8e93" },
   { id: "microsoft", name: "Microsoft", cat: "web", url: "https://www.microsoft.com/favicon.ico", c: "#00a4ef" },
   { id: "wikipedia", name: "Wikipedia", cat: "web", url: "https://www.wikipedia.org/static/favicon/wikipedia.ico", c: "#9a9a9a" },
@@ -30,33 +32,33 @@ export const SERVICES = [
   { id: "zoom", name: "Zoom", cat: "web", url: "https://zoom.us/favicon.ico", c: "#0b5cff" },
 
   // Video & music
-  { id: "youtube", name: "YouTube", cat: "video", url: "https://www.youtube.com/generate_204", c: "#ff0033", land: true },
-  { id: "netflix", name: "Netflix", cat: "video", url: "https://www.netflix.com/favicon.ico", c: "#e50914", land: true },
-  { id: "tiktok", name: "TikTok", cat: "video", url: "https://www.tiktok.com/favicon.ico", c: "#25f4ee", land: true },
+  { id: "youtube", name: "YouTube", cat: "video", url: "https://www.youtube.com/generate_204", c: "#ff0033" },
+  { id: "netflix", name: "Netflix", cat: "video", url: "https://www.netflix.com/favicon.ico", c: "#e50914" },
+  { id: "tiktok", name: "TikTok", cat: "video", url: "https://www.tiktok.com/favicon.ico", c: "#25f4ee" },
   { id: "twitch", name: "Twitch", cat: "video", url: "https://www.twitch.tv/favicon.ico", c: "#9146ff" },
   { id: "spotify", name: "Spotify", cat: "video", url: "https://open.spotify.com/favicon.ico", c: "#1ed760" },
 
   // Social & messaging
-  { id: "x", name: "X", cat: "social", url: "https://abs.twimg.com/favicons/twitter.3.ico", c: "#8b8b8b", land: true },
+  { id: "x", name: "X", cat: "social", url: "https://abs.twimg.com/favicons/twitter.3.ico", c: "#8b8b8b" },
   { id: "instagram", name: "Instagram", cat: "social", url: "https://www.instagram.com/favicon.ico", m: "HEAD", c: "#e1306c" },
   { id: "facebook", name: "Facebook", cat: "social", url: "https://www.facebook.com/favicon.ico", c: "#1877f2" },
   { id: "whatsapp", name: "WhatsApp", cat: "social", url: "https://web.whatsapp.com/favicon.ico", c: "#25d366" },
-  { id: "telegram", name: "Telegram", cat: "social", url: "https://web.telegram.org/favicon.ico", c: "#26a5e4", land: true },
-  { id: "discord", name: "Discord", cat: "social", url: "https://discord.com/favicon.ico", c: "#5865f2", land: true },
+  { id: "telegram", name: "Telegram", cat: "social", url: "https://web.telegram.org/favicon.ico", c: "#26a5e4" },
+  { id: "discord", name: "Discord", cat: "social", url: "https://discord.com/favicon.ico", c: "#5865f2" },
   { id: "reddit", name: "Reddit", cat: "social", url: "https://www.reddit.com/favicon.ico", c: "#ff4500" },
 
   // Developers
-  { id: "github", name: "GitHub", cat: "dev", url: "https://github.com/favicon.ico", c: "#8b8b8b", land: true },
+  { id: "github", name: "GitHub", cat: "dev", url: "https://github.com/favicon.ico", c: "#8b8b8b" },
   { id: "npm", name: "npm", cat: "dev", url: "https://registry.npmjs.org/-/ping", c: "#cb3837" },
   { id: "dockerhub", name: "Docker Hub", cat: "dev", url: "https://registry-1.docker.io/v2/", c: "#1d63ed" },
   { id: "pypi", name: "PyPI", cat: "dev", url: "https://pypi.org/static/images/favicon.35549fe8.ico", c: "#3775a9" },
   { id: "huggingface", name: "Hugging Face", cat: "dev", url: "https://huggingface.co/robots.txt", c: "#ffbd45" },
 
   // Gaming
-  { id: "steam", name: "Steam", cat: "game", url: "https://store.steampowered.com/favicon.ico", c: "#66c0f4", land: true },
+  { id: "steam", name: "Steam", cat: "game", url: "https://store.steampowered.com/favicon.ico", c: "#66c0f4" },
   { id: "playstation", name: "PlayStation", cat: "game", url: "https://www.playstation.com/favicon.ico", c: "#0070d1" },
   { id: "xbox", name: "Xbox", cat: "game", url: "https://www.xbox.com/favicon.ico", c: "#107c10" },
-  { id: "epic", name: "Epic Games", cat: "game", url: "https://store.epicgames.com/favicon.ico", c: "#8b8b8b" },
+  { id: "epic", name: "Epic Games", cat: "game", url: "https://store.epicgames.com/cdn-cgi/trace", c: "#8b8b8b" },
 
   // CDN backbones: most sites above sit on one of these
   { id: "cloudflare", name: "Cloudflare", cat: "cdn", url: "https://speed.cloudflare.com/__down?bytes=0", c: "#f38020" },

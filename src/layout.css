@@ -101,16 +101,46 @@
 .row:not(.done) .ms { color: var(--muted); }
 .row.hot .nm { font-weight: 700; color: var(--ink); }
 
-/* footer */
-.foot { display: flex; flex-direction: column; gap: 10px; font-size: 12.5px; color: var(--muted); }
-.faq summary { cursor: pointer; font-weight: 600; font-size: 13.5px; color: var(--fg); }
-.faq h3 { font-size: 13.5px; margin: 14px 0 4px; color: var(--fg); }
-.faq p { max-width: 78ch; font-size: 13px; }
-.tools { display: flex; flex-wrap: wrap; gap: 6px 18px; }
-.tools a { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
-.tools a:hover { color: var(--fg); }
-.tools svg { width: 14px; height: 14px; color: var(--tint); }
-.foot > p { margin: 0; }
+/* other tools */
+.tools h2 { font-size: 15px; font-weight: 700; margin: 0 0 10px 2px; }
+.tool-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.tool { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; text-decoration: none; border-radius: 12px; border: 1px solid var(--line); background: var(--panel); transition: border-color .15s, transform .15s; }
+.tool:hover { border-color: var(--tint); transform: translateY(-1px); }
+.tool b { display: flex; align-items: center; gap: 8px; font-size: 14.5px; }
+.tool b svg { width: 16px; height: 16px; color: var(--tint); }
+.tool span { color: var(--muted); font-size: 13px; }
+.foot { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
+
+/* a shared result: banner above the hero */
+.shared { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 10px 12px 10px 16px; border-radius: var(--r);
+  background: color-mix(in srgb, var(--ink) 12%, var(--panel)); border: 1px solid color-mix(in srgb, var(--ink) 35%, transparent); font-size: 13.5px; }
+
+/* dialogs (as in Me2Cloud) */
+.scrim { position: fixed; inset: 0; z-index: 40; background: #0006; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.dialog { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); max-width: 100%; max-height: calc(100vh - 32px); display: flex; flex-direction: column; box-shadow: 0 24px 64px var(--shadow); }
+.dlg-h { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 12px 12px 18px; border-bottom: 1px solid var(--line); }
+.dlg-h h2 { font-size: 16px; }
+/* help: questions on the left, one answer at a time on the right */
+.dialog.help { width: 860px; height: min(560px, calc(100vh - 32px)); }
+.help-b { display: grid; grid-template-columns: 250px minmax(0, 1fr); min-height: 0; flex: 1; }
+.help-nav { border-right: 1px solid var(--line); padding: 8px; overflow: auto; display: flex; flex-direction: column; gap: 2px; }
+.help-nav button { text-align: left; border: 0; background: none; padding: 9px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; color: var(--muted); line-height: 1.4; }
+.help-nav button:hover { background: var(--soft); color: var(--fg); }
+.help-nav button[aria-selected="true"] { background: color-mix(in srgb, var(--ink) 14%, transparent); color: var(--fg); font-weight: 600; }
+.help-c { padding: 18px 22px 24px; overflow: auto; }
+.help-c h3 { margin: 0 0 10px; font-size: 17px; line-height: 1.35; }
+.help-c p { font-size: 13.5px; line-height: 1.7; }
+.help-pick { display: none; gap: 8px; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.help-pick select { flex: 1; min-width: 0; height: 34px; padding: 0 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--fg); font: 600 16px var(--f-ui); text-overflow: ellipsis; } /* 16px: iOS zooms into smaller fields */
+.help-pick option { background-color: var(--panel); color: var(--fg); }
+.help-pick .icon-btn:disabled { opacity: .35; cursor: default; }
+/* share: the image, the link, and what to do with them */
+.dialog.share { width: 640px; }
+.share-b { padding: 16px; overflow: auto; display: flex; flex-direction: column; gap: 12px; }
+#shareImg { display: block; width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); background: var(--soft); aspect-ratio: 6 / 5; object-fit: contain; }
+.share-link { display: flex; gap: 8px; }
+.share-link input { flex: 1; min-width: 0; height: 36px; padding: 0 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--fg); font: 13px var(--f-num); outline: none; }
+.share-acts { display: flex; gap: 8px; flex-wrap: wrap; }
 
 @media (prefers-reduced-motion: reduce) { .ground, .zzz, .bubble.pop, .row .b, .row .tail { animation: none !important; transition: none !important; } }
 @media (max-width: 720px) {
@@ -120,4 +150,10 @@
   .sum-acts { grid-column: 1 / -1; }
   .sum-acts .btn:not(.icon) { flex: 1; }
   .field { padding: 12px 14px 4px; }
+  .tool-list { grid-template-columns: minmax(0, 1fr); }
+  .dialog.help { height: calc(100vh - 32px); }
+  .help-b { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  /* six questions don't fit a tab row: a picker with the whole title, plus previous / next */
+  .help-nav { display: none; }
+  .help-b .help-pick { display: flex; }
 }

@@ -47,7 +47,7 @@ export async function build({ check = false } = {}) {
   const langs = LANGS.filter(([l]) => I[l]);
   const tpl = await readFile(new URL("page.html", src), "utf8");
 
-  const svc = { list: SERVICES.map(({ land, ...s }) => s), packs: PACKS, packOf: PACK_OF, scale: SCALE };
+  const svc = { list: SERVICES.map(({ land, ...s }) => s), packs: PACKS, packOf: PACK_OF, scale: SCALE, cats: CATS };
   const app = `const SVC = ${JSON.stringify(svc)};\n` + await readFile(new URL("app.js", src), "utf8");
   new Function(app);                                                    // must parse
   // the lanes are colored by speed zone, at the same log-scale positions the page puts the balls
@@ -56,21 +56,29 @@ export async function build({ check = false } = {}) {
   const css = (await Promise.all(["fonts.css", "style.css", "layout.css"].map(f => readFile(new URL(f, src), "utf8")))).join("\n") + `\n.field { --bands: ${bands}; }\n`;
   const jsName = `app.${hash(app)}.js`, cssName = `app.${hash(css)}.css`;
 
-  const landIds = SERVICES.filter(s => s.land).map(s => s.id);
+  // Landing pages per language: each market searches latency for different services (GitHub and Docker Hub in
+  // China, YouTube and Discord in Russia, WhatsApp and console gaming in Latin America…), set by `land` in its strings.
+  const landOf = l => (I[l].land || en.land).filter(id => SERVICES.some(x => x.id === id));
+  const has = (l, sub) => !sub || landOf(l).includes(sub);
+  const altsOf = sub => langs.filter(([l]) => has(l, sub));
   const path = (slug, sub) => "/" + (slug ? slug + "/" : "") + (sub ? sub + "/" : "");
-  const RUNTIME_SKIP = new Set(["docs", "seo_title", "seo_desc", "seo_kw", "og_sub", "lede", "lp_title", "lp_desc", "lp_intro", "lp_h1", "tool_m2c", "tool_v2c", "tool_ls", "faq_h", "foot", "tools_h"]);
+  const RUNTIME_SKIP = new Set(["docs", "seo_title", "seo_desc", "seo_kw", "og_sub", "lede", "lp_title", "lp_desc", "lp_intro", "lp_h1", "lp_kw", "land", "tool_m2c", "tool_v2c", "tool_ls", "foot", "tools_h",
+    "name", "h1", "lang_label", "faq_h", "pack", "exit_h", "test_mine", "share_h", "copy_link", "copy_img", "dl_img", "more_share"]);
+  // static text the page already shows, and region names (only the server-rendered picker uses them)
+  const runtimeKey = k => !RUNTIME_SKIP.has(k) && !k.startsWith("pk_");
   const pages = [];
   for (const [lang, slug, locale, defPack] of langs) {
     const d = I[lang], T = k => d[k] ?? en[k] ?? k;
-    const strings = Object.fromEntries(Object.keys(en).filter(k => !RUNTIME_SKIP.has(k)).map(k => [k, T(k)]));
-    for (const sub of ["", ...landIds]) {
+    const strings = Object.fromEntries(Object.keys(en).filter(runtimeKey).map(k => [k, T(k)]));
+    for (const sub of ["", ...landOf(lang)]) {
       const s = sub ? SERVICES.find(x => x.id === sub) : null;
       const url = SITE + path(slug, sub);
       const title = s ? fill(T("lp_title"), { s: s.name }) : T("seo_title");
       const desc = s ? fill(T("lp_desc"), { s: s.name }) : T("seo_desc");
       const h1 = s ? fill(T("lp_h1"), { s: s.name }) : T("h1");
-      const alts = langs.map(([l, sl]) => `<link rel="alternate" hreflang="${l}" href="${SITE + path(sl, sub)}">`).join("\n") +
-        `\n<link rel="alternate" hreflang="x-default" href="${SITE + path("", sub)}">`;
+      // hreflang lists only the languages that have this page; x-default is the English one when there is one
+      const alts = altsOf(sub).map(([l, sl]) => `<link rel="alternate" hreflang="${l}" href="${SITE + path(sl, sub)}">`).join("\n") +
+        (has("en", sub) ? `\n<link rel="alternate" hreflang="x-default" href="${SITE + path("", sub)}">` : "");
       const docs = d.docs || en.docs;
       const og = `${SITE}/og/${lang.toLowerCase()}.png`;
       const graph = [
@@ -79,14 +87,17 @@ export async function build({ check = false } = {}) {
           operatingSystem: "Any", browserRequirements: "Requires JavaScript", description: desc, inLanguage: lang, isAccessibleForFree: true,
           offers: { "@type": "Offer", price: "0", priceCurrency: "USD" }, isPartOf: { "@id": SITE + "/#site" } },
       ];
-      if (!s) graph.push({ "@type": "FAQPage", mainEntity: docs.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) });
-      else graph.push({ "@type": "BreadcrumbList", itemListElement: [
+      // No FAQPage markup: Google shows FAQ rich results only for government and health sites since 2023, and the
+      // answers are already in the page (help dialog); a second copy would only make every page bigger for the shell.
+      if (s) graph.push({ "@type": "BreadcrumbList", itemListElement: [
         { "@type": "ListItem", position: 1, name: "1ms.dog", item: SITE + path(slug, "") },
         { "@type": "ListItem", position: 2, name: s.name, item: url }] });
       const head = [
         `<title>${esc(title)}</title>`,
         `<meta name="description" content="${esc(desc)}">`,
-        `<meta name="keywords" content="${esc(s ? `${s.name} latency, ${s.name} ping, ${s.name} slow, ` + T("seo_kw") : T("seo_kw"))}">`,
+        `<meta name="keywords" content="${esc(s ? fill(T("lp_kw"), { s: s.name }) : T("seo_kw"))}">`,
+        // Baidu: don't transcode the page for mobile; it serves phones and desktops alike
+        ...(lang === "zh-CN" ? [`<meta http-equiv="Cache-Control" content="no-transform">`, `<meta http-equiv="Cache-Control" content="no-siteapp">`, `<meta name="applicable-device" content="pc,mobile">`] : []),
         `<meta name="robots" content="index, follow, max-image-preview:large">`,
         `<meta name="application-name" content="1ms.dog">`,
         `<meta name="theme-color" content="#f6f6f7" media="(prefers-color-scheme: light)">`,
@@ -96,7 +107,7 @@ export async function build({ check = false } = {}) {
         `<meta property="og:type" content="website">`, `<meta property="og:site_name" content="1ms.dog">`,
         `<meta property="og:title" content="${esc(title)}">`, `<meta property="og:description" content="${esc(desc)}">`, `<meta property="og:url" content="${url}">`,
         `<meta property="og:image" content="${og}">`, `<meta property="og:image:width" content="1200">`, `<meta property="og:image:height" content="630">`,
-        `<meta property="og:locale" content="${locale}">`,
+        `<meta property="og:locale" content="${locale}">`, ...altsOf(sub).filter(([l]) => l !== lang).map(([, , loc]) => `<meta property="og:locale:alternate" content="${loc}">`),
         `<meta name="twitter:card" content="summary_large_image">`, `<meta name="twitter:title" content="${esc(title)}">`, `<meta name="twitter:description" content="${esc(desc)}">`,
         `<meta name="twitter:image" content="${og}">`,
         `<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c")}</script>`,
@@ -112,8 +123,10 @@ export async function build({ check = false } = {}) {
       const groups = (s ? [cats[0], local, ...cats.slice(1)] : [local, ...cats]).join("\n");
       const axis = ["zoom", "sprint", "trot", "stroll", "nap"].map((k, i) => `<span class="c${i + 1}"><i></i><b>${esc(T("tier_" + k))}</b>${i < 4 ? "≤ " + ZONES[i] : "> " + ZONES[3]} ms</span>`).join("") +
         `<span class="cx"><i></i><b>${esc(T("tier_lost"))}</b></span>`;
-      const tools = TOOLS.map(x => `<a href="https://${x.host}${toolHome(x.id, lang, slug)}" style="--tint:${x.tint}" title="${esc(T("tool_" + x.id))}"><svg viewBox="0 0 16 16" aria-hidden="true">${x.icon}</svg>${esc(x.name)}</a>`).join("");
-      const faq = docs.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join("\n");
+      const tools = TOOLS.map(x => `<a class="tool" href="https://${x.host}${toolHome(x.id, lang, slug)}" style="--tint:${x.tint}"><b><svg viewBox="0 0 16 16" aria-hidden="true">${x.icon}</svg>${esc(x.name)}</b><span>${esc(T("tool_" + x.id))}</span></a>`).join("");
+      // help dialog: in the HTML (crawlers read it), one answer shown at a time
+      const helpNav = docs.map(([q], i) => `<button type="button" role="tab" data-hq="${i}" aria-selected="${i === 0}">${esc(q)}</button>`).join("");
+      const helpC = docs.map(([q, a], i) => `<article data-hqb="${i}"${i ? " hidden" : ""}><h3>${esc(q)}</h3><p>${esc(a)}</p></article>`).join("");
       const intro = s ? `<p class="intro">${esc(fill(T("lp_intro"), { s: s.name }))}</p>` : "";
       const langOpts = langs.map(([l]) => `<option value="${l}"${l === lang ? " selected" : ""}>${esc(I[l].name)}</option>`).join("");
       const paths = Object.fromEntries(langs.map(([l, sl]) => [l, path(sl, sub)]));
@@ -125,17 +138,17 @@ export async function build({ check = false } = {}) {
         .replace("{{prepaint}}", PREPAINT).replace("{{head}}", head).replace("{{css}}", cssName).replace("{{js}}", jsName)
         .replace("{{homeHref}}", path(slug, "")).replace("{{langOpts}}", langOpts)
         .replace("{{h1}}", esc(h1)).replace("{{intro}}", intro)
-        .replace("{{axis}}", axis).replace("{{groups}}", groups).replace("{{tools}}", tools).replace("{{faq}}", faq)
+        .replace("{{axis}}", axis).replace("{{groups}}", groups).replace("{{tools}}", tools).replace("{{helpNav}}", helpNav).replace("{{helpC}}", helpC)
         .replace("{{data}}", JSON.stringify(data).replace(/</g, "\\u003c"));
       if (/\{\{\w+\}\}/.test(html)) throw new Error("unfilled placeholder in " + path(slug, sub) + ": " + /\{\{\w+\}\}/.exec(html)[0]);
-      pages.push({ file: (slug ? slug + "/" : "") + (sub ? sub + "/" : "") + "index.html", url, sub, html });
+      pages.push({ file: (slug ? slug + "/" : "") + (sub ? sub + "/" : "") + "index.html", url, lang, sub, html });
     }
   }
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n` +
     pages.map(p => `  <url>\n    <loc>${p.url}</loc>\n    <priority>${p.sub ? "0.7" : "1.0"}</priority>\n` +
-      langs.map(([l, s]) => `    <xhtml:link rel="alternate" hreflang="${l}" href="${SITE + path(s, p.sub)}"/>`).join("\n") +
-      `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE + path("", p.sub)}"/>\n  </url>`).join("\n") + "\n</urlset>\n";
+      altsOf(p.sub).map(([l, s]) => `    <xhtml:link rel="alternate" hreflang="${l}" href="${SITE + path(s, p.sub)}"/>`).join("\n") +
+      (has("en", p.sub) ? `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE + path("", p.sub)}"/>` : "") + `\n  </url>`).join("\n") + "\n</urlset>\n";
   const robots = `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`;
   const llms = `# 1ms.dog
 
@@ -144,7 +157,7 @@ export async function build({ check = false } = {}) {
 > chosen by exit country. Everything runs client-side; no results are sent to 1ms.dog.
 
 - Home: ${SITE}/ (also ${langs.slice(1).map(([, s]) => "/" + s + "/").join(", ")})
-- Service pages: ${landIds.map(id => `${SITE}/${id}/`).join(", ")}
+- Service pages: ${landOf("en").map(id => `${SITE}/${id}/`).join(", ")}
 - Services tested: ${SERVICES.map(s => s.name).join(", ")}
 - Speed grades (median HTTPS round trip): 1ms dog < 2 ms, Zoomies ≤ 30, Sprint ≤ 80, Trot ≤ 150, Stroll ≤ 300, Nap > 300, Not back = no connection in 5 s
 
@@ -156,7 +169,7 @@ ${TOOLS.map(x => `- ${x.name}: https://${x.host}/ (${en["tool_" + x.id]})`).join
   // connect-src / img-src allow any https host: the test fetches the services from the browser.
   // style-src needs 'unsafe-inline' for the tile colors (style="--c") and the inlined shiba's own <style>.
   const csp = ["default-src 'self'", `script-src 'self' 'sha256-${sha(PREPAINT)}'`, "style-src 'self' 'unsafe-inline'",
-    "font-src 'self'", "img-src 'self' data: https:", "connect-src 'self' https:", "manifest-src 'self'",
+    "font-src 'self'", "img-src 'self' data: blob: https:", "connect-src 'self' https:", "manifest-src 'self'",
     "object-src 'none'", "base-uri 'none'", "form-action 'none'", "frame-ancestors 'none'"].join("; ");
   const headers = `# Generated by scripts/build.mjs
 /*
@@ -194,6 +207,15 @@ ${TOOLS.map(x => `- ${x.name}: https://${x.host}/ (${en["tool_" + x.id]})`).join
     if (check) { stale.push(name); continue; }
     await mkdir(new URL(".", url), { recursive: true });
     await writeFile(url, text);
+  }
+  // pages no longer built (a landing page a language dropped, say): only index.html files, never assets
+  const walk = async dir => (await readdir(new URL(dir, pub), { withFileTypes: true })).flatMap(e => e.isDirectory() ? [dir + e.name + "/"] : []);
+  const dirs = [""];
+  for (let i = 0; i < dirs.length; i++) if (!/^(assets|flags|og)\//.test(dirs[i])) dirs.push(...await walk(dirs[i]));
+  for (const d of dirs) {
+    const f = d + "index.html";
+    if (files[f] || !(await readFile(new URL(f, pub)).catch(() => null))) continue;
+    if (check) stale.push(f + " (old)"); else await rm(new URL(f, pub));
   }
   // old bundles
   const old = (await readdir(new URL("assets/", pub))).filter(f => /^app\.[0-9a-f]+\.(js|css)$/.test(f) && f !== jsName && f !== cssName);

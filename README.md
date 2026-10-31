@@ -44,7 +44,20 @@ npx svgo --config src/brand/svgo.config.cjs -i src/brand/source/1ms_shiba_runnin
 
 - 每个地址必须**一次请求就有响应、不跳转**，响应体尽量小（favicon、`generate_204`、`robots.txt`）。响应体大时用 `m: "HEAD"`。改动后运行 `npm run verify`。
 - 某些地区访问不到的服务在当地显示「没叼回来」，这是如实的结果，不要删掉。
-- `land: true` 的服务有自己的落地页（`/chatgpt/`、`/zh-cn/chatgpt/`……），用于搜索「ChatGPT 延迟」这类词。
+- 地址如果带 `Cross-Origin-Resource-Policy: same-origin`（或 `same-site`），浏览器会拦下响应，服务就会一直显示连不上。claude.ai 和 Epic 都是这样，所以改用同一主机的 `/cdn-cgi/trace`。`npm run verify` 会标出这种情况。
+
+## SEO
+
+- 每种语言在自己的字符串文件里用 `land` 列出要做落地页的服务（`/chatgpt/`、`/zh-cn/dockerhub/`……），按当地的搜索习惯选：简体中文偏开发者（GitHub、Docker Hub、Hugging Face），俄语偏 YouTube、Discord、Telegram，西语和葡语偏 WhatsApp 和主机游戏。hreflang 和 sitemap 只列出真正存在这个页面的语言。
+- 标题、描述和关键词按当地最常搜的说法来写（「IP 查询」「IPアドレス 確認」「내 IP 확인」「мой ip」……），不是从英文直译。落地页关键词由 `lp_kw` 模板生成。
+- 简体中文页面带百度需要的 `no-transform`、`no-siteapp` 和 `applicable-device`。
+- 不输出 FAQPage 结构化数据：从 2023 年起，Google 只给政府和医疗网站展示 FAQ 富媒体结果；问答已经在页面的帮助弹窗里，再放一份只会让页面变大（shell 解析每个字节都要消耗 CPU，测试限制页面小于 30KB）。
+
+## 分享
+
+- 链接把结果放在 `#r=` 后面：每个出口只有国家、城市、运营商和本地/代理标记，每个服务只有中位数，**不含 IP 地址**。页面有 shell 注入的 `<meta name="shortener">` 时，会换成 s.1ms.dog 短链。
+- 图片在浏览器里用 canvas 画，内容和页面一致：狗狗、中位数、出口、每个服务的球，固定使用深色主题。
+- 打开分享链接时只显示对方的结果，不会自动测试，访客点「测我自己的网络」后才开始。
 
 ## 部署
 

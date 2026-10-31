@@ -20,6 +20,9 @@
         <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M1.5 8h13M8 1.5c2 2 2.8 4 2.8 6.5S10 12.5 8 14.5C6 12.5 5.2 10.5 5.2 8S6 3.5 8 1.5z"/></svg>
         <select id="lang">{{langOpts}}</select>
       </label>
+      <button class="icon-btn" id="helpBtn" type="button" aria-haspopup="dialog" aria-controls="help"><span class="sr" data-i="faq_h"></span>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M6.3 6.2a1.8 1.8 0 1 1 2.5 1.7c-.5.2-.8.6-.8 1.1v.4M8 11.3v.1"/></svg>
+      </button>
       <button class="icon-btn" id="theme" type="button" aria-label="Theme">
         <svg class="i-sys" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="9" rx="1.5"/><path d="M5.5 14h5M8 11.5V14"/></svg>
         <svg class="i-light" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3"/></svg>
@@ -29,6 +32,8 @@
   </header>
 
   <main>
+    <div class="shared" id="shared" hidden><span id="sharedTxt"></span><button class="btn pri" id="testMine" type="button" data-i="test_mine"></button></div>
+
     <section class="hero card">
       <div class="hero-l">
         <h1>{{h1}}</h1>
@@ -65,16 +70,46 @@
 {{groups}}
       </div>
     </section>
+
+    <section class="tools">
+      <h2 data-i="tools_h"></h2>
+      <div class="tool-list">{{tools}}</div>
+    </section>
   </main>
 
-  <footer class="foot">
-    <details class="faq">
-      <summary data-i="faq_h"></summary>
-      {{faq}}
-    </details>
-    <nav class="tools">{{tools}}</nav>
-    <p class="m" data-i="foot"></p>
-  </footer>
+  <footer class="foot"><span data-i="foot"></span><span>© 1ms.dog</span></footer>
+</div>
+
+<div class="scrim" id="help" hidden>
+  <div class="dialog help" role="dialog" aria-modal="true" aria-labelledby="helpT">
+    <div class="dlg-h"><h2 id="helpT" data-i="faq_h"></h2>
+      <button class="icon-btn" data-close type="button" aria-label="Close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="help-b">
+      <nav class="help-nav" id="helpNav" role="tablist">{{helpNav}}</nav>
+      <div class="help-pick">
+        <button class="icon-btn" type="button" data-hstep="-1" aria-label="Previous"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 4L6 8l4 4"/></svg></button>
+        <select id="helpSel" aria-labelledby="helpT"></select>
+        <button class="icon-btn" type="button" data-hstep="1" aria-label="Next"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg></button>
+      </div>
+      <div class="help-c" id="helpC">{{helpC}}</div>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="shareDlg" hidden>
+  <div class="dialog share" role="dialog" aria-modal="true" aria-labelledby="shareT">
+    <div class="dlg-h"><h2 id="shareT" data-i="share_h"></h2>
+      <button class="icon-btn" data-close type="button" aria-label="Close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="share-b">
+      <img id="shareImg" alt="" width="1200" height="1000">
+      <div class="share-link"><input id="shareUrl" readonly aria-label="Link"><button class="btn pri" id="copyLink" type="button" data-i="copy_link"></button></div>
+      <div class="share-acts">
+        <button class="btn" id="copyImg" type="button" data-i="copy_img"></button>
+        <button class="btn" id="dlImg" type="button" data-i="dl_img"></button>
+        <button class="btn" id="nativeShare" type="button" data-i="more_share" hidden></button>
+      </div>
+    </div>
+  </div>
 </div>
 <script type="application/json" id="data">{{data}}</script>
 <script src="/assets/{{js}}" defer></script>

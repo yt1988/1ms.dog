@@ -7,15 +7,17 @@ import { SERVICES, PACKS, PACK_OF } from "../src/services.mjs";
 
 const pub = new URL("../public/", import.meta.url);
 const page = p => readFile(new URL(p + "index.html", pub), "utf8");
-const pages = [];
-for (const [, slug] of LANGS) for (const sub of ["", ...SERVICES.filter(s => s.land).map(s => s.id)])
-  pages.push((slug ? slug + "/" : "") + (sub ? sub + "/" : ""));
+// every page the sitemap lists, as a path relative to the site root
+const sitemap = await readFile(new URL("sitemap.xml", pub), "utf8");
+const pages = [...sitemap.matchAll(/<loc>https:\/\/1ms\.dog\/([^<]*)<\/loc>/g)].map(m => m[1]);
+const altsOf = p => [...sitemap.split("<url>").find(u => u.includes(`<loc>https://1ms.dog/${p}</loc>`)).matchAll(/hreflang="([^"]+)"/g)].map(m => m[1]);
 
 test("every language has every string", async () => {
   const en = (await import("../src/i18n/en.mjs")).default;
   for (const f of await readdir(new URL("../src/i18n/", import.meta.url))) {
     const d = (await import("../src/i18n/" + f)).default;
     const missing = Object.keys(en).filter(k => !(k in d));
+    for (const id of d.land) assert.ok(SERVICES.some(s => s.id === id), f + ": no service " + id);
     assert.deepEqual(missing, [], f + " is missing keys");
     assert.equal(d.docs.length, en.docs.length, f + " FAQ length");
   }
@@ -35,7 +37,10 @@ test("pages carry SEO tags", async () => {
   for (const p of pages) {
     const h = await page(p);
     assert.match(h, new RegExp(`<link rel="canonical" href="https://1ms\.dog/${p.replace(/\//g, "\/")}">`), p);
-    assert.equal((h.match(/hreflang=/g) || []).length, LANGS.length + 1, p + " hreflang");
+    // hreflang in the page matches the sitemap, and every listed alternate exists
+    const alts = [...h.matchAll(/hreflang="([^"]+)" href="https:\/\/1ms\.dog\/([^"]*)"/g)];
+    assert.deepEqual(alts.map(m => m[1]), altsOf(p), p + " hreflang");
+    for (const [, , path] of alts) assert.ok(pages.includes(path), p + " → missing alternate " + path);
     assert.match(h, /<meta property="og:image" content="https:\/\/1ms\.dog\/og\/[a-z-]+\.png">/, p);
     assert.match(h, /<script type="application\/ld\+json">/, p);
     assert.equal((h.match(/<h1>/g) || []).length, 1, p + " one h1");

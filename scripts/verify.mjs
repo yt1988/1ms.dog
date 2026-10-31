@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 // Checks every service URL the way the page uses it: one request, no redirect followed. A redirect means two round
-// trips (or another host) in the browser, so the URL should point at the final address instead.
+// trips (or another host) in the browser, so the URL should point at the final address instead. A
+// Cross-Origin-Resource-Policy of same-origin or same-site makes the browser reject the cross-site answer, so the
+// service would always look unreachable.
 // Run from a few networks before changing the list; a service that is blocked where you are shows as "fail" there.
 // Usage: node scripts/verify.mjs [id …]
 import { SERVICES, PACKS } from "../src/services.mjs";
@@ -19,8 +21,9 @@ async function one(s) {
       headers: { "user-agent": UA, accept: "*/*" }, signal: AbortSignal.timeout(8000) });
     const body = s.m === "HEAD" ? new ArrayBuffer(0) : await r.arrayBuffer();
     const ms = Math.round(performance.now() - t0), loc = r.headers.get("location");
-    const ok = r.status < 500 && !(r.status >= 300 && r.status < 400);
-    return { s, ok, line: `${r.status} ${String(ms).padStart(5)}ms ${String(body.byteLength).padStart(7)}B ${r.headers.get("server") || ""}${loc ? " → " + loc : ""}` };
+    const corp = (r.headers.get("cross-origin-resource-policy") || "").toLowerCase();
+    const ok = r.status < 500 && !(r.status >= 300 && r.status < 400) && !/same-(origin|site)/.test(corp);
+    return { s, ok, line: `${r.status} ${String(ms).padStart(5)}ms ${String(body.byteLength).padStart(7)}B ${r.headers.get("server") || ""}${loc ? " → " + loc : ""}${corp ? " CORP=" + corp : ""}` };
   } catch (e) { return { s, ok: false, line: `fail ${e.cause?.code || e.name}` }; }
 }
 const out = [];

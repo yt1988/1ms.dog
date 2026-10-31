@@ -56,9 +56,11 @@ svg[viewBox="0 0 16 16"] { fill: none; stroke: currentColor; stroke-width: 1.4; 
 .top-acts { display: flex; gap: 8px; align-items: center; }
 .sel { position: relative; display: flex; align-items: center; height: 34px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); padding-left: 10px; }
 .sel svg { width: 15px; height: 15px; color: var(--muted); flex: none; }
+/* the open list is drawn by the OS: without its own colors it stays light in the dark theme */
+.sel option { background-color: var(--panel); color: var(--fg); }
 .sel select { appearance: none; -webkit-appearance: none; border: 0; background: transparent; height: 100%; padding: 0 12px 0 7px; cursor: pointer; outline: none; }
 .icon-btn { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); cursor: pointer; padding: 0; }
-.icon-btn svg { width: 16px; height: 16px; display: none; }
-.icon-btn[data-th="system"] .i-sys, .icon-btn[data-th="light"] .i-light, .icon-btn[data-th="dark"] .i-dark { display: block; }
-.icon-btn:not([data-th]) .i-sys { display: block; }
+.icon-btn svg { width: 16px; height: 16px; }
+#theme svg { display: none; }
+#theme[data-th="system"] .i-sys, #theme[data-th="light"] .i-light, #theme[data-th="dark"] .i-dark, #theme:not([data-th]) .i-sys { display: block; }
 

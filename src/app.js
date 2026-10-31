@@ -182,7 +182,7 @@
       const org = g.org ? esc(g.org) + (g.asn ? " · AS" + g.asn : "") : "";
       return `<li class="ex"><span class="kind ${g.proxy ? "proxy" : "local"}">${esc(t(g.proxy ? "k_proxy" : "k_local"))}</span>` +
         `<span class="where">${flag(g.cc)}<b>${esc(where || "?")}</b>${org ? `<span class="m">${org}</span>` : ""}</span>` +
-        `<span class="ips">${ips}</span><span class="by">${esc(t("seen_by", { list: g.by.join(", ") }))}</span></li>`;
+        `<span class="ips">${ips}</span>${g.by.length ? `<span class="by">${esc(t("seen_by", { list: g.by.join(", ") }))}</span>` : ""}</li>`;
     }).join("");
     renderNote();
   }
@@ -297,7 +297,14 @@
   }
   function progress(run) {
     $("#prog i").style.width = run ? (100 * run.d / run.n).toFixed(1) + "%" : "0";
-    if (run) $("#sumBack").textContent = t("running", { d: run.d, n: run.n });
+    if (!run) return;
+    $("#sumBack").textContent = t("running", { d: run.d, n: run.n });
+    // the median so far, so the big number moves while the balls come back
+    const ok = allServices().map(s => R.get(s.id)).filter(r => r && r.st === "done").map(r => median(r.s)).filter(v => v != null);
+    if (!ok.length) return;
+    const md = median(ok), [tk, cls] = tierOf(md);
+    $("#sumMs").textContent = fmt(md); $("#sumMs").className = cls;
+    $("#sumTier").textContent = t("tier_" + tk); $("#sumTier").className = "tier " + cls;
   }
   function setBusy(b) { $("#run span").textContent = t(b ? "stop" : "run"); $("#deep").disabled = b; }
   let lastSum = null;
@@ -328,21 +335,182 @@
 
   /* ---------- controls ---------- */
   const start = n => { for (const s of allServices()) { R.delete(s.id); paintRow(s); } lastSum = null; runList(allServices(), n, true); };
-  $("#run").onclick = () => { if (RUN) { RUN.ctl.abort(); return; } start(3); };
+  $("#run").onclick = () => { if (RUN) { RUN.ctl.abort(); return; } leaveShared(); start(3); };
   $("#deep").title = t("deep_t");
-  $("#deep").onclick = () => start(10);
+  $("#deep").onclick = () => { leaveShared(); start(10); };
+
+  /* ---------- dialogs ---------- */
+  const $$ = s => [...document.querySelectorAll(s)];
+  function openDlg(id) { $("#" + id).hidden = false; document.documentElement.style.overflow = "hidden"; $("#" + id + " [data-close]").focus(); }
+  function closeDlg() { $$(".scrim").forEach(s => { s.hidden = true; }); document.documentElement.style.overflow = ""; }
+  $$("[data-close]").forEach(b => { b.onclick = closeDlg; });
+  $$(".scrim").forEach(s => s.addEventListener("click", e => { if (e.target === s) closeDlg(); }));
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeDlg(); });
+  // help: one answer at a time; a picker with previous / next on phones
+  let helpIdx = 0;
+  const helpN = $$("#helpNav [data-hq]").length;
+  $("#helpSel").innerHTML = $$("#helpNav [data-hq]").map((b, i) => `<option value="${i}">${i + 1} / ${helpN} · ${esc(b.textContent)}</option>`).join("");
+  function showHelp(i) {
+    helpIdx = Math.max(0, Math.min(helpN - 1, i));
+    $$("#helpNav [data-hq]").forEach(b => b.setAttribute("aria-selected", +b.dataset.hq === helpIdx));
+    $$("#helpC [data-hqb]").forEach(a => { a.hidden = +a.dataset.hqb !== helpIdx; });
+    $("#helpSel").value = helpIdx;
+    $$("[data-hstep]").forEach(b => { b.disabled = helpIdx + +b.dataset.hstep < 0 || helpIdx + +b.dataset.hstep >= helpN; });
+    $("#helpC").scrollTop = 0;
+  }
+  $("#helpBtn").onclick = () => { showHelp(helpIdx); openDlg("help"); };
+  $$("#helpNav [data-hq]").forEach(b => { b.onclick = () => showHelp(+b.dataset.hq); });
+  $("#helpSel").onchange = e => showHelp(+e.target.value);
+  $$("[data-hstep]").forEach(b => { b.onclick = () => showHelp(helpIdx + +b.dataset.hstep); });
+
+  /* ---------- share: a link that carries the result, and an image drawn here ---------- */
+  // The link holds no IP address: per exit only country, city, network and local/proxy; per service its median.
+  // #r=1|<unix time base36>|<pack>|<exits>|<results>   exits: cc~city~org~asn~p|l joined by ","; results: id:ms×10 base36, "x" = lost
+  const enc = v => encodeURIComponent(String(v ?? "")).replace(/[~,|:]/g, c => "%" + c.charCodeAt(0).toString(16).toUpperCase());
+  function shareHash() {
+    const ex = NET.groups.map(g => [g.cc, g.city, g.org, g.asn || "", g.proxy ? "p" : "l"].map(enc).join("~")).join(",");
+    const res = allServices().filter(s => R.get(s.id) && R.get(s.id).st === "done").map(s => { const m = median(R.get(s.id).s); return s.id + ":" + (m == null ? "x" : Math.round(m * 10).toString(36)); }).join(",");
+    return "#r=1|" + Math.floor(Date.now() / 1000).toString(36) + "|" + pack + "|" + ex + "|" + res;
+  }
+  function parseHash(h) {
+    const m = /^#r=1\|([0-9a-z]+)\|(\w+)\|([^|]*)\|(.*)$/.exec(h || "");
+    if (!m || !PACKS[m[2]]) return null;
+    const dec = v => { try { return decodeURIComponent(v); } catch (e) { return ""; } };
+    const groups = m[3] ? m[3].split(",").map(x => { const [cc, city, org, asn, k] = x.split("~").map(dec); return { cc: /^[A-Z]{2}$/.test(cc) ? cc : "", city, org, asn: +asn || null, proxy: k === "p", ips: [], by: [] }; }) : [];
+    const res = {};
+    for (const p of m[4].split(",")) { const [id, v] = p.split(":"); if (id && v) res[id] = v === "x" ? null : parseInt(v, 36) / 10; }
+    return { ts: parseInt(m[1], 36) * 1000, pack: m[2], groups, res };
+  }
+  let shortFor = null;
+  async function shortLink(long) {
+    const meta = document.querySelector('meta[name="shortener"]');          // announced by the 1ms.dog shell
+    if (!meta) return long;
+    if (shortFor && shortFor[0] === long) return shortFor[1];
+    try {
+      const r = await fetch(meta.content, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ url: long }), signal: AbortSignal.timeout(5000) });
+      const j = await r.json(); if (j.url) { shortFor = [long, j.url]; return j.url; }
+    } catch (e) {}
+    return long;
+  }
+  const whereOf = g => g ? [g.city, g.cc && country(g.cc)].filter(Boolean).join(", ") : "";
+  let shareBlob = null;
   $("#share").title = t("share");
   $("#share").onclick = async () => {
-    const s = lastSum, main = NET.groups[0], where = main ? [main.city, main.cc && country(main.cc)].filter(Boolean).join(", ") : "";
-    const text = s && s.md != null ? t("share_text", { ok: s.ok, n: s.n, where: where || "?", ms: fmt(s.md), tier: t("tier_" + s.tier) }) : document.title;
-    const url = location.origin + location.pathname;
-    try { if (navigator.share) { await navigator.share({ text, url }); return; } } catch (e) { if (e.name === "AbortError") return; }
-    try { await navigator.clipboard.writeText(text + " " + url); say("copied"); } catch (e) {}
+    if (!lastSum) return;
+    const long = location.origin + location.pathname + shareHash();
+    $("#shareUrl").value = long; $("#shareImg").removeAttribute("src");
+    $("#nativeShare").hidden = !navigator.share;
+    openDlg("shareDlg");
+    shareBlob = null;
+    drawCard().then(c => { $("#shareImg").src = c.toDataURL("image/png"); c.toBlob(b => { shareBlob = b; }, "image/png"); }).catch(() => {});
+    $("#shareUrl").value = await shortLink(long);
   };
+  const flash = (btn, k) => { const o = btn.textContent; btn.textContent = t(k); setTimeout(() => { btn.textContent = o; }, 1500); };
+  $("#copyLink").onclick = async e => { try { await navigator.clipboard.writeText($("#shareUrl").value); flash(e.target, "copied"); } catch (x) { $("#shareUrl").select(); } };
+  $("#copyImg").onclick = async e => { try { await navigator.clipboard.write([new ClipboardItem({ "image/png": shareBlob })]); flash(e.target, "copied"); } catch (x) {} };
+  $("#dlImg").onclick = () => { const a = document.createElement("a"); a.href = $("#shareImg").src; a.download = "1ms-dog.png"; a.click(); };
+  $("#nativeShare").onclick = async () => {
+    const s = lastSum, text = t("share_text", { ok: s.ok, n: s.n, where: whereOf(NET.groups[0]) || "?", ms: s.md != null ? fmt(s.md) : "–", tier: t("tier_" + s.tier) });
+    const file = shareBlob && new File([shareBlob], "1ms-dog.png", { type: "image/png" });
+    try { await navigator.share(file && navigator.canShare && navigator.canShare({ files: [file] }) ? { text, url: $("#shareUrl").value, files: [file] } : { text, url: $("#shareUrl").value }); } catch (e) {}
+  };
+
+  // The card: the same picture as the page (dog, median, exits, every ball at its distance), always in the dark theme
+  const img = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
+  async function drawCard() {
+    const W = 1200, P = 56, list = allServices().filter(s => R.get(s.id) && R.get(s.id).st === "done");
+    const groups = [{ name: t("cat_local"), items: PACKS[pack] }, ...SVC.cats.map(c => ({ name: t("cat_" + c), items: SVC.list.filter(s => s.cat === c) }))]
+      .map(g => ({ name: g.name, items: g.items.filter(s => list.includes(s)) })).filter(g => g.items.length);
+    // three columns, filled in order, about equally tall
+    const RH = 30, GH = 40, total = groups.reduce((a, g) => a + GH + g.items.length * RH, 0), cols = [[], [], []];
+    let ci = 0, hcol = 0;
+    for (const g of groups) { const h = GH + g.items.length * RH; if (hcol && hcol + h / 2 > total / 3 && ci < 2) { ci++; hcol = 0; } cols[ci].push(g); hcol += h; }
+    const colH = Math.max(...cols.map(c => c.reduce((a, g) => a + GH + g.items.length * RH, 0)));
+    const exits = NET.groups.slice(0, 3), top = 300 + exits.length * 40, H = top + colH + 90;
+    const c = document.createElement("canvas"); c.width = W; c.height = H;
+    const x = c.getContext("2d"), F = "Geist, 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans', 'Malgun Gothic', sans-serif", M = "'Geist Mono', Consolas, monospace";
+    const C = { bg: "#1c1c1c", panel: "#232323", line: "#363636", fg: "#ededed", muted: "#a0a0a0", c0: "#c4a7ff", c1: "#3ecf8e", c2: "#9fd356", c3: "#f5c524", c4: "#f59e42", c5: "#f56565", cx: "#a0a0a0", gold: "#ffb63f", warn: "#f5a524" };
+    x.fillStyle = C.bg; x.fillRect(0, 0, W, H);
+    const [logo, dog] = await Promise.all([img("/assets/logo-dark.svg"), img("/assets/shiba-run.svg")]);
+    x.drawImage(logo, P, 44, 150, 60);
+    x.drawImage(dog, 150, 20, 700, 420, W - P - 330, 24, 330, 198);
+    const s = lastSum, [, cls] = tierOf(s.md);
+    x.fillStyle = C[cls]; x.font = `600 96px ${M}`; x.textBaseline = "alphabetic";
+    const big = s.md != null ? fmt(s.md) : "–"; x.fillText(big, P, 228);
+    const bw = x.measureText(big).width;
+    x.fillStyle = C.muted; x.font = `500 26px ${F}`; x.fillText("ms " + t("med"), P + bw + 14, 228);
+    x.fillStyle = C[cls]; x.font = `700 30px ${F}`; x.fillText(t("tier_" + s.tier), P, 272);
+    const tw = x.measureText(t("tier_" + s.tier)).width;
+    x.fillStyle = C.muted; x.font = `400 22px ${F}`; x.fillText(t("back", { ok: s.ok, n: s.n }), P + tw + 20, 272);
+    // exits, without IPs
+    let y = 318;
+    for (const g of exits) {
+      const k = t(g.proxy ? "k_proxy" : "k_local");
+      x.font = `600 18px ${F}`; const kw = x.measureText(k).width + 20;
+      x.fillStyle = g.proxy ? "#f5a52430" : "#3ecf8e2a"; roundRect(x, P, y - 22, kw, 30, 7); x.fill();
+      x.fillStyle = g.proxy ? C.warn : C.c1; x.fillText(k, P + 10, y);
+      let xx = P + kw + 12;
+      if (g.cc) { try { const f = await img(`/flags/${g.cc.toLowerCase()}.svg`); x.drawImage(f, xx, y - 19, 32, 24); xx += 42; } catch (e) {} }
+      x.fillStyle = C.fg; x.font = `600 22px ${F}`; const w = whereOf(g) || "?"; x.fillText(w, xx, y);
+      xx += x.measureText(w).width + 14;
+      x.fillStyle = C.muted; x.font = `400 20px ${F}`; x.fillText(g.org + (g.asn ? " · AS" + g.asn : ""), xx, y);
+      y += 40;
+    }
+    // the field
+    const cw = (W - P * 2 - 40 * 2) / 3, laneX = 128, msW = 60;
+    cols.forEach((col, i) => {
+      let yy = top + 20; const x0 = P + i * (cw + 40);
+      for (const g of col) {
+        x.fillStyle = C.muted; x.font = `600 15px ${F}`; x.fillText(g.name.toUpperCase(), x0, yy + 6); yy += GH - 10;
+        for (const sv of g.items) {
+          const md = median(R.get(sv.id).s), [, k] = tierOf(md), l0 = x0 + laneX, l1 = x0 + cw - msW - 10, cy = yy + 6;
+          x.fillStyle = C.fg; x.font = `400 18px ${F}`; x.fillText(clip(x, sv.name, laneX - 12), x0, yy + 12);
+          x.fillStyle = C.line; x.fillRect(l0, cy - 1.5, l1 - l0, 3);
+          const px = md == null ? l1 : l0 + (l1 - l0) * pos(md);
+          if (md != null) { x.fillStyle = C[k] + "99"; x.fillRect(l0, cy - 1.5, px - l0, 3); }
+          x.beginPath(); x.arc(px, cy, 7, 0, Math.PI * 2);
+          if (md == null) { x.strokeStyle = C.muted; x.lineWidth = 2; x.stroke(); } else { x.fillStyle = C[k]; x.fill(); }
+          x.fillStyle = md == null ? C.muted : C[k]; x.font = `600 18px ${M}`; x.textAlign = "right"; x.fillText(md == null ? "✕" : fmt(md), x0 + cw, yy + 12); x.textAlign = "left";
+          yy += RH;
+        }
+      }
+    });
+    x.fillStyle = C.line; x.fillRect(P, H - 70, W - P * 2, 1);
+    x.fillStyle = C.gold; x.font = `600 24px ${M}`; x.fillText("1ms.dog", P, H - 30);
+    x.fillStyle = C.muted; x.font = `400 18px ${F}`; x.textAlign = "right";
+    x.fillText(new Date(SHARED ? SHARED.ts : Date.now()).toLocaleString(LANG, { dateStyle: "medium", timeStyle: "short" }), W - P, H - 30); x.textAlign = "left";
+    return c;
+  }
+  function roundRect(x, l, t0, w, h, r) { x.beginPath(); x.moveTo(l + r, t0); x.arcTo(l + w, t0, l + w, t0 + h, r); x.arcTo(l + w, t0 + h, l, t0 + h, r); x.arcTo(l, t0 + h, l, t0, r); x.arcTo(l, t0, l + w, t0, r); x.closePath(); }
+  function clip(x, s, w) { if (x.measureText(s).width <= w) return s; while (s.length > 1 && x.measureText(s + "…").width > w) s = s.slice(0, -1); return s + "…"; }
+
+  /* ---------- a shared result ---------- */
+  // Opening a shared link shows that result and doesn't test until the visitor asks for their own
+  const SHARED = parseHash(location.hash);
+  function showShared(S) {
+    if (S.pack !== pack) showPack(S.pack);
+    NET.groups = S.groups; NET.done = true; renderExits(); $("#eye").hidden = true;
+    for (const s of allServices()) if (s.id in S.res) { R.set(s.id, { w: null, s: S.res[s.id] == null ? [] : [S.res[s.id]], st: "done" }); paintRow(s); }
+    summarize(false);
+    $("#sharedTxt").textContent = t("shared_from", { where: whereOf(S.groups[0]) || "?", date: new Date(S.ts).toLocaleString(LANG, { dateStyle: "medium", timeStyle: "short" }) });
+    $("#shared").hidden = false;
+  }
+  let sharedOn = false;
+  function leaveShared() {
+    if (!sharedOn) return;
+    sharedOn = false; $("#shared").hidden = true; $("#eye").hidden = false;
+    history.replaceState(null, "", location.pathname + location.search);
+    NET.groups = []; NET.seen = []; NET.geo = {}; NET.done = false; NET.hidden = null; renderExits();
+    checkExits().catch(() => {});
+  }
+  $("#testMine").onclick = () => { leaveShared(); start(3); };
 
   /* ---------- go ---------- */
   setMood("sniff");
-  const exitP = checkExits().catch(() => {});
-  // the exits pick the local pack; give them a moment, then the dog starts fetching either way
-  Promise.race([exitP, sleep(1500)]).then(() => start(3));
+  if (SHARED) { sharedOn = true; showShared(SHARED); }
+  else {
+    const exitP = checkExits().catch(() => {});
+    // the exits pick the local pack; give them a moment, then the dog starts fetching either way
+    Promise.race([exitP, sleep(1500)]).then(() => start(3));
+  }
 })();
