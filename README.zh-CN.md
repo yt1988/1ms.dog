@@ -1,0 +1,87 @@
+# 1ms.dog
+
+[English](README.md) · **简体中文**
+
+你的网络到底从哪出去？世界离你有多远？[1ms.dog](https://1ms.dog) 会找出你流量用到的每一个出口（本地线路，以及代理或 VPN），然后一只柴犬从你的浏览器出发，跟全球 40 个主流服务和一组本地常用服务玩「捡球」：延迟越高，球扔得越远。
+
+**线上地址：** https://1ms.dog
+
+## 功能
+
+- **找出每一个出口，分清本地和代理。** 分流规则的代理会按目标网站选路，所以普通的「查 IP」只能看到它自己那条路。页面同时询问多组检测点：国内站点、Cloudflare、ip.sb、ipinfo.io、仅 IPv4 和仅 IPv6 的检测，以及 WebRTC（UDP）。再按网络归并，标出每个出口是本地还是代理。如果某些通常从你所在国家连不上的服务却能连上，页面会提示你，还有一个检测点看不到的出口。
+- **测 40 个服务到边缘节点的延迟。** 覆盖 AI、常用网站、视频与音乐、社交、开发工具、游戏、CDN，另外按出口国家加一组本地常用服务（中国大陆、日本、韩国、俄罗斯、欧洲、拉丁美洲……）。
+- **给出结论，而不只是一个中位数。** 本地常用和全球服务分开判断，告诉你慢在哪一侧：国际线路或代理节点、你自己的线路，还是流量全部走了代理。还会换算成具体用途：游戏、视频通话、看视频、AI 工具、开发工具。
+- **分享结果**：在浏览器里画一张图片，或者生成一条带着结果的链接。链接里只有城市、运营商和延迟，不含 IP 地址。
+- **10 种语言**，全部预渲染。每种语言按当地的搜索习惯单独选落地页（`/chatgpt/`、`/zh-cn/dockerhub/`、`/ru/discord/`……）。
+- **不收集数据**：每个请求都从你的浏览器直接发往被测试的服务。站点只有静态文件，从不接收你的测试结果。
+
+## 延迟怎么测
+
+浏览器和每个服务建立一条真实的 HTTPS 连接。第一个请求只用来建立连接（DNS、TCP、TLS），不计入；之后复用这条连接发出计时请求，取中位数。结果就是从你的设备到该服务最近服务器的一次往返，经过你的 Wi‑Fi、运营商和代理。
+
+每个测试地址都必须**由服务的边缘节点直接应答**，否则测到的时间里会包含应用服务器的处理时间。例如 Gemini 的 favicon，Google 服务器先处理了 430 ms，再重定向到人机验证页。所以地址列表在 Cloudflare 上的服务用 `/cdn-cgi/trace`，在 Google 上的用 `/generate_204`，其他的用静态文件或服务自己的 CDN 域名。`npm run verify` 会检查每个地址：不能跳转，不能带会被浏览器拦下的 `Cross-Origin-Resource-Policy`，服务器处理时间不能太长（三次复用连接的请求取最快的一次，再减去一次往返时间）。GitHub Actions 每天自动跑一次。
+
+## 自己部署
+
+站点是纯静态的，`public/` 已经提交在仓库里，不改代码就不需要构建。
+
+```bash
+git clone https://github.com/yt1988/1ms-index
+cd 1ms-index
+npx wrangler login
+npx wrangler deploy        # 纯静态资源 Worker：没有脚本，免费且不计请求数
+```
+
+`wrangler.toml` 关掉了 `*.workers.dev` 地址和预览地址。在 **Workers 和 Pages → 1ms-index → 设置 → 域和路由** 里绑定你自己的域名；想先试试，可以把 `workers_dev` 改成 `true`。也可以放在任何静态托管上，安全响应头（CSP）在 `public/_headers` 里，用的是 Cloudflare 的格式。
+
+想让 canonical 标签、sitemap 和预览图使用你的域名，用 `SITE_URL` 重新构建：
+
+```bash
+npm install
+SITE_URL=https://ping.example.com node scripts/build.mjs
+SITE_URL=https://ping.example.com node scripts/assets.mjs
+```
+
+在 1ms.dog 上，页面挂在 1ms-shell 后面，由它加上公共导航条、统计，以及跨工具的主题和语言同步。shell 用 `<meta name="shortener">` 告诉页面有短链服务时，分享链接会换成短链；没有这个 meta 就保持完整链接。
+
+## 开发
+
+```bash
+npm install
+npm run dev        # http://localhost:8787，带线上同样的响应头
+npm run build      # 改了 src/ 之后重新生成 public/（public/ 要提交）
+npm test           # public/ 是否最新、页面约定、SEO，以及核心逻辑的单元测试
+npm run verify     # 检查所有服务地址；用 id=url 试另一个地址
+npm run assets     # 重新生成链接预览图（用 Windows 系统字体）
+```
+
+```
+src/page.html        页面模板
+src/app.js           浏览器端：出口检测、计时、狗狗、结论、分享
+src/lib.mjs          纯逻辑（中位数、速度档位、诊断、出口归并、分享链接），有单元测试
+src/services.mjs     服务清单、本地服务包、国家到服务包的映射、距离刻度、用途
+src/i18n/*.mjs       10 种语言的文案；en 是基准，其他语言缺的键回退到英文
+src/*.css            设计变量（和其他 1ms.dog 工具一致）和页面布局
+scripts/build.mjs    生成 public/：各语言页面、落地页、sitemap、robots、llms.txt、_headers
+scripts/verify.mjs   检查服务地址
+scripts/assets.mjs   生成链接预览图
+test/                页面和逻辑的测试
+```
+
+### 修改服务清单
+
+- 地址必须**一次请求就有响应、不跳转**，由服务的边缘节点应答，响应体尽量小（大的用 `m: "HEAD"`），不能带 `Cross-Origin-Resource-Policy: same-origin` 或 `same-site`。改完运行 `npm run verify`，最好换几个网络各跑一次。
+- 某些地区访问不到的服务，在当地会显示「没叼回来」。这是如实的结果，不要因此删掉它。
+- 每个本地服务包的数量必须相同，否则切换服务包时页面会跳。测试会检查这一点。
+- 每种语言在自己的文案文件里用 `land` 列出要做落地页的服务，按当地的搜索习惯来选。
+
+### SEO
+
+- 标题、描述和关键词按当地最常搜的说法来写（「IP 查询」「IPアドレス 確認」「내 IP 확인」「мой ip」……），不是从英文直译。
+- hreflang 和 sitemap 只列出真正有这个页面的语言。简体中文页面带百度需要的 `no-transform`、`no-siteapp` 和 `applicable-device`。
+- 落地页各有独有的内容：和同类服务的对比，以及由哪个边缘网络应答、同一网络上还有哪些服务。每个落地页都有专属预览图。
+- 不输出 FAQPage 结构化数据：Google 从 2023 年起只给政府和医疗网站展示 FAQ 富媒体结果，问答已经在页面里，再放一份只会让页面变大。
+
+## 许可
+
+[MIT](LICENSE)。柴犬插画和 1ms.dog 的 logo 属于本项目的品牌形象，如果你用别的名字公开运行一份，请换成你自己的。

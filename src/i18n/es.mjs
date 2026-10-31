@@ -93,5 +93,8 @@ export default {
   lp_desc: "Mide la latencia de {s} desde tu navegador: viajes HTTPS reales a {s}, tu IP de salida y proveedor, y otros 40 servicios para comparar y saber si el problema es {s} o tu conexión. Gratis, sin registro.",
   lp_kw: "ping {s}, {s} lento, {s} no funciona, {s} lag, latencia {s}, {s} caído, test {s}",
   lp_h1: "¿Qué tan rápido es {s} desde tu red?",
+  lp_peers: "Se compara con los demás servicios de {cat} medidos aquí: {list}.",
+  lp_via: "{s} responde a través de la red de {via}, así que el viaje termina en el punto de {via} más cercano y no en los centros de datos de {s}.",
+  lp_via_same: "{s} responde a través de la red de {via}, así que el viaje termina en el punto de {via} más cercano. {list} usan la misma red: si también van lentos, el problema es tu ruta hacia {via}, no {s}.",
   lp_intro: "Tu navegador mide viajes HTTPS reales a {s} a través de tu Wi‑Fi, tu proveedor y cualquier VPN o proxy, y los compara con otros 40 servicios. Si {s} va lento, aquí ves si es {s}, tu salida o todo.",
 };

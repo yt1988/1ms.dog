@@ -11,29 +11,31 @@
 // cat    group key, see CATS
 // url    what the browser requests (a random query string is added to skip caches)
 // m      request method: GET (default), HEAD, or IMG (an <img> load, for hosts that reset fetch)
+// via    the edge network that answers (from its response headers), where known: landing pages name it and list the
+//        other services on the same network
 // c      tile accent color
 
 export const CATS = ["ai", "web", "video", "social", "dev", "game", "cdn"];
 
 export const SERVICES = [
   // AI
-  { id: "chatgpt", name: "ChatGPT", cat: "ai", url: "https://chatgpt.com/favicon.ico", c: "#10a37f" },
-  { id: "claude", name: "Claude", cat: "ai", url: "https://claude.ai/cdn-cgi/trace", c: "#d97757" },
-  { id: "gemini", name: "Gemini", cat: "ai", url: "https://gemini.google.com/generate_204", c: "#4f7cf5" },
-  { id: "copilot", name: "Copilot", cat: "ai", url: "https://copilot.microsoft.com/cdn-cgi/trace", c: "#2a84e8" },
-  { id: "grok", name: "Grok", cat: "ai", url: "https://grok.com/cdn-cgi/trace", c: "#8b8b8b" },
+  { id: "chatgpt", name: "ChatGPT", cat: "ai", url: "https://chatgpt.com/favicon.ico", via: "Cloudflare", c: "#10a37f" },
+  { id: "claude", name: "Claude", cat: "ai", url: "https://claude.ai/cdn-cgi/trace", via: "Cloudflare", c: "#d97757" },
+  { id: "gemini", name: "Gemini", cat: "ai", url: "https://gemini.google.com/generate_204", via: "Google", c: "#4f7cf5" },
+  { id: "copilot", name: "Copilot", cat: "ai", url: "https://copilot.microsoft.com/cdn-cgi/trace", via: "Cloudflare", c: "#2a84e8" },
+  { id: "grok", name: "Grok", cat: "ai", url: "https://grok.com/cdn-cgi/trace", via: "Cloudflare", c: "#8b8b8b" },
   { id: "deepseek", name: "DeepSeek", cat: "ai", url: "https://chat.deepseek.com/favicon.svg", c: "#4d6bfe" },
 
   // Search & everyday web
-  { id: "google", name: "Google", cat: "web", url: "https://www.google.com/generate_204", c: "#4285f4" },
-  { id: "apple", name: "Apple", cat: "web", url: "https://www.apple.com/favicon.ico", c: "#8e8e93" },
+  { id: "google", name: "Google", cat: "web", url: "https://www.google.com/generate_204", via: "Google", c: "#4285f4" },
+  { id: "apple", name: "Apple", cat: "web", url: "https://www.apple.com/favicon.ico", via: "Apple", c: "#8e8e93" },
   { id: "microsoft", name: "Microsoft", cat: "web", url: "https://www.microsoft.com/favicon.ico", c: "#00a4ef" },
-  { id: "wikipedia", name: "Wikipedia", cat: "web", url: "https://upload.wikimedia.org/favicon.ico", c: "#9a9a9a" },
-  { id: "amazon", name: "Amazon", cat: "web", url: "https://www.amazon.com/favicon.ico", c: "#ff9900" },
-  { id: "zoom", name: "Zoom", cat: "web", url: "https://zoom.us/cdn-cgi/trace", c: "#0b5cff" },
+  { id: "wikipedia", name: "Wikipedia", cat: "web", url: "https://upload.wikimedia.org/favicon.ico", via: "Wikimedia", c: "#9a9a9a" },
+  { id: "amazon", name: "Amazon", cat: "web", url: "https://www.amazon.com/favicon.ico", via: "Amazon CloudFront", c: "#ff9900" },
+  { id: "zoom", name: "Zoom", cat: "web", url: "https://zoom.us/cdn-cgi/trace", via: "Cloudflare", c: "#0b5cff" },
 
   // Video & music
-  { id: "youtube", name: "YouTube", cat: "video", url: "https://www.youtube.com/generate_204", c: "#ff0033" },
+  { id: "youtube", name: "YouTube", cat: "video", url: "https://www.youtube.com/generate_204", via: "Google", c: "#ff0033" },
   { id: "netflix", name: "Netflix", cat: "video", url: "https://www.netflix.com/favicon.ico", c: "#e50914" },
   { id: "tiktok", name: "TikTok", cat: "video", url: "https://www.tiktok.com/favicon.ico", c: "#25f4ee" },
   { id: "twitch", name: "Twitch", cat: "video", url: "https://www.twitch.tv/favicon.ico", c: "#9146ff" },
@@ -41,31 +43,31 @@ export const SERVICES = [
 
   // Social & messaging
   { id: "x", name: "X", cat: "social", url: "https://abs.twimg.com/favicons/twitter.3.ico", c: "#8b8b8b" },
-  { id: "instagram", name: "Instagram", cat: "social", url: "https://scontent.cdninstagram.com/", c: "#e1306c" },
-  { id: "facebook", name: "Facebook", cat: "social", url: "https://www.facebook.com/favicon.ico", c: "#1877f2" },
-  { id: "whatsapp", name: "WhatsApp", cat: "social", url: "https://web.whatsapp.com/favicon.ico", c: "#25d366" },
+  { id: "instagram", name: "Instagram", cat: "social", url: "https://scontent.cdninstagram.com/", via: "Meta", c: "#e1306c" },
+  { id: "facebook", name: "Facebook", cat: "social", url: "https://www.facebook.com/favicon.ico", via: "Meta", c: "#1877f2" },
+  { id: "whatsapp", name: "WhatsApp", cat: "social", url: "https://web.whatsapp.com/favicon.ico", via: "Meta", c: "#25d366" },
   { id: "telegram", name: "Telegram", cat: "social", url: "https://web.telegram.org/favicon.ico", c: "#26a5e4" },
-  { id: "discord", name: "Discord", cat: "social", url: "https://discord.com/cdn-cgi/trace", c: "#5865f2" },
-  { id: "reddit", name: "Reddit", cat: "social", url: "https://www.reddit.com/robots.txt", c: "#ff4500" },
+  { id: "discord", name: "Discord", cat: "social", url: "https://discord.com/cdn-cgi/trace", via: "Cloudflare", c: "#5865f2" },
+  { id: "reddit", name: "Reddit", cat: "social", url: "https://www.reddit.com/robots.txt", via: "Fastly", c: "#ff4500" },
 
   // Developers
   { id: "github", name: "GitHub", cat: "dev", url: "https://github.com/favicon.ico", c: "#8b8b8b" },
-  { id: "npm", name: "npm", cat: "dev", url: "https://registry.npmjs.org/-/ping", c: "#cb3837" },
+  { id: "npm", name: "npm", cat: "dev", url: "https://registry.npmjs.org/-/ping", via: "Cloudflare", c: "#cb3837" },
   { id: "dockerhub", name: "Docker Hub", cat: "dev", url: "https://registry-1.docker.io/v2/", c: "#1d63ed" },
-  { id: "pypi", name: "PyPI", cat: "dev", url: "https://pypi.org/static/images/favicon.35549fe8.ico", c: "#3775a9" },
-  { id: "huggingface", name: "Hugging Face", cat: "dev", url: "https://huggingface.co/favicon.ico", m: "HEAD", c: "#ffbd45" },
+  { id: "pypi", name: "PyPI", cat: "dev", url: "https://pypi.org/static/images/favicon.35549fe8.ico", via: "Fastly", c: "#3775a9" },
+  { id: "huggingface", name: "Hugging Face", cat: "dev", url: "https://huggingface.co/favicon.ico", m: "HEAD", via: "Amazon CloudFront", c: "#ffbd45" },
 
   // Gaming
   { id: "steam", name: "Steam", cat: "game", url: "https://store.steampowered.com/favicon.ico", c: "#66c0f4" },
-  { id: "playstation", name: "PlayStation", cat: "game", url: "https://www.playstation.com/favicon.ico", c: "#0070d1" },
+  { id: "playstation", name: "PlayStation", cat: "game", url: "https://www.playstation.com/favicon.ico", via: "Akamai", c: "#0070d1" },
   { id: "xbox", name: "Xbox", cat: "game", url: "https://www.xbox.com/favicon.ico", c: "#107c10" },
-  { id: "epic", name: "Epic Games", cat: "game", url: "https://store.epicgames.com/cdn-cgi/trace", c: "#8b8b8b" },
+  { id: "epic", name: "Epic Games", cat: "game", url: "https://store.epicgames.com/cdn-cgi/trace", via: "Cloudflare", c: "#8b8b8b" },
 
   // CDN backbones: most sites above sit on one of these
-  { id: "cloudflare", name: "Cloudflare", cat: "cdn", url: "https://speed.cloudflare.com/__down?bytes=0", c: "#f38020" },
-  { id: "fastly", name: "Fastly", cat: "cdn", url: "https://www.fastly.com/robots.txt", c: "#ff282d" },
-  { id: "akamai", name: "Akamai", cat: "cdn", url: "https://www.akamai.com/favicon.ico", c: "#0096d6" },
-  { id: "cloudfront", name: "CloudFront", cat: "cdn", url: "https://aws.amazon.com/favicon.ico", c: "#8c4fff" },
+  { id: "cloudflare", name: "Cloudflare", cat: "cdn", url: "https://speed.cloudflare.com/__down?bytes=0", via: "Cloudflare", c: "#f38020" },
+  { id: "fastly", name: "Fastly", cat: "cdn", url: "https://www.fastly.com/robots.txt", via: "Fastly", c: "#ff282d" },
+  { id: "akamai", name: "Akamai", cat: "cdn", url: "https://www.akamai.com/favicon.ico", via: "Akamai", c: "#0096d6" },
+  { id: "cloudfront", name: "CloudFront", cat: "cdn", url: "https://aws.amazon.com/favicon.ico", via: "Amazon CloudFront", c: "#8c4fff" },
 ];
 
 // Local packs: what people in a region open every day. PACK_OF maps exit country → pack. Every pack has the same

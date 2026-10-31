@@ -1,69 +1,80 @@
-# 1ms-index
+# 1ms.dog
 
-1ms.dog 的首页。私有仓库，不开源。回答两个问题：
+**English** · [简体中文](README.zh-CN.md)
 
-1. **网络从哪出去？** 同时询问多组检测点（国内站点 ipip.net、Cloudflare、ip.sb、ipinfo.io、仅 IPv4 和仅 IPv6 的检测、WebRTC），按网络（ASN）归并后列出每个出口，并标成「本地」或「代理」。分流代理按目的地选路，所以单个检测点只能看到它自己那条路。如果出口在中国或伊朗，而通常连不上的服务却能连上，页面会提示有一个检测点看不到的出口。
-2. **到各大服务多快？** 在浏览器里对 40 个全球服务和一个按出口国家选的本地服务包计时。方法和 Me2Cloud 一样：第一个请求只用来建立连接，之后复用这条连接计时，取中位数。每个服务是一个球，延迟越高扔得越远（对数刻度），颜色就是狗狗的速度档位。
+Where does your internet really exit, and how far is the world from there? [1ms.dog](https://1ms.dog) finds every exit your traffic uses (your local line and any proxy or VPN), then a shiba plays fetch with 40 services worldwide plus a local pack, right from your browser. Each service is a ball thrown as far as its latency.
 
-所有请求都由访问者的浏览器直接发出，1ms.dog 不接收任何结果。站点是纯静态资源，没有 Worker 脚本。
+**Live:** https://1ms.dog
 
-## 文件
+## What it does
 
-```
-src/page.html        页面模板
-src/app.js           浏览器端：出口检测、计时、狗狗心情（构建时在前面加上服务清单 SVC）
-src/services.mjs     服务清单、本地服务包、国家到服务包的映射、距离刻度：唯一的数据来源
-src/i18n/*.mjs       10 种语言，en 是基准，缺的键回退到英文
-src/style.css        设计变量和顶栏（与各工具一致）
-src/layout.css       首页布局
-src/fonts.css        自托管 Geist 字体
-src/brand/source/    狗狗原图（public/assets/shiba-run.svg 由它压缩生成）
-scripts/build.mjs    生成 public/：每种语言的首页、每个热门服务的落地页、sitemap、robots、llms.txt、_headers
-scripts/assets.mjs   生成链接预览图 public/og/<lang>.png
-scripts/verify.mjs   检查每个服务地址：一次请求、不跳转
-scripts/dev.mjs      本地预览，带线上同样的响应头
-```
+- **Every exit, local and proxy.** A rule-based proxy picks the route by destination, so a single "what is my IP" check only sees its own route. The page asks checks in different places at once: a site in mainland China, Cloudflare, ip.sb, ipinfo.io, IPv4-only and IPv6-only hosts, and WebRTC over UDP. It groups their answers by network and marks each exit as local or proxy. When services that are usually unreachable from your country answer anyway, it points out the exit none of the checks could see.
+- **Latency to 40 services, measured at their edge.** Covers AI, everyday web, video and music, social, developer tools, gaming and CDNs, plus a local pack picked by exit country (mainland China, Japan, Korea, Russia, Europe, Latin America…).
+- **A verdict, not just a median.** Local favorites and global services are judged separately, so the page tells you *where* it's slow: international routes or the proxy server, your own line, or everything going through a proxy. It also translates the numbers into everyday uses: gaming, video calls, streaming, AI tools and dev tools.
+- **Share a result** as an image drawn in your browser, or as a link that carries the result itself. Links contain cities, networks and timings, never IP addresses.
+- **10 languages**, all pre-rendered, plus landing pages chosen per language for the services people search latency for there (`/chatgpt/`, `/zh-cn/dockerhub/`, `/ru/discord/`…).
+- **Private by design:** every request goes straight from your browser to the service being tested. The site is static files; it never receives your results.
 
-## 常用命令
+## How latency is measured
 
-```bash
-npm run build      # 改了 src/ 之后重新生成 public/（public/ 要提交）
-npm test           # public/ 是否最新 + 接入约定和 SEO 检查
-npm run dev        # http://localhost:8787
-npm run verify     # 检查服务地址；换网络多跑几次
-npm run assets     # 改了标题或狗狗之后重新生成预览图
-```
+Your browser opens a real HTTPS connection to each service. The first request only sets the connection up (DNS, TCP, TLS) and isn't counted. Timed requests then reuse that connection, and the page shows the median. The result is one round trip from your device to the service's nearest server, through your Wi-Fi, ISP and any proxy.
 
-狗狗 SVG 改了以后，用 1ms-shell 的 svgo 配置压缩（一位小数精度，原因见 1ms-shell 的 docs/lessons.md）：
+Each test URL has to be **answered by the service's edge**. Otherwise the number includes the application server's work: Gemini's favicon, for example, took 430 ms of Google server time before redirecting to a captcha. So the list uses `/cdn-cgi/trace` on Cloudflare hosts, `/generate_204` on Google's, and static files or CDN hosts elsewhere. `npm run verify` checks every URL for redirects, for a blocking `Cross-Origin-Resource-Policy`, and for server time (the fastest of three warm requests minus one round trip). A GitHub Action runs it daily.
+
+## Self-hosting
+
+The site is static: `public/` is committed, so you don't need to build anything unless you change the code.
 
 ```bash
-npx svgo --config src/brand/svgo.config.cjs -i src/brand/source/1ms_shiba_running_refined.svg -o public/assets/shiba-run.svg
+git clone https://github.com/yt1988/1ms-index
+cd 1ms-index
+npx wrangler login
+npx wrangler deploy        # a static-assets Worker: no script, free and unmetered
 ```
 
-## 服务清单
+`wrangler.toml` turns off `*.workers.dev` and preview URLs. Bind your own domain under **Workers & Pages → 1ms-index → Settings → Domains & Routes**, or set `workers_dev = true` for a quick test. Any static host works too; `public/_headers` holds the security headers (CSP) in Cloudflare's format.
 
-- 每个地址必须**一次请求就有响应、不跳转**，响应体尽量小（favicon、`generate_204`、`robots.txt`）。响应体大时用 `m: "HEAD"`。改动后运行 `npm run verify`。
-- 某些地区访问不到的服务在当地显示「没叼回来」，这是如实的结果，不要删掉。
-- 地址如果带 `Cross-Origin-Resource-Policy: same-origin`（或 `same-site`），浏览器会拦下响应，服务就会一直显示连不上。claude.ai 和 Epic 都是这样，所以改用同一主机的 `/cdn-cgi/trace`。`npm run verify` 会标出这种情况。
+To put your own domain into canonical tags, the sitemap and preview images, rebuild with `SITE_URL`:
 
-## SEO
+```bash
+npm install
+SITE_URL=https://ping.example.com node scripts/build.mjs
+SITE_URL=https://ping.example.com node scripts/assets.mjs
+```
 
-- 每种语言在自己的字符串文件里用 `land` 列出要做落地页的服务（`/chatgpt/`、`/zh-cn/dockerhub/`……），按当地的搜索习惯选：简体中文偏开发者（GitHub、Docker Hub、Hugging Face），俄语偏 YouTube、Discord、Telegram，西语和葡语偏 WhatsApp 和主机游戏。hreflang 和 sitemap 只列出真正存在这个页面的语言。
-- 标题、描述和关键词按当地最常搜的说法来写（「IP 查询」「IPアドレス 確認」「내 IP 확인」「мой ip」……），不是从英文直译。落地页关键词由 `lp_kw` 模板生成。
-- 简体中文页面带百度需要的 `no-transform`、`no-siteapp` 和 `applicable-device`。
-- 不输出 FAQPage 结构化数据：从 2023 年起，Google 只给政府和医疗网站展示 FAQ 富媒体结果；问答已经在页面的帮助弹窗里，再放一份只会让页面变大（shell 解析每个字节都要消耗 CPU，测试限制页面小于 30KB）。
+On 1ms.dog the page runs behind [1ms-shell](https://1ms.dog), which adds the shared top bar, analytics and theme/language sync. When the shell announces a link shortener (`<meta name="shortener">`), share links are shortened; without it they stay as full links.
 
-## 分享
+## Development
 
-- 链接把结果放在 `#r=` 后面：每个出口只有国家、城市、运营商和本地/代理标记，每个服务只有中位数，**不含 IP 地址**。页面有 shell 注入的 `<meta name="shortener">` 时，会换成 s.1ms.dog 短链。
-- 图片在浏览器里用 canvas 画，内容和页面一致：狗狗、中位数、出口、每个服务的球，固定使用深色主题。
-- 打开分享链接时只显示对方的结果，不会自动测试，访客点「测我自己的网络」后才开始。
+```bash
+npm install
+npm run dev        # http://localhost:8787, with the production headers
+npm run build      # regenerate public/ after changing src/ (commit public/)
+npm test           # public/ up to date, page contract, SEO, and the logic tests
+npm run verify     # check every service URL; try another one with id=url
+npm run assets     # re-render the preview images (Windows system fonts)
+```
 
-## 部署
+```
+src/page.html        page template
+src/app.js           browser code: exit checks, timing, the dog, the verdict, sharing
+src/lib.mjs          pure logic (medians, speed levels, diagnosis, exit grouping, share links), unit-tested
+src/services.mjs     services, local packs, country → pack, the distance scale and everyday uses
+src/i18n/*.mjs       strings for 10 languages; en is the reference, other languages fall back key by key
+src/*.css            design tokens (shared with the other 1ms.dog tools) and the layout
+scripts/build.mjs    builds public/: pages per language, landing pages, sitemap, robots, llms.txt, _headers
+scripts/verify.mjs   checks the service URLs
+scripts/assets.mjs   renders the link-preview images
+test/                site and logic tests
+```
 
-按 1ms-shell 的 `docs/tool-contract.md` 接入：
+### Changing the service list
 
-- 纯静态资源 Worker（`wrangler.toml` 只有 `[assets]`），`workers_dev = false`，不绑自定义域。
-- `1ms.dog` 由 1ms-shell 的路由接管：注入导航条、统计、跨站主题和语言同步、统一 404。
-- 静态资源走直达路由（`/assets/*`、`/flags/*`、`/og/*`、favicon、robots、sitemap、llms.txt），不经过 shell。
-- 主题和语言的 localStorage 键：`1ms:theme`、`1ms:lang`。
+- A URL must answer in **one request with no redirect**, from the service's edge, with a small body (use `m: "HEAD"` for large ones). It must not send `Cross-Origin-Resource-Policy: same-origin` or `same-site`. Run `npm run verify`, ideally from more than one network.
+- A service that is blocked somewhere shows as "not back" there. That's an honest result, so don't remove it for that reason.
+- Every local pack has the same number of services, so the page doesn't move when the pack switches. The tests check this.
+- Each language lists its landing pages in `land` in its strings file, chosen by what people search for in that market.
+
+## License
+
+[MIT](LICENSE). The shiba artwork and the 1ms.dog logo are the project's branding: please use your own if you run a public copy under another name.

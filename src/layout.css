@@ -77,7 +77,9 @@
 button.use { cursor: pointer; }
 button.use:hover, button.use[aria-pressed="true"] { background: var(--soft); color: var(--fg); }
 /* the rows a use is judged on, while its chip is hovered, focused or pinned */
-.row.hl { background: color-mix(in srgb, var(--ink) 12%, transparent); border-radius: 6px; box-shadow: 0 0 0 4px color-mix(in srgb, var(--ink) 12%, transparent); }
+.row.hl { background: color-mix(in srgb, var(--ink) 12%, transparent); }
+.row.hl + .row.hl { border-top-left-radius: 0; border-top-right-radius: 0; }
+.row.hl:has(+ .row.hl) { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
 .row.hl .nm { font-weight: 600; }
 .use b { font-weight: 600; }
 .use.s-great b { color: var(--t1); } .use.s-ok b { color: var(--t3); } .use.s-slow b { color: var(--t5); } .use.s-blocked b { color: var(--muted); }
@@ -102,7 +104,9 @@ button.use:hover, button.use[aria-pressed="true"] { background: var(--soft); col
 .grp h2 .sel { height: 22px; border-radius: 6px; padding-left: 0; text-transform: none; letter-spacing: 0; color: var(--fg); font-weight: 500; }
 .grp h2 .sel select { padding: 0 6px; font-size: 12px; }
 .grp ul { list-style: none; margin: 0; padding: 0; }
-.row { display: grid; grid-template-columns: 86px minmax(0, 1fr) 46px; align-items: center; gap: 8px; height: 24px; font-size: 12.5px; }
+/* rows carry their own side padding (outset by the same margin), so a highlight is a plain background that neither
+   moves anything nor spills onto the next row */
+.row { display: grid; grid-template-columns: 86px minmax(0, 1fr) 46px; align-items: center; gap: 8px; height: 24px; font-size: 12.5px; margin: 0 -6px; padding: 0 6px; border-radius: 6px; }
 .row .nm { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--fg); }
 .row .trk { position: relative; height: 14px; }
 /* the lane: a faint line colored by speed zone */
@@ -179,3 +183,8 @@ button.use:hover, button.use[aria-pressed="true"] { background: var(--soft); col
   .help-nav { display: none; }
   .help-b .help-pick { display: flex; }
 }
+
+/* landing pages: what this service is compared with and which network answers it */
+.about { padding: 0 2px; }
+.about h2 { font-size: 15px; font-weight: 700; margin: 0 0 6px; }
+.about p { font-size: 13.5px; color: var(--muted); max-width: 80ch; line-height: 1.6; }

@@ -93,5 +93,8 @@ export default {
   lp_desc: "Testez la latence de {s} depuis votre navigateur : de vrais allers-retours HTTPS vers {s}, votre IP de sortie et votre fournisseur, et 40 autres services pour savoir si le problème vient de {s} ou de votre connexion. Gratuit, sans inscription.",
   lp_kw: "ping {s}, {s} lent, {s} en panne, {s} ne marche pas, latence {s}, lag {s}, test {s}",
   lp_h1: "À quelle vitesse répond {s} depuis votre connexion ?",
+  lp_peers: "Il est comparé aux autres services de la catégorie {cat} testés ici : {list}.",
+  lp_via: "{s} est servi par le réseau de {via} : l’aller-retour s’arrête au point {via} le plus proche, pas dans les datacenters de {s}.",
+  lp_via_same: "{s} est servi par le réseau de {via} : l’aller-retour s’arrête au point {via} le plus proche. {list} utilisent le même réseau : s’ils sont lents aussi, le problème vient de votre route vers {via}, pas de {s}.",
   lp_intro: "Votre navigateur chronomètre de vrais allers-retours HTTPS vers {s} via votre Wi‑Fi, votre fournisseur et tout VPN ou proxy, et les compare à 40 autres services. Si {s} vous semble lent, vous voyez ici si c’est {s}, votre sortie ou tout le reste.",
 };

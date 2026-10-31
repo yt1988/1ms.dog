@@ -95,5 +95,8 @@ export default {
   lp_desc: "Test {s} latency from your own browser: real HTTPS round trips to {s}, your exit IP and ISP, and 40 other services to compare, so you can tell whether it's {s} or your connection. Free, no sign-up.",
   lp_kw: "{s} ping, {s} latency, {s} ping test, {s} slow, is {s} down, {s} connection test, {s} lag",
   lp_h1: "How fast is {s} from your network?",
+  lp_peers: "It's compared side by side with the other {cat} services tested here: {list}.",
+  lp_via: "{s} is answered by {via}'s network, so the round trip ends at {via}'s nearest location rather than at {s}'s own data centers.",
+  lp_via_same: "{s} is answered by {via}'s network, so the round trip ends at {via}'s nearest location. {list} use the same network: if they are slow too, the problem is your route to {via}, not {s}.",
   lp_intro: "Your browser times real HTTPS round trips to {s} through your actual Wi-Fi, ISP and any VPN or proxy, and compares them with 40 other services. If {s} feels slow, this shows whether it's {s}, your exit, or everything.",
 };

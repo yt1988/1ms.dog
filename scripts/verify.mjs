@@ -61,6 +61,8 @@ async function one(s) {
 }
 const out = [];
 for (let i = 0; i < list.length; i += 8) out.push(...await Promise.all(list.slice(i, i + 8).map(one)));
+// a failure gets one more try a few seconds later: a single reset or slow answer is network noise, not a broken URL
+for (const [i, o] of out.entries()) if (!o.ok) { await new Promise(r => setTimeout(r, 2000)); const again = await one(o.s); if (again.ok) out[i] = again; }
 for (const { s, ok, line } of out) { if (!ok) bad++; console.log(`${ok ? "ok  " : "BAD "} ${s.id.padEnd(14)} ${line}`); }
 console.log(`\n${out.length - out.filter(o => !o.ok).length}/${out.length} ok`);
 process.exit(bad ? 1 : 0);

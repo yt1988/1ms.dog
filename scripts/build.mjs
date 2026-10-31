@@ -9,6 +9,7 @@
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
+import { transform } from "esbuild";
 import { CATS, SERVICES, PACKS, PACK_OF, SCALE, ZONES, USES, pos } from "../src/services.mjs";
 
 const SITE = (process.env.SITE_URL || "https://1ms.dog").replace(/\/+$/, "");
@@ -35,6 +36,14 @@ const fill = (s, v) => { for (const k in v) s = s.split("{" + k + "}").join(v[k]
 const hash = s => createHash("sha256").update(s).digest("hex").slice(0, 10);
 const sha = s => createHash("sha256").update(s).digest("base64");
 
+// Windows sometimes holds a just-written file for a moment (antivirus, the preview server): retry before failing
+async function writeRetry(url, text) {
+  for (let i = 0; ; i++) {
+    try { return await writeFile(url, text); }
+    catch (e) { if (i >= 4 || !["UNKNOWN", "EBUSY", "EPERM"].includes(e.code)) throw e; await new Promise(r => setTimeout(r, 150 * (i + 1))); }
+  }
+}
+
 async function loadI18n() {
   const out = {};
   for (const f of (await readdir(new URL("i18n/", src))).filter(f => f.endsWith(".mjs")))
@@ -47,13 +56,21 @@ export async function build({ check = false } = {}) {
   const langs = LANGS.filter(([l]) => I[l]);
   const tpl = await readFile(new URL("page.html", src), "utf8");
 
-  const svc = { list: SERVICES.map(({ land, ...s }) => s), packs: PACKS, packOf: PACK_OF, scale: SCALE, cats: CATS, uses: USES };
-  const app = `const SVC = ${JSON.stringify(svc)};\n` + await readFile(new URL("app.js", src), "utf8");
-  new Function(app);                                                    // must parse
+  const svc = { list: SERVICES.map(({ via, ...s }) => s), packs: PACKS, packOf: PACK_OF, scale: SCALE, cats: CATS, uses: USES };
+  // src/lib.mjs (the pure logic the tests import) goes inside the app's scope, at its /* @lib */ marker
+  const lib = (await readFile(new URL("lib.mjs", src), "utf8")).replace(/^export /gm, "");
+  const appSrc = await readFile(new URL("app.js", src), "utf8");
+  if (!appSrc.includes("/* @lib */")) throw new Error("src/app.js has no /* @lib */ marker");
+  const appFull = `const SVC = ${JSON.stringify(svc)};\n` + appSrc.replace("/* @lib */", () => lib);
+  new Function(appFull);                                                // must parse
   // the lanes are colored by speed zone, at the same log-scale positions the page puts the balls
   const pct = ms => (pos(ms) * 100).toFixed(1) + "%", Z = ZONES.map(pct);
   const bands = `linear-gradient(90deg, var(--t1) 0 ${Z[0]}, var(--t2) ${Z[0]} ${Z[1]}, var(--t3) ${Z[1]} ${Z[2]}, var(--t4) ${Z[2]} ${Z[3]}, var(--t5) ${Z[3]} 100%)`;
-  const css = (await Promise.all(["fonts.css", "style.css", "layout.css"].map(f => readFile(new URL(f, src), "utf8")))).join("\n") + `\n.field { --bands: ${bands}; }\n`;
+  const cssFull = (await Promise.all(["fonts.css", "style.css", "layout.css"].map(f => readFile(new URL(f, src), "utf8")))).join("\n") + `\n.field { --bands: ${bands}; }\n`;
+  // minified with esbuild (pinned version, so the output, and its hash, only changes when the source does)
+  const js = (await transform(appFull, { loader: "js", minify: true, target: "es2020", legalComments: "none" })).code;
+  const css = (await transform(cssFull, { loader: "css", minify: true, legalComments: "none" })).code;
+  const app = js;
   const jsName = `app.${hash(app)}.js`, cssName = `app.${hash(css)}.css`;
 
   // Landing pages per language: each market searches latency for different services (GitHub and Docker Hub in
@@ -62,7 +79,7 @@ export async function build({ check = false } = {}) {
   const has = (l, sub) => !sub || landOf(l).includes(sub);
   const altsOf = sub => langs.filter(([l]) => has(l, sub));
   const path = (slug, sub) => "/" + (slug ? slug + "/" : "") + (sub ? sub + "/" : "");
-  const RUNTIME_SKIP = new Set(["docs", "seo_title", "seo_desc", "seo_kw", "og_sub", "lede", "lp_title", "lp_desc", "lp_intro", "lp_h1", "lp_kw", "land", "tool_m2c", "tool_v2c", "tool_ls", "foot", "tools_h",
+  const RUNTIME_SKIP = new Set(["docs", "seo_title", "seo_desc", "seo_kw", "og_sub", "lede", "lp_title", "lp_desc", "lp_intro", "lp_h1", "lp_kw", "lp_peers", "lp_via", "lp_via_same", "land", "tool_m2c", "tool_v2c", "tool_ls", "foot", "tools_h",
     "name", "h1", "lang_label", "faq_h", "pack", "exit_h", "test_mine", "share_h", "copy_link", "copy_img", "dl_img", "more_share"]);
   // static text the page already shows, and region names (only the server-rendered picker uses them)
   const runtimeKey = k => !RUNTIME_SKIP.has(k) && !k.startsWith("pk_");
@@ -80,7 +97,7 @@ export async function build({ check = false } = {}) {
       const alts = altsOf(sub).map(([l, sl]) => `<link rel="alternate" hreflang="${l}" href="${SITE + path(sl, sub)}">`).join("\n") +
         (has("en", sub) ? `\n<link rel="alternate" hreflang="x-default" href="${SITE + path("", sub)}">` : "");
       const docs = d.docs || en.docs;
-      const og = `${SITE}/og/${lang.toLowerCase()}.png`;
+      const og = `${SITE}/og/${lang.toLowerCase()}${sub ? "/" + sub : ""}.png`;   // landing pages have their own card
       const graph = [
         { "@type": "WebSite", "@id": SITE + "/#site", name: "1ms.dog", url: SITE + "/", inLanguage: langs.map(([l]) => l) },
         { "@type": "WebApplication", name: s ? fill(T("lp_h1"), { s: s.name }) : "1ms.dog", url, applicationCategory: "UtilitiesApplication",
@@ -129,7 +146,19 @@ export async function build({ check = false } = {}) {
       const helpC = docs.map(([q, a], i) => `<article data-hqb="${i}"${i ? " hidden" : ""}><h3>${esc(q)}</h3><p>${esc(a)}</p></article>`).join("");
       // the uses row is in the HTML from the start, so it already takes its space while the test runs
       const uses = USES.map(([k]) => `<span class="use">${esc(T("use_" + k))}<b>…</b></span>`).join("");
-      const intro = s ? `<p class="intro">${esc(fill(T("lp_intro"), { s: s.name }))}</p>` : "";
+      // A landing page's own facts: what it is compared with, and which edge network answers (with the other services on
+      // it: slow there too means the route to that network, not this service). That makes every landing page different.
+      // The intro stays in the hero; the facts go below the field, so the hero keeps its focus on the result.
+      let intro = "", about = "";
+      if (s) {
+        const join = list => list.join(T("v_join"));
+        const peers = SERVICES.filter(x => x.cat === s.cat && x.id !== s.id).map(x => x.name);
+        const same = s.via ? SERVICES.filter(x => x.via === s.via && x.id !== s.id).map(x => x.name) : [];
+        const facts = [fill(T("lp_peers"), { s: s.name, cat: T("cat_" + s.cat), list: join(peers) })];
+        if (s.via) facts.push(fill(T(same.length ? "lp_via_same" : "lp_via"), { s: s.name, via: s.via, list: join(same) }));
+        intro = `<p class="intro">${esc(fill(T("lp_intro"), { s: s.name }))}</p>`;
+        about = `<section class="about"><h2>${esc(fill(T("lp_h1"), { s: s.name }))}</h2><p>${facts.map(esc).join(" ")}</p></section>`;
+      }
       const langOpts = langs.map(([l]) => `<option value="${l}"${l === lang ? " selected" : ""}>${esc(I[l].name)}</option>`).join("");
       const paths = Object.fromEntries(langs.map(([l, sl]) => [l, path(sl, sub)]));
       const data = { lang, paths, pack: defPack, spot: s ? s.id : null, i18n: strings };
@@ -139,7 +168,7 @@ export async function build({ check = false } = {}) {
         .replace("{{lang}}", lang).replace("{{pathsAttr}}", esc(JSON.stringify(paths))).replace("{{rootAttr}}", slug || sub ? "" : " data-root")
         .replace("{{prepaint}}", PREPAINT).replace("{{head}}", head).replace("{{css}}", cssName).replace("{{js}}", jsName)
         .replace("{{homeHref}}", path(slug, "")).replace("{{langOpts}}", langOpts)
-        .replace("{{h1}}", esc(h1)).replace("{{intro}}", intro).replace("{{uses}}", uses)
+        .replace("{{h1}}", esc(h1)).replace("{{intro}}", intro).replace("{{about}}", about).replace("{{uses}}", uses)
         .replace("{{axis}}", axis).replace("{{groups}}", groups).replace("{{tools}}", tools).replace("{{helpNav}}", helpNav).replace("{{helpC}}", helpC)
         .replace("{{data}}", JSON.stringify(data).replace(/</g, "\\u003c"));
       if (/\{\{\w+\}\}/.test(html)) throw new Error("unfilled placeholder in " + path(slug, sub) + ": " + /\{\{\w+\}\}/.exec(html)[0]);
@@ -208,7 +237,7 @@ ${TOOLS.map(x => `- ${x.name}: https://${x.host}/ (${en["tool_" + x.id]})`).join
     if (current === text) continue;
     if (check) { stale.push(name); continue; }
     await mkdir(new URL(".", url), { recursive: true });
-    await writeFile(url, text);
+    await writeRetry(url, text);
   }
   // pages no longer built (a landing page a language dropped, say): only index.html files, never assets
   const walk = async dir => (await readdir(new URL(dir, pub), { withFileTypes: true })).flatMap(e => e.isDirectory() ? [dir + e.name + "/"] : []);

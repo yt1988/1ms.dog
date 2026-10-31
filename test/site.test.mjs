@@ -41,7 +41,10 @@ test("pages carry SEO tags", async () => {
     const alts = [...h.matchAll(/hreflang="([^"]+)" href="https:\/\/1ms\.dog\/([^"]*)"/g)];
     assert.deepEqual(alts.map(m => m[1]), altsOf(p), p + " hreflang");
     for (const [, , path] of alts) assert.ok(pages.includes(path), p + " → missing alternate " + path);
-    assert.match(h, /<meta property="og:image" content="https:\/\/1ms\.dog\/og\/[a-z-]+\.png">/, p);
+    // every page's preview image exists (landing pages have their own: og/<lang>/<service>.png)
+    const img = /<meta property="og:image" content="https:\/\/1ms\.dog\/(og\/[a-z-]+(?:\/[a-z-]+)?\.png)">/.exec(h);
+    assert.ok(img, p + ": og:image");
+    assert.ok(await readFile(new URL(img[1], pub)).catch(() => null), p + ": missing " + img[1]);
     assert.match(h, /<script type="application\/ld\+json">/, p);
     assert.equal((h.match(/<h1>/g) || []).length, 1, p + " one h1");
   }
@@ -51,6 +54,8 @@ test("every service and pack is in the page and the local packs cover their coun
   const h = await page("");
   for (const s of SERVICES) assert.ok(h.includes(`id="t-${s.id}"`), s.id);
   for (const p of Object.values(PACK_OF)) assert.ok(PACKS[p], p);
+  // the pack switches once the exit country is known; a different length would move the page
+  assert.equal(new Set(Object.values(PACKS).map(p => p.length)).size, 1, "every local pack has the same length");
   const ids = [...SERVICES, ...Object.values(PACKS).flat()].map(s => s.id);
   assert.equal(new Set(ids).size, ids.length, "service ids are unique");
 });

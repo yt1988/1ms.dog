@@ -93,5 +93,8 @@ export default {
   lp_desc: "Teste die Latenz zu {s} direkt im Browser: echte HTTPS-Rundreisen zu {s}, deine Ausgangs-IP und dein Anbieter sowie 40 weitere Dienste zum Vergleich, damit du siehst, ob es an {s} oder an deiner Verbindung liegt. Kostenlos, ohne Anmeldung.",
   lp_kw: "{s} ping, {s} langsam, {s} down, {s} geht nicht, {s} störung, {s} latenz, {s} lag",
   lp_h1: "Wie schnell ist {s} aus deinem Netz?",
+  lp_peers: "Zum Vergleich werden die anderen Dienste der Kategorie {cat} gleich mitgemessen: {list}.",
+  lp_via: "{s} wird über das Netz von {via} beantwortet: Die Rundreise endet am nächsten {via}-Standort, nicht in den Rechenzentren von {s}.",
+  lp_via_same: "{s} wird über das Netz von {via} beantwortet; die Rundreise endet am nächsten {via}-Standort. {list} nutzen dasselbe Netz: Sind sie auch langsam, liegt es an deinem Weg zu {via}, nicht an {s}.",
   lp_intro: "Dein Browser misst echte HTTPS-Rundreisen zu {s} über dein WLAN, deinen Anbieter und jedes VPN oder jeden Proxy und vergleicht sie mit 40 weiteren Diensten. Wenn {s} langsam wirkt, siehst du hier, ob es an {s}, an deinem Ausgang oder an allem liegt.",
 };

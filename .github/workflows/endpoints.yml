@@ -1,0 +1,17 @@
+# Every day: are the service URLs still answered in one round trip by the service's edge, without redirects or a
+# blocking Cross-Origin-Resource-Policy? Services change these without notice (a new header, a captcha, a moved file).
+# A failed run means a URL in src/services.mjs needs replacing; GitHub emails the repository owner.
+# These runners sit in US data centers, so a service that is only blocked elsewhere won't show up here.
+name: Endpoints
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: node scripts/verify.mjs

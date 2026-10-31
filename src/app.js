@@ -12,8 +12,7 @@
   const K = { theme: "1ms:theme", lang: "1ms:lang", pack: "1ms:pack", mask: "1ms:mask" };
   const country = cc => { try { return new Intl.DisplayNames([LANG], { type: "region" }).of(cc); } catch (e) { return cc; } };
   const flag = cc => /^[A-Z]{2}$/.test(cc || "") ? `<img class="flag" src="/flags/${cc.toLowerCase()}.svg" alt="" width="20" height="15">` : "";
-  const fmt = ms => ms < 10 ? ms.toFixed(1) : String(Math.round(ms));
-  const median = a => { const b = a.filter(v => v != null).sort((x, y) => x - y); return b.length ? (b.length % 2 ? b[b.length >> 1] : (b[b.length / 2 - 1] + b[b.length / 2]) / 2) : null; };
+  /* @lib */
   const bust = u => u + (u.includes("?") ? "&" : "?") + "_1ms=" + Math.random().toString(36).slice(2, 10);
 
   /* ---------- theme and language (synced across the 1ms.dog tools by the shell) ---------- */
@@ -26,11 +25,8 @@
   thBtn.onclick = () => { const n = TH[(TH.indexOf(thBtn.dataset.th) + 1) % 3]; store.set(K.theme, n); applyTheme(n); };
   $("#lang").onchange = e => { const l = e.target.value; store.set(K.lang, l); location.href = D.paths[l] + location.hash; };
 
-  /* ---------- speed zones ---------- */
-  // [max ms, key, color class]; under 2 ms is the legendary 1ms dog
-  const TIERS = [[2, "legend", "c0"], [30, "zoom", "c1"], [80, "sprint", "c2"], [150, "trot", "c3"], [300, "stroll", "c4"], [Infinity, "nap", "c5"]];
-  const tierOf = ms => ms == null ? ["lost", "cx"] : TIERS.find(x => ms <= x[0]).slice(1);
-  const pos = ms => Math.max(0, Math.min(1, Math.log(ms / SVC.scale.min) / Math.log(SVC.scale.max / SVC.scale.min)));
+  /* ---------- speed zones (tiers and helpers: src/lib.mjs) ---------- */
+  const pos = ms => posOf(ms, SVC.scale);
 
   /* ---------- the dog ---------- */
   const stage = $("#stage"), bubble = $("#bubble");
@@ -73,7 +69,6 @@
   // checks in different places at once (a site in mainland China, Cloudflare, two independent geo services, IPv4-only
   // and IPv6-only hosts, WebRTC over UDP) and group what they see by network: usually one exit, often a local one
   // plus a proxy. Every check answers CORS, so this works from the static page.
-  const DC_RE = /amazon|google|microsoft|azure|digitalocean|vultr|choopa|constant company|linode|akamai|ovh|hetzner|oracle|alibaba|aliyun|tencent|huawei|m247|datacamp|cloudflare|leaseweb|contabo|hostinger|it7|racknerd|colocrossing|psychz|zenlayer|g-core|gcore|hostwinds|scaleway|ionos|kamatera|upcloud|bandwagon|dmit|cogent|quadranet|servers\.com|packet|equinix|fastly|cdn77|datapacket|tzulo|hostdare|greencloud|nexeon|frantech|buyvm|hosting|vps|data ?cent/i;
   const TZ_CC = Object.fromEntries(("Asia/Shanghai:CN Asia/Chongqing:CN Asia/Harbin:CN Asia/Urumqi:CN Asia/Hong_Kong:HK Asia/Macau:MO Asia/Taipei:TW Asia/Tokyo:JP " +
     "Asia/Seoul:KR Asia/Singapore:SG Asia/Kuala_Lumpur:MY Asia/Bangkok:TH Asia/Jakarta:ID Asia/Manila:PH Asia/Ho_Chi_Minh:VN Asia/Saigon:VN " +
     "Asia/Kolkata:IN Asia/Calcutta:IN Asia/Dubai:AE Asia/Riyadh:SA Asia/Qatar:QA Asia/Jerusalem:IL Asia/Tel_Aviv:IL Asia/Karachi:PK Asia/Tehran:IR " +
@@ -85,13 +80,7 @@
     "America/Toronto:CA America/Vancouver:CA America/Montreal:CA America/Edmonton:CA America/Mexico_City:MX America/Sao_Paulo:BR America/Santiago:CL " +
     "America/Bogota:CO America/Lima:PE America/Argentina/Buenos_Aires:AR Africa/Johannesburg:ZA Africa/Cairo:EG Africa/Lagos:NG Africa/Nairobi:KE")
     .split(" ").map(p => p.split(":")));
-  const fam = x => x.includes(":") ? 6 : 4;
-  const v6g = a => { const [h, tl = ""] = a.toLowerCase().split("::"), H = h ? h.split(":") : [], T = tl ? tl.split(":") : []; return [...H, ...Array(Math.max(0, 8 - H.length - T.length)).fill("0"), ...T].map(g => g.padStart(4, "0")); };
-  // CGNAT pools and temporary IPv6 addresses move around inside a /16 or /64: same network
-  const netOf = x => fam(x) === 6 ? v6g(x).slice(0, 4).join(":") : x.split(".").slice(0, 2).join(".");
-  const sameNet = (a, b) => fam(a) === fam(b) && netOf(a) === netOf(b);
   const getJ = (u, ms = 5000) => fetch(bust(u), { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(ms) }).then(r => r.ok ? r.json() : Promise.reject());
-  const asnNum = v => { const m = /(\d+)/.exec(String(v || "")); return m ? +m[1] : null; };
   const firstIp = (list, f) => Promise.any(list.map(([u, k]) => getJ(u).then(j => j[k] && fam(j[k]) === f ? { ip: j[k] } : Promise.reject())));
   // each check → { ip, geo? }, geo = { cc, city, asn, org }
   const CHECKS = [
@@ -152,36 +141,14 @@
         NET.seen.push({ ip: r.ip, by: name });
         if (r.geo && r.geo.cc) NET.geo[r.ip] = r.geo;
       }
-      for (const { ip } of NET.seen) if (!geoOf(ip)) lookup(ip);
+      for (const { ip } of NET.seen) if (!geoOf(NET.geo, ip)) lookup(ip);
       group(); renderExits();
     })));
     await Promise.allSettled(lookups);
     NET.done = true; group(); renderExits();
     if (NET.groups[0] && NET.groups[0].cc) pickPack(NET.groups[0].cc);
   }
-  // geo for an address: its own, or that of an address on the same network
-  function geoOf(ip) {
-    if (NET.geo[ip]) return NET.geo[ip];
-    const y = Object.keys(NET.geo).find(x => sameNet(x, ip));
-    return y ? NET.geo[y] : null;
-  }
-  // one group per network (ASN when known), so an ISP's IPv4 and IPv6 addresses are one exit
-  function group() {
-    const G = [];
-    for (const { ip, by } of NET.seen) {
-      const g0 = geoOf(ip), key = g0 && g0.asn ? "as" + g0.asn : "net" + netOf(ip);
-      let g = G.find(x => x.key === key);
-      if (!g) { g = { key, ips: [], by: [], cc: "", city: "", asn: null, org: "" }; G.push(g); }
-      if (!g.ips.includes(ip)) g.ips.push(ip);
-      if (!g.by.includes(by)) g.by.push(by);
-      if (g0) { g.cc = g.cc || g0.cc || ""; g.city = g.city || g0.city || ""; g.asn = g.asn || g0.asn || null; g.org = g.org || g0.org || ""; }
-    }
-    for (const g of G) g.proxy = !!(g.org && DC_RE.test(g.org)) || (g.asn === 13335 && NET.warp !== "off");
-    // local exits first, then proxies; within each, the network most checks agree on. A fixed order, so rows don't
-    // swap places while answers arrive.
-    G.sort((a, b) => a.proxy - b.proxy || b.by.length - a.by.length);
-    NET.groups = G;
-  }
+  const group = () => { NET.groups = groupExits(NET.seen, NET.geo, NET.warp); };
   function renderExits() {
     // The list renders once, when every check and lookup is in: shown as answers arrive, it changed height several
     // times and pushed the page down each time. Until then the placeholder holds one row's height.
@@ -341,31 +308,20 @@
   }
 
   /* ---------- verdict: where it's fast, where it's slow, what that means ---------- */
-  // A segment's median in ms → good (zoomies, sprint), ok (trot) or slow (stroll, nap)
-  const grade = md => md == null ? "blocked" : md <= 80 ? "good" : md <= 150 ? "ok" : "slow";
   const USES = SVC.uses;                                      // see src/services.mjs
-  const doneOf = list => list.filter(s => s && R.get(s.id) && R.get(s.id).st === "done");
+  // the finished services among a list, as a segment (median, how many answered, which didn't)
   function segment(list) {
-    const svcs = doneOf(list), meds = svcs.map(s => median(R.get(s.id).s)), ok = meds.filter(v => v != null);
-    return { n: svcs.length, ok: ok.length, md: median(ok), lost: svcs.filter((s, i) => meds[i] == null).map(s => s.name) };
+    const svcs = list.filter(s => s && R.get(s.id) && R.get(s.id).st === "done");
+    return segmentOf(svcs.map(s => median(R.get(s.id).s)), svcs.map(s => s.name));
   }
+  // which side the slowness is on (src/lib.mjs: diagnose), plus each everyday use
   function verdict() {
-    const local = segment(PACKS[pack] || []), global = segment(SVC.list), lost = [...local.lost, ...global.lost];
-    const lg = local.ok >= local.n / 2 ? grade(local.md) : "blocked", gg = global.ok >= global.n / 2 ? grade(global.md) : "blocked";
-    const fine = g => g === "good" || g === "ok";
-    // the diagnosis: which side the slowness is on
-    let key, mood;
-    if (lg === "blocked" && gg === "blocked") { key = "v_down"; mood = "lost"; }
-    else if (fine(lg) && fine(gg)) { key = "v_allgood"; mood = tierOf(median([local.md, global.md]))[0]; }
-    else if (fine(lg)) { key = "v_far"; mood = "far"; }                      // near is fast, far is slow or walled off
-    else if (fine(gg)) { key = "v_odd"; mood = "odd"; }                      // far faster than near: everything proxied
-    else { key = "v_near_slow"; mood = tierOf(local.md)[0]; }                // even nearby is slow: the local network
+    const local = segment(PACKS[pack] || []), global = segment(SVC.list);
     const uses = USES.map(([k, ids, good, ok]) => {
       const sg = segment(ids.map(id => SVC.list.find(s => s.id === id)));
-      if (!sg.n) return null;
-      return { k, ids, md: sg.md, lost: sg.lost, st: sg.ok < sg.n / 2 ? "blocked" : sg.md <= good ? "great" : sg.md <= ok ? "ok" : "slow" };
+      return sg.n ? { k, ids, md: sg.md, lost: sg.lost, st: useStatus(sg, good, ok) } : null;
     }).filter(Boolean);
-    return { key, mood, local, global, lg, gg, lost, uses };
+    return { ...diagnose(local, global), local, global, lost: [...local.lost, ...global.lost], uses };
   }
   // headline: the diagnosis in a few words; detail: what it means, plus what didn't answer (numbers are in the stats)
   const verdictHead = v => t(v.key.replace("v_", "vh_"));
@@ -430,23 +386,10 @@
   $$("[data-hstep]").forEach(b => { b.onclick = () => showHelp(helpIdx + +b.dataset.hstep); });
 
   /* ---------- share: a link that carries the result, and an image drawn here ---------- */
-  // The link holds no IP address: per exit only country, city, network and local/proxy; per service its median.
-  // #r=1|<unix time base36>|<pack>|<exits>|<results>   exits: cc~city~org~asn~p|l joined by ","; results: id:ms×10 base36, "x" = lost
-  const enc = v => encodeURIComponent(String(v ?? "")).replace(/[~,|:]/g, c => "%" + c.charCodeAt(0).toString(16).toUpperCase());
-  function shareHash() {
-    const ex = NET.groups.map(g => [g.cc, g.city, g.org, g.asn || "", g.proxy ? "p" : "l"].map(enc).join("~")).join(",");
-    const res = allServices().filter(s => R.get(s.id) && R.get(s.id).st === "done").map(s => { const m = median(R.get(s.id).s); return s.id + ":" + (m == null ? "x" : Math.round(m * 10).toString(36)); }).join(",");
-    return "#r=1|" + Math.floor(Date.now() / 1000).toString(36) + "|" + pack + "|" + ex + "|" + res;
-  }
-  function parseHash(h) {
-    const m = /^#r=1\|([0-9a-z]+)\|(\w+)\|([^|]*)\|(.*)$/.exec(h || "");
-    if (!m || !PACKS[m[2]]) return null;
-    const dec = v => { try { return decodeURIComponent(v); } catch (e) { return ""; } };
-    const groups = m[3] ? m[3].split(",").map(x => { const [cc, city, org, asn, k] = x.split("~").map(dec); return { cc: /^[A-Z]{2}$/.test(cc) ? cc : "", city, org, asn: +asn || null, proxy: k === "p", ips: [], by: [] }; }) : [];
-    const res = {};
-    for (const p of m[4].split(",")) { const [id, v] = p.split(":"); if (id && v) res[id] = v === "x" ? null : parseInt(v, 36) / 10; }
-    return { ts: parseInt(m[1], 36) * 1000, pack: m[2], groups, res };
-  }
+  // the link carries no IP addresses (format and parsing: src/lib.mjs)
+  const shareHash = () => encodeShare({ ts: Date.now(), pack, groups: NET.groups,
+    res: Object.fromEntries(allServices().filter(s => R.get(s.id) && R.get(s.id).st === "done").map(s => [s.id, median(R.get(s.id).s)])) });
+  const parseHash = h => parseShare(h, PACKS);
   let shortFor = null;
   async function shortLink(long) {
     const meta = document.querySelector('meta[name="shortener"]');          // announced by the 1ms.dog shell

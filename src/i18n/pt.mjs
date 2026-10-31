@@ -93,5 +93,8 @@ export default {
   lp_desc: "Teste a latência do {s} no seu navegador: idas e voltas HTTPS reais até o {s}, seu IP de saída e provedor, e outros 40 serviços para comparar e saber se o problema é o {s} ou a sua conexão. Grátis, sem cadastro.",
   lp_kw: "ping {s}, {s} lento, {s} fora do ar, {s} travando, {s} lag, latência {s}, teste {s}",
   lp_h1: "Quão rápido é o {s} na sua rede?",
+  lp_peers: "Ele é comparado com os outros serviços de {cat} testados aqui: {list}.",
+  lp_via: "O {s} responde pela rede da {via}, então a ida e volta termina no ponto da {via} mais próximo, não nos data centers do {s}.",
+  lp_via_same: "O {s} responde pela rede da {via}, então a ida e volta termina no ponto da {via} mais próximo. {list} usam a mesma rede: se também estiverem lentos, o problema é a sua rota até a {via}, não o {s}.",
   lp_intro: "Seu navegador mede idas e voltas HTTPS reais até o {s} pelo seu Wi‑Fi, provedor e qualquer VPN ou proxy, e compara com outros 40 serviços. Se o {s} parece lento, aqui você vê se é o {s}, sua saída ou tudo.",
 };

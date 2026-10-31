@@ -31,7 +31,7 @@
 <meta property="og:title" content="YouTube 延遲測試：YouTube 很慢、連不上？線上檢測 · 1ms.dog">
 <meta property="og:description" content="在瀏覽器裡測試 YouTube 的真實延遲：到 YouTube 的 HTTPS 往返時間、你的出口 IP 和電信業者，並與另外 40 個常用服務比較，看清是 YouTube 慢還是網路慢。免費，免註冊。">
 <meta property="og:url" content="https://1ms.dog/zh-tw/youtube/">
-<meta property="og:image" content="https://1ms.dog/og/zh-tw.png">
+<meta property="og:image" content="https://1ms.dog/og/zh-tw/youtube.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="zh_TW">
@@ -47,10 +47,10 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="YouTube 延遲測試：YouTube 很慢、連不上？線上檢測 · 1ms.dog">
 <meta name="twitter:description" content="在瀏覽器裡測試 YouTube 的真實延遲：到 YouTube 的 HTTPS 往返時間、你的出口 IP 和電信業者，並與另外 40 個常用服務比較，看清是 YouTube 慢還是網路慢。免費，免註冊。">
-<meta name="twitter:image" content="https://1ms.dog/og/zh-tw.png">
+<meta name="twitter:image" content="https://1ms.dog/og/zh-tw/youtube.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"從你的網路連 YouTube 有多快？","url":"https://1ms.dog/zh-tw/youtube/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在瀏覽器裡測試 YouTube 的真實延遲：到 YouTube 的 HTTPS 往返時間、你的出口 IP 和電信業者，並與另外 40 個常用服務比較，看清是 YouTube 慢還是網路慢。免費，免註冊。","inLanguage":"zh-TW","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/zh-tw/"},{"@type":"ListItem","position":2,"name":"YouTube","item":"https://1ms.dog/zh-tw/youtube/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.1329b692aa.css">
+<link rel="stylesheet" href="/assets/app.6e73ae3428.css">
 </head>
 <body>
 <div class="app">
@@ -64,6 +64,7 @@
         <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M1.5 8h13M8 1.5c2 2 2.8 4 2.8 6.5S10 12.5 8 14.5C6 12.5 5.2 10.5 5.2 8S6 3.5 8 1.5z"/></svg>
         <select id="lang"><option value="en">English</option><option value="zh-CN">简体中文</option><option value="zh-TW" selected>繁體中文</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="es">Español</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="pt">Português</option><option value="ru">Русский</option></select>
       </label>
+      <a class="icon-btn gh" href="https://github.com/yt1988/1ms-index" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a>
       <button class="icon-btn" id="helpBtn" type="button" aria-haspopup="dialog" aria-controls="help"><span class="sr" data-i="faq_h">原理與常見問題</span>
         <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M6.3 6.2a1.8 1.8 0 1 1 2.5 1.7c-.5.2-.8.6-.8 1.1v.4M8 11.3v.1"/></svg>
       </button>
@@ -127,6 +128,8 @@
       </div>
     </section>
 
+    <section class="about"><h2>從你的網路連 YouTube 有多快？</h2><p>頁面同時測試了其他影音串流服務，方便比較：Netflix、TikTok、Twitch、Spotify。 YouTube 由 Google 的網路回應，往返的終點是離你最近的 Google 節點。Gemini、Google 也在同一個網路上：如果它們也慢，問題出在你到 Google 的線路，而不是 YouTube。</p></section>
+
     <section class="tools">
       <h2 data-i="tools_h">更多 1ms.dog 工具</h2>
       <div class="tool-list"><a class="tool" href="https://m2c.1ms.dog/zh-tw/" style="--tint:#3b82f6"><b><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 8.5h2.8l1.6-4.5 3.2 8 1.6-3.5h3.8"/></svg>Me2Cloud</b><span>從你的瀏覽器測到 360+ 個雲端區域的延遲：AWS、Azure、Google Cloud、阿里雲等。</span></a><a class="tool" href="https://v2c.1ms.dog/zh-tw/" style="--tint:#10b981"><b><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg>VPS2Cloud</b><span>同樣的測試，在你的伺服器上跑：幫你決定下一台主機放在哪裡。</span></a><a class="tool" href="https://ls.1ms.dog/zh-tw/" style="--tint:#f59e0b"><b><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="1.5" width="10" height="13" rx="2"/><path d="M5.5 4.5h5M5.5 8h0M8 8h0M10.5 8h0M5.5 11h0M8 11h0M10.5 11h0"/></svg>Lightsail Cost Saver</b><span>算清 AWS Lightsail 的流量額度，以及超量後要花多少錢。</span></a></div>
@@ -168,6 +171,6 @@
   </div>
 </div>
 <script type="application/json" id="data">{"lang":"zh-TW","paths":{"en":"/youtube/","zh-CN":"/zh-cn/youtube/","zh-TW":"/zh-tw/youtube/","ja":"/ja/youtube/","ko":"/ko/youtube/","es":"/es/youtube/","fr":"/fr/youtube/","de":"/de/youtube/","pt":"/pt/youtube/","ru":"/ru/youtube/"},"pack":"tw","spot":"youtube","i18n":{"k_local":"本地","k_proxy":"代理","seen_by":"偵測來源：{list}","sniff":"正在嗅探你的出口…","hide":"隱藏 IP","show":"顯示 IP","r_tz":"系統時區在{a}，出口卻在{b}","r_proxied":"{list} 可以正常連線，但從{c}通常無法直連：這些請求走了另一個出口（代理或 VPN），上面的偵測沒有看到它","no_net":"出口偵測沒有回應，可能被廣告封鎖外掛擋住了。","run":"再測一次","deep":"精細測試","stop":"停止","deep_t":"每個服務測 10 輪而不是 3 輪，結果更穩定，約 20 秒","running":"撿球中 {d} / {n}","back":"叼回 {ok}/{n} 顆球","med":"綜合中位數","lost_n":"{n} 顆沒叼回來","share":"分享","copied":"已複製","share_text":"我的狗狗從{where}出發，叼回了 {ok}/{n} 個服務，中位延遲 {ms} ms（{tier}）。你的狗狗有多快？","shared_from":"這是一份來自{where}的測試結果 · {date}","seg_local":"在地常用","seg_global":"全球服務","vh_allgood":"在地和全球都很快","v_allgood":"玩遊戲、視訊通話、看影片都沒問題。","vh_far":"在地很快，全球服務偏慢","v_far":"慢在國際線路或代理節點，不是你的網路線路。","vh_near_slow":"連在地服務也慢","v_near_slow":"問題可能在你這一端：Wi‑Fi、網路線路或裝置。","vh_odd":"全球比在地還快","v_odd":"你的流量可能全部走了代理或 VPN。","vh_down":"大部分服務連不上","v_down":"請檢查網路是否連通，或防火牆、代理是否擋住了它們。","v_wait":"球都叼回來後，狗狗會告訴你哪裡快、哪裡慢。","v_fail":"連不上：{list}。","v_join":"、","use_game":"遊戲","use_call":"視訊通話","use_stream":"看影片","use_ai":"AI 工具","use_dev":"開發工具","st_great":"流暢","st_ok":"可用","st_slow":"吃力","st_blocked":"連不上","mood_legend":"1 毫秒？！你是住在機房裡嗎？","mood_far":"近處的球秒回，遠處的球丟得太遠啦。","mood_odd":"咦，遠處的球比近處的先回來了…","tier_legend":"1ms 神犬","tier_zoom":"閃電狗","tier_sprint":"飛奔","tier_trot":"小跑","tier_stroll":"散步","tier_nap":"趴著睡","tier_lost":"沒叼回來","mood_sniff":"嗅嗅…我們在哪裡？","mood_run":"撿球去囉！馬上回來…","mood_zoom":"閃電模式！全世界都在隔壁。","mood_sprint":"今天腳程很快，大部分都在附近。","mood_trot":"跑得還行，有幾顆球丟得有點遠。","mood_stroll":"走了好長一段路，世界離這裡有點遠。","mood_nap":"太遠啦…我先趴一下。","mood_lost":"好多球都沒叼回來，路上有東西擋著。","mood_pet":"嘿嘿，好癢！","mood_turbo":"1MS 模式啟動！","cat_ai":"AI","cat_web":"常用網站","cat_video":"影音串流","cat_social":"社群與聊天","cat_dev":"開發工具","cat_game":"遊戲","cat_cdn":"CDN 服務商","cat_local":"在地常用","d_cold":"建立連線","d_samples":"取樣","d_jit":"抖動","th_system":"跟隨系統","th_light":"淺色","th_dark":"深色"}}</script>
-<script src="/assets/app.f79b0ddffa.js" defer></script>
+<script src="/assets/app.1cd75bb008.js" defer></script>
 </body>
 </html>
