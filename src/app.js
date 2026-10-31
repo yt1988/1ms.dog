@@ -149,6 +149,23 @@
     if (NET.groups[0] && NET.groups[0].cc) pickPack(NET.groups[0].cc);
   }
   const group = () => { NET.groups = groupExits(NET.seen, NET.geo, NET.warp); };
+  let tipEl;
+  function tip(el) {
+    const show = () => {
+      if (!tipEl) {
+        tipEl = document.body.appendChild(Object.assign(document.createElement("div"), { className: "tip" }));
+        addEventListener("scroll", () => tipEl.classList.remove("on"), { passive: true });
+      }
+      tipEl.textContent = el.getAttribute("aria-label");
+      const r = el.getBoundingClientRect(), w = tipEl.offsetWidth;
+      tipEl.style.left = Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width / 2 - w / 2)) + "px";
+      tipEl.style.top = r.bottom + 6 + "px";
+      tipEl.classList.add("on");
+    };
+    const hide = () => tipEl && tipEl.classList.remove("on");
+    el.addEventListener("mouseenter", show); el.addEventListener("focus", show);
+    el.addEventListener("mouseleave", hide); el.addEventListener("blur", hide);
+  }
   function renderExits() {
     // The list renders once, when every check and lookup is in: shown as answers arrive, it changed height several
     // times and pushed the page down each time. Until then the placeholder holds one row's height.
@@ -159,13 +176,13 @@
       const where = [g.city, g.cc && country(g.cc)].filter(Boolean).join(", ");
       const ips = [4, 6].map(f => [f, g.ips.filter(ip => fam(ip) === f)]).map(([f, l]) => l.length ? `<span><em>IPv${f}</em>${l.map(esc).join(" · ")}</span>` : "").join("");
       const org = g.org ? esc(g.org) + (g.asn ? " · AS" + g.asn : "") : "";
-      // which checks saw this exit: a small badge after the network ("3 sources"); hover shows them, a tap spells them out
-      const by = g.by.length ? `<button type="button" class="src" title="${esc(t("seen_by", { list: g.by.join(", ") }))}" data-list="${esc(g.by.join(", "))}">${esc(t("src_n", { n: g.by.length }))}</button>` : "";
+      // which checks saw this exit: a small "!" after the network, hovering (or focusing) it shows the list
+      const by = g.by.length ? `<span class="src" tabindex="0" role="img" aria-label="${esc(t("seen_by", { list: g.by.join(", ") }))}">!</span>` : "";
       return `<li class="ex"><span class="kind ${g.proxy ? "proxy" : "local"}">${esc(t(g.proxy ? "k_proxy" : "k_local"))}</span>` +
         `<span class="where">${flag(g.cc)}<b>${esc(where || "?")}</b>${org ? `<span class="m">${org}</span>` : ""}${by}</span>` +
         `<span class="ips">${ips}</span></li>`;
     }).join("");
-    ul.querySelectorAll("button.src").forEach(b => { b.onclick = () => { const o = b.classList.toggle("open"); b.textContent = o ? b.dataset.list : t("src_n", { n: b.dataset.list.split(", ").length }); }; });
+    ul.querySelectorAll(".src").forEach(tip);
     renderNote();
   }
   function renderNote() {

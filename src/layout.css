@@ -2,7 +2,7 @@
 .hero { display: grid; grid-template-columns: minmax(0, 1fr) 300px; grid-template-areas: "l stage" "sum sum"; gap: 14px 20px; padding: 20px 22px 0; overflow: hidden; }
 .hero-l { grid-area: l; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .hero h1 { font-size: clamp(19px, 2.4vw, 24px); line-height: 1.25; letter-spacing: -.015em; font-weight: 700; text-wrap: balance; }
-.intro { color: var(--muted); font-size: 13.5px; max-width: 60ch; }
+.intro { color: var(--muted); font-size: 13.5px; }
 
 /* exits: one row per exit network, local or proxy */
 .ex-h { display: flex; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 6px; }
@@ -15,10 +15,11 @@
 .ex .where { display: flex; align-items: center; gap: 7px; min-width: 0; white-space: nowrap; overflow: hidden; }
 .ex .where b { font-weight: 600; }
 .ex .where .m { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-/* sources badge: never truncated, the network name shortens instead */
-.ex .src { flex: none; border: 0; background: color-mix(in srgb, var(--fg) 7%, transparent); color: var(--muted); font: 500 11px/18px var(--f-ui); padding: 0 7px; border-radius: 9px; cursor: pointer; white-space: nowrap; }
-.ex .src:hover, .ex .src.open { color: var(--fg); }
-.ex .src.open { max-width: 60vw; overflow: hidden; text-overflow: ellipsis; }
+/* sources: a small "!" that never shrinks, the network name shortens instead; hover shows the list */
+.ex .src { flex: none; width: 14px; height: 14px; border-radius: 50%; border: 1.2px solid currentColor; color: var(--muted); font: 700 9.5px/1 var(--f-ui); display: inline-grid; place-items: center; cursor: help; opacity: .7; outline: none; }
+.ex .src:hover, .ex .src:focus-visible { opacity: 1; color: var(--fg); }
+.tip { position: fixed; z-index: 50; max-width: min(320px, calc(100vw - 16px)); background: var(--fg); color: var(--bg); font: 500 12px/1.4 var(--f-ui); padding: 5px 9px; border-radius: 6px; pointer-events: none; opacity: 0; transition: opacity .12s; }
+.tip.on { opacity: 1; }
 .ex .ips { grid-column: 2; font: 12.5px var(--f-num); display: flex; flex-wrap: wrap; gap: 2px 12px; min-width: 0; }
 .ex .ips span { overflow-wrap: anywhere; }
 .ex .ips em { font-style: normal; color: var(--muted); font-family: var(--f-ui); font-size: 11.5px; margin-right: 4px; }
