@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ja" data-paths="{&quot;en&quot;:&quot;/mercadolibre/&quot;,&quot;zh-CN&quot;:&quot;/zh-cn/mercadolibre/&quot;,&quot;zh-TW&quot;:&quot;/zh-tw/mercadolibre/&quot;,&quot;ja&quot;:&quot;/ja/mercadolibre/&quot;,&quot;ko&quot;:&quot;/ko/mercadolibre/&quot;,&quot;es&quot;:&quot;/es/mercadolibre/&quot;,&quot;fr&quot;:&quot;/fr/mercadolibre/&quot;,&quot;de&quot;:&quot;/de/mercadolibre/&quot;,&quot;pt&quot;:&quot;/pt/mercadolibre/&quot;,&quot;ru&quot;:&quot;/ru/mercadolibre/&quot;}">
+<head>
+<meta charset="utf-8">
+<script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en")location.replace(P[l]+location.hash)})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mercado Libre の Ping・遅延テスト｜Mercado Libre が重い・つながらない原因をチェック · 1ms.dog</title>
+<meta name="description" content="ブラウザから Mercado Libre の遅延を測定：Mercado Libre への本物の HTTPS 往復を 10 回測り、中央値・初回接続・ジッターと、あなたの出口 IP・プロバイダを表示します。無料・登録不要。">
+<meta name="keywords" content="Mercado Libre 重い, Mercado Libre 遅い, Mercado Libre つながらない, Mercado Libre Ping, Mercado Libre 遅延, Mercado Libre 障害, Mercado Libre 接続テスト">
+<meta name="robots" content="noindex, follow, max-image-preview:large">
+<meta name="application-name" content="1ms.dog">
+<meta name="theme-color" content="#f6f6f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1c1c1c" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://1ms.dog/ja/mercadolibre/">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="1ms.dog">
+<meta property="og:title" content="Mercado Libre の Ping・遅延テスト｜Mercado Libre が重い・つながらない原因をチェック · 1ms.dog">
+<meta property="og:description" content="ブラウザから Mercado Libre の遅延を測定：Mercado Libre への本物の HTTPS 往復を 10 回測り、中央値・初回接続・ジッターと、あなたの出口 IP・プロバイダを表示します。無料・登録不要。">
+<meta property="og:url" content="https://1ms.dog/ja/mercadolibre/">
+<meta property="og:image" content="https://1ms.dog/og/ja.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Mercado Libre の Ping・遅延テスト｜Mercado Libre が重い・つながらない原因をチェック · 1ms.dog">
+<meta name="twitter:description" content="ブラウザから Mercado Libre の遅延を測定：Mercado Libre への本物の HTTPS 往復を 10 回測り、中央値・初回接続・ジッターと、あなたの出口 IP・プロバイダを表示します。無料・登録不要。">
+<meta name="twitter:image" content="https://1ms.dog/og/ja.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"あなたの回線から Mercado Libre はどれくらい速い？","url":"https://1ms.dog/ja/mercadolibre/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"ブラウザから Mercado Libre の遅延を測定：Mercado Libre への本物の HTTPS 往復を 10 回測り、中央値・初回接続・ジッターと、あなたの出口 IP・プロバイダを表示します。無料・登録不要。","inLanguage":"ja","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/ja/"},{"@type":"ListItem","position":2,"name":"Mercado Libre","item":"https://1ms.dog/ja/mercadolibre/"}]}]}</script>
+<link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/app.1e6d12ca7d.css">
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <a class="brand" href="/ja/" aria-label="1ms.dog">
+      <img class="logo-light" src="/assets/logo-light.svg" width="90" height="36" alt="1ms">
+      <img class="logo-dark" src="/assets/logo-dark.svg" width="90" height="36" alt="1ms">
+    </a>
+    <div class="top-acts">
+      <label class="sel"><span class="sr" data-i="lang_label">言語</span>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M1.5 8h13M8 1.5c2 2 2.8 4 2.8 6.5S10 12.5 8 14.5C6 12.5 5.2 10.5 5.2 8S6 3.5 8 1.5z"/></svg>
+        <select id="lang"><option value="en">English</option><option value="zh-CN">简体中文</option><option value="zh-TW">繁體中文</option><option value="ja" selected>日本語</option><option value="ko">한국어</option><option value="es">Español</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="pt">Português</option><option value="ru">Русский</option></select>
+      </label>
+      <a class="icon-btn gh" href="https://github.com/yt1988/1ms-index" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a>
+      <button class="icon-btn" id="helpBtn" type="button" aria-haspopup="dialog" aria-controls="help"><span class="sr" data-i="faq_h">仕組みとよくある質問</span>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M6.3 6.2a1.8 1.8 0 1 1 2.5 1.7c-.5.2-.8.6-.8 1.1v.4M8 11.3v.1"/></svg>
+      </button>
+      <button class="icon-btn" id="theme" type="button" aria-label="Theme">
+        <svg class="i-sys" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="9" rx="1.5"/><path d="M5.5 14h5M8 11.5V14"/></svg>
+        <svg class="i-light" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3"/></svg>
+        <svg class="i-dark" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.8A5.8 5.8 0 0 1 6.2 2.5a5.8 5.8 0 1 0 7.3 7.3z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="shared" id="shared" hidden><span id="sharedTxt"></span><button class="btn pri" id="testMine" type="button" data-i="test_mine">自分の回線を測る</button></div>
+
+    <section class="hero card">
+      <div class="hero-l">
+        <h1>あなたの回線から Mercado Libre はどれくらい速い？</h1>
+        <p class="intro">ブラウザが実際の Wi‑Fi、プロバイダ、VPN やプロキシを通して Mercado Libre への HTTPS 往復を 10 回測り、中央値・初回接続・ジッターを表示します。</p>
+        <div class="exits" id="exits">
+          <div class="ex-h"><span data-i="exit_h">あなたの出口</span><button class="mini" id="eye" type="button" data-i="hide">IP を隠す</button></div>
+          <ul id="exList"><li class="ex sk-row"><span class="sk-t" data-i="sniff">出口をクンクン調査中…</span></li></ul>
+          <p class="ex-note" id="exNote" hidden></p>
+        </div>
+      </div>
+      <div class="stage" id="stage" data-mood="sniff">
+        <p class="bubble" id="bubble" aria-live="polite" data-i="mood_sniff">クンクン…ここはどこ？</p>
+        <button class="dog" id="dog" type="button" aria-label="Pet the dog">
+          <img src="/assets/shiba-run.svg" width="960" height="540" alt="1ms.dog shiba" id="dogImg">
+          <span class="zzz" aria-hidden="true">z<i>z</i><b>z</b></span>
+        </button>
+        <span class="ground" aria-hidden="true"></span>
+      </div>
+      <div class="sum" id="sum">
+        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">出口をクンクン調査中…</p><p class="v-d" id="vText">測定が終わると、ここから Mercado Libre までの速さがわかります。</p></div>
+        <div class="sum-acts">
+          <div class="sum-btns">
+            <button class="btn pri" id="run" type="button"><span data-i="start">テスト開始</span></button>
+          </div>
+          <label class="auto"><input type="checkbox" id="auto" checked><span class="sw" aria-hidden="true"></span><span data-i="auto_label">ページを開いたら自動でテスト</span></label>
+        </div>
+        <div class="prog" id="prog"><i></i></div>
+        <div class="stats">
+          <div class="stat" id="stMed"><em data-i="one_med">遅延（中央値）</em><b>–</b><i></i></div>
+          <div class="stat" id="stCold"><em data-i="one_cold">初回接続</em><b>–</b><i></i></div>
+          <div class="stat" id="stJit"><em data-i="one_jit">ジッター</em><b>–</b><i></i></div>
+        </div>
+        <div class="slane" id="slane" aria-hidden="true"><span class="trk"></span><span class="dots" id="dots"></span></div>
+      </div>
+    </section>
+
+    <a class="cta card" href="/ja/"><span><b data-i="cta_h">ほかのサービスはどう？</b><i data-i="cta_d">トップページでは 40 サービスを一度に測り、どこが遅いかを教えます。</i></span><span class="btn pri" data-i="cta_btn">全サービスを測る</span></a>
+
+    <section class="about"><h2>あなたの回線から Mercado Libre はどれくらい速い？</h2><p>比べたいときは、トップページで Mercado Libre と他の地域の定番サービスをまとめて測れます：Globo、Nubank、iFood。</p></section>
+
+    <section class="tools">
+      <h2 data-i="tools_h">1ms.dog のほかのツール</h2>
+      <div class="tool-list"><a class="tool" href="https://m2c.1ms.dog/ja/" style="--tint:#3b82f6"><b><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 8.5h2.8l1.6-4.5 3.2 8 1.6-3.5h3.8"/></svg>Me2Cloud</b><span>ブラウザから 360 以上のクラウドリージョンへの遅延を測定：AWS、Azure、Google Cloud など。</span></a><a class="tool" href="https://v2c.1ms.dog/ja/" style="--tint:#10b981"><b><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg>VPS2Cloud</b><span>同じテストをあなたのサーバーから実行。次のサーバーをどこに置くか決められます。</span></a><a class="tool" href="https://ls.1ms.dog/ja/" style="--tint:#f59e0b"><b><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="1.5" width="10" height="13" rx="2"/><path d="M5.5 4.5h5M5.5 8h0M8 8h0M10.5 8h0M5.5 11h0M8 11h0M10.5 11h0"/></svg>Lightsail Cost Saver</b><span>AWS Lightsail の転送量の枠と、超過したときの料金を計算します。</span></a></div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <nav class="sitemap" aria-label="sitemap"><b>サービス別の測定：</b><a href="/ja/">全サービスを測る</a><a href="/ja/chatgpt/">ChatGPT の遅延テスト</a><a href="/ja/claude/">Claude の遅延テスト</a><a href="/ja/gemini/">Gemini の遅延テスト</a><a href="/ja/youtube/">YouTube の遅延テスト</a><a href="/ja/netflix/">Netflix の遅延テスト</a><a href="/ja/x/">X の遅延テスト</a><a href="/ja/discord/">Discord の遅延テスト</a><a href="/ja/steam/">Steam の遅延テスト</a><a href="/ja/playstation/">PlayStation の遅延テスト</a><a href="/ja/github/">GitHub の遅延テスト</a><i class="br"></i><b>カテゴリ別：</b><a href="/ja/ai/">AI</a><a href="/ja/web/">よく使うサイト</a><a href="/ja/video/">動画・音楽</a><a href="/ja/social/">SNS・チャット</a><a href="/ja/dev/">開発ツール</a><a href="/ja/game/">ゲーム</a><a href="/ja/cdn/">CDN</a><i class="br"></i><b>地域別：</b><a href="/ja/region/cn/">中国本土</a><a href="/ja/region/tw/">台湾・香港</a><a href="/ja/region/jp/">日本</a><a href="/ja/region/kr/">韓国</a><a href="/ja/region/ru/">ロシア</a><a href="/ja/region/in/">南アジア</a><a href="/ja/region/sea/">東南アジア</a><a href="/ja/region/eu/">ヨーロッパ</a><a href="/ja/region/latam/">中南米</a><a href="/ja/region/na/">北米</a><a href="/ja/region/me/">中東</a></nav>
+    <div class="foot-l"><span data-i="foot">すべてブラウザ内で動作します。アカウント不要、結果は収集しません。</span><span>© 1ms.dog</span></div>
+  </footer>
+</div>
+
+<div class="scrim" id="help" hidden>
+  <div class="dialog help" role="dialog" aria-modal="true" aria-labelledby="helpT">
+    <div class="dlg-h"><h2 id="helpT" data-i="faq_h">仕組みとよくある質問</h2>
+      <button class="icon-btn" data-close type="button" aria-label="Close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="help-b">
+      <nav class="help-nav" id="helpNav" role="tablist"><button type="button" role="tab" data-hq="0" aria-selected="true">出口 IP とは？</button><button type="button" role="tab" data-hq="1" aria-selected="false">ローカルとプロキシの出口が両方表示されるのはなぜ？</button><button type="button" role="tab" data-hq="2" aria-selected="false">遅延はどう測っていますか？</button><button type="button" role="tab" data-hq="3" aria-selected="false">ping と結果が違うのはなぜ？</button><button type="button" role="tab" data-hq="4" aria-selected="false">犬のスピードの意味は？</button><button type="button" role="tab" data-hq="5" aria-selected="false">データはどこかに送られますか？</button></nav>
+      <div class="help-pick">
+        <button class="icon-btn" type="button" data-hstep="-1" aria-label="Previous"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 4L6 8l4 4"/></svg></button>
+        <select id="helpSel" aria-labelledby="helpT"></select>
+        <button class="icon-btn" type="button" data-hstep="1" aria-label="Next"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg></button>
+      </div>
+      <div class="help-c" id="helpC"><article data-hqb="0"><h3>出口 IP とは？</h3><p>サイトにアクセスしたとき、相手から見えるアドレスです。自宅では通常プロバイダのものですが、VPN、プロキシ、社内ネットワーク、iCloud プライベートリレーを使うと、通信を中継する側のアドレスになり、別の都市や国にあることもあります。出口によって接続先サーバーが決まるので、速度も出口で決まります。</p></article><article data-hqb="1" hidden><h3>ローカルとプロキシの出口が両方表示されるのはなぜ？</h3><p>ルールで振り分けるプロキシや VPN は、宛先によって経路を変えます。そのため 1 つの IP チェックでは、そのチェックの経路しか見えません。中国本土のサイト、Cloudflare、ip.sb、ipinfo.io、IPv4 専用と IPv6 専用のチェック、WebRTC（UDP）に同時に問い合わせ、ネットワークごとにまとめて、ローカルかプロキシかを表示します。</p></article><article data-hqb="2" hidden><h3>遅延はどう測っていますか？</h3><p>ブラウザが各サービスと本物の HTTPS 接続を開きます。最初のリクエストは接続の確立（DNS、TCP、TLS）用で集計しません。その後同じ接続を再利用して計測し、中央値を表示します。Wi‑Fi、プロバイダ、プロキシを含む、端末からサービスの最寄りサーバーまでの往復時間で、アプリが実際に体感する遅延です。</p></article><article data-hqb="3" hidden><h3>ping と結果が違うのはなぜ？</h3><p>ping は ICMP を使いますが、ブラウザからは送れず、ネットワークによっては通常の通信と扱いが異なります。HTTPS の計測は普段のアプリと同じ経路を通ります。サーバーがリクエストに応答する分、ping より数ミリ秒高くなるのが普通です。</p></article><article data-hqb="4" hidden><h3>犬のスピードの意味は？</h3><p>爆走 ≤ 30 ms：同じ都市。ダッシュ ≤ 80 ms：同じ地域。トコトコ ≤ 150 ms：ほぼ何でも快適。おさんぽ ≤ 300 ms：ゲームや通話で気になる。おひるね &gt; 300 ms：遠いか混雑。戻らず：5 秒以内に接続できず、ここからは利用できません。2 ms 未満なら伝説の 1ms 犬。</p></article><article data-hqb="5" hidden><h3>データはどこかに送られますか？</h3><p>いいえ。すべてのリクエストはブラウザからテスト対象のサービスへ直接送られます。1ms.dog は静的なページを配信するだけで、結果を受け取りません。前回の結果はこのブラウザ内にだけ保存されます。シェア用リンクに含まれるのは都市・ネットワーク・遅延だけで、IP アドレスは含みません。</p></article></div>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="shareDlg" hidden>
+  <div class="dialog share" role="dialog" aria-modal="true" aria-labelledby="shareT">
+    <div class="dlg-h"><h2 id="shareT" data-i="share_h">結果をシェア</h2>
+      <button class="icon-btn" data-close type="button" aria-label="Close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="share-b">
+      <img id="shareImg" alt="" width="1200" height="1000">
+      <div class="share-link"><input id="shareUrl" readonly aria-label="Link"><button class="btn pri" id="copyLink" type="button" data-i="copy_link">リンクをコピー</button></div>
+      <div class="share-acts">
+        <button class="btn" id="copyImg" type="button" data-i="copy_img">画像をコピー</button>
+        <button class="btn" id="dlImg" type="button" data-i="dl_img">画像を保存</button>
+        <button class="btn" id="nativeShare" type="button" data-i="more_share" hidden>ほかの方法でシェア</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="application/json" id="data">{"lang":"ja","paths":{"en":"/mercadolibre/","zh-CN":"/zh-cn/mercadolibre/","zh-TW":"/zh-tw/mercadolibre/","ja":"/ja/mercadolibre/","ko":"/ko/mercadolibre/","es":"/es/mercadolibre/","fr":"/fr/mercadolibre/","de":"/de/mercadolibre/","pt":"/pt/mercadolibre/","ru":"/ru/mercadolibre/"},"pack":"jp","spot":"mercadolibre","set":null}</script>
+<script src="/assets/l.ja.6d11cd8906.js" defer></script>
+<script src="/assets/app.d24aa02081.js" defer></script>
+</body>
+</html>

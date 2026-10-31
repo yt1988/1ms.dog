@@ -189,13 +189,15 @@
   /* ---------- the field ---------- */
   const PACKS = SVC.packs, PACK_OF = SVC.packOf;
   let pack = D.pack;
-  const rowHtml = s => `<li class="row" id="t-${s.id}"><span class="nm">${esc(s.name)}</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li>`;
+  const rowHtml = s => `<li class="row" id="t-${s.id}"><a class="nm" href="${D.paths[LANG]}${s.id}/">${esc(s.name)}</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li>`;
   // a single-service page (/chatgpt/, /zh-cn/dockerhub/…) tests only that service, more thoroughly
-  const ONE = D.spot ? SVC.list.find(s => s.id === D.spot) : null, ONE_N = 10;
-  const allServices = () => ONE ? [ONE] : [...(PACKS[pack] || []), ...SVC.list];
+  const ONE = D.spot ? [...SVC.list, ...Object.values(SVC.packs).flat()].find(s => s.id === D.spot) : null, ONE_N = 10;
+  // a group page (/ai/, /region/jp/…) tests just that category's or region's services
+  const GRP = D.set ? { ...D.set, list: D.set.kind === "cat" ? SVC.list.filter(s => s.cat === D.set.id) : PACKS[D.set.id] } : null, GRP_N = 5;
+  const allServices = () => ONE ? [ONE] : GRP ? GRP.list : [...(PACKS[pack] || []), ...SVC.list];
   function showPack(p) { pack = p; $("#localRows").innerHTML = PACKS[p].map(rowHtml).join(""); $("#pack").value = p; }
-  if (!ONE) { const saved = store.get(K.pack); if (saved && PACKS[saved] && saved !== pack) showPack(saved); }
-  function pickPack(cc) { const p = PACK_OF[cc]; if (!ONE && !store.get(K.pack) && p && p !== pack) setPack(p, false); }
+  if (!ONE && !GRP) { const saved = store.get(K.pack); if (saved && PACKS[saved] && saved !== pack) showPack(saved); }
+  function pickPack(cc) { const p = PACK_OF[cc]; if (!ONE && !GRP && !store.get(K.pack) && p && p !== pack) setPack(p, false); }
   function setPack(p, user) {
     if (!PACKS[p]) return;
     if (user) store.set(K.pack, p);
@@ -204,7 +206,7 @@
     if (RUN && RUN.full) { RUN.q.unshift(...PACKS[p]); RUN.n += PACKS[p].length; }   // joins the run in progress
     else if (!RUN && LAST_DONE) runList(PACKS[p], 3, false);
   }
-  if (!ONE) $("#pack").onchange = e => setPack(e.target.value, true);
+  if ($("#pack")) $("#pack").onchange = e => setPack(e.target.value, true);
 
   /* ---------- probing ---------- */
   // Same method as Me2Cloud: one uncounted request opens DNS + TCP + TLS, then each timed request reuses that
@@ -289,6 +291,7 @@
   // the stats row: local favorites, global services, and the overall median with how many came back
   function paintStats() {
     if (ONE) return paintOne();
+    if (GRP) return paintGroup();
     const cell = (id, sg) => {
       const el = $(id), [tk, cls] = tierOf(sg.md);
       el.querySelector("b").innerHTML = sg.md != null ? `${fmt(sg.md)}<small>ms</small>` : sg.n ? "✕" : "–";
@@ -303,6 +306,7 @@
   }
   function summarize() {
     if (ONE) return summarizeOne();
+    if (GRP) return summarizeGroup();
     // The overall median only describes this sample of services. The verdict, which splits local favorites,
     // global services and failures, decides the headline and what the dog says.
     const all = paintStats(), v = verdict();
@@ -337,6 +341,7 @@
   }
   function renderVerdict(v) {
     if (ONE) { $("#vHead").textContent = t("running_one", { s: ONE.name, d: 0, n: ONE_N }); $("#vText").textContent = t("v_one_wait", { s: ONE.name }); return; }
+    if (GRP) { $("#vHead").textContent = t("running", { d: 0, n: GRP.list.length }); $("#vText").textContent = t("v_grp_wait", { g: GRP.name }); return; }
     $("#vHead").textContent = v ? verdictHead(v) : t("running", { d: 0, n: allServices().length });
     // while testing, the same lines hold placeholders, so nothing moves when the verdict arrives
     $("#vText").textContent = v ? verdictText(v) : t("v_wait");
@@ -361,6 +366,32 @@
     document.querySelectorAll("button.use").forEach(x => x.setAttribute("aria-pressed", x === b && !!pinned));
     mark(pinned || ids);
   });
+
+  /* ---------- a group (category or region) ---------- */
+  // the group's median, and its fastest and slowest service
+  function paintGroup() {
+    const sg = segment(GRP.list), done = GRP.list.filter(s => R.get(s.id) && R.get(s.id).st === "done");
+    const meds = done.map(s => [s, median(R.get(s.id).s)]).filter(([, m]) => m != null).sort((a, b) => a[1] - b[1]);
+    const cell = (id, v, sub) => {
+      const b = $(id + " b"), [, c] = tierOf(v);
+      b.innerHTML = v != null ? `${fmt(v)}<small>ms</small>` : sg.n ? "✕" : "–"; b.className = v != null ? c : "cx";
+      $(id + " i").textContent = sub;
+    };
+    cell("#stMed", sg.md, sg.n ? t("back", { ok: sg.ok, n: sg.n }) : "");
+    cell("#stBest", meds.length ? meds[0][1] : null, meds.length ? meds[0][0].name : "");
+    cell("#stWorst", meds.length > 1 ? meds[meds.length - 1][1] : null, meds.length > 1 ? meds[meds.length - 1][0].name : "");
+    return sg;
+  }
+  function summarizeGroup() {
+    const sg = paintGroup(), gr = grade(sg), [tk] = tierOf(sg.md);
+    $("#vHead").textContent = gr === "blocked" ? t("vh_grp_lost", { g: GRP.name }) : t("vh_grp", { g: GRP.name, tier: t("tier_" + tk) });
+    let text = t("v_grp_" + gr, { g: GRP.name });
+    if (sg.lost.length && gr !== "blocked") text += " " + t("v_fail", { list: sg.lost.join(t("v_join")) });
+    $("#vText").textContent = text;
+    const mood = gr === "blocked" ? "lost" : tk;
+    lastSum = { md: sg.md, ok: sg.ok, n: sg.n, tier: tk, mood };
+    setMood(mood); say("mood_" + mood);
+  }
 
   /* ---------- a single service ---------- */
   function paintOne() {
@@ -392,7 +423,7 @@
   }
 
   /* ---------- controls ---------- */
-  const start = n => { if (ONE) n = ONE_N; for (const s of allServices()) { R.delete(s.id); paintRow(s); } lastSum = null; renderVerdict(null); paintStats(); runList(allServices(), n, true); };
+  const start = n => { if (ONE) n = ONE_N; if (GRP) n = GRP_N; for (const s of allServices()) { R.delete(s.id); paintRow(s); } lastSum = null; renderVerdict(null); paintStats(); runList(allServices(), n, true); };
   $("#run").onclick = () => { if (RUN) { RUN.ctl.abort(); return; } leaveShared(); start(3); };
   if ($("#deep")) { $("#deep").title = t("deep_t"); $("#deep").onclick = () => { leaveShared(); start(10); }; }
 
@@ -558,7 +589,7 @@
 
   /* ---------- a shared result ---------- */
   // Opening a shared link shows that result and doesn't test until the visitor asks for their own
-  const SHARED = ONE ? null : parseHash(location.hash);   // shared results open on the home page
+  const SHARED = ONE || GRP ? null : parseHash(location.hash);   // shared results open on the home page
   function showShared(S) {
     if (S.pack !== pack) showPack(S.pack);
     NET.groups = S.groups; NET.done = true; renderExits(); $("#eye").hidden = true;
@@ -584,7 +615,7 @@
   // with the switch off, the exit check still runs (a few small requests); the 40-service test waits for "Start"
   function waitForClick() {
     if (RUN || lastSum) return;
-    $("#vHead").textContent = t("vh_manual"); $("#vText").textContent = ONE ? t("v_one_wait", { s: ONE.name }) : t("v_manual");
+    $("#vHead").textContent = t("vh_manual"); $("#vText").textContent = ONE ? t("v_one_wait", { s: ONE.name }) : GRP ? t("v_grp_wait", { g: GRP.name }) : t("v_manual");
     setMood("idle"); say("mood_idle");
   }
 

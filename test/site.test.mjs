@@ -50,17 +50,34 @@ test("pages carry SEO tags", async () => {
   }
 });
 
-test("single-service pages test one service; every page's footer links them all", async () => {
+test("home, service and group pages each get their own layout; every page's footer links all indexed pages", async () => {
   for (const p of pages) {
-    const h = await page(p), one = p.split("/").filter(Boolean).length > (p.match(/^(zh-cn|zh-tw|ja|ko|es|fr|de|pt|ru)\//) ? 1 : 0);
-    assert.equal(h.includes('id="stMed"'), one, p + ": single-service result");
-    assert.equal(h.includes('id="groups"'), !one, p + ": the 40-service field only on home pages");
-    assert.doesNotMatch(h, /<!--\/?(full|one)-->/, p + ": variant markers left in the page");
+    const h = await page(p), data = JSON.parse(/<script type="application\/json" id="data">([^<]*)<\/script>/.exec(h)[1]);
+    const one = !!data.spot, grp = !!data.set;
+    assert.equal(h.includes('id="stMed"'), one || grp, p + ": service or group result");
+    assert.equal(h.includes('id="slane"'), one, p + ": the samples lane only on service pages");
+    assert.equal(h.includes('id="groups"'), !one, p + ": the field on home and group pages");
+    assert.equal(h.includes('id="stLocal"'), !one && !grp, p + ": local/global split only on home pages");
+    assert.doesNotMatch(h, /<!--\/?v[:-]/, p + ": variant markers left in the page");
+    assert.match(h, /<meta name="robots" content="index, follow/, p + ": indexed pages say index");
     // the footer sitemap links every page of the same language
     const lang = (p.match(/^(zh-cn|zh-tw|ja|ko|es|fr|de|pt|ru)\//) || ["", ""])[1], prefix = lang ? lang + "/" : "";
     const same = pages.filter(q => lang ? q.startsWith(prefix) : !/^(zh-cn|zh-tw|ja|ko|es|fr|de|pt|ru)\//.test(q));
     const nav = /<nav class="sitemap"[^>]*>([\s\S]*?)<\/nav>/.exec(h)[1];
     for (const q of same) assert.ok(nav.includes(`href="/${q}"`), p + ": footer misses /" + q);
+  }
+});
+
+test("every service has a page; the ones a language doesn't search for are noindex and out of the sitemap", async () => {
+  const all = [...SERVICES, ...Object.values(PACKS).flat()].map(s => s.id);
+  for (const [lang, slug] of LANGS) {
+    const d = (await import(`../src/i18n/${lang}.mjs`)).default, en = (await import("../src/i18n/en.mjs")).default, land = d.land || en.land;
+    for (const id of all) {
+      const p = (slug ? slug + "/" : "") + id + "/", h = await page(p);
+      const idx = land.includes(id);
+      assert.match(h, new RegExp(`<meta name="robots" content="${idx ? "index" : "noindex"}, follow`), p);
+      assert.equal(pages.includes(p), idx, p + ": in the sitemap only when indexed");
+    }
   }
 });
 

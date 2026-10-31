@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ko" data-paths="{&quot;en&quot;:&quot;/line-sea/&quot;,&quot;zh-CN&quot;:&quot;/zh-cn/line-sea/&quot;,&quot;zh-TW&quot;:&quot;/zh-tw/line-sea/&quot;,&quot;ja&quot;:&quot;/ja/line-sea/&quot;,&quot;ko&quot;:&quot;/ko/line-sea/&quot;,&quot;es&quot;:&quot;/es/line-sea/&quot;,&quot;fr&quot;:&quot;/fr/line-sea/&quot;,&quot;de&quot;:&quot;/de/line-sea/&quot;,&quot;pt&quot;:&quot;/pt/line-sea/&quot;,&quot;ru&quot;:&quot;/ru/line-sea/&quot;}">
+<head>
+<meta charset="utf-8">
+<script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en")location.replace(P[l]+location.hash)})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LINE 핑 테스트: LINE 느림·접속 안 됨 원인 확인 · 1ms.dog</title>
+<meta name="description" content="내 브라우저에서 LINE 지연을 측정하세요. LINE까지의 실제 HTTPS 왕복 10회(중앙값, 첫 연결, 지터)와 내 출구 IP, 통신사를 보여 줍니다. 무료, 가입 불필요.">
+<meta name="keywords" content="LINE 핑, LINE 느림, LINE 렉, LINE 접속 안됨, LINE 지연, LINE 서버 상태, LINE 연결 테스트">
+<meta name="robots" content="noindex, follow, max-image-preview:large">
+<meta name="application-name" content="1ms.dog">
+<meta name="theme-color" content="#f6f6f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1c1c1c" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://1ms.dog/ko/line-sea/">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="1ms.dog">
+<meta property="og:title" content="LINE 핑 테스트: LINE 느림·접속 안 됨 원인 확인 · 1ms.dog">
+<meta property="og:description" content="내 브라우저에서 LINE 지연을 측정하세요. LINE까지의 실제 HTTPS 왕복 10회(중앙값, 첫 연결, 지터)와 내 출구 IP, 통신사를 보여 줍니다. 무료, 가입 불필요.">
+<meta property="og:url" content="https://1ms.dog/ko/line-sea/">
+<meta property="og:image" content="https://1ms.dog/og/ko.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LINE 핑 테스트: LINE 느림·접속 안 됨 원인 확인 · 1ms.dog">
+<meta name="twitter:description" content="내 브라우저에서 LINE 지연을 측정하세요. LINE까지의 실제 HTTPS 왕복 10회(중앙값, 첫 연결, 지터)와 내 출구 IP, 통신사를 보여 줍니다. 무료, 가입 불필요.">
+<meta name="twitter:image" content="https://1ms.dog/og/ko.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"내 네트워크에서 LINE는 얼마나 빠를까?","url":"https://1ms.dog/ko/line-sea/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"내 브라우저에서 LINE 지연을 측정하세요. LINE까지의 실제 HTTPS 왕복 10회(중앙값, 첫 연결, 지터)와 내 출구 IP, 통신사를 보여 줍니다. 무료, 가입 불필요.","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/ko/"},{"@type":"ListItem","position":2,"name":"LINE","item":"https://1ms.dog/ko/line-sea/"}]}]}</script>
+<link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/app.1e6d12ca7d.css">
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <a class="brand" href="/ko/" aria-label="1ms.dog">
+      <img class="logo-light" src="/assets/logo-light.svg" width="90" height="36" alt="1ms">
+      <img class="logo-dark" src="/assets/logo-dark.svg" width="90" height="36" alt="1ms">
+    </a>
+    <div class="top-acts">
+      <label class="sel"><span class="sr" data-i="lang_label">언어</span>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M1.5 8h13M8 1.5c2 2 2.8 4 2.8 6.5S10 12.5 8 14.5C6 12.5 5.2 10.5 5.2 8S6 3.5 8 1.5z"/></svg>
+        <select id="lang"><option value="en">English</option><option value="zh-CN">简体中文</option><option value="zh-TW">繁體中文</option><option value="ja">日本語</option><option value="ko" selected>한국어</option><option value="es">Español</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="pt">Português</option><option value="ru">Русский</option></select>
+      </label>
+      <a class="icon-btn gh" href="https://github.com/yt1988/1ms-index" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a>
+      <button class="icon-btn" id="helpBtn" type="button" aria-haspopup="dialog" aria-controls="help"><span class="sr" data-i="faq_h">작동 방식과 자주 묻는 질문</span>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M6.3 6.2a1.8 1.8 0 1 1 2.5 1.7c-.5.2-.8.6-.8 1.1v.4M8 11.3v.1"/></svg>
+      </button>
+      <button class="icon-btn" id="theme" type="button" aria-label="Theme">
+        <svg class="i-sys" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="9" rx="1.5"/><path d="M5.5 14h5M8 11.5V14"/></svg>
+        <svg class="i-light" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3"/></svg>
+        <svg class="i-dark" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.8A5.8 5.8 0 0 1 6.2 2.5a5.8 5.8 0 1 0 7.3 7.3z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="shared" id="shared" hidden><span id="sharedTxt"></span><button class="btn pri" id="testMine" type="button" data-i="test_mine">내 네트워크 측정</button></div>
+
+    <section class="hero card">
+      <div class="hero-l">
+        <h1>내 네트워크에서 LINE는 얼마나 빠를까?</h1>
+        <p class="intro">브라우저가 실제 Wi‑Fi, 통신사, VPN이나 프록시를 거쳐 LINE까지의 HTTPS 왕복을 10회 재고, 중앙값·첫 연결·지터를 보여 줍니다.</p>
+        <div class="exits" id="exits">
+          <div class="ex-h"><span data-i="exit_h">내 출구</span><button class="mini" id="eye" type="button" data-i="hide">IP 숨기기</button></div>
+          <ul id="exList"><li class="ex sk-row"><span class="sk-t" data-i="sniff">출구를 킁킁 찾는 중…</span></li></ul>
+          <p class="ex-note" id="exNote" hidden></p>
+        </div>
+      </div>
+      <div class="stage" id="stage" data-mood="sniff">
+        <p class="bubble" id="bubble" aria-live="polite" data-i="mood_sniff">킁킁… 여기가 어디지?</p>
+        <button class="dog" id="dog" type="button" aria-label="Pet the dog">
+          <img src="/assets/shiba-run.svg" width="960" height="540" alt="1ms.dog shiba" id="dogImg">
+          <span class="zzz" aria-hidden="true">z<i>z</i><b>z</b></span>
+        </button>
+        <span class="ground" aria-hidden="true"></span>
+      </div>
+      <div class="sum" id="sum">
+        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">출구를 킁킁 찾는 중…</p><p class="v-d" id="vText">측정이 끝나면 여기서 LINE까지 얼마나 빠른지 알려 드려요.</p></div>
+        <div class="sum-acts">
+          <div class="sum-btns">
+            <button class="btn pri" id="run" type="button"><span data-i="start">테스트 시작</span></button>
+          </div>
+          <label class="auto"><input type="checkbox" id="auto" checked><span class="sw" aria-hidden="true"></span><span data-i="auto_label">페이지를 열면 자동으로 테스트</span></label>
+        </div>
+        <div class="prog" id="prog"><i></i></div>
+        <div class="stats">
+          <div class="stat" id="stMed"><em data-i="one_med">지연(중앙값)</em><b>–</b><i></i></div>
+          <div class="stat" id="stCold"><em data-i="one_cold">첫 연결</em><b>–</b><i></i></div>
+          <div class="stat" id="stJit"><em data-i="one_jit">지터</em><b>–</b><i></i></div>
+        </div>
+        <div class="slane" id="slane" aria-hidden="true"><span class="trk"></span><span class="dots" id="dots"></span></div>
+      </div>
+    </section>
+
+    <a class="cta card" href="/ko/"><span><b data-i="cta_h">다른 서비스는 어떨까요?</b><i data-i="cta_d">홈에서는 서비스 40개를 한 번에 측정하고 어디가 느린지 알려 줍니다.</i></span><span class="btn pri" data-i="cta_btn">전체 서비스 측정</span></a>
+
+    <section class="about"><h2>내 네트워크에서 LINE는 얼마나 빠를까?</h2><p>비교하고 싶다면 홈에서 LINE와 다른 지역 인기 서비스 서비스를 함께 측정할 수 있습니다: Shopee, Lazada, Grab.</p></section>
+
+    <section class="tools">
+      <h2 data-i="tools_h">1ms.dog의 다른 도구</h2>
+      <div class="tool-list"><a class="tool" href="https://m2c.1ms.dog/ko/" style="--tint:#3b82f6"><b><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 8.5h2.8l1.6-4.5 3.2 8 1.6-3.5h3.8"/></svg>Me2Cloud</b><span>브라우저에서 360개 이상의 클라우드 리전까지 지연 측정: AWS, Azure, Google Cloud 등.</span></a><a class="tool" href="https://v2c.1ms.dog/ko/" style="--tint:#10b981"><b><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg>VPS2Cloud</b><span>같은 테스트를 내 서버에서 실행해, 다음 서버를 어디에 둘지 정하세요.</span></a><a class="tool" href="https://ls.1ms.dog/ko/" style="--tint:#f59e0b"><b><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="1.5" width="10" height="13" rx="2"/><path d="M5.5 4.5h5M5.5 8h0M8 8h0M10.5 8h0M5.5 11h0M8 11h0M10.5 11h0"/></svg>Lightsail Cost Saver</b><span>AWS Lightsail 전송량 한도와 초과했을 때의 비용을 계산합니다.</span></a></div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <nav class="sitemap" aria-label="sitemap"><b>서비스별 측정:</b><a href="/ko/">전체 서비스 측정</a><a href="/ko/chatgpt/">ChatGPT 핑 테스트</a><a href="/ko/claude/">Claude 핑 테스트</a><a href="/ko/gemini/">Gemini 핑 테스트</a><a href="/ko/youtube/">YouTube 핑 테스트</a><a href="/ko/netflix/">Netflix 핑 테스트</a><a href="/ko/discord/">Discord 핑 테스트</a><a href="/ko/steam/">Steam 핑 테스트</a><a href="/ko/github/">GitHub 핑 테스트</a><a href="/ko/tiktok/">TikTok 핑 테스트</a><i class="br"></i><b>카테고리별:</b><a href="/ko/ai/">AI</a><a href="/ko/web/">자주 쓰는 사이트</a><a href="/ko/video/">동영상·음악</a><a href="/ko/social/">SNS·메신저</a><a href="/ko/dev/">개발 도구</a><a href="/ko/game/">게임</a><a href="/ko/cdn/">CDN</a><i class="br"></i><b>지역별:</b><a href="/ko/region/cn/">중국 본토</a><a href="/ko/region/tw/">대만 · 홍콩</a><a href="/ko/region/jp/">일본</a><a href="/ko/region/kr/">한국</a><a href="/ko/region/ru/">러시아</a><a href="/ko/region/in/">남아시아</a><a href="/ko/region/sea/">동남아시아</a><a href="/ko/region/eu/">유럽</a><a href="/ko/region/latam/">중남미</a><a href="/ko/region/na/">북미</a><a href="/ko/region/me/">중동</a></nav>
+    <div class="foot-l"><span data-i="foot">모두 내 브라우저에서 실행됩니다. 계정 불필요, 결과를 수집하지 않습니다.</span><span>© 1ms.dog</span></div>
+  </footer>
+</div>
+
+<div class="scrim" id="help" hidden>
+  <div class="dialog help" role="dialog" aria-modal="true" aria-labelledby="helpT">
+    <div class="dlg-h"><h2 id="helpT" data-i="faq_h">작동 방식과 자주 묻는 질문</h2>
+      <button class="icon-btn" data-close type="button" aria-label="Close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="help-b">
+      <nav class="help-nav" id="helpNav" role="tablist"><button type="button" role="tab" data-hq="0" aria-selected="true">출구 IP란?</button><button type="button" role="tab" data-hq="1" aria-selected="false">로컬 출구와 프록시 출구가 함께 보이는 이유는?</button><button type="button" role="tab" data-hq="2" aria-selected="false">지연은 어떻게 측정하나요?</button><button type="button" role="tab" data-hq="3" aria-selected="false">핑과 결과가 다른 이유는?</button><button type="button" role="tab" data-hq="4" aria-selected="false">강아지 속도 등급의 의미는?</button><button type="button" role="tab" data-hq="5" aria-selected="false">내 데이터가 어딘가로 전송되나요?</button></nav>
+      <div class="help-pick">
+        <button class="icon-btn" type="button" data-hstep="-1" aria-label="Previous"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 4L6 8l4 4"/></svg></button>
+        <select id="helpSel" aria-labelledby="helpT"></select>
+        <button class="icon-btn" type="button" data-hstep="1" aria-label="Next"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg></button>
+      </div>
+      <div class="help-c" id="helpC"><article data-hqb="0"><h3>출구 IP란?</h3><p>웹사이트에 접속할 때 상대방이 보는 주소입니다. 집에서는 보통 통신사 주소지만, VPN, 프록시, 회사 네트워크, iCloud 비공개 릴레이를 쓰면 트래픽을 대신 전달하는 쪽의 주소가 되고, 다른 도시나 나라에 있을 수도 있습니다. 출구에 따라 연결되는 서버가 정해지므로 속도도 출구가 결정합니다.</p></article><article data-hqb="1" hidden><h3>로컬 출구와 프록시 출구가 함께 보이는 이유는?</h3><p>규칙 기반 프록시와 VPN은 목적지에 따라 경로를 고릅니다. 그래서 IP 확인 하나로는 그 확인의 경로만 보입니다. 중국 본토 사이트, Cloudflare, ip.sb, ipinfo.io, IPv4 전용과 IPv6 전용 확인, WebRTC(UDP)에 동시에 물어보고, 네트워크별로 묶어 로컬인지 프록시인지 표시합니다.</p></article><article data-hqb="2" hidden><h3>지연은 어떻게 측정하나요?</h3><p>브라우저가 각 서비스와 실제 HTTPS 연결을 엽니다. 첫 요청은 연결 수립(DNS, TCP, TLS)용이라 집계하지 않습니다. 이후 같은 연결을 재사용해 측정하고 중앙값을 보여 줍니다. Wi‑Fi, 통신사, 프록시를 모두 거친, 기기에서 서비스의 가장 가까운 서버까지의 왕복 시간으로, 앱이 실제로 겪는 지연입니다.</p></article><article data-hqb="3" hidden><h3>핑과 결과가 다른 이유는?</h3><p>핑은 ICMP를 쓰는데 브라우저는 보낼 수 없고, 많은 네트워크가 ICMP를 일반 트래픽과 다르게 처리합니다. HTTPS 측정은 평소 쓰는 앱과 같은 경로를 따릅니다. 서버가 요청에 응답해야 하므로 보통 핑보다 몇 밀리초 높게 나옵니다.</p></article><article data-hqb="4" hidden><h3>강아지 속도 등급의 의미는?</h3><p>질주 ≤ 30 ms: 같은 도시. 전력 질주 ≤ 80 ms: 같은 지역. 총총 ≤ 150 ms: 거의 모든 용도에 충분. 산책 ≤ 300 ms: 게임과 통화에서 체감. 낮잠 &gt; 300 ms: 멀거나 혼잡. 못 돌아옴: 5초 안에 연결되지 않아 여기서는 이용할 수 없음. 2 ms 미만이면 전설의 1ms 강아지.</p></article><article data-hqb="5" hidden><h3>내 데이터가 어딘가로 전송되나요?</h3><p>아니요. 모든 요청은 브라우저에서 테스트 대상 서비스로 바로 갑니다. 1ms.dog는 정적인 페이지만 제공하며 결과를 받지 않습니다. 지난 결과는 이 브라우저에만 저장됩니다. 공유 링크에는 도시, 네트워크, 지연만 담기고 IP 주소는 담기지 않습니다.</p></article></div>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="shareDlg" hidden>
+  <div class="dialog share" role="dialog" aria-modal="true" aria-labelledby="shareT">
+    <div class="dlg-h"><h2 id="shareT" data-i="share_h">결과 공유</h2>
+      <button class="icon-btn" data-close type="button" aria-label="Close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="share-b">
+      <img id="shareImg" alt="" width="1200" height="1000">
+      <div class="share-link"><input id="shareUrl" readonly aria-label="Link"><button class="btn pri" id="copyLink" type="button" data-i="copy_link">링크 복사</button></div>
+      <div class="share-acts">
+        <button class="btn" id="copyImg" type="button" data-i="copy_img">이미지 복사</button>
+        <button class="btn" id="dlImg" type="button" data-i="dl_img">이미지 저장</button>
+        <button class="btn" id="nativeShare" type="button" data-i="more_share" hidden>다른 방법으로 공유</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="application/json" id="data">{"lang":"ko","paths":{"en":"/line-sea/","zh-CN":"/zh-cn/line-sea/","zh-TW":"/zh-tw/line-sea/","ja":"/ja/line-sea/","ko":"/ko/line-sea/","es":"/es/line-sea/","fr":"/fr/line-sea/","de":"/de/line-sea/","pt":"/pt/line-sea/","ru":"/ru/line-sea/"},"pack":"kr","spot":"line-sea","set":null}</script>
+<script src="/assets/l.ko.0c2a16f5db.js" defer></script>
+<script src="/assets/app.d24aa02081.js" defer></script>
+</body>
+</html>

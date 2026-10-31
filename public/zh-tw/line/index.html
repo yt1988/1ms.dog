@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh-TW" data-paths="{&quot;en&quot;:&quot;/line/&quot;,&quot;zh-CN&quot;:&quot;/zh-cn/line/&quot;,&quot;zh-TW&quot;:&quot;/zh-tw/line/&quot;,&quot;ja&quot;:&quot;/ja/line/&quot;,&quot;ko&quot;:&quot;/ko/line/&quot;,&quot;es&quot;:&quot;/es/line/&quot;,&quot;fr&quot;:&quot;/fr/line/&quot;,&quot;de&quot;:&quot;/de/line/&quot;,&quot;pt&quot;:&quot;/pt/line/&quot;,&quot;ru&quot;:&quot;/ru/line/&quot;}">
+<head>
+<meta charset="utf-8">
+<script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en")location.replace(P[l]+location.hash)})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LINE 延遲測試：LINE 很慢、連不上？線上檢測 · 1ms.dog</title>
+<meta name="description" content="在瀏覽器裡測試 LINE 的真實延遲：10 次到 LINE 的 HTTPS 往返，給出中位數、首次連線耗時和抖動，以及你的出口 IP 和電信業者。免費，免註冊。">
+<meta name="keywords" content="LINE延遲, LINE測速, LINE ping, LINE很慢, LINE連不上, LINE連線測試, LINE lag">
+<meta name="robots" content="noindex, follow, max-image-preview:large">
+<meta name="application-name" content="1ms.dog">
+<meta name="theme-color" content="#f6f6f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1c1c1c" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://1ms.dog/zh-tw/line/">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="1ms.dog">
+<meta property="og:title" content="LINE 延遲測試：LINE 很慢、連不上？線上檢測 · 1ms.dog">
+<meta property="og:description" content="在瀏覽器裡測試 LINE 的真實延遲：10 次到 LINE 的 HTTPS 往返，給出中位數、首次連線耗時和抖動，以及你的出口 IP 和電信業者。免費，免註冊。">
+<meta property="og:url" content="https://1ms.dog/zh-tw/line/">
+<meta property="og:image" content="https://1ms.dog/og/zh-tw.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="zh_TW">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LINE 延遲測試：LINE 很慢、連不上？線上檢測 · 1ms.dog">
+<meta name="twitter:description" content="在瀏覽器裡測試 LINE 的真實延遲：10 次到 LINE 的 HTTPS 往返，給出中位數、首次連線耗時和抖動，以及你的出口 IP 和電信業者。免費，免註冊。">
+<meta name="twitter:image" content="https://1ms.dog/og/zh-tw.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"從你的網路連 LINE 有多快？","url":"https://1ms.dog/zh-tw/line/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在瀏覽器裡測試 LINE 的真實延遲：10 次到 LINE 的 HTTPS 往返，給出中位數、首次連線耗時和抖動，以及你的出口 IP 和電信業者。免費，免註冊。","inLanguage":"zh-TW","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/zh-tw/"},{"@type":"ListItem","position":2,"name":"LINE","item":"https://1ms.dog/zh-tw/line/"}]}]}</script>
+<link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/app.1e6d12ca7d.css">
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <a class="brand" href="/zh-tw/" aria-label="1ms.dog">
+      <img class="logo-light" src="/assets/logo-light.svg" width="90" height="36" alt="1ms">
+      <img class="logo-dark" src="/assets/logo-dark.svg" width="90" height="36" alt="1ms">
+    </a>
+    <div class="top-acts">
+      <label class="sel"><span class="sr" data-i="lang_label">語言</span>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M1.5 8h13M8 1.5c2 2 2.8 4 2.8 6.5S10 12.5 8 14.5C6 12.5 5.2 10.5 5.2 8S6 3.5 8 1.5z"/></svg>
+        <select id="lang"><option value="en">English</option><option value="zh-CN">简体中文</option><option value="zh-TW" selected>繁體中文</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="es">Español</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="pt">Português</option><option value="ru">Русский</option></select>
+      </label>
+      <a class="icon-btn gh" href="https://github.com/yt1988/1ms-index" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a>
+      <button class="icon-btn" id="helpBtn" type="button" aria-haspopup="dialog" aria-controls="help"><span class="sr" data-i="faq_h">原理與常見問題</span>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M6.3 6.2a1.8 1.8 0 1 1 2.5 1.7c-.5.2-.8.6-.8 1.1v.4M8 11.3v.1"/></svg>
+      </button>
+      <button class="icon-btn" id="theme" type="button" aria-label="Theme">
+        <svg class="i-sys" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="9" rx="1.5"/><path d="M5.5 14h5M8 11.5V14"/></svg>
+        <svg class="i-light" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3"/></svg>
+        <svg class="i-dark" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.8A5.8 5.8 0 0 1 6.2 2.5a5.8 5.8 0 1 0 7.3 7.3z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="shared" id="shared" hidden><span id="sharedTxt"></span><button class="btn pri" id="testMine" type="button" data-i="test_mine">測我自己的網路</button></div>
+
+    <section class="hero card">
+      <div class="hero-l">
+        <h1>從你的網路連 LINE 有多快？</h1>
+        <p class="intro">你的瀏覽器經過真實的 Wi‑Fi、電信業者以及 VPN 或代理，連續測量 10 次到 LINE 的 HTTPS 往返時間，給出中位數、首次連線耗時和抖動。</p>
+        <div class="exits" id="exits">
+          <div class="ex-h"><span data-i="exit_h">你的出口</span><button class="mini" id="eye" type="button" data-i="hide">隱藏 IP</button></div>
+          <ul id="exList"><li class="ex sk-row"><span class="sk-t" data-i="sniff">正在嗅探你的出口…</span></li></ul>
+          <p class="ex-note" id="exNote" hidden></p>
+        </div>
+      </div>
+      <div class="stage" id="stage" data-mood="sniff">
+        <p class="bubble" id="bubble" aria-live="polite" data-i="mood_sniff">嗅嗅…我們在哪裡？</p>
+        <button class="dog" id="dog" type="button" aria-label="Pet the dog">
+          <img src="/assets/shiba-run.svg" width="960" height="540" alt="1ms.dog shiba" id="dogImg">
+          <span class="zzz" aria-hidden="true">z<i>z</i><b>z</b></span>
+        </button>
+        <span class="ground" aria-hidden="true"></span>
+      </div>
+      <div class="sum" id="sum">
+        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">正在嗅探你的出口…</p><p class="v-d" id="vText">取樣完成後，告訴你從這裡連 LINE 有多快。</p></div>
+        <div class="sum-acts">
+          <div class="sum-btns">
+            <button class="btn pri" id="run" type="button"><span data-i="start">開始測試</span></button>
+          </div>
+          <label class="auto"><input type="checkbox" id="auto" checked><span class="sw" aria-hidden="true"></span><span data-i="auto_label">開啟頁面時自動測試</span></label>
+        </div>
+        <div class="prog" id="prog"><i></i></div>
+        <div class="stats">
+          <div class="stat" id="stMed"><em data-i="one_med">延遲中位數</em><b>–</b><i></i></div>
+          <div class="stat" id="stCold"><em data-i="one_cold">首次連線</em><b>–</b><i></i></div>
+          <div class="stat" id="stJit"><em data-i="one_jit">抖動</em><b>–</b><i></i></div>
+        </div>
+        <div class="slane" id="slane" aria-hidden="true"><span class="trk"></span><span class="dots" id="dots"></span></div>
+      </div>
+    </section>
+
+    <a class="cta card" href="/zh-tw/"><span><b data-i="cta_h">其他服務快不快？</b><i data-i="cta_d">首頁一次測 40 個常用服務，還會告訴你慢在哪一端。</i></span><span class="btn pri" data-i="cta_btn">測全部服務</span></a>
+
+    <section class="about"><h2>從你的網路連 LINE 有多快？</h2><p>想比較的話，首頁會把 LINE 和其他在地常用服務一起測：Yahoo! JAPAN、楽天、ニコニコ。</p></section>
+
+    <section class="tools">
+      <h2 data-i="tools_h">更多 1ms.dog 工具</h2>
+      <div class="tool-list"><a class="tool" href="https://m2c.1ms.dog/zh-tw/" style="--tint:#3b82f6"><b><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 8.5h2.8l1.6-4.5 3.2 8 1.6-3.5h3.8"/></svg>Me2Cloud</b><span>從你的瀏覽器測到 360+ 個雲端區域的延遲：AWS、Azure、Google Cloud、阿里雲等。</span></a><a class="tool" href="https://v2c.1ms.dog/zh-tw/" style="--tint:#10b981"><b><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg>VPS2Cloud</b><span>同樣的測試，在你的伺服器上跑：幫你決定下一台主機放在哪裡。</span></a><a class="tool" href="https://ls.1ms.dog/zh-tw/" style="--tint:#f59e0b"><b><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="1.5" width="10" height="13" rx="2"/><path d="M5.5 4.5h5M5.5 8h0M8 8h0M10.5 8h0M5.5 11h0M8 11h0M10.5 11h0"/></svg>Lightsail Cost Saver</b><span>算清 AWS Lightsail 的流量額度，以及超量後要花多少錢。</span></a></div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <nav class="sitemap" aria-label="sitemap"><b>單一服務測速：</b><a href="/zh-tw/">測全部服務</a><a href="/zh-tw/chatgpt/">ChatGPT 延遲測試</a><a href="/zh-tw/claude/">Claude 延遲測試</a><a href="/zh-tw/gemini/">Gemini 延遲測試</a><a href="/zh-tw/youtube/">YouTube 延遲測試</a><a href="/zh-tw/netflix/">Netflix 延遲測試</a><a href="/zh-tw/steam/">Steam 延遲測試</a><a href="/zh-tw/playstation/">PlayStation 延遲測試</a><a href="/zh-tw/discord/">Discord 延遲測試</a><a href="/zh-tw/github/">GitHub 延遲測試</a><i class="br"></i><b>依類別：</b><a href="/zh-tw/ai/">AI</a><a href="/zh-tw/web/">常用網站</a><a href="/zh-tw/video/">影音串流</a><a href="/zh-tw/social/">社群與聊天</a><a href="/zh-tw/dev/">開發工具</a><a href="/zh-tw/game/">遊戲</a><a href="/zh-tw/cdn/">CDN 服務商</a><i class="br"></i><b>依地區：</b><a href="/zh-tw/region/cn/">中國大陸</a><a href="/zh-tw/region/tw/">台灣 · 香港</a><a href="/zh-tw/region/jp/">日本</a><a href="/zh-tw/region/kr/">韓國</a><a href="/zh-tw/region/ru/">俄羅斯</a><a href="/zh-tw/region/in/">南亞</a><a href="/zh-tw/region/sea/">東南亞</a><a href="/zh-tw/region/eu/">歐洲</a><a href="/zh-tw/region/latam/">拉丁美洲</a><a href="/zh-tw/region/na/">北美</a><a href="/zh-tw/region/me/">中東</a></nav>
+    <div class="foot-l"><span data-i="foot">全部在你的瀏覽器裡執行。免帳號，不收集測試結果。</span><span>© 1ms.dog</span></div>
+  </footer>
+</div>
+
+<div class="scrim" id="help" hidden>
+  <div class="dialog help" role="dialog" aria-modal="true" aria-labelledby="helpT">
+    <div class="dlg-h"><h2 id="helpT" data-i="faq_h">原理與常見問題</h2>
+      <button class="icon-btn" data-close type="button" aria-label="Close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="help-b">
+      <nav class="help-nav" id="helpNav" role="tablist"><button type="button" role="tab" data-hq="0" aria-selected="true">什麼是出口 IP？</button><button type="button" role="tab" data-hq="1" aria-selected="false">為什麼會同時有本地出口和代理出口？</button><button type="button" role="tab" data-hq="2" aria-selected="false">延遲是怎麼測的？</button><button type="button" role="tab" data-hq="3" aria-selected="false">為什麼和 ping 的結果不一樣？</button><button type="button" role="tab" data-hq="4" aria-selected="false">狗狗的速度等級是什麼意思？</button><button type="button" role="tab" data-hq="5" aria-selected="false">我的資料會被傳送到哪裡嗎？</button></nav>
+      <div class="help-pick">
+        <button class="icon-btn" type="button" data-hstep="-1" aria-label="Previous"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 4L6 8l4 4"/></svg></button>
+        <select id="helpSel" aria-labelledby="helpT"></select>
+        <button class="icon-btn" type="button" data-hstep="1" aria-label="Next"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg></button>
+      </div>
+      <div class="help-c" id="helpC"><article data-hqb="0"><h3>什麼是出口 IP？</h3><p>出口 IP 是你造訪網站時，對方看到的位址。在家裡通常屬於你的電信業者；使用 VPN、代理、公司網路或 iCloud 私密轉送時，它屬於幫你轉送流量的那一方，可能在另一個城市甚至另一個國家。出口決定了服務把你分配到哪台伺服器，所以也決定了你的速度。</p></article><article data-hqb="1" hidden><h3>為什麼會同時有本地出口和代理出口？</h3><p>依規則分流的代理和 VPN 會按目標網站選路：有些網站直連，其餘走代理，所以只問一個偵測點，只看得到它那條路。我們同時詢問中國大陸站點、Cloudflare、ip.sb、ipinfo.io、僅 IPv4 與僅 IPv6 的偵測，以及 WebRTC（UDP），依網路歸併後列出每個出口，並標出本地或代理。</p></article><article data-hqb="2" hidden><h3>延遲是怎麼測的？</h3><p>你的瀏覽器與每個服務建立一條真實的 HTTPS 連線。第一個請求只用來建立連線（DNS、TCP、TLS），不計入；之後重複使用這條連線發出計時請求，取中位數。這就是從你的裝置到該服務最近伺服器的一次往返，經過你的 Wi‑Fi、電信業者和代理，也就是你的應用程式實際感受到的延遲。</p></article><article data-hqb="3" hidden><h3>為什麼和 ping 的結果不一樣？</h3><p>ping 使用 ICMP，瀏覽器送不出去，而且很多網路對 ICMP 的處理和一般流量不同。HTTPS 計時和你日常使用的應用程式走同一條路。數字通常會比 ping 高幾毫秒，因為伺服器需要處理一次請求。</p></article><article data-hqb="4" hidden><h3>狗狗的速度等級是什麼意思？</h3><p>閃電狗 ≤ 30 ms：同城。飛奔 ≤ 80 ms：同一地區。小跑 ≤ 150 ms：幾乎做什麼都夠用。散步 ≤ 300 ms：玩遊戲、視訊通話會有感。趴著睡 &gt; 300 ms：距離遠或線路壅塞。沒叼回來：5 秒內連不上，代表從這裡無法存取。低於 2 ms 可以解鎖傳說中的 1ms 神犬。</p></article><article data-hqb="5" hidden><h3>我的資料會被傳送到哪裡嗎？</h3><p>不會。每個請求都從你的瀏覽器直接送往被測試的服務，1ms.dog 只提供這個靜態頁面，從不接收你的測試結果。上一次的結果只保存在你的瀏覽器裡。分享連結只包含城市、電信業者和延遲，不含 IP 位址。</p></article></div>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="shareDlg" hidden>
+  <div class="dialog share" role="dialog" aria-modal="true" aria-labelledby="shareT">
+    <div class="dlg-h"><h2 id="shareT" data-i="share_h">分享測試結果</h2>
+      <button class="icon-btn" data-close type="button" aria-label="Close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="share-b">
+      <img id="shareImg" alt="" width="1200" height="1000">
+      <div class="share-link"><input id="shareUrl" readonly aria-label="Link"><button class="btn pri" id="copyLink" type="button" data-i="copy_link">複製連結</button></div>
+      <div class="share-acts">
+        <button class="btn" id="copyImg" type="button" data-i="copy_img">複製圖片</button>
+        <button class="btn" id="dlImg" type="button" data-i="dl_img">下載圖片</button>
+        <button class="btn" id="nativeShare" type="button" data-i="more_share" hidden>更多分享方式</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="application/json" id="data">{"lang":"zh-TW","paths":{"en":"/line/","zh-CN":"/zh-cn/line/","zh-TW":"/zh-tw/line/","ja":"/ja/line/","ko":"/ko/line/","es":"/es/line/","fr":"/fr/line/","de":"/de/line/","pt":"/pt/line/","ru":"/ru/line/"},"pack":"tw","spot":"line","set":null}</script>
+<script src="/assets/l.zh-tw.d8feb5a4fd.js" defer></script>
+<script src="/assets/app.d24aa02081.js" defer></script>
+</body>
+</html>
