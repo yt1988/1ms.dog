@@ -14,4 +14,4 @@
 - Me2Cloud: https://m2c.1ms.dog/ (Latency from your browser to 360+ cloud regions: AWS, Azure, Google Cloud, Alibaba and more.)
 - VPS2Cloud: https://v2c.1ms.dog/ (The same test run from your server, to pick where the next one goes.)
 - Lightsail Cost Saver: https://ls.1ms.dog/ (Work out AWS Lightsail transfer allowances and what going over would cost.)
-- IPQS: https://ipqs.1ms.dog/ (Check how clean your IP is: VPN, proxy and data-center flags from a dozen sources, scored A to F.)
+- IP Quality Test: https://ipqs.1ms.dog/ (Check how clean your IP is: VPN, proxy and data-center flags from a dozen sources, scored A to F.)
