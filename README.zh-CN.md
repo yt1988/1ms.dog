@@ -55,6 +55,8 @@ npm run verify     # 检查所有服务地址；用 id=url 试另一个地址
 npm run assets     # 重新生成链接预览图（用 Windows 系统字体）
 ```
 
+1ms.dog 上，每次推送到 `main` 都会自动部署（Cloudflare Workers Builds 先运行 `npm ci && npm test`，`public/` 没有重新生成或测试不通过时不会部署）。
+
 ```
 src/page.html        页面模板
 src/app.js           浏览器端：出口检测、计时、狗狗、结论、分享

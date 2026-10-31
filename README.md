@@ -55,6 +55,8 @@ npm run verify     # check every service URL; try another one with id=url
 npm run assets     # re-render the preview images (Windows system fonts)
 ```
 
+On 1ms.dog, every push to `main` deploys automatically (Cloudflare Workers Builds runs `npm ci && npm test` first, so a stale `public/` or a failing test stops the deploy).
+
 ```
 src/page.html        page template
 src/app.js           browser code: exit checks, timing, the dog, the verdict, sharing
