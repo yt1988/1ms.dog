@@ -80,6 +80,8 @@ export default {
   tool_m2c: "브라우저에서 360개 이상의 클라우드 리전까지 지연 측정: AWS, Azure, Google Cloud 등.",
   tool_v2c: "같은 테스트를 내 서버에서 실행해, 다음 서버를 어디에 둘지 정하세요.",
   tool_ls: "AWS Lightsail 전송량 한도와 초과했을 때의 비용을 계산합니다.",
+  tool_ipqs: "내 IP가 얼마나 깨끗한지: 십여 곳의 VPN·프록시·데이터센터 판정을 A~F로 평가합니다.",
+  ipqs_t: "이 IP의 품질 검사",
 
   faq_h: "작동 방식과 자주 묻는 질문",
   docs: [

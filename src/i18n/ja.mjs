@@ -80,6 +80,8 @@ export default {
   tool_m2c: "ブラウザから 360 以上のクラウドリージョンへの遅延を測定：AWS、Azure、Google Cloud など。",
   tool_v2c: "同じテストをあなたのサーバーから実行。次のサーバーをどこに置くか決められます。",
   tool_ls: "AWS Lightsail の転送量の枠と、超過したときの料金を計算します。",
+  tool_ipqs: "IP がどれだけクリーンか：十数個のソースの VPN・プロキシ・データセンター判定を A〜F で評価します。",
+  ipqs_t: "この IP の品質を調べる",
 
   faq_h: "仕組みとよくある質問",
   docs: [

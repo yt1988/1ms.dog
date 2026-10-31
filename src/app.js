@@ -169,6 +169,8 @@
     el.addEventListener("mouseenter", show); el.addEventListener("focus", show);
     el.addEventListener("mouseleave", hide); el.addEventListener("blur", hide);
   }
+  // each exit address links to its quality check on IPQS (same 1ms.dog site; it opens in the saved language)
+  const ipLink = ip => `<a class="q" href="https://ipqs.1ms.dog/?ip=${encodeURIComponent(ip)}" target="_blank" rel="noopener" title="${esc(t("ipqs_t"))}">${esc(ip)}</a>`;
   function renderExits() {
     // Answers show as they arrive, but only in the one row drawn from the start: the first exit found fills it right
     // away (the placeholder is a real row's height). Further rows, merging and ordering wait for every check and
@@ -180,7 +182,7 @@
     if (!G.length) { ul.innerHTML = `<li class="ex sk-row">${NET.done ? esc(t("no_net")) : `<span class="sk-t">${esc(t("sniff"))}</span>`}</li>`; return; }
     ul.innerHTML = G.map(g => {
       const where = [g.city, g.cc && country(g.cc)].filter(Boolean).join(", ");
-      const ips = [4, 6].map(f => [f, g.ips.filter(ip => fam(ip) === f)]).map(([f, l]) => l.length ? `<span><em>IPv${f}</em>${l.map(esc).join(" · ")}</span>` : "").join("");
+      const ips = [4, 6].map(f => [f, g.ips.filter(ip => fam(ip) === f)]).map(([f, l]) => l.length ? `<span><em>IPv${f}</em>${l.map(ipLink).join(" · ")}</span>` : "").join("");
       const org = g.org ? esc(g.org) + (g.asn ? " · AS" + g.asn : "") : "";
       // which checks saw this exit: a small "!" after the network, hovering (or focusing) it shows the list
       const by = g.by.length ? `<span class="src" tabindex="0" role="img" aria-label="${esc(t("seen_by", { list: g.by.join(", ") }))}">!</span>` : "";

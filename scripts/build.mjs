@@ -24,8 +24,9 @@ const TOOLS = [
   { id: "m2c", host: "m2c.1ms.dog", name: "Me2Cloud", tint: "#3b82f6", icon: '<path d="M1.5 8.5h2.8l1.6-4.5 3.2 8 1.6-3.5h3.8"/>' },
   { id: "v2c", host: "v2c.1ms.dog", name: "VPS2Cloud", tint: "#10b981", icon: '<rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/>' },
   { id: "ls", host: "ls.1ms.dog", name: "Lightsail Cost Saver", tint: "#f59e0b", icon: '<rect x="3" y="1.5" width="10" height="13" rx="2"/><path d="M5.5 4.5h5M5.5 8h0M8 8h0M10.5 8h0M5.5 11h0M8 11h0M10.5 11h0"/>' },
+  { id: "ipqs", host: "ipqs.1ms.dog", name: "IPQS", tint: "#8b5cf6", icon: '<path d="M8 1.5 2.5 3.5v4c0 3.2 2.3 5.8 5.5 7 3.2-1.2 5.5-3.8 5.5-7v-4z"/><path d="M5.5 8l1.8 1.8 3.2-3.3"/>' },
 ];
-const TOOL_PATH = { m2c: { "zh-CN": "/zh-cn/", "zh-TW": "/zh-tw/" }, v2c: { "zh-CN": "/zh-cn/", "zh-TW": "/zh-tw/" }, ls: { "zh-CN": "/zh/", "zh-TW": "/zh-tw/" } };
+const TOOL_PATH = { m2c: { "zh-CN": "/zh-cn/", "zh-TW": "/zh-tw/" }, v2c: { "zh-CN": "/zh-cn/", "zh-TW": "/zh-tw/" }, ls: { "zh-CN": "/zh/", "zh-TW": "/zh-tw/" }, ipqs: {} };
 const toolHome = (id, lang, slug) => (TOOL_PATH[id][lang] || (slug ? "/" + slug + "/" : "/"));
 
 // Runs before first paint: apply the saved theme. On the English root, send visitors to their language's page
@@ -98,7 +99,7 @@ export async function build({ check = false } = {}) {
   // hreflang and sitemap alternates point only at indexed versions (an alternate that is noindex is a search error)
   const altsOf = sub => langs.filter(([l]) => indexed(l, sub));
   const path = (slug, sub) => "/" + (slug ? slug + "/" : "") + (sub ? sub + "/" : "");
-  const RUNTIME_SKIP = new Set(["docs", "egress_link", "seo_title", "seo_desc", "seo_kw", "og_sub", "lede", "lp_title", "lp_desc", "lp_intro", "lp_h1", "lp_kw", "lp_peers", "lp_via", "lp_via_same", "land", "lg_title", "lg_desc", "lg_h1", "lg_kw", "lg_intro", "lg_about", "lg_region", "sm_cats", "sm_regions", "grp_best", "grp_worst", "sitemap_h", "sm_item", "cta_h", "cta_d", "cta_btn", "one_med", "one_cold", "one_jit", "tool_m2c", "tool_v2c", "tool_ls", "foot", "tools_h",
+  const RUNTIME_SKIP = new Set(["docs", "egress_link", "seo_title", "seo_desc", "seo_kw", "og_sub", "lede", "lp_title", "lp_desc", "lp_intro", "lp_h1", "lp_kw", "lp_peers", "lp_via", "lp_via_same", "land", "lg_title", "lg_desc", "lg_h1", "lg_kw", "lg_intro", "lg_about", "lg_region", "sm_cats", "sm_regions", "grp_best", "grp_worst", "sitemap_h", "sm_item", "cta_h", "cta_d", "cta_btn", "one_med", "one_cold", "one_jit", "tool_m2c", "tool_v2c", "tool_ls", "tool_ipqs", "foot", "tools_h",
     "name", "h1", "lang_label", "faq_h", "pack", "exit_h", "test_mine", "share_h", "copy_link", "copy_img", "dl_img", "more_share"]);
   // static text the page already shows, and region names (only the server-rendered picker uses them)
   const runtimeKey = k => !RUNTIME_SKIP.has(k) && !k.startsWith("pk_");

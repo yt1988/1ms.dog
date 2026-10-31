@@ -23,6 +23,8 @@
 .ex .ips { grid-column: 2; font: 12.5px var(--f-num); display: flex; flex-wrap: wrap; gap: 2px 12px; min-width: 0; }
 .ex .ips span { overflow-wrap: anywhere; }
 .ex .ips em { font-style: normal; color: var(--muted); font-family: var(--f-ui); font-size: 11.5px; margin-right: 4px; }
+.ex .ips a.q { text-decoration: none; border-bottom: 1px dotted color-mix(in srgb, var(--muted) 60%, transparent); }
+.ex .ips a.q:hover { color: var(--ink); border-bottom-color: currentColor; }
 /* the placeholder is as tall as one real exit row: most visitors have a single exit, so nothing moves when it arrives */
 .sk-row { display: flex; align-items: center; color: var(--muted); min-height: 56px; }
 .sk-t { animation: blink 1.2s ease-in-out infinite; }
@@ -145,7 +147,7 @@ a.nm:hover { color: var(--ink); text-decoration: underline; text-underline-offse
 
 /* other tools */
 .tools h2 { font-size: 15px; font-weight: 700; margin: 0 0 10px 2px; }
-.tool-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.tool-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .tool { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; text-decoration: none; border-radius: 12px; border: 1px solid var(--line); background: var(--panel); transition: border-color .15s, transform .15s; }
 .tool:hover { border-color: var(--tint); transform: translateY(-1px); }
 .tool b { display: flex; align-items: center; gap: 8px; font-size: 14.5px; }

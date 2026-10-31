@@ -80,6 +80,8 @@ export default {
   tool_m2c: "Latence depuis votre navigateur vers plus de 360 régions cloud : AWS, Azure, Google Cloud et d’autres.",
   tool_v2c: "Le même test depuis votre serveur, pour choisir où placer le prochain.",
   tool_ls: "Calculez le volume de transfert inclus chez AWS Lightsail et le coût d’un dépassement.",
+  tool_ipqs: "Vérifiez si votre IP est propre : signalements VPN, proxy et datacenter d’une douzaine de sources, notés de A à F.",
+  ipqs_t: "Vérifier la qualité de cette IP",
 
   faq_h: "Comment ça marche",
   docs: [
