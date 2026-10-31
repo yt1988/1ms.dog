@@ -179,7 +179,9 @@ button.use:hover, button.use[aria-pressed="true"] { background: var(--soft); col
   .hero { grid-template-columns: minmax(0, 1fr); grid-template-areas: "stage" "l" "sum"; padding: 14px 16px 0; gap: 10px; }
   .stage { height: 140px; }
   .sum { margin: 0 -16px; padding: 14px 16px 16px; grid-template-columns: minmax(0, 1fr); }
-  .stats { gap: 6px; }
+  /* local and global share a row; the overall median gets the full width below, so its sub-line fits */
+  .stats { gap: 6px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #stAll { grid-column: 1 / -1; }
   .stat { padding: 8px 10px 10px; grid-template-columns: minmax(0, 1fr); }
   .stat b { font-size: 22px; }
   .stat i { white-space: normal; }

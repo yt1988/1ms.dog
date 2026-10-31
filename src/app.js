@@ -443,7 +443,7 @@
     const hLines = lastSum.v ? lines(verdictHead(lastSum.v), `700 44px ${F}`, W - P * 2 - 360) : [];
     const dLines = lastSum.v ? lines(verdictText(lastSum.v), `400 24px ${F}`, W - P * 2) : [];
     const hTop = 190, dTop = hTop + (hLines.length - 1) * 54 + 48, sTop = dTop + dLines.length * 34 + 10, SH = 108;
-    const exits = NET.groups.slice(0, 3), eTop = sTop + SH + 46, top = eTop + exits.length * 40 - 18, H = top + colH + 90;
+    const exits = NET.groups.slice(0, 3), eTop = sTop + SH + 46, top = eTop + exits.length * 40 - 18, H = top + colH + 110;
     const c = document.createElement("canvas"); c.width = W; c.height = H;
     const x = c.getContext("2d");
     // the page's own theme colors, so the card matches what the visitor sees (light or dark)
@@ -489,7 +489,7 @@
     cols.forEach((col, i) => {
       let yy = top + 20; const x0 = P + i * (cw + 40);
       for (const g of col) {
-        x.fillStyle = C.muted; x.font = `600 15px ${F}`; x.fillText(g.name.toUpperCase(), x0, yy + 6); yy += GH - 10;
+        x.fillStyle = C.muted; x.font = `600 15px ${F}`; x.fillText(g.name.toUpperCase(), x0, yy + 22); yy += GH;   // the title sits clear of the row above
         for (const sv of g.items) {
           const md = median(R.get(sv.id).s), [, k] = tierOf(md), l0 = x0 + laneX, l1 = x0 + cw - msW - 10, cy = yy + 6;
           x.fillStyle = C.fg; x.font = `400 18px ${F}`; x.fillText(clip(x, sv.name, laneX - 12), x0, yy + 12);
