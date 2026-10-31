@@ -175,15 +175,13 @@ export async function build({ check = false } = {}) {
       const axis = ["zoom", "sprint", "trot", "stroll", "nap"].map((k, i) => `<span class="c${i + 1}"><i></i><b>${esc(T("tier_" + k))}</b>${i < 4 ? "≤ " + ZONES[i] : "> " + ZONES[3]} ms</span>`).join("") +
         `<span class="cx"><i></i><b>${esc(T("tier_lost"))}</b></span>`;
       const tools = TOOLS.map(x => `<a class="tool" href="https://${x.host}${toolHome(x.id, lang, slug)}" style="--tint:${x.tint}"><b><svg viewBox="0 0 16 16" aria-hidden="true">${x.icon}</svg>${esc(x.name)}</b><span>${esc(T("tool_" + x.id))}</span></a>`).join("");
-      // help dialog: in the HTML (crawlers read it), one answer shown at a time
-      const helpNav = docs.map(([q], i) => `<button type="button" role="tab" data-hq="${i}" aria-selected="${i === 0}">${esc(q)}</button>`).join("");
-      const helpC = docs.map(([q, a], i) => `<article data-hqb="${i}"${i ? " hidden" : ""}><h3>${esc(q)}</h3><p>${esc(a)}</p></article>`).join("");
       // the uses row is in the HTML from the start, so it already takes its space while the test runs
       const uses = USES.map(([k]) => `<span class="use">${esc(T("use_" + k))}<b>…</b></span>`).join("");
       // A landing page's own facts: what it is compared with, and which edge network answers (with the other services on
       // it: slow there too means the route to that network, not this service). That makes every landing page different.
-      // The intro stays in the hero; the facts go below the field, so the hero keeps its focus on the result.
-      let intro = "", about = "";
+      // The intro stays in the hero; the facts are the first answer in the "?" dialog (background stays off the page,
+      // and the dialog is in the HTML, so crawlers still read it). [question, answer as HTML]
+      let intro = "", about = null;
       if (s) {
         const join = list => list.join(T("v_join"));
         // compared with the same category, or for a local favorite, the rest of its region's pack
@@ -192,14 +190,18 @@ export async function build({ check = false } = {}) {
         const facts = [fill(T("lp_peers"), { s: s.name, cat: T("cat_" + s.cat), list: join(peers) })];
         if (s.via) facts.push(fill(T(same.length ? "lp_via_same" : "lp_via"), { s: s.name, via: s.via, list: join(same) }));
         intro = `<p class="intro">${esc(fill(T("lp_intro"), { s: s.name }))}</p>`;
-        about = `<section class="about"><h2>${esc(fill(T("lp_h1"), { s: s.name }))}</h2><p>${facts.map(esc).join(" ")}</p></section>`;
+        about = [fill(T("lp_h1"), { s: s.name }), facts.map(esc).join(" ")];
       }
       if (g) {
         intro = `<p class="intro">${esc(fill(T("lg_intro"), { n: g.members.length, g: gn, list: gList.join(T("v_join")) }))}</p>`;
         // links to the members' own pages, where this language has one
         const own = g.members.filter(x => landOf(lang).includes(x.id));
-        if (own.length) about = `<section class="about"><h2>${esc(h1)}</h2><p>${esc(T("lg_about"))} ${own.map(x => `<a href="${path(slug, x.id)}">${esc(fill(T("sm_item"), { s: x.name }))}</a>`).join(T("v_join"))}</p></section>`;
+        if (own.length) about = [h1, `${esc(T("lg_about"))} ${own.map(x => `<a href="${path(slug, x.id)}">${esc(fill(T("sm_item"), { s: x.name }))}</a>`).join(T("v_join"))}`];
       }
+      // help dialog: in the HTML (crawlers read it), one answer shown at a time; a landing page's facts come first
+      const qa = [...(about ? [about] : []), ...docs.map(([q, a]) => [q, esc(a)])];
+      const helpNav = qa.map(([q], i) => `<button type="button" role="tab" data-hq="${i}" aria-selected="${i === 0}">${esc(q)}</button>`).join("");
+      const helpC = qa.map(([q, a], i) => `<article data-hqb="${i}"${i ? " hidden" : ""}><h3>${esc(q)}</h3><p>${a}</p></article>`).join("");
       const langOpts = langs.map(([l]) => `<option value="${l}"${l === lang ? " selected" : ""}>${esc(I[l].name)}</option>`).join("");
       const paths = Object.fromEntries(langs.map(([l, sl]) => [l, path(sl, sub)]));
       const data = { lang, paths, pack: defPack, spot: s ? s.id : null, set: g ? { kind: g.kind, id: g.id, name: gn } : null };
@@ -220,7 +222,7 @@ export async function build({ check = false } = {}) {
         .replace("{{lang}}", lang).replace("{{pathsAttr}}", esc(JSON.stringify(paths))).replace("{{rootAttr}}", slug || sub ? "" : " data-root")
         .replace("{{prepaint}}", PREPAINT).replace("{{head}}", head).replace("{{css}}", cssName).replace("{{js}}", jsName).replace("{{strings}}", sName)
         .split("{{homeHref}}").join(path(slug, "")).replace("{{langOpts}}", langOpts)
-        .replace("{{h1}}", esc(h1)).replace("{{intro}}", intro).replace("{{about}}", about).replace("{{uses}}", uses)
+        .replace("{{h1}}", esc(h1)).replace("{{intro}}", intro).replace("{{uses}}", uses)
         .replace("{{axis}}", axis).replace("{{groups}}", groups).replace("{{tools}}", tools).replace("{{helpNav}}", helpNav).replace("{{helpC}}", helpC)
         .replace("{{data}}", JSON.stringify(data).replace(/</g, "\\u003c"));
       if (/\{\{\w+\}\}/.test(html)) throw new Error("unfilled placeholder in " + path(slug, sub) + ": " + /\{\{\w+\}\}/.exec(html)[0]);

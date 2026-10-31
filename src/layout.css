@@ -178,6 +178,7 @@ a.nm:hover { color: var(--ink); text-decoration: underline; text-underline-offse
 .help-c { padding: 18px 22px 24px; overflow: auto; }
 .help-c h3 { margin: 0 0 10px; font-size: 17px; line-height: 1.35; }
 .help-c p { font-size: 13.5px; line-height: 1.7; }
+.help-c p a { color: var(--ink); text-underline-offset: 3px; }
 .help-pick { display: none; gap: 8px; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--line); }
 .help-pick select { flex: 1; min-width: 0; height: 34px; padding: 0 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--fg); font: 600 16px var(--f-ui); text-overflow: ellipsis; } /* 16px: iOS zooms into smaller fields */
 .help-pick .icon-btn:disabled { opacity: .35; cursor: default; }
@@ -212,11 +213,6 @@ a.nm:hover { color: var(--ink); text-decoration: underline; text-underline-offse
   .help-nav { display: none; }
   .help-b .help-pick { display: flex; }
 }
-
-/* landing pages: what this service is compared with and which network answers it */
-.about { padding: 0 2px; }
-.about h2 { font-size: 15px; font-weight: 700; margin: 0 0 6px; }
-.about p { font-size: 13.5px; color: var(--muted); max-width: 80ch; line-height: 1.6; }
 
 /* single-service page: every sample as a ball on one lane (same log scale and colors as the field) */
 .slane { grid-column: 1 / -1; position: relative; height: 22px; margin: 2px 6px 0; }

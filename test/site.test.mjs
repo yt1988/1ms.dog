@@ -59,6 +59,7 @@ test("home, service and group pages each get their own layout; every page's foot
     assert.equal(h.includes('id="groups"'), !one || data.spot === "telegram", p + ": the field on home and group pages, and on a service page with parts (Telegram's data centers)");
     assert.equal(h.includes('id="stLocal"'), !one && !grp, p + ": local/global split only on home pages");
     assert.doesNotMatch(h, /<!--\/?v[:-]/, p + ": variant markers left in the page");
+    assert.doesNotMatch(h, /class="about"/, p + ": background text lives in the help dialog, not under the field");
     assert.match(h, /<meta name="robots" content="index, follow/, p + ": indexed pages say index");
     // the footer sitemap links every page of the same language
     const lang = (p.match(/^(zh-cn|zh-tw|ja|ko|es|fr|de|pt|ru)\//) || ["", ""])[1], prefix = lang ? lang + "/" : "";
