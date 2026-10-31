@@ -12,7 +12,7 @@ export default {
   h1: "Where you exit, and how far the world is",
 
   exit_h: "Your exit",
-  k_local: "Local", k_proxy: "Proxy", seen_by: "seen by {list}",
+  k_local: "Local", k_proxy: "Proxy", seen_by: "seen by {list}", src_n: "{n} sources",
   sniff: "Sniffing out your exit…",
   hide: "Hide IPs", show: "Show IPs",
   r_tz: "Your clock says {a}, your exit says {b}",

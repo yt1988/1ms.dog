@@ -10,7 +10,7 @@ export default {
   h1: "Por onde sua internet sai, e quão longe fica o mundo",
 
   exit_h: "Sua saída",
-  k_local: "Local", k_proxy: "Proxy", seen_by: "detectada por {list}",
+  k_local: "Local", k_proxy: "Proxy", seen_by: "detectada por {list}", src_n: "{n} fontes",
   sniff: "Farejando sua saída…",
   hide: "Ocultar IPs", show: "Mostrar IPs",
   r_tz: "Seu relógio diz {a}; sua saída, {b}",

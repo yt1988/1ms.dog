@@ -159,10 +159,13 @@
       const where = [g.city, g.cc && country(g.cc)].filter(Boolean).join(", ");
       const ips = [4, 6].map(f => [f, g.ips.filter(ip => fam(ip) === f)]).map(([f, l]) => l.length ? `<span><em>IPv${f}</em>${l.map(esc).join(" · ")}</span>` : "").join("");
       const org = g.org ? esc(g.org) + (g.asn ? " · AS" + g.asn : "") : "";
+      // which checks saw this exit: a small badge after the network ("3 sources"); hover shows them, a tap spells them out
+      const by = g.by.length ? `<button type="button" class="src" title="${esc(t("seen_by", { list: g.by.join(", ") }))}" data-list="${esc(g.by.join(", "))}">${esc(t("src_n", { n: g.by.length }))}</button>` : "";
       return `<li class="ex"><span class="kind ${g.proxy ? "proxy" : "local"}">${esc(t(g.proxy ? "k_proxy" : "k_local"))}</span>` +
-        `<span class="where">${flag(g.cc)}<b>${esc(where || "?")}</b>${org ? `<span class="m">${org}</span>` : ""}</span>` +
-        `<span class="ips">${ips}</span>${g.by.length ? `<span class="by">${esc(t("seen_by", { list: g.by.join(", ") }))}</span>` : ""}</li>`;
+        `<span class="where">${flag(g.cc)}<b>${esc(where || "?")}</b>${org ? `<span class="m">${org}</span>` : ""}${by}</span>` +
+        `<span class="ips">${ips}</span></li>`;
     }).join("");
+    ul.querySelectorAll("button.src").forEach(b => { b.onclick = () => { const o = b.classList.toggle("open"); b.textContent = o ? b.dataset.list : t("src_n", { n: b.dataset.list.split(", ").length }); }; });
     renderNote();
   }
   function renderNote() {

@@ -10,7 +10,7 @@ export default {
   h1: "내 인터넷의 출구, 그리고 세상까지의 거리",
 
   exit_h: "내 출구",
-  k_local: "로컬", k_proxy: "프록시", seen_by: "감지: {list}",
+  k_local: "로컬", k_proxy: "프록시", seen_by: "감지: {list}", src_n: "감지 {n}곳",
   sniff: "출구를 킁킁 찾는 중…",
   hide: "IP 숨기기", show: "IP 보기",
   r_tz: "기기 시간대는 {a}, 출구는 {b}입니다",

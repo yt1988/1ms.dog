@@ -10,7 +10,7 @@ export default {
   h1: "你的网络从哪出去，世界离你有多远",
 
   exit_h: "你的出口",
-  k_local: "本地", k_proxy: "代理", seen_by: "检测来源：{list}",
+  k_local: "本地", k_proxy: "代理", seen_by: "检测来源：{list}", src_n: "{n} 个来源",
   sniff: "正在嗅探你的出口…",
   hide: "隐藏 IP", show: "显示 IP",
   r_tz: "系统时区在{a}，出口却在{b}",

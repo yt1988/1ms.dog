@@ -10,7 +10,7 @@ export default {
   h1: "あなたの出口と、世界までの距離",
 
   exit_h: "あなたの出口",
-  k_local: "ローカル", k_proxy: "プロキシ", seen_by: "検出元：{list}",
+  k_local: "ローカル", k_proxy: "プロキシ", seen_by: "検出元：{list}", src_n: "検出元 {n}",
   sniff: "出口をクンクン調査中…",
   hide: "IP を隠す", show: "IP を表示",
   r_tz: "端末の時刻は{a}、出口は{b}です",

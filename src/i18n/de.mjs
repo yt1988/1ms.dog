@@ -10,7 +10,7 @@ export default {
   h1: "Wo dein Internet hinausgeht und wie weit die Welt ist",
 
   exit_h: "Dein Ausgang",
-  k_local: "Lokal", k_proxy: "Proxy", seen_by: "erkannt von {list}",
+  k_local: "Lokal", k_proxy: "Proxy", seen_by: "erkannt von {list}", src_n: "{n} Quellen",
   sniff: "Erschnüffle deinen Ausgang…",
   hide: "IPs ausblenden", show: "IPs zeigen",
   r_tz: "Deine Uhr steht auf {a}, dein Ausgang liegt in {b}",
