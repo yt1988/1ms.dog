@@ -19,14 +19,19 @@ const pub = new URL("../public/", import.meta.url), src = new URL("../src/", imp
 export const LANGS = [["en", "", "en_US", "na"], ["zh-CN", "zh-cn", "zh_CN", "cn"], ["zh-TW", "zh-tw", "zh_TW", "tw"], ["ja", "ja", "ja_JP", "jp"],
   ["ko", "ko", "ko_KR", "kr"], ["es", "es", "es_ES", "latam"], ["fr", "fr", "fr_FR", "eu"], ["de", "de", "de_DE", "eu"], ["pt", "pt", "pt_BR", "latam"],
   ["ru", "ru", "ru_RU", "ru"]];
-// the other 1ms.dog tools (names, icons and tints as the site's top bar shows them)
+// the other 1ms.dog tools (names, icons and tints as the site's top bar shows them). A name is either a brand
+// (brand: true, the same in every language) or translated into every language, as each tool's own pages name it.
 const TOOLS = [
-  { id: "m2c", host: "m2c.1ms.dog", name: "Me2Cloud", tint: "#3b82f6", icon: '<path d="M1.5 8.5h2.8l1.6-4.5 3.2 8 1.6-3.5h3.8"/>' },
-  { id: "v2c", host: "v2c.1ms.dog", name: "VPS2Cloud", tint: "#10b981", icon: '<rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/>' },
-  { id: "ls", host: "ls.1ms.dog", name: "Lightsail Cost Saver", tint: "#f59e0b", icon: '<rect x="3" y="1.5" width="10" height="13" rx="2"/><path d="M5.5 4.5h5M5.5 8h0M8 8h0M10.5 8h0M5.5 11h0M8 11h0M10.5 11h0"/>' },
+  { id: "m2c", host: "m2c.1ms.dog", name: "Me2Cloud", brand: true, tint: "#3b82f6", icon: '<path d="M1.5 8.5h2.8l1.6-4.5 3.2 8 1.6-3.5h3.8"/>' },
+  { id: "v2c", host: "v2c.1ms.dog", name: "VPS2Cloud", brand: true, tint: "#10b981", icon: '<rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/>' },
+  { id: "ls", host: "ls.1ms.dog", name: { en: "Lightsail Cost Saver", "zh-CN": "Lightsail 省钱计算器", "zh-TW": "Lightsail 省錢計算器", ja: "Lightsail 節約計算機", ko: "Lightsail 절약 계산기", es: "Calculadora de ahorro Lightsail", fr: "Calculateur d’économies Lightsail", de: "Lightsail-Sparrechner", pt: "Calculadora de economia Lightsail", ru: "Калькулятор экономии Lightsail" }, tint: "#f59e0b", icon: '<rect x="3" y="1.5" width="10" height="13" rx="2"/><path d="M5.5 4.5h5M5.5 8h0M8 8h0M10.5 8h0M5.5 11h0M8 11h0M10.5 11h0"/>' },
   { id: "ipqs", host: "ipqs.1ms.dog", name: { en: "IP Quality Test", "zh-CN": "IP 质量测试", "zh-TW": "IP 品質測試", ja: "IP 品質テスト", ko: "IP 품질 테스트", es: "Test de calidad IP", fr: "Test qualité IP", de: "IP-Qualitätstest", pt: "Teste de qualidade IP", ru: "Тест качества IP" }, tint: "#8b5cf6", icon: '<path d="M8 1.5 2.5 3.5v4c0 3.2 2.3 5.8 5.5 7 3.2-1.2 5.5-3.8 5.5-7v-4z"/><path d="M5.5 8l1.8 1.8 3.2-3.3"/>' },
 ];
 const TOOL_PATH = { m2c: { "zh-CN": "/zh-cn/", "zh-TW": "/zh-tw/" }, v2c: { "zh-CN": "/zh-cn/", "zh-TW": "/zh-tw/" }, ls: { "zh-CN": "/zh/", "zh-TW": "/zh-tw/" }, ipqs: {} };
+for (const x of TOOLS) {
+  const miss = x.brand ? [] : LANGS.map(l => l[0]).filter(l => !x.name[l]);
+  if (miss.length) throw new Error(`tool ${x.id}: name not translated for ${miss.join(", ")} (or mark it brand: true)`);
+}
 const toolHome = (id, lang, slug) => (TOOL_PATH[id][lang] || (slug ? "/" + slug + "/" : "/"));
 
 // Runs before first paint: apply the saved theme. On the English root, send visitors to their language's page
@@ -175,7 +180,7 @@ export async function build({ check = false } = {}) {
         : subs ? `<div class="grp solo"><h2>${esc(T("sub_" + s.id))}</h2><ul>${subs.map(row).join("")}</ul>${scale}</div>` : [local, ...cats].join("\n");
       const axis = ["zoom", "sprint", "trot", "stroll", "nap"].map((k, i) => `<span class="c${i + 1}"><i></i><b>${esc(T("tier_" + k))}</b>${i < 4 ? "≤ " + ZONES[i] : "> " + ZONES[3]} ms</span>`).join("") +
         `<span class="cx"><i></i><b>${esc(T("tier_lost"))}</b></span>`;
-      const tools = TOOLS.map(x => `<a class="tool" href="https://${x.host}${toolHome(x.id, lang, slug)}" style="--tint:${x.tint}"><b><svg viewBox="0 0 16 16" aria-hidden="true">${x.icon}</svg>${esc(typeof x.name === "string" ? x.name : x.name[lang] || x.name.en)}</b><span>${esc(T("tool_" + x.id))}</span></a>`).join("");
+      const tools = TOOLS.map(x => `<a class="tool" href="https://${x.host}${toolHome(x.id, lang, slug)}" style="--tint:${x.tint}"><b><svg viewBox="0 0 16 16" aria-hidden="true">${x.icon}</svg>${esc(x.brand ? x.name : x.name[lang])}</b><span>${esc(T("tool_" + x.id))}</span></a>`).join("");
       // the uses row is in the HTML from the start, so it already takes its space while the test runs
       const uses = USES.map(([k]) => `<span class="use">${esc(T("use_" + k))}<b>…</b></span>`).join("");
       // A landing page's own facts: what it is compared with, and which edge network answers (with the other services on
@@ -250,7 +255,7 @@ export async function build({ check = false } = {}) {
 - Speed grades (median HTTPS round trip): 1ms dog < 2 ms, Zoomies ≤ 30, Sprint ≤ 80, Trot ≤ 150, Stroll ≤ 300, Nap > 300, Not back = no connection in 5 s
 
 ## Other 1ms.dog tools
-${TOOLS.map(x => `- ${typeof x.name === "string" ? x.name : x.name.en}: https://${x.host}/ (${en["tool_" + x.id]})`).join("\n")}
+${TOOLS.map(x => `- ${x.brand ? x.name : x.name.en}: https://${x.host}/ (${en["tool_" + x.id]})`).join("\n")}
 `;
 
   // The only inline script is the pre-paint snippet, identical on every page: one hash covers the site.
