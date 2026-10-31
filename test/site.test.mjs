@@ -50,6 +50,20 @@ test("pages carry SEO tags", async () => {
   }
 });
 
+test("single-service pages test one service; every page's footer links them all", async () => {
+  for (const p of pages) {
+    const h = await page(p), one = p.split("/").filter(Boolean).length > (p.match(/^(zh-cn|zh-tw|ja|ko|es|fr|de|pt|ru)\//) ? 1 : 0);
+    assert.equal(h.includes('id="stMed"'), one, p + ": single-service result");
+    assert.equal(h.includes('id="groups"'), !one, p + ": the 40-service field only on home pages");
+    assert.doesNotMatch(h, /<!--\/?(full|one)-->/, p + ": variant markers left in the page");
+    // the footer sitemap links every page of the same language
+    const lang = (p.match(/^(zh-cn|zh-tw|ja|ko|es|fr|de|pt|ru)\//) || ["", ""])[1], prefix = lang ? lang + "/" : "";
+    const same = pages.filter(q => lang ? q.startsWith(prefix) : !/^(zh-cn|zh-tw|ja|ko|es|fr|de|pt|ru)\//.test(q));
+    const nav = /<nav class="sitemap"[^>]*>([\s\S]*?)<\/nav>/.exec(h)[1];
+    for (const q of same) assert.ok(nav.includes(`href="/${q}"`), p + ": footer misses /" + q);
+  }
+});
+
 test("every service and pack is in the page and the local packs cover their countries", async () => {
   const h = await page("");
   for (const s of SERVICES) assert.ok(h.includes(`id="t-${s.id}"`), s.id);

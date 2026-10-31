@@ -5,7 +5,7 @@
 <script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en")location.replace(P[l]+location.hash)})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Test de ping Steam : Steam lent ou en panne depuis votre connexion ? · 1ms.dog</title>
-<meta name="description" content="Testez la latence de Steam depuis votre navigateur : de vrais allers-retours HTTPS vers Steam, votre IP de sortie et votre fournisseur, et 40 autres services pour savoir si le problème vient de Steam ou de votre connexion. Gratuit, sans inscription.">
+<meta name="description" content="Testez la latence de Steam depuis votre navigateur : 10 vrais allers-retours HTTPS vers Steam (médiane, première connexion, gigue), plus votre IP de sortie et votre fournisseur. Gratuit, sans inscription.">
 <meta name="keywords" content="ping Steam, Steam lent, Steam en panne, Steam ne marche pas, latence Steam, lag Steam, test Steam">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="application-name" content="1ms.dog">
@@ -29,7 +29,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="1ms.dog">
 <meta property="og:title" content="Test de ping Steam : Steam lent ou en panne depuis votre connexion ? · 1ms.dog">
-<meta property="og:description" content="Testez la latence de Steam depuis votre navigateur : de vrais allers-retours HTTPS vers Steam, votre IP de sortie et votre fournisseur, et 40 autres services pour savoir si le problème vient de Steam ou de votre connexion. Gratuit, sans inscription.">
+<meta property="og:description" content="Testez la latence de Steam depuis votre navigateur : 10 vrais allers-retours HTTPS vers Steam (médiane, première connexion, gigue), plus votre IP de sortie et votre fournisseur. Gratuit, sans inscription.">
 <meta property="og:url" content="https://1ms.dog/fr/steam/">
 <meta property="og:image" content="https://1ms.dog/og/fr/steam.png">
 <meta property="og:image:width" content="1200">
@@ -46,11 +46,11 @@
 <meta property="og:locale:alternate" content="ru_RU">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Test de ping Steam : Steam lent ou en panne depuis votre connexion ? · 1ms.dog">
-<meta name="twitter:description" content="Testez la latence de Steam depuis votre navigateur : de vrais allers-retours HTTPS vers Steam, votre IP de sortie et votre fournisseur, et 40 autres services pour savoir si le problème vient de Steam ou de votre connexion. Gratuit, sans inscription.">
+<meta name="twitter:description" content="Testez la latence de Steam depuis votre navigateur : 10 vrais allers-retours HTTPS vers Steam (médiane, première connexion, gigue), plus votre IP de sortie et votre fournisseur. Gratuit, sans inscription.">
 <meta name="twitter:image" content="https://1ms.dog/og/fr/steam.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"À quelle vitesse répond Steam depuis votre connexion ?","url":"https://1ms.dog/fr/steam/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"Testez la latence de Steam depuis votre navigateur : de vrais allers-retours HTTPS vers Steam, votre IP de sortie et votre fournisseur, et 40 autres services pour savoir si le problème vient de Steam ou de votre connexion. Gratuit, sans inscription.","inLanguage":"fr","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/fr/"},{"@type":"ListItem","position":2,"name":"Steam","item":"https://1ms.dog/fr/steam/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"À quelle vitesse répond Steam depuis votre connexion ?","url":"https://1ms.dog/fr/steam/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"Testez la latence de Steam depuis votre navigateur : 10 vrais allers-retours HTTPS vers Steam (médiane, première connexion, gigue), plus votre IP de sortie et votre fournisseur. Gratuit, sans inscription.","inLanguage":"fr","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/fr/"},{"@type":"ListItem","position":2,"name":"Steam","item":"https://1ms.dog/fr/steam/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.ccb072a4dd.css">
+<link rel="stylesheet" href="/assets/app.bab2d27376.css">
 </head>
 <body>
 <div class="app">
@@ -82,7 +82,7 @@
     <section class="hero card">
       <div class="hero-l">
         <h1>À quelle vitesse répond Steam depuis votre connexion ?</h1>
-        <p class="intro">Votre navigateur chronomètre de vrais allers-retours HTTPS vers Steam via votre Wi‑Fi, votre fournisseur et tout VPN ou proxy, et les compare à 40 autres services. Si Steam vous semble lent, vous voyez ici si c’est Steam, votre sortie ou tout le reste.</p>
+        <p class="intro">Votre navigateur chronomètre 10 vrais allers-retours HTTPS vers Steam via votre Wi‑Fi, votre fournisseur et tout VPN ou proxy, et affiche la médiane, la première connexion et la gigue.</p>
         <div class="exits" id="exits">
           <div class="ex-h"><span data-i="exit_h">Votre sortie</span><button class="mini" id="eye" type="button" data-i="hide">Masquer les IP</button></div>
           <ul id="exList"><li class="ex sk-row"><span class="sk-t" data-i="sniff">Je renifle votre sortie…</span></li></ul>
@@ -98,40 +98,26 @@
         <span class="ground" aria-hidden="true"></span>
       </div>
       <div class="sum" id="sum">
-        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">Je renifle votre sortie…</p><p class="v-d" id="vText" data-i="v_wait">Une fois les balles revenues, le chien vous dira où ça va vite et où ça traîne.</p></div>
+        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">Je renifle votre sortie…</p><p class="v-d" id="vText">Une fois les mesures faites, vous saurez à quelle vitesse Steam répond d’ici.</p></div>
         <div class="sum-acts">
           <div class="sum-btns">
             <button class="btn pri" id="run" type="button"><span data-i="start">Lancer le test</span></button>
-            <button class="btn" id="deep" type="button" data-i="deep">Test approfondi</button>
-            <button class="btn icon" id="share" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr" data-i="share">Partager</span></button>
           </div>
           <label class="auto"><input type="checkbox" id="auto" checked><span class="sw" aria-hidden="true"></span><span data-i="auto_label">Tester à l’ouverture de la page</span></label>
         </div>
         <div class="prog" id="prog"><i></i></div>
         <div class="stats">
-          <div class="stat" id="stLocal"><em data-i="seg_local">Favoris locaux</em><b>–</b><i></i></div>
-          <div class="stat" id="stGlobal"><em data-i="seg_global">Services mondiaux</em><b>–</b><i></i></div>
-          <div class="stat" id="stAll"><em data-i="med">médiane globale</em><b>–</b><i></i></div>
+          <div class="stat" id="stMed"><em data-i="one_med">Latence (médiane)</em><b>–</b><i></i></div>
+          <div class="stat" id="stCold"><em data-i="one_cold">Première connexion</em><b>–</b><i></i></div>
+          <div class="stat" id="stJit"><em data-i="one_jit">Gigue</em><b>–</b><i></i></div>
         </div>
-        <div class="uses" id="vUses"><span class="use">Jeux<b>…</b></span><span class="use">Appels vidéo<b>…</b></span><span class="use">Streaming<b>…</b></span><span class="use">IA<b>…</b></span><span class="use">Dév<b>…</b></span></div>
+        <div class="slane" id="slane" aria-hidden="true"><span class="trk"></span><span class="dots" id="dots"></span></div>
       </div>
     </section>
 
-    <section class="field card" aria-label="latency">
-      <div class="axis" aria-hidden="true"><span class="c1"><i></i><b>Éclair</b>≤ 30 ms</span><span class="c2"><i></i><b>Sprint</b>≤ 80 ms</span><span class="c3"><i></i><b>Trot</b>≤ 150 ms</span><span class="c4"><i></i><b>Balade</b>≤ 300 ms</span><span class="c5"><i></i><b>Sieste</b>> 300 ms</span><span class="cx"><i></i><b>Pas revenu</b></span></div>
-      <div class="groups" id="groups">
-<div class="grp"><h2>Jeux</h2><ul><li class="row hot" id="t-steam"><span class="nm">Steam</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-playstation"><span class="nm">PlayStation</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-xbox"><span class="nm">Xbox</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-epic"><span class="nm">Epic Games</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>Favoris locaux<label class="sel"><span class="sr">Région</span><select id="pack"><option value="cn">Chine continentale</option><option value="tw">Taïwan · Hong Kong</option><option value="jp">Japon</option><option value="kr">Corée</option><option value="ru">Russie</option><option value="in">Asie du Sud</option><option value="sea">Asie du Sud-Est</option><option value="eu" selected>Europe</option><option value="latam">Amérique latine</option><option value="na">Amérique du Nord</option><option value="me">Moyen-Orient</option></select></label></h2><ul id="localRows"><li class="row" id="t-bbc"><span class="nm">BBC</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-booking"><span class="nm">Booking.com</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-zalando"><span class="nm">Zalando</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-allegro"><span class="nm">Allegro</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>IA</h2><ul><li class="row" id="t-chatgpt"><span class="nm">ChatGPT</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-claude"><span class="nm">Claude</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-gemini"><span class="nm">Gemini</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-copilot"><span class="nm">Copilot</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-grok"><span class="nm">Grok</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-deepseek"><span class="nm">DeepSeek</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>Sites du quotidien</h2><ul><li class="row" id="t-google"><span class="nm">Google</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-apple"><span class="nm">Apple</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-microsoft"><span class="nm">Microsoft</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-wikipedia"><span class="nm">Wikipedia</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-amazon"><span class="nm">Amazon</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-zoom"><span class="nm">Zoom</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>Vidéo et musique</h2><ul><li class="row" id="t-youtube"><span class="nm">YouTube</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-netflix"><span class="nm">Netflix</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-tiktok"><span class="nm">TikTok</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-twitch"><span class="nm">Twitch</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-spotify"><span class="nm">Spotify</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>Réseaux et messageries</h2><ul><li class="row" id="t-x"><span class="nm">X</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-instagram"><span class="nm">Instagram</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-facebook"><span class="nm">Facebook</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-whatsapp"><span class="nm">WhatsApp</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-telegram"><span class="nm">Telegram</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-discord"><span class="nm">Discord</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-reddit"><span class="nm">Reddit</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>Outils de développement</h2><ul><li class="row" id="t-github"><span class="nm">GitHub</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-npm"><span class="nm">npm</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-dockerhub"><span class="nm">Docker Hub</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-pypi"><span class="nm">PyPI</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-huggingface"><span class="nm">Hugging Face</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>Fournisseurs CDN</h2><ul><li class="row" id="t-cloudflare"><span class="nm">Cloudflare</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-fastly"><span class="nm">Fastly</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-akamai"><span class="nm">Akamai</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-cloudfront"><span class="nm">CloudFront</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-      </div>
-    </section>
+    <a class="cta card" href="/fr/"><span><b data-i="cta_h">Et les autres services ?</b><i data-i="cta_d">La page d’accueil teste 40 services d’un coup et vous dit où ça ralentit.</i></span><span class="btn pri" data-i="cta_btn">Tester tous les services</span></a>
 
-    <section class="about"><h2>À quelle vitesse répond Steam depuis votre connexion ?</h2><p>Il est comparé aux autres services de la catégorie Jeux testés ici : PlayStation, Xbox, Epic Games.</p></section>
+    <section class="about"><h2>À quelle vitesse répond Steam depuis votre connexion ?</h2><p>Pour comparer, la page d’accueil teste Steam avec les autres services de la catégorie Jeux : PlayStation, Xbox, Epic Games.</p></section>
 
     <section class="tools">
       <h2 data-i="tools_h">Les autres outils 1ms.dog</h2>
@@ -139,7 +125,10 @@
     </section>
   </main>
 
-  <footer class="foot"><span data-i="foot">Tout s’exécute dans votre navigateur. Sans compte, sans collecte des résultats.</span><span>© 1ms.dog</span></footer>
+  <footer class="foot">
+    <nav class="sitemap" aria-label="sitemap"><b>Tests par service :</b><a href="/fr/">Tester tous les services</a><a href="/fr/chatgpt/">Test de ping ChatGPT</a><a href="/fr/claude/">Test de ping Claude</a><a href="/fr/gemini/">Test de ping Gemini</a><a href="/fr/youtube/">Test de ping YouTube</a><a href="/fr/netflix/">Test de ping Netflix</a><a href="/fr/discord/">Test de ping Discord</a><a href="/fr/twitch/">Test de ping Twitch</a><a href="/fr/steam/" aria-current="page">Test de ping Steam</a><a href="/fr/playstation/">Test de ping PlayStation</a><a href="/fr/github/">Test de ping GitHub</a></nav>
+    <div class="foot-l"><span data-i="foot">Tout s’exécute dans votre navigateur. Sans compte, sans collecte des résultats.</span><span>© 1ms.dog</span></div>
+  </footer>
 </div>
 
 <div class="scrim" id="help" hidden>
@@ -174,7 +163,7 @@
   </div>
 </div>
 <script type="application/json" id="data">{"lang":"fr","paths":{"en":"/steam/","zh-CN":"/zh-cn/steam/","zh-TW":"/zh-tw/steam/","ja":"/ja/steam/","ko":"/ko/steam/","es":"/es/steam/","fr":"/fr/steam/","de":"/de/steam/","pt":"/pt/steam/","ru":"/ru/steam/"},"pack":"eu","spot":"steam"}</script>
-<script src="/assets/l.fr.7b37addb53.js" defer></script>
-<script src="/assets/app.4ee8836a20.js" defer></script>
+<script src="/assets/l.fr.3d769c03ab.js" defer></script>
+<script src="/assets/app.7e99baa498.js" defer></script>
 </body>
 </html>

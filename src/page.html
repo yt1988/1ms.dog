@@ -54,31 +54,48 @@
         <span class="ground" aria-hidden="true"></span>
       </div>
       <div class="sum" id="sum">
-        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff"></p><p class="v-d" id="vText" data-i="v_wait"></p></div>
+        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff"></p><p class="v-d" id="vText">{{waitText}}</p></div>
         <div class="sum-acts">
           <div class="sum-btns">
             <button class="btn pri" id="run" type="button"><span data-i="start"></span></button>
+<!--full-->
             <button class="btn" id="deep" type="button" data-i="deep"></button>
             <button class="btn icon" id="share" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr" data-i="share"></span></button>
+<!--/full-->
           </div>
           <label class="auto"><input type="checkbox" id="auto" checked><span class="sw" aria-hidden="true"></span><span data-i="auto_label"></span></label>
         </div>
         <div class="prog" id="prog"><i></i></div>
+<!--full-->
         <div class="stats">
           <div class="stat" id="stLocal"><em data-i="seg_local"></em><b>–</b><i></i></div>
           <div class="stat" id="stGlobal"><em data-i="seg_global"></em><b>–</b><i></i></div>
           <div class="stat" id="stAll"><em data-i="med"></em><b>–</b><i></i></div>
         </div>
         <div class="uses" id="vUses">{{uses}}</div>
+<!--/full-->
+<!--one-->
+        <div class="stats">
+          <div class="stat" id="stMed"><em data-i="one_med"></em><b>–</b><i></i></div>
+          <div class="stat" id="stCold"><em data-i="one_cold"></em><b>–</b><i></i></div>
+          <div class="stat" id="stJit"><em data-i="one_jit"></em><b>–</b><i></i></div>
+        </div>
+        <div class="slane" id="slane" aria-hidden="true"><span class="trk"></span><span class="dots" id="dots"></span></div>
+<!--/one-->
       </div>
     </section>
 
+<!--full-->
     <section class="field card" aria-label="latency">
       <div class="axis" aria-hidden="true">{{axis}}</div>
       <div class="groups" id="groups">
 {{groups}}
       </div>
     </section>
+<!--/full-->
+<!--one-->
+    <a class="cta card" href="{{homeHref}}"><span><b data-i="cta_h"></b><i data-i="cta_d"></i></span><span class="btn pri" data-i="cta_btn"></span></a>
+<!--/one-->
 
     {{about}}
 
@@ -88,7 +105,10 @@
     </section>
   </main>
 
-  <footer class="foot"><span data-i="foot"></span><span>© 1ms.dog</span></footer>
+  <footer class="foot">
+    <nav class="sitemap" aria-label="sitemap">{{sitemap}}</nav>
+    <div class="foot-l"><span data-i="foot"></span><span>© 1ms.dog</span></div>
+  </footer>
 </div>
 
 <div class="scrim" id="help" hidden>

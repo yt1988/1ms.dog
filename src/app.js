@@ -190,10 +190,12 @@
   const PACKS = SVC.packs, PACK_OF = SVC.packOf;
   let pack = D.pack;
   const rowHtml = s => `<li class="row" id="t-${s.id}"><span class="nm">${esc(s.name)}</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li>`;
-  const allServices = () => [...(PACKS[pack] || []), ...SVC.list];
+  // a single-service page (/chatgpt/, /zh-cn/dockerhub/…) tests only that service, more thoroughly
+  const ONE = D.spot ? SVC.list.find(s => s.id === D.spot) : null, ONE_N = 10;
+  const allServices = () => ONE ? [ONE] : [...(PACKS[pack] || []), ...SVC.list];
   function showPack(p) { pack = p; $("#localRows").innerHTML = PACKS[p].map(rowHtml).join(""); $("#pack").value = p; }
-  { const saved = store.get(K.pack); if (saved && PACKS[saved] && saved !== pack) showPack(saved); }
-  function pickPack(cc) { const p = PACK_OF[cc]; if (!store.get(K.pack) && p && p !== pack) setPack(p, false); }
+  if (!ONE) { const saved = store.get(K.pack); if (saved && PACKS[saved] && saved !== pack) showPack(saved); }
+  function pickPack(cc) { const p = PACK_OF[cc]; if (!ONE && !store.get(K.pack) && p && p !== pack) setPack(p, false); }
   function setPack(p, user) {
     if (!PACKS[p]) return;
     if (user) store.set(K.pack, p);
@@ -202,7 +204,7 @@
     if (RUN && RUN.full) { RUN.q.unshift(...PACKS[p]); RUN.n += PACKS[p].length; }   // joins the run in progress
     else if (!RUN && LAST_DONE) runList(PACKS[p], 3, false);
   }
-  $("#pack").onchange = e => setPack(e.target.value, true);
+  if (!ONE) $("#pack").onchange = e => setPack(e.target.value, true);
 
   /* ---------- probing ---------- */
   // Same method as Me2Cloud: one uncounted request opens DNS + TCP + TLS, then each timed request reuses that
@@ -240,6 +242,7 @@
       if (signal.aborted) break;
       r.s.push(v == null ? null : Math.round(v * 10) / 10);
       fails = v == null ? fails + 1 : 0;
+      if (ONE) paintOne();                                    // a single service shows every sample as it lands
     }
     r.st = signal.aborted ? "stop" : "done";
     paintRow(s);                                              // the ball flies out once, when the result is in
@@ -275,16 +278,17 @@
     summarize(!ctl.signal.aborted);
   }
   function progress(run) {
-    $("#prog i").style.width = run ? (100 * run.d / run.n).toFixed(1) + "%" : "0";
-    if (!run) return;
+    $("#prog i").style.width = run && !ONE ? (100 * run.d / run.n).toFixed(1) + "%" : "0";
+    if (!run || ONE) return;
     $("#vHead").textContent = t("running", { d: run.d, n: run.n });
     paintStats();                                             // the three numbers move while the balls come back
   }
-  function setBusy(b) { $("#run span").textContent = t(b ? "stop" : "run"); $("#deep").disabled = b; }
+  function setBusy(b) { $("#run span").textContent = t(b ? "stop" : "run"); if ($("#deep")) $("#deep").disabled = b; }
   let lastSum = null;
   const moodKey = () => lastSum ? "mood_" + lastSum.mood : RUN ? "mood_run" : "mood_sniff";
   // the stats row: local favorites, global services, and the overall median with how many came back
   function paintStats() {
+    if (ONE) return paintOne();
     const cell = (id, sg) => {
       const el = $(id), [tk, cls] = tierOf(sg.md);
       el.querySelector("b").innerHTML = sg.md != null ? `${fmt(sg.md)}<small>ms</small>` : sg.n ? "✕" : "–";
@@ -298,6 +302,7 @@
     return all;
   }
   function summarize() {
+    if (ONE) return summarizeOne();
     // The overall median only describes this sample of services. The verdict, which splits local favorites,
     // global services and failures, decides the headline and what the dog says.
     const all = paintStats(), v = verdict();
@@ -331,6 +336,7 @@
     return s;
   }
   function renderVerdict(v) {
+    if (ONE) { $("#vHead").textContent = t("running_one", { s: ONE.name, d: 0, n: ONE_N }); $("#vText").textContent = t("v_one_wait", { s: ONE.name }); return; }
     $("#vHead").textContent = v ? verdictHead(v) : t("running", { d: 0, n: allServices().length });
     // while testing, the same lines hold placeholders, so nothing moves when the verdict arrives
     $("#vText").textContent = v ? verdictText(v) : t("v_wait");
@@ -343,11 +349,12 @@
   let pinned = null;
   const mark = ids => document.querySelectorAll(".row").forEach(r => r.classList.toggle("hl", !!ids && ids.includes(r.id.slice(2))));
   const useOf = e => e.target.closest && e.target.closest("button.use");
-  $("#vUses").addEventListener("mouseover", e => { const b = useOf(e); if (b) mark(b.dataset.ids.split(",")); });
-  $("#vUses").addEventListener("mouseout", e => { if (useOf(e)) mark(pinned); });
-  $("#vUses").addEventListener("focusin", e => { const b = useOf(e); if (b) mark(b.dataset.ids.split(",")); });
-  $("#vUses").addEventListener("focusout", () => mark(pinned));
-  $("#vUses").addEventListener("click", e => {                // a tap pins the highlight (phones have no hover)
+  const usesEl = $("#vUses") || document.createElement("div");   // absent on a single-service page
+  usesEl.addEventListener("mouseover", e => { const b = useOf(e); if (b) mark(b.dataset.ids.split(",")); });
+  usesEl.addEventListener("mouseout", e => { if (useOf(e)) mark(pinned); });
+  usesEl.addEventListener("focusin", e => { const b = useOf(e); if (b) mark(b.dataset.ids.split(",")); });
+  usesEl.addEventListener("focusout", () => mark(pinned));
+  usesEl.addEventListener("click", e => {                     // a tap pins the highlight (phones have no hover)
     const b = useOf(e); if (!b) return;
     const ids = b.dataset.ids.split(",");
     pinned = pinned && pinned.join() === ids.join() ? null : ids;
@@ -355,11 +362,39 @@
     mark(pinned || ids);
   });
 
+  /* ---------- a single service ---------- */
+  function paintOne() {
+    const r = R.get(ONE.id) || { s: [], w: null, st: "" }, ok = r.s.filter(v => v != null), md = median(ok), [tk, cls] = tierOf(md);
+    const cell = (id, v, sub, c, pre = "") => {
+      const b = $(id + " b");
+      b.innerHTML = v != null ? `${pre}${fmt(v)}<small>ms</small>` : r.st === "done" ? "✕" : "–"; b.className = v != null ? c || "" : "cx";
+      $(id + " i").textContent = sub;
+    };
+    cell("#stMed", md, md != null ? t("tier_" + tk) : r.st === "done" ? t("tier_lost") : "", cls);
+    cell("#stCold", r.w, r.w != null ? "DNS + TCP + TLS" : "");
+    cell("#stJit", ok.length > 1 ? jitter(ok) : null, ok.length ? t("one_samples", { n: ok.length }) : "", "", "±");
+    // every sample is a ball on the lane, the median a bigger one
+    const at = v => (pos(v) * 100).toFixed(1) + "%";
+    $("#dots").innerHTML = ok.map(v => `<i class="${tierOf(v)[1]}" style="left:${at(v)}"></i>`).join("") + (md != null ? `<b class="${cls}" style="left:${at(md)}"></b>` : "");
+    if (r.st === "run") { $("#vHead").textContent = t("running_one", { s: ONE.name, d: r.s.length, n: ONE_N }); $("#prog i").style.width = (100 * r.s.length / ONE_N) + "%"; }
+    return { md, ok: ok.length ? 1 : 0, n: 1 };
+  }
+  function summarizeOne() {
+    const r = R.get(ONE.id), ok = r ? r.s.filter(v => v != null) : [], md = median(ok), [tk] = tierOf(md);
+    paintOne();
+    const key = md == null ? "lost" : md <= 80 ? "fast" : md <= 150 ? "ok" : md <= 300 ? "slow" : "far";
+    $("#vHead").textContent = md == null ? t("vh_one_lost", { s: ONE.name }) : t("vh_one", { s: ONE.name, tier: t("tier_" + tk) });
+    $("#vText").textContent = t("v_one_" + key, { s: ONE.name });
+    const mood = md == null ? "lost" : tk;
+    lastSum = { md, ok: ok.length ? 1 : 0, n: 1, tier: tk, mood };
+    setMood(mood); say("mood_" + mood);
+    $("#prog i").style.width = "0";
+  }
+
   /* ---------- controls ---------- */
-  const start = n => { for (const s of allServices()) { R.delete(s.id); paintRow(s); } lastSum = null; renderVerdict(null); paintStats(); runList(allServices(), n, true); };
+  const start = n => { if (ONE) n = ONE_N; for (const s of allServices()) { R.delete(s.id); paintRow(s); } lastSum = null; renderVerdict(null); paintStats(); runList(allServices(), n, true); };
   $("#run").onclick = () => { if (RUN) { RUN.ctl.abort(); return; } leaveShared(); start(3); };
-  $("#deep").title = t("deep_t");
-  $("#deep").onclick = () => { leaveShared(); start(10); };
+  if ($("#deep")) { $("#deep").title = t("deep_t"); $("#deep").onclick = () => { leaveShared(); start(10); }; }
 
   /* ---------- dialogs ---------- */
   const $$ = s => [...document.querySelectorAll(s)];
@@ -403,8 +438,8 @@
   }
   const whereOf = g => g ? [g.city, g.cc && country(g.cc)].filter(Boolean).join(", ") : "";
   let shareBlob = null;
-  $("#share").title = t("share");
-  $("#share").onclick = async () => {
+  if ($("#share")) $("#share").title = t("share");
+  if ($("#share")) $("#share").onclick = async () => {
     if (!lastSum) return;
     const long = location.origin + location.pathname + shareHash();
     $("#shareUrl").value = long; $("#shareImg").removeAttribute("src");
@@ -523,7 +558,7 @@
 
   /* ---------- a shared result ---------- */
   // Opening a shared link shows that result and doesn't test until the visitor asks for their own
-  const SHARED = parseHash(location.hash);
+  const SHARED = ONE ? null : parseHash(location.hash);   // shared results open on the home page
   function showShared(S) {
     if (S.pack !== pack) showPack(S.pack);
     NET.groups = S.groups; NET.done = true; renderExits(); $("#eye").hidden = true;
@@ -549,7 +584,7 @@
   // with the switch off, the exit check still runs (a few small requests); the 40-service test waits for "Start"
   function waitForClick() {
     if (RUN || lastSum) return;
-    $("#vHead").textContent = t("vh_manual"); $("#vText").textContent = t("v_manual");
+    $("#vHead").textContent = t("vh_manual"); $("#vText").textContent = ONE ? t("v_one_wait", { s: ONE.name }) : t("v_manual");
     setMood("idle"); say("mood_idle");
   }
 

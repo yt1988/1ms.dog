@@ -5,7 +5,7 @@
 <script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en")location.replace(P[l]+location.hash)})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Discord の Ping・遅延テスト｜Discord が重い・つながらない原因をチェック · 1ms.dog</title>
-<meta name="description" content="ブラウザから Discord の応答速度を測定：Discord への本物の HTTPS 往復時間、あなたの出口 IP とプロバイダ、さらに他の 40 サービスと比較して、Discord 側の問題か回線の問題かを確認できます。無料・登録不要。">
+<meta name="description" content="ブラウザから Discord の遅延を測定：Discord への本物の HTTPS 往復を 10 回測り、中央値・初回接続・ジッターと、あなたの出口 IP・プロバイダを表示します。無料・登録不要。">
 <meta name="keywords" content="Discord 重い, Discord 遅い, Discord つながらない, Discord Ping, Discord 遅延, Discord 障害, Discord 接続テスト">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="application-name" content="1ms.dog">
@@ -28,7 +28,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="1ms.dog">
 <meta property="og:title" content="Discord の Ping・遅延テスト｜Discord が重い・つながらない原因をチェック · 1ms.dog">
-<meta property="og:description" content="ブラウザから Discord の応答速度を測定：Discord への本物の HTTPS 往復時間、あなたの出口 IP とプロバイダ、さらに他の 40 サービスと比較して、Discord 側の問題か回線の問題かを確認できます。無料・登録不要。">
+<meta property="og:description" content="ブラウザから Discord の遅延を測定：Discord への本物の HTTPS 往復を 10 回測り、中央値・初回接続・ジッターと、あなたの出口 IP・プロバイダを表示します。無料・登録不要。">
 <meta property="og:url" content="https://1ms.dog/ja/discord/">
 <meta property="og:image" content="https://1ms.dog/og/ja/discord.png">
 <meta property="og:image:width" content="1200">
@@ -44,11 +44,11 @@
 <meta property="og:locale:alternate" content="ru_RU">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Discord の Ping・遅延テスト｜Discord が重い・つながらない原因をチェック · 1ms.dog">
-<meta name="twitter:description" content="ブラウザから Discord の応答速度を測定：Discord への本物の HTTPS 往復時間、あなたの出口 IP とプロバイダ、さらに他の 40 サービスと比較して、Discord 側の問題か回線の問題かを確認できます。無料・登録不要。">
+<meta name="twitter:description" content="ブラウザから Discord の遅延を測定：Discord への本物の HTTPS 往復を 10 回測り、中央値・初回接続・ジッターと、あなたの出口 IP・プロバイダを表示します。無料・登録不要。">
 <meta name="twitter:image" content="https://1ms.dog/og/ja/discord.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"あなたの回線から Discord はどれくらい速い？","url":"https://1ms.dog/ja/discord/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"ブラウザから Discord の応答速度を測定：Discord への本物の HTTPS 往復時間、あなたの出口 IP とプロバイダ、さらに他の 40 サービスと比較して、Discord 側の問題か回線の問題かを確認できます。無料・登録不要。","inLanguage":"ja","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/ja/"},{"@type":"ListItem","position":2,"name":"Discord","item":"https://1ms.dog/ja/discord/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"あなたの回線から Discord はどれくらい速い？","url":"https://1ms.dog/ja/discord/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"ブラウザから Discord の遅延を測定：Discord への本物の HTTPS 往復を 10 回測り、中央値・初回接続・ジッターと、あなたの出口 IP・プロバイダを表示します。無料・登録不要。","inLanguage":"ja","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/ja/"},{"@type":"ListItem","position":2,"name":"Discord","item":"https://1ms.dog/ja/discord/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.ccb072a4dd.css">
+<link rel="stylesheet" href="/assets/app.bab2d27376.css">
 </head>
 <body>
 <div class="app">
@@ -80,7 +80,7 @@
     <section class="hero card">
       <div class="hero-l">
         <h1>あなたの回線から Discord はどれくらい速い？</h1>
-        <p class="intro">ブラウザが実際の Wi‑Fi、プロバイダ、VPN やプロキシを通して Discord への HTTPS 往復時間を測り、他の 40 サービスと比較します。Discord が重いと感じたら、原因が Discord なのか、出口なのか、全体なのかがわかります。</p>
+        <p class="intro">ブラウザが実際の Wi‑Fi、プロバイダ、VPN やプロキシを通して Discord への HTTPS 往復を 10 回測り、中央値・初回接続・ジッターを表示します。</p>
         <div class="exits" id="exits">
           <div class="ex-h"><span data-i="exit_h">あなたの出口</span><button class="mini" id="eye" type="button" data-i="hide">IP を隠す</button></div>
           <ul id="exList"><li class="ex sk-row"><span class="sk-t" data-i="sniff">出口をクンクン調査中…</span></li></ul>
@@ -96,40 +96,26 @@
         <span class="ground" aria-hidden="true"></span>
       </div>
       <div class="sum" id="sum">
-        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">出口をクンクン調査中…</p><p class="v-d" id="vText" data-i="v_wait">ボールが全部戻ったら、どこが速くてどこが遅いかを犬が教えてくれます。</p></div>
+        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">出口をクンクン調査中…</p><p class="v-d" id="vText">測定が終わると、ここから Discord までの速さがわかります。</p></div>
         <div class="sum-acts">
           <div class="sum-btns">
             <button class="btn pri" id="run" type="button"><span data-i="start">テスト開始</span></button>
-            <button class="btn" id="deep" type="button" data-i="deep">精密テスト</button>
-            <button class="btn icon" id="share" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr" data-i="share">シェア</span></button>
           </div>
           <label class="auto"><input type="checkbox" id="auto" checked><span class="sw" aria-hidden="true"></span><span data-i="auto_label">ページを開いたら自動でテスト</span></label>
         </div>
         <div class="prog" id="prog"><i></i></div>
         <div class="stats">
-          <div class="stat" id="stLocal"><em data-i="seg_local">地域の定番</em><b>–</b><i></i></div>
-          <div class="stat" id="stGlobal"><em data-i="seg_global">世界のサービス</em><b>–</b><i></i></div>
-          <div class="stat" id="stAll"><em data-i="med">全体の中央値</em><b>–</b><i></i></div>
+          <div class="stat" id="stMed"><em data-i="one_med">遅延（中央値）</em><b>–</b><i></i></div>
+          <div class="stat" id="stCold"><em data-i="one_cold">初回接続</em><b>–</b><i></i></div>
+          <div class="stat" id="stJit"><em data-i="one_jit">ジッター</em><b>–</b><i></i></div>
         </div>
-        <div class="uses" id="vUses"><span class="use">ゲーム<b>…</b></span><span class="use">ビデオ通話<b>…</b></span><span class="use">動画<b>…</b></span><span class="use">AI ツール<b>…</b></span><span class="use">開発ツール<b>…</b></span></div>
+        <div class="slane" id="slane" aria-hidden="true"><span class="trk"></span><span class="dots" id="dots"></span></div>
       </div>
     </section>
 
-    <section class="field card" aria-label="latency">
-      <div class="axis" aria-hidden="true"><span class="c1"><i></i><b>爆走</b>≤ 30 ms</span><span class="c2"><i></i><b>ダッシュ</b>≤ 80 ms</span><span class="c3"><i></i><b>トコトコ</b>≤ 150 ms</span><span class="c4"><i></i><b>おさんぽ</b>≤ 300 ms</span><span class="c5"><i></i><b>おひるね</b>> 300 ms</span><span class="cx"><i></i><b>戻らず</b></span></div>
-      <div class="groups" id="groups">
-<div class="grp"><h2>SNS・チャット</h2><ul><li class="row" id="t-x"><span class="nm">X</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-instagram"><span class="nm">Instagram</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-facebook"><span class="nm">Facebook</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-whatsapp"><span class="nm">WhatsApp</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-telegram"><span class="nm">Telegram</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row hot" id="t-discord"><span class="nm">Discord</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-reddit"><span class="nm">Reddit</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>地域の定番<label class="sel"><span class="sr">地域</span><select id="pack"><option value="cn">中国本土</option><option value="tw">台湾・香港</option><option value="jp" selected>日本</option><option value="kr">韓国</option><option value="ru">ロシア</option><option value="in">南アジア</option><option value="sea">東南アジア</option><option value="eu">ヨーロッパ</option><option value="latam">中南米</option><option value="na">北米</option><option value="me">中東</option></select></label></h2><ul id="localRows"><li class="row" id="t-yahoo-jp"><span class="nm">Yahoo! JAPAN</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-line"><span class="nm">LINE</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-rakuten"><span class="nm">楽天</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-niconico"><span class="nm">ニコニコ</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>AI</h2><ul><li class="row" id="t-chatgpt"><span class="nm">ChatGPT</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-claude"><span class="nm">Claude</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-gemini"><span class="nm">Gemini</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-copilot"><span class="nm">Copilot</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-grok"><span class="nm">Grok</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-deepseek"><span class="nm">DeepSeek</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>よく使うサイト</h2><ul><li class="row" id="t-google"><span class="nm">Google</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-apple"><span class="nm">Apple</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-microsoft"><span class="nm">Microsoft</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-wikipedia"><span class="nm">Wikipedia</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-amazon"><span class="nm">Amazon</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-zoom"><span class="nm">Zoom</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>動画・音楽</h2><ul><li class="row" id="t-youtube"><span class="nm">YouTube</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-netflix"><span class="nm">Netflix</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-tiktok"><span class="nm">TikTok</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-twitch"><span class="nm">Twitch</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-spotify"><span class="nm">Spotify</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>開発ツール</h2><ul><li class="row" id="t-github"><span class="nm">GitHub</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-npm"><span class="nm">npm</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-dockerhub"><span class="nm">Docker Hub</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-pypi"><span class="nm">PyPI</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-huggingface"><span class="nm">Hugging Face</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>ゲーム</h2><ul><li class="row" id="t-steam"><span class="nm">Steam</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-playstation"><span class="nm">PlayStation</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-xbox"><span class="nm">Xbox</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-epic"><span class="nm">Epic Games</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>CDN</h2><ul><li class="row" id="t-cloudflare"><span class="nm">Cloudflare</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-fastly"><span class="nm">Fastly</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-akamai"><span class="nm">Akamai</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-cloudfront"><span class="nm">CloudFront</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-      </div>
-    </section>
+    <a class="cta card" href="/ja/"><span><b data-i="cta_h">ほかのサービスはどう？</b><i data-i="cta_d">トップページでは 40 サービスを一度に測り、どこが遅いかを教えます。</i></span><span class="btn pri" data-i="cta_btn">全サービスを測る</span></a>
 
-    <section class="about"><h2>あなたの回線から Discord はどれくらい速い？</h2><p>ここでは他のSNS・チャットサービスも同時に測るので比較できます：X、Instagram、Facebook、WhatsApp、Telegram、Reddit。 Discord は Cloudflare のネットワークが応答し、往復の終点は最寄りの Cloudflare の拠点です。ChatGPT、Claude、Copilot、Grok、Zoom、npm、Epic Games、Cloudflare も同じネットワークなので、それらも遅ければ原因は Discord ではなく Cloudflare までの経路です。</p></section>
+    <section class="about"><h2>あなたの回線から Discord はどれくらい速い？</h2><p>比べたいときは、トップページで Discord と他のSNS・チャットサービスをまとめて測れます：X、Instagram、Facebook、WhatsApp、Telegram、Reddit。 Discord は Cloudflare のネットワークが応答し、往復の終点は最寄りの Cloudflare の拠点です。ChatGPT、Claude、Copilot、Grok、Zoom、npm、Epic Games、Cloudflare も同じネットワークなので、それらも遅ければ原因は Discord ではなく Cloudflare までの経路です。</p></section>
 
     <section class="tools">
       <h2 data-i="tools_h">1ms.dog のほかのツール</h2>
@@ -137,7 +123,10 @@
     </section>
   </main>
 
-  <footer class="foot"><span data-i="foot">すべてブラウザ内で動作します。アカウント不要、結果は収集しません。</span><span>© 1ms.dog</span></footer>
+  <footer class="foot">
+    <nav class="sitemap" aria-label="sitemap"><b>サービス別の測定：</b><a href="/ja/">全サービスを測る</a><a href="/ja/chatgpt/">ChatGPT の遅延テスト</a><a href="/ja/claude/">Claude の遅延テスト</a><a href="/ja/gemini/">Gemini の遅延テスト</a><a href="/ja/youtube/">YouTube の遅延テスト</a><a href="/ja/netflix/">Netflix の遅延テスト</a><a href="/ja/x/">X の遅延テスト</a><a href="/ja/discord/" aria-current="page">Discord の遅延テスト</a><a href="/ja/steam/">Steam の遅延テスト</a><a href="/ja/playstation/">PlayStation の遅延テスト</a><a href="/ja/github/">GitHub の遅延テスト</a></nav>
+    <div class="foot-l"><span data-i="foot">すべてブラウザ内で動作します。アカウント不要、結果は収集しません。</span><span>© 1ms.dog</span></div>
+  </footer>
 </div>
 
 <div class="scrim" id="help" hidden>
@@ -172,7 +161,7 @@
   </div>
 </div>
 <script type="application/json" id="data">{"lang":"ja","paths":{"en":"/discord/","zh-CN":"/zh-cn/discord/","zh-TW":"/zh-tw/discord/","ja":"/ja/discord/","ko":"/ko/discord/","es":"/es/discord/","fr":"/fr/discord/","de":"/de/discord/","pt":"/pt/discord/","ru":"/ru/discord/"},"pack":"jp","spot":"discord"}</script>
-<script src="/assets/l.ja.5453fb60c9.js" defer></script>
-<script src="/assets/app.4ee8836a20.js" defer></script>
+<script src="/assets/l.ja.3a97345e5a.js" defer></script>
+<script src="/assets/app.7e99baa498.js" defer></script>
 </body>
 </html>

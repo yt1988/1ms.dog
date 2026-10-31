@@ -5,7 +5,7 @@
 <script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en")location.replace(P[l]+location.hash)})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>GitHub 延遲測試：GitHub 很慢、連不上？線上檢測 · 1ms.dog</title>
-<meta name="description" content="在瀏覽器裡測試 GitHub 的真實延遲：到 GitHub 的 HTTPS 往返時間、你的出口 IP 和電信業者，並與另外 40 個常用服務比較，看清是 GitHub 慢還是網路慢。免費，免註冊。">
+<meta name="description" content="在瀏覽器裡測試 GitHub 的真實延遲：10 次到 GitHub 的 HTTPS 往返，給出中位數、首次連線耗時和抖動，以及你的出口 IP 和電信業者。免費，免註冊。">
 <meta name="keywords" content="GitHub延遲, GitHub測速, GitHub ping, GitHub很慢, GitHub連不上, GitHub連線測試, GitHub lag">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="application-name" content="1ms.dog">
@@ -27,7 +27,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="1ms.dog">
 <meta property="og:title" content="GitHub 延遲測試：GitHub 很慢、連不上？線上檢測 · 1ms.dog">
-<meta property="og:description" content="在瀏覽器裡測試 GitHub 的真實延遲：到 GitHub 的 HTTPS 往返時間、你的出口 IP 和電信業者，並與另外 40 個常用服務比較，看清是 GitHub 慢還是網路慢。免費，免註冊。">
+<meta property="og:description" content="在瀏覽器裡測試 GitHub 的真實延遲：10 次到 GitHub 的 HTTPS 往返，給出中位數、首次連線耗時和抖動，以及你的出口 IP 和電信業者。免費，免註冊。">
 <meta property="og:url" content="https://1ms.dog/zh-tw/github/">
 <meta property="og:image" content="https://1ms.dog/og/zh-tw/github.png">
 <meta property="og:image:width" content="1200">
@@ -42,11 +42,11 @@
 <meta property="og:locale:alternate" content="ru_RU">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="GitHub 延遲測試：GitHub 很慢、連不上？線上檢測 · 1ms.dog">
-<meta name="twitter:description" content="在瀏覽器裡測試 GitHub 的真實延遲：到 GitHub 的 HTTPS 往返時間、你的出口 IP 和電信業者，並與另外 40 個常用服務比較，看清是 GitHub 慢還是網路慢。免費，免註冊。">
+<meta name="twitter:description" content="在瀏覽器裡測試 GitHub 的真實延遲：10 次到 GitHub 的 HTTPS 往返，給出中位數、首次連線耗時和抖動，以及你的出口 IP 和電信業者。免費，免註冊。">
 <meta name="twitter:image" content="https://1ms.dog/og/zh-tw/github.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"從你的網路連 GitHub 有多快？","url":"https://1ms.dog/zh-tw/github/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在瀏覽器裡測試 GitHub 的真實延遲：到 GitHub 的 HTTPS 往返時間、你的出口 IP 和電信業者，並與另外 40 個常用服務比較，看清是 GitHub 慢還是網路慢。免費，免註冊。","inLanguage":"zh-TW","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/zh-tw/"},{"@type":"ListItem","position":2,"name":"GitHub","item":"https://1ms.dog/zh-tw/github/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"從你的網路連 GitHub 有多快？","url":"https://1ms.dog/zh-tw/github/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在瀏覽器裡測試 GitHub 的真實延遲：10 次到 GitHub 的 HTTPS 往返，給出中位數、首次連線耗時和抖動，以及你的出口 IP 和電信業者。免費，免註冊。","inLanguage":"zh-TW","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/zh-tw/"},{"@type":"ListItem","position":2,"name":"GitHub","item":"https://1ms.dog/zh-tw/github/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.ccb072a4dd.css">
+<link rel="stylesheet" href="/assets/app.bab2d27376.css">
 </head>
 <body>
 <div class="app">
@@ -78,7 +78,7 @@
     <section class="hero card">
       <div class="hero-l">
         <h1>從你的網路連 GitHub 有多快？</h1>
-        <p class="intro">你的瀏覽器經過真實的 Wi‑Fi、電信業者以及 VPN 或代理，測量到 GitHub 的 HTTPS 往返時間，並與另外 40 個服務比較。如果你覺得 GitHub 很慢，這裡能看出是 GitHub 的問題、出口的問題，還是整體都慢。</p>
+        <p class="intro">你的瀏覽器經過真實的 Wi‑Fi、電信業者以及 VPN 或代理，連續測量 10 次到 GitHub 的 HTTPS 往返時間，給出中位數、首次連線耗時和抖動。</p>
         <div class="exits" id="exits">
           <div class="ex-h"><span data-i="exit_h">你的出口</span><button class="mini" id="eye" type="button" data-i="hide">隱藏 IP</button></div>
           <ul id="exList"><li class="ex sk-row"><span class="sk-t" data-i="sniff">正在嗅探你的出口…</span></li></ul>
@@ -94,40 +94,26 @@
         <span class="ground" aria-hidden="true"></span>
       </div>
       <div class="sum" id="sum">
-        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">正在嗅探你的出口…</p><p class="v-d" id="vText" data-i="v_wait">球都叼回來後，狗狗會告訴你哪裡快、哪裡慢。</p></div>
+        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">正在嗅探你的出口…</p><p class="v-d" id="vText">取樣完成後，告訴你從這裡連 GitHub 有多快。</p></div>
         <div class="sum-acts">
           <div class="sum-btns">
             <button class="btn pri" id="run" type="button"><span data-i="start">開始測試</span></button>
-            <button class="btn" id="deep" type="button" data-i="deep">精細測試</button>
-            <button class="btn icon" id="share" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr" data-i="share">分享</span></button>
           </div>
           <label class="auto"><input type="checkbox" id="auto" checked><span class="sw" aria-hidden="true"></span><span data-i="auto_label">開啟頁面時自動測試</span></label>
         </div>
         <div class="prog" id="prog"><i></i></div>
         <div class="stats">
-          <div class="stat" id="stLocal"><em data-i="seg_local">在地常用</em><b>–</b><i></i></div>
-          <div class="stat" id="stGlobal"><em data-i="seg_global">全球服務</em><b>–</b><i></i></div>
-          <div class="stat" id="stAll"><em data-i="med">綜合中位數</em><b>–</b><i></i></div>
+          <div class="stat" id="stMed"><em data-i="one_med">延遲中位數</em><b>–</b><i></i></div>
+          <div class="stat" id="stCold"><em data-i="one_cold">首次連線</em><b>–</b><i></i></div>
+          <div class="stat" id="stJit"><em data-i="one_jit">抖動</em><b>–</b><i></i></div>
         </div>
-        <div class="uses" id="vUses"><span class="use">遊戲<b>…</b></span><span class="use">視訊通話<b>…</b></span><span class="use">看影片<b>…</b></span><span class="use">AI 工具<b>…</b></span><span class="use">開發工具<b>…</b></span></div>
+        <div class="slane" id="slane" aria-hidden="true"><span class="trk"></span><span class="dots" id="dots"></span></div>
       </div>
     </section>
 
-    <section class="field card" aria-label="latency">
-      <div class="axis" aria-hidden="true"><span class="c1"><i></i><b>閃電狗</b>≤ 30 ms</span><span class="c2"><i></i><b>飛奔</b>≤ 80 ms</span><span class="c3"><i></i><b>小跑</b>≤ 150 ms</span><span class="c4"><i></i><b>散步</b>≤ 300 ms</span><span class="c5"><i></i><b>趴著睡</b>> 300 ms</span><span class="cx"><i></i><b>沒叼回來</b></span></div>
-      <div class="groups" id="groups">
-<div class="grp"><h2>開發工具</h2><ul><li class="row hot" id="t-github"><span class="nm">GitHub</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-npm"><span class="nm">npm</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-dockerhub"><span class="nm">Docker Hub</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-pypi"><span class="nm">PyPI</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-huggingface"><span class="nm">Hugging Face</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>在地常用<label class="sel"><span class="sr">地區</span><select id="pack"><option value="cn">中國大陸</option><option value="tw" selected>台灣 · 香港</option><option value="jp">日本</option><option value="kr">韓國</option><option value="ru">俄羅斯</option><option value="in">南亞</option><option value="sea">東南亞</option><option value="eu">歐洲</option><option value="latam">拉丁美洲</option><option value="na">北美</option><option value="me">中東</option></select></label></h2><ul id="localRows"><li class="row" id="t-yahoo-tw"><span class="nm">Yahoo奇摩</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-line-tw"><span class="nm">LINE</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-ettoday"><span class="nm">ETtoday</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-ptt"><span class="nm">PTT</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>AI</h2><ul><li class="row" id="t-chatgpt"><span class="nm">ChatGPT</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-claude"><span class="nm">Claude</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-gemini"><span class="nm">Gemini</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-copilot"><span class="nm">Copilot</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-grok"><span class="nm">Grok</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-deepseek"><span class="nm">DeepSeek</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>常用網站</h2><ul><li class="row" id="t-google"><span class="nm">Google</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-apple"><span class="nm">Apple</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-microsoft"><span class="nm">Microsoft</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-wikipedia"><span class="nm">Wikipedia</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-amazon"><span class="nm">Amazon</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-zoom"><span class="nm">Zoom</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>影音串流</h2><ul><li class="row" id="t-youtube"><span class="nm">YouTube</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-netflix"><span class="nm">Netflix</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-tiktok"><span class="nm">TikTok</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-twitch"><span class="nm">Twitch</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-spotify"><span class="nm">Spotify</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>社群與聊天</h2><ul><li class="row" id="t-x"><span class="nm">X</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-instagram"><span class="nm">Instagram</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-facebook"><span class="nm">Facebook</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-whatsapp"><span class="nm">WhatsApp</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-telegram"><span class="nm">Telegram</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-discord"><span class="nm">Discord</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-reddit"><span class="nm">Reddit</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>遊戲</h2><ul><li class="row" id="t-steam"><span class="nm">Steam</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-playstation"><span class="nm">PlayStation</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-xbox"><span class="nm">Xbox</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-epic"><span class="nm">Epic Games</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>CDN 服務商</h2><ul><li class="row" id="t-cloudflare"><span class="nm">Cloudflare</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-fastly"><span class="nm">Fastly</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-akamai"><span class="nm">Akamai</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-cloudfront"><span class="nm">CloudFront</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-      </div>
-    </section>
+    <a class="cta card" href="/zh-tw/"><span><b data-i="cta_h">其他服務快不快？</b><i data-i="cta_d">首頁一次測 40 個常用服務，還會告訴你慢在哪一端。</i></span><span class="btn pri" data-i="cta_btn">測全部服務</span></a>
 
-    <section class="about"><h2>從你的網路連 GitHub 有多快？</h2><p>頁面同時測試了其他開發工具服務，方便比較：npm、Docker Hub、PyPI、Hugging Face。</p></section>
+    <section class="about"><h2>從你的網路連 GitHub 有多快？</h2><p>想比較的話，首頁會把 GitHub 和其他開發工具服務一起測：npm、Docker Hub、PyPI、Hugging Face。</p></section>
 
     <section class="tools">
       <h2 data-i="tools_h">更多 1ms.dog 工具</h2>
@@ -135,7 +121,10 @@
     </section>
   </main>
 
-  <footer class="foot"><span data-i="foot">全部在你的瀏覽器裡執行。免帳號，不收集測試結果。</span><span>© 1ms.dog</span></footer>
+  <footer class="foot">
+    <nav class="sitemap" aria-label="sitemap"><b>單一服務測速：</b><a href="/zh-tw/">測全部服務</a><a href="/zh-tw/chatgpt/">ChatGPT 延遲測試</a><a href="/zh-tw/claude/">Claude 延遲測試</a><a href="/zh-tw/gemini/">Gemini 延遲測試</a><a href="/zh-tw/youtube/">YouTube 延遲測試</a><a href="/zh-tw/netflix/">Netflix 延遲測試</a><a href="/zh-tw/steam/">Steam 延遲測試</a><a href="/zh-tw/playstation/">PlayStation 延遲測試</a><a href="/zh-tw/discord/">Discord 延遲測試</a><a href="/zh-tw/github/" aria-current="page">GitHub 延遲測試</a></nav>
+    <div class="foot-l"><span data-i="foot">全部在你的瀏覽器裡執行。免帳號，不收集測試結果。</span><span>© 1ms.dog</span></div>
+  </footer>
 </div>
 
 <div class="scrim" id="help" hidden>
@@ -170,7 +159,7 @@
   </div>
 </div>
 <script type="application/json" id="data">{"lang":"zh-TW","paths":{"en":"/github/","zh-CN":"/zh-cn/github/","zh-TW":"/zh-tw/github/","ja":"/ja/github/","ko":"/ko/github/","es":"/es/github/","fr":"/fr/github/","de":"/de/github/","pt":"/pt/github/","ru":"/ru/github/"},"pack":"tw","spot":"github"}</script>
-<script src="/assets/l.zh-tw.2ad8886043.js" defer></script>
-<script src="/assets/app.4ee8836a20.js" defer></script>
+<script src="/assets/l.zh-tw.ac6a9f8404.js" defer></script>
+<script src="/assets/app.7e99baa498.js" defer></script>
 </body>
 </html>

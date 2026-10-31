@@ -5,7 +5,7 @@
 <script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en")location.replace(P[l]+location.hash)})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Telegram Ping Test: Is Telegram Slow or Down From Your Network? · 1ms.dog</title>
-<meta name="description" content="Test Telegram latency from your own browser: real HTTPS round trips to Telegram, your exit IP and ISP, and 40 other services to compare, so you can tell whether it's Telegram or your connection. Free, no sign-up.">
+<meta name="description" content="Test Telegram latency from your own browser: 10 real HTTPS round trips to Telegram (median, first connection, jitter), plus your exit IP and ISP. Free, no sign-up.">
 <meta name="keywords" content="Telegram ping, Telegram latency, Telegram ping test, Telegram slow, is Telegram down, Telegram connection test, Telegram lag">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="application-name" content="1ms.dog">
@@ -22,7 +22,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="1ms.dog">
 <meta property="og:title" content="Telegram Ping Test: Is Telegram Slow or Down From Your Network? · 1ms.dog">
-<meta property="og:description" content="Test Telegram latency from your own browser: real HTTPS round trips to Telegram, your exit IP and ISP, and 40 other services to compare, so you can tell whether it's Telegram or your connection. Free, no sign-up.">
+<meta property="og:description" content="Test Telegram latency from your own browser: 10 real HTTPS round trips to Telegram (median, first connection, jitter), plus your exit IP and ISP. Free, no sign-up.">
 <meta property="og:url" content="https://1ms.dog/telegram/">
 <meta property="og:image" content="https://1ms.dog/og/en/telegram.png">
 <meta property="og:image:width" content="1200">
@@ -32,11 +32,11 @@
 <meta property="og:locale:alternate" content="ru_RU">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Telegram Ping Test: Is Telegram Slow or Down From Your Network? · 1ms.dog">
-<meta name="twitter:description" content="Test Telegram latency from your own browser: real HTTPS round trips to Telegram, your exit IP and ISP, and 40 other services to compare, so you can tell whether it's Telegram or your connection. Free, no sign-up.">
+<meta name="twitter:description" content="Test Telegram latency from your own browser: 10 real HTTPS round trips to Telegram (median, first connection, jitter), plus your exit IP and ISP. Free, no sign-up.">
 <meta name="twitter:image" content="https://1ms.dog/og/en/telegram.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"How fast is Telegram from your network?","url":"https://1ms.dog/telegram/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"Test Telegram latency from your own browser: real HTTPS round trips to Telegram, your exit IP and ISP, and 40 other services to compare, so you can tell whether it's Telegram or your connection. Free, no sign-up.","inLanguage":"en","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/"},{"@type":"ListItem","position":2,"name":"Telegram","item":"https://1ms.dog/telegram/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"How fast is Telegram from your network?","url":"https://1ms.dog/telegram/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"Test Telegram latency from your own browser: 10 real HTTPS round trips to Telegram (median, first connection, jitter), plus your exit IP and ISP. Free, no sign-up.","inLanguage":"en","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/"},{"@type":"ListItem","position":2,"name":"Telegram","item":"https://1ms.dog/telegram/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.ccb072a4dd.css">
+<link rel="stylesheet" href="/assets/app.bab2d27376.css">
 </head>
 <body>
 <div class="app">
@@ -68,7 +68,7 @@
     <section class="hero card">
       <div class="hero-l">
         <h1>How fast is Telegram from your network?</h1>
-        <p class="intro">Your browser times real HTTPS round trips to Telegram through your actual Wi-Fi, ISP and any VPN or proxy, and compares them with 40 other services. If Telegram feels slow, this shows whether it's Telegram, your exit, or everything.</p>
+        <p class="intro">Your browser times 10 real HTTPS round trips to Telegram through your actual Wi-Fi, ISP and any VPN or proxy, and shows the median, the first connection and the jitter.</p>
         <div class="exits" id="exits">
           <div class="ex-h"><span data-i="exit_h">Your exit</span><button class="mini" id="eye" type="button" data-i="hide">Hide IPs</button></div>
           <ul id="exList"><li class="ex sk-row"><span class="sk-t" data-i="sniff">Sniffing out your exit…</span></li></ul>
@@ -84,40 +84,26 @@
         <span class="ground" aria-hidden="true"></span>
       </div>
       <div class="sum" id="sum">
-        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">Sniffing out your exit…</p><p class="v-d" id="vText" data-i="v_wait">When the balls are back, the dog will tell you where it's fast and where it's slow.</p></div>
+        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">Sniffing out your exit…</p><p class="v-d" id="vText">When the samples are in, you'll see how fast Telegram is from here.</p></div>
         <div class="sum-acts">
           <div class="sum-btns">
             <button class="btn pri" id="run" type="button"><span data-i="start">Start test</span></button>
-            <button class="btn" id="deep" type="button" data-i="deep">Deep test</button>
-            <button class="btn icon" id="share" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr" data-i="share">Share</span></button>
           </div>
           <label class="auto"><input type="checkbox" id="auto" checked><span class="sw" aria-hidden="true"></span><span data-i="auto_label">Test when the page opens</span></label>
         </div>
         <div class="prog" id="prog"><i></i></div>
         <div class="stats">
-          <div class="stat" id="stLocal"><em data-i="seg_local">Local favorites</em><b>–</b><i></i></div>
-          <div class="stat" id="stGlobal"><em data-i="seg_global">Global services</em><b>–</b><i></i></div>
-          <div class="stat" id="stAll"><em data-i="med">overall median</em><b>–</b><i></i></div>
+          <div class="stat" id="stMed"><em data-i="one_med">Latency (median)</em><b>–</b><i></i></div>
+          <div class="stat" id="stCold"><em data-i="one_cold">First connection</em><b>–</b><i></i></div>
+          <div class="stat" id="stJit"><em data-i="one_jit">Jitter</em><b>–</b><i></i></div>
         </div>
-        <div class="uses" id="vUses"><span class="use">Gaming<b>…</b></span><span class="use">Video calls<b>…</b></span><span class="use">Streaming<b>…</b></span><span class="use">AI tools<b>…</b></span><span class="use">Dev tools<b>…</b></span></div>
+        <div class="slane" id="slane" aria-hidden="true"><span class="trk"></span><span class="dots" id="dots"></span></div>
       </div>
     </section>
 
-    <section class="field card" aria-label="latency">
-      <div class="axis" aria-hidden="true"><span class="c1"><i></i><b>Zoomies</b>≤ 30 ms</span><span class="c2"><i></i><b>Sprint</b>≤ 80 ms</span><span class="c3"><i></i><b>Trot</b>≤ 150 ms</span><span class="c4"><i></i><b>Stroll</b>≤ 300 ms</span><span class="c5"><i></i><b>Nap</b>> 300 ms</span><span class="cx"><i></i><b>Not back</b></span></div>
-      <div class="groups" id="groups">
-<div class="grp"><h2>Social &amp; chat</h2><ul><li class="row" id="t-x"><span class="nm">X</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-instagram"><span class="nm">Instagram</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-facebook"><span class="nm">Facebook</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-whatsapp"><span class="nm">WhatsApp</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row hot" id="t-telegram"><span class="nm">Telegram</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-discord"><span class="nm">Discord</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-reddit"><span class="nm">Reddit</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>Local favorites<label class="sel"><span class="sr">Region</span><select id="pack"><option value="cn">Mainland China</option><option value="tw">Taiwan · Hong Kong</option><option value="jp">Japan</option><option value="kr">Korea</option><option value="ru">Russia</option><option value="in">South Asia</option><option value="sea">Southeast Asia</option><option value="eu">Europe</option><option value="latam">Latin America</option><option value="na" selected>North America</option><option value="me">Middle East</option></select></label></h2><ul id="localRows"><li class="row" id="t-espn"><span class="nm">ESPN</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-disneyplus"><span class="nm">Disney+</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-yahoo"><span class="nm">Yahoo</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-target"><span class="nm">Target</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>AI</h2><ul><li class="row" id="t-chatgpt"><span class="nm">ChatGPT</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-claude"><span class="nm">Claude</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-gemini"><span class="nm">Gemini</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-copilot"><span class="nm">Copilot</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-grok"><span class="nm">Grok</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-deepseek"><span class="nm">DeepSeek</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>Everyday web</h2><ul><li class="row" id="t-google"><span class="nm">Google</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-apple"><span class="nm">Apple</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-microsoft"><span class="nm">Microsoft</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-wikipedia"><span class="nm">Wikipedia</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-amazon"><span class="nm">Amazon</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-zoom"><span class="nm">Zoom</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>Video &amp; music</h2><ul><li class="row" id="t-youtube"><span class="nm">YouTube</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-netflix"><span class="nm">Netflix</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-tiktok"><span class="nm">TikTok</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-twitch"><span class="nm">Twitch</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-spotify"><span class="nm">Spotify</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>Developer tools</h2><ul><li class="row" id="t-github"><span class="nm">GitHub</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-npm"><span class="nm">npm</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-dockerhub"><span class="nm">Docker Hub</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-pypi"><span class="nm">PyPI</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-huggingface"><span class="nm">Hugging Face</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>Gaming</h2><ul><li class="row" id="t-steam"><span class="nm">Steam</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-playstation"><span class="nm">PlayStation</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-xbox"><span class="nm">Xbox</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-epic"><span class="nm">Epic Games</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>CDN providers</h2><ul><li class="row" id="t-cloudflare"><span class="nm">Cloudflare</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-fastly"><span class="nm">Fastly</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-akamai"><span class="nm">Akamai</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-cloudfront"><span class="nm">CloudFront</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-      </div>
-    </section>
+    <a class="cta card" href="/"><span><b data-i="cta_h">How fast is everything else?</b><i data-i="cta_d">The home page tests 40 services at once and tells you where it's slow.</i></span><span class="btn pri" data-i="cta_btn">Test all services</span></a>
 
-    <section class="about"><h2>How fast is Telegram from your network?</h2><p>It's compared side by side with the other Social &amp; chat services tested here: X, Instagram, Facebook, WhatsApp, Discord, Reddit.</p></section>
+    <section class="about"><h2>How fast is Telegram from your network?</h2><p>To compare, the home page tests Telegram together with the other Social &amp; chat services: X, Instagram, Facebook, WhatsApp, Discord, Reddit.</p></section>
 
     <section class="tools">
       <h2 data-i="tools_h">More from 1ms.dog</h2>
@@ -125,7 +111,10 @@
     </section>
   </main>
 
-  <footer class="foot"><span data-i="foot">Runs entirely in your browser. No account, no tracking of results.</span><span>© 1ms.dog</span></footer>
+  <footer class="foot">
+    <nav class="sitemap" aria-label="sitemap"><b>Ping tests:</b><a href="/">Test all services</a><a href="/chatgpt/">ChatGPT ping test</a><a href="/claude/">Claude ping test</a><a href="/gemini/">Gemini ping test</a><a href="/google/">Google ping test</a><a href="/youtube/">YouTube ping test</a><a href="/netflix/">Netflix ping test</a><a href="/tiktok/">TikTok ping test</a><a href="/x/">X ping test</a><a href="/discord/">Discord ping test</a><a href="/telegram/" aria-current="page">Telegram ping test</a><a href="/github/">GitHub ping test</a><a href="/steam/">Steam ping test</a></nav>
+    <div class="foot-l"><span data-i="foot">Runs entirely in your browser. No account, no tracking of results.</span><span>© 1ms.dog</span></div>
+  </footer>
 </div>
 
 <div class="scrim" id="help" hidden>
@@ -160,7 +149,7 @@
   </div>
 </div>
 <script type="application/json" id="data">{"lang":"en","paths":{"en":"/telegram/","zh-CN":"/zh-cn/telegram/","zh-TW":"/zh-tw/telegram/","ja":"/ja/telegram/","ko":"/ko/telegram/","es":"/es/telegram/","fr":"/fr/telegram/","de":"/de/telegram/","pt":"/pt/telegram/","ru":"/ru/telegram/"},"pack":"na","spot":"telegram"}</script>
-<script src="/assets/l.en.25c43875a6.js" defer></script>
-<script src="/assets/app.4ee8836a20.js" defer></script>
+<script src="/assets/l.en.7763dea7cc.js" defer></script>
+<script src="/assets/app.7e99baa498.js" defer></script>
 </body>
 </html>

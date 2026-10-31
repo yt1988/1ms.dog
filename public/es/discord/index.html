@@ -5,7 +5,7 @@
 <script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en")location.replace(P[l]+location.hash)})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Test de ping de Discord: ¿Discord va lento o no funciona en tu red? · 1ms.dog</title>
-<meta name="description" content="Mide la latencia de Discord desde tu navegador: viajes HTTPS reales a Discord, tu IP de salida y proveedor, y otros 40 servicios para comparar y saber si el problema es Discord o tu conexión. Gratis, sin registro.">
+<meta name="description" content="Mide la latencia de Discord desde tu navegador: 10 viajes HTTPS reales a Discord (mediana, primera conexión y variación), más tu IP de salida y proveedor. Gratis, sin registro.">
 <meta name="keywords" content="ping Discord, Discord lento, Discord no funciona, Discord lag, latencia Discord, Discord caído, test Discord">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="application-name" content="1ms.dog">
@@ -28,7 +28,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="1ms.dog">
 <meta property="og:title" content="Test de ping de Discord: ¿Discord va lento o no funciona en tu red? · 1ms.dog">
-<meta property="og:description" content="Mide la latencia de Discord desde tu navegador: viajes HTTPS reales a Discord, tu IP de salida y proveedor, y otros 40 servicios para comparar y saber si el problema es Discord o tu conexión. Gratis, sin registro.">
+<meta property="og:description" content="Mide la latencia de Discord desde tu navegador: 10 viajes HTTPS reales a Discord (mediana, primera conexión y variación), más tu IP de salida y proveedor. Gratis, sin registro.">
 <meta property="og:url" content="https://1ms.dog/es/discord/">
 <meta property="og:image" content="https://1ms.dog/og/es/discord.png">
 <meta property="og:image:width" content="1200">
@@ -44,11 +44,11 @@
 <meta property="og:locale:alternate" content="ru_RU">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Test de ping de Discord: ¿Discord va lento o no funciona en tu red? · 1ms.dog">
-<meta name="twitter:description" content="Mide la latencia de Discord desde tu navegador: viajes HTTPS reales a Discord, tu IP de salida y proveedor, y otros 40 servicios para comparar y saber si el problema es Discord o tu conexión. Gratis, sin registro.">
+<meta name="twitter:description" content="Mide la latencia de Discord desde tu navegador: 10 viajes HTTPS reales a Discord (mediana, primera conexión y variación), más tu IP de salida y proveedor. Gratis, sin registro.">
 <meta name="twitter:image" content="https://1ms.dog/og/es/discord.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"¿Qué tan rápido es Discord desde tu red?","url":"https://1ms.dog/es/discord/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"Mide la latencia de Discord desde tu navegador: viajes HTTPS reales a Discord, tu IP de salida y proveedor, y otros 40 servicios para comparar y saber si el problema es Discord o tu conexión. Gratis, sin registro.","inLanguage":"es","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/es/"},{"@type":"ListItem","position":2,"name":"Discord","item":"https://1ms.dog/es/discord/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"¿Qué tan rápido es Discord desde tu red?","url":"https://1ms.dog/es/discord/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"Mide la latencia de Discord desde tu navegador: 10 viajes HTTPS reales a Discord (mediana, primera conexión y variación), más tu IP de salida y proveedor. Gratis, sin registro.","inLanguage":"es","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/es/"},{"@type":"ListItem","position":2,"name":"Discord","item":"https://1ms.dog/es/discord/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.ccb072a4dd.css">
+<link rel="stylesheet" href="/assets/app.bab2d27376.css">
 </head>
 <body>
 <div class="app">
@@ -80,7 +80,7 @@
     <section class="hero card">
       <div class="hero-l">
         <h1>¿Qué tan rápido es Discord desde tu red?</h1>
-        <p class="intro">Tu navegador mide viajes HTTPS reales a Discord a través de tu Wi‑Fi, tu proveedor y cualquier VPN o proxy, y los compara con otros 40 servicios. Si Discord va lento, aquí ves si es Discord, tu salida o todo.</p>
+        <p class="intro">Tu navegador mide 10 viajes HTTPS reales a Discord a través de tu Wi‑Fi, tu proveedor y cualquier VPN o proxy, y muestra la mediana, la primera conexión y la variación.</p>
         <div class="exits" id="exits">
           <div class="ex-h"><span data-i="exit_h">Tu salida</span><button class="mini" id="eye" type="button" data-i="hide">Ocultar IP</button></div>
           <ul id="exList"><li class="ex sk-row"><span class="sk-t" data-i="sniff">Olfateando tu salida…</span></li></ul>
@@ -96,40 +96,26 @@
         <span class="ground" aria-hidden="true"></span>
       </div>
       <div class="sum" id="sum">
-        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">Olfateando tu salida…</p><p class="v-d" id="vText" data-i="v_wait">Cuando vuelvan las pelotas, el perro te dirá dónde va rápido y dónde lento.</p></div>
+        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">Olfateando tu salida…</p><p class="v-d" id="vText">Cuando terminen las muestras, verás qué tan rápido va Discord desde aquí.</p></div>
         <div class="sum-acts">
           <div class="sum-btns">
             <button class="btn pri" id="run" type="button"><span data-i="start">Empezar prueba</span></button>
-            <button class="btn" id="deep" type="button" data-i="deep">Prueba a fondo</button>
-            <button class="btn icon" id="share" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr" data-i="share">Compartir</span></button>
           </div>
           <label class="auto"><input type="checkbox" id="auto" checked><span class="sw" aria-hidden="true"></span><span data-i="auto_label">Probar al abrir la página</span></label>
         </div>
         <div class="prog" id="prog"><i></i></div>
         <div class="stats">
-          <div class="stat" id="stLocal"><em data-i="seg_local">Favoritos locales</em><b>–</b><i></i></div>
-          <div class="stat" id="stGlobal"><em data-i="seg_global">Servicios globales</em><b>–</b><i></i></div>
-          <div class="stat" id="stAll"><em data-i="med">mediana global</em><b>–</b><i></i></div>
+          <div class="stat" id="stMed"><em data-i="one_med">Latencia (mediana)</em><b>–</b><i></i></div>
+          <div class="stat" id="stCold"><em data-i="one_cold">Primera conexión</em><b>–</b><i></i></div>
+          <div class="stat" id="stJit"><em data-i="one_jit">Variación</em><b>–</b><i></i></div>
         </div>
-        <div class="uses" id="vUses"><span class="use">Juegos<b>…</b></span><span class="use">Videollamadas<b>…</b></span><span class="use">Streaming<b>…</b></span><span class="use">IA<b>…</b></span><span class="use">Desarrollo<b>…</b></span></div>
+        <div class="slane" id="slane" aria-hidden="true"><span class="trk"></span><span class="dots" id="dots"></span></div>
       </div>
     </section>
 
-    <section class="field card" aria-label="latency">
-      <div class="axis" aria-hidden="true"><span class="c1"><i></i><b>Rayo</b>≤ 30 ms</span><span class="c2"><i></i><b>Carrera</b>≤ 80 ms</span><span class="c3"><i></i><b>Trote</b>≤ 150 ms</span><span class="c4"><i></i><b>Paseo</b>≤ 300 ms</span><span class="c5"><i></i><b>Siesta</b>> 300 ms</span><span class="cx"><i></i><b>No volvió</b></span></div>
-      <div class="groups" id="groups">
-<div class="grp"><h2>Redes y mensajería</h2><ul><li class="row" id="t-x"><span class="nm">X</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-instagram"><span class="nm">Instagram</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-facebook"><span class="nm">Facebook</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-whatsapp"><span class="nm">WhatsApp</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-telegram"><span class="nm">Telegram</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row hot" id="t-discord"><span class="nm">Discord</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-reddit"><span class="nm">Reddit</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>Favoritos locales<label class="sel"><span class="sr">Región</span><select id="pack"><option value="cn">China continental</option><option value="tw">Taiwán · Hong Kong</option><option value="jp">Japón</option><option value="kr">Corea</option><option value="ru">Rusia</option><option value="in">Asia del Sur</option><option value="sea">Sudeste Asiático</option><option value="eu">Europa</option><option value="latam" selected>Latinoamérica</option><option value="na">Norteamérica</option><option value="me">Oriente Medio</option></select></label></h2><ul id="localRows"><li class="row" id="t-mercadolibre"><span class="nm">Mercado Libre</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-globo"><span class="nm">Globo</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-nubank"><span class="nm">Nubank</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-ifood"><span class="nm">iFood</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>IA</h2><ul><li class="row" id="t-chatgpt"><span class="nm">ChatGPT</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-claude"><span class="nm">Claude</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-gemini"><span class="nm">Gemini</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-copilot"><span class="nm">Copilot</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-grok"><span class="nm">Grok</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-deepseek"><span class="nm">DeepSeek</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>Sitios de cada día</h2><ul><li class="row" id="t-google"><span class="nm">Google</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-apple"><span class="nm">Apple</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-microsoft"><span class="nm">Microsoft</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-wikipedia"><span class="nm">Wikipedia</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-amazon"><span class="nm">Amazon</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-zoom"><span class="nm">Zoom</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>Video y música</h2><ul><li class="row" id="t-youtube"><span class="nm">YouTube</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-netflix"><span class="nm">Netflix</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-tiktok"><span class="nm">TikTok</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-twitch"><span class="nm">Twitch</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-spotify"><span class="nm">Spotify</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>Herramientas para desarrolladores</h2><ul><li class="row" id="t-github"><span class="nm">GitHub</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-npm"><span class="nm">npm</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-dockerhub"><span class="nm">Docker Hub</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-pypi"><span class="nm">PyPI</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-huggingface"><span class="nm">Hugging Face</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>Juegos</h2><ul><li class="row" id="t-steam"><span class="nm">Steam</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-playstation"><span class="nm">PlayStation</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-xbox"><span class="nm">Xbox</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-epic"><span class="nm">Epic Games</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-<div class="grp"><h2>Proveedores CDN</h2><ul><li class="row" id="t-cloudflare"><span class="nm">Cloudflare</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-fastly"><span class="nm">Fastly</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-akamai"><span class="nm">Akamai</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-cloudfront"><span class="nm">CloudFront</span><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul></div>
-      </div>
-    </section>
+    <a class="cta card" href="/es/"><span><b data-i="cta_h">¿Y el resto de servicios?</b><i data-i="cta_d">La página principal mide 40 servicios a la vez y te dice dónde va lento.</i></span><span class="btn pri" data-i="cta_btn">Medir todos</span></a>
 
-    <section class="about"><h2>¿Qué tan rápido es Discord desde tu red?</h2><p>Se compara con los demás servicios de Redes y mensajería medidos aquí: X, Instagram, Facebook, WhatsApp, Telegram, Reddit. Discord responde a través de la red de Cloudflare, así que el viaje termina en el punto de Cloudflare más cercano. ChatGPT, Claude, Copilot, Grok, Zoom, npm, Epic Games, Cloudflare usan la misma red: si también van lentos, el problema es tu ruta hacia Cloudflare, no Discord.</p></section>
+    <section class="about"><h2>¿Qué tan rápido es Discord desde tu red?</h2><p>Para comparar, la página principal mide Discord junto con los demás servicios de Redes y mensajería: X, Instagram, Facebook, WhatsApp, Telegram, Reddit. Discord responde a través de la red de Cloudflare, así que el viaje termina en el punto de Cloudflare más cercano. ChatGPT, Claude, Copilot, Grok, Zoom, npm, Epic Games, Cloudflare usan la misma red: si también van lentos, el problema es tu ruta hacia Cloudflare, no Discord.</p></section>
 
     <section class="tools">
       <h2 data-i="tools_h">Más de 1ms.dog</h2>
@@ -137,7 +123,10 @@
     </section>
   </main>
 
-  <footer class="foot"><span data-i="foot">Funciona por completo en tu navegador. Sin cuenta y sin recopilar resultados.</span><span>© 1ms.dog</span></footer>
+  <footer class="foot">
+    <nav class="sitemap" aria-label="sitemap"><b>Test por servicio:</b><a href="/es/">Medir todos</a><a href="/es/chatgpt/">Test de ping de ChatGPT</a><a href="/es/gemini/">Test de ping de Gemini</a><a href="/es/youtube/">Test de ping de YouTube</a><a href="/es/netflix/">Test de ping de Netflix</a><a href="/es/tiktok/">Test de ping de TikTok</a><a href="/es/whatsapp/">Test de ping de WhatsApp</a><a href="/es/instagram/">Test de ping de Instagram</a><a href="/es/discord/" aria-current="page">Test de ping de Discord</a><a href="/es/steam/">Test de ping de Steam</a><a href="/es/playstation/">Test de ping de PlayStation</a><a href="/es/xbox/">Test de ping de Xbox</a></nav>
+    <div class="foot-l"><span data-i="foot">Funciona por completo en tu navegador. Sin cuenta y sin recopilar resultados.</span><span>© 1ms.dog</span></div>
+  </footer>
 </div>
 
 <div class="scrim" id="help" hidden>
@@ -172,7 +161,7 @@
   </div>
 </div>
 <script type="application/json" id="data">{"lang":"es","paths":{"en":"/discord/","zh-CN":"/zh-cn/discord/","zh-TW":"/zh-tw/discord/","ja":"/ja/discord/","ko":"/ko/discord/","es":"/es/discord/","fr":"/fr/discord/","de":"/de/discord/","pt":"/pt/discord/","ru":"/ru/discord/"},"pack":"latam","spot":"discord"}</script>
-<script src="/assets/l.es.675be34595.js" defer></script>
-<script src="/assets/app.4ee8836a20.js" defer></script>
+<script src="/assets/l.es.5e6758c6d1.js" defer></script>
+<script src="/assets/app.7e99baa498.js" defer></script>
 </body>
 </html>

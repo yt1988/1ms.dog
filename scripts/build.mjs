@@ -66,7 +66,7 @@ export async function build({ check = false } = {}) {
   // the lanes are colored by speed zone, at the same log-scale positions the page puts the balls
   const pct = ms => (pos(ms) * 100).toFixed(1) + "%", Z = ZONES.map(pct);
   const bands = `linear-gradient(90deg, var(--t1) 0 ${Z[0]}, var(--t2) ${Z[0]} ${Z[1]}, var(--t3) ${Z[1]} ${Z[2]}, var(--t4) ${Z[2]} ${Z[3]}, var(--t5) ${Z[3]} 100%)`;
-  const cssFull = (await Promise.all(["fonts.css", "style.css", "layout.css"].map(f => readFile(new URL(f, src), "utf8")))).join("\n") + `\n.field { --bands: ${bands}; }\n`;
+  const cssFull = (await Promise.all(["fonts.css", "style.css", "layout.css"].map(f => readFile(new URL(f, src), "utf8")))).join("\n") + `\n.field, .slane { --bands: ${bands}; }\n`;
   // minified with esbuild (pinned version, so the output, and its hash, only changes when the source does)
   const js = (await transform(appFull, { loader: "js", minify: true, target: "es2020", legalComments: "none" })).code;
   const css = (await transform(cssFull, { loader: "css", minify: true, legalComments: "none" })).code;
@@ -79,7 +79,7 @@ export async function build({ check = false } = {}) {
   const has = (l, sub) => !sub || landOf(l).includes(sub);
   const altsOf = sub => langs.filter(([l]) => has(l, sub));
   const path = (slug, sub) => "/" + (slug ? slug + "/" : "") + (sub ? sub + "/" : "");
-  const RUNTIME_SKIP = new Set(["docs", "seo_title", "seo_desc", "seo_kw", "og_sub", "lede", "lp_title", "lp_desc", "lp_intro", "lp_h1", "lp_kw", "lp_peers", "lp_via", "lp_via_same", "land", "tool_m2c", "tool_v2c", "tool_ls", "foot", "tools_h",
+  const RUNTIME_SKIP = new Set(["docs", "seo_title", "seo_desc", "seo_kw", "og_sub", "lede", "lp_title", "lp_desc", "lp_intro", "lp_h1", "lp_kw", "lp_peers", "lp_via", "lp_via_same", "land", "sitemap_h", "sm_item", "cta_h", "cta_d", "cta_btn", "one_med", "one_cold", "one_jit", "tool_m2c", "tool_v2c", "tool_ls", "foot", "tools_h",
     "name", "h1", "lang_label", "faq_h", "pack", "exit_h", "test_mine", "share_h", "copy_link", "copy_img", "dl_img", "more_share"]);
   // static text the page already shows, and region names (only the server-rendered picker uses them)
   const runtimeKey = k => !RUNTIME_SKIP.has(k) && !k.startsWith("pk_");
@@ -167,12 +167,20 @@ export async function build({ check = false } = {}) {
       const langOpts = langs.map(([l]) => `<option value="${l}"${l === lang ? " selected" : ""}>${esc(I[l].name)}</option>`).join("");
       const paths = Object.fromEntries(langs.map(([l, sl]) => [l, path(sl, sub)]));
       const data = { lang, paths, pack: defPack, spot: s ? s.id : null };
+      // footer sitemap: this language's home and every single-service page, with anchor texts people search for
+      const sitemapNav = `<b>${esc(T("sitemap_h"))}</b><a href="${path(slug, "")}"${sub ? "" : ' aria-current="page"'}>${esc(T("cta_btn"))}</a>` +
+        landOf(lang).map(id => { const x = SERVICES.find(v => v.id === id);
+          return `<a href="${path(slug, id)}"${id === sub ? ' aria-current="page"' : ""}>${esc(fill(T("sm_item"), { s: x.name }))}</a>`; }).join("");
 
-      let html = tpl
+      // a single-service page keeps the <!--one--> blocks, the home page the <!--full--> ones
+      const variant = (t0, keep, drop) => t0.replace(new RegExp(`<!--${drop}-->[\\s\\S]*?<!--/${drop}-->\\n?`, "g"), "")
+        .replace(new RegExp(`<!--/?${keep}-->\\n?`, "g"), "");
+      let html = variant(tpl, s ? "one" : "full", s ? "full" : "one")
         .replace(/(<(\w+)\b[^>]*\sdata-i="(\w+)"[^>]*>)([^<]*)(<\/\2>)/g, (m, open, tag, k, inner, close) => open + esc(T(k)) + close)
+        .replace("{{waitText}}", esc(s ? fill(T("v_one_wait"), { s: s.name }) : T("v_wait"))).replace("{{sitemap}}", sitemapNav)
         .replace("{{lang}}", lang).replace("{{pathsAttr}}", esc(JSON.stringify(paths))).replace("{{rootAttr}}", slug || sub ? "" : " data-root")
         .replace("{{prepaint}}", PREPAINT).replace("{{head}}", head).replace("{{css}}", cssName).replace("{{js}}", jsName).replace("{{strings}}", sName)
-        .replace("{{homeHref}}", path(slug, "")).replace("{{langOpts}}", langOpts)
+        .split("{{homeHref}}").join(path(slug, "")).replace("{{langOpts}}", langOpts)
         .replace("{{h1}}", esc(h1)).replace("{{intro}}", intro).replace("{{about}}", about).replace("{{uses}}", uses)
         .replace("{{axis}}", axis).replace("{{groups}}", groups).replace("{{tools}}", tools).replace("{{helpNav}}", helpNav).replace("{{helpC}}", helpC)
         .replace("{{data}}", JSON.stringify(data).replace(/</g, "\\u003c"));
