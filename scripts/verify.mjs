@@ -9,13 +9,17 @@
 //     TLS 1.3 handshake (one round trip to the remote end, even behind a transparent proxy). Prefer what an edge
 //     answers by itself: /cdn-cgi/trace on Cloudflare hosts, /generate_204 on Google's, static files with a cache HIT.
 // Run from a few networks before changing the list; a service that is blocked where you are shows as "fail" there.
-// Usage: node scripts/verify.mjs [id …] [id=url …]   (id=url tries another URL for that service)
+// --far: run from far away (the daily GitHub Action, in US data centers). A regional service is checked for what breaks
+// everywhere (redirect, CORP, status); its server time and reachability are only warnings, because from abroad its edge
+// fetches from an origin on another continent, and some reset foreign connections, while its own visitors are local.
+// Usage: node scripts/verify.mjs [--far] [id …] [id=url …]   (id=url tries another URL for that service)
 import https from "node:https";
 import { SERVICES, PACKS } from "../src/services.mjs";
 
 const SRV_MAX = 120;            // ms of server time that still counts as an edge answer
 const all = [...SERVICES, ...Object.values(PACKS).flat()];
-const args = process.argv.slice(2), tries = args.filter(a => a.includes("=")).map(a => { const i = a.indexOf("="); return [a.slice(0, i), a.slice(i + 1)]; });
+const FAR = process.argv.includes("--far"), regional = new Set(Object.values(PACKS).flat().map(s => s.id));
+const args = process.argv.slice(2).filter(a => a !== "--far"), tries =args.filter(a => a.includes("=")).map(a => { const i = a.indexOf("="); return [a.slice(0, i), a.slice(i + 1)]; });
 const pick = args.filter(a => !a.includes("="));
 const list = tries.length ? tries.map(([id, url]) => ({ ...(all.find(s => s.id === id) || { id }), url, m: undefined }))
   : pick.length ? all.filter(s => pick.includes(s.id)) : all;
@@ -63,6 +67,12 @@ const out = [];
 for (let i = 0; i < list.length; i += 8) out.push(...await Promise.all(list.slice(i, i + 8).map(one)));
 // a failure gets one more try a few seconds later: a single reset or slow answer is network noise, not a broken URL
 for (const [i, o] of out.entries()) if (!o.ok) { await new Promise(r => setTimeout(r, 2000)); const again = await one(o.s); if (again.ok) out[i] = again; }
-for (const { s, ok, line } of out) { if (!ok) bad++; console.log(`${ok ? "ok  " : "BAD "} ${s.id.padEnd(14)} ${line}`); }
-console.log(`\n${out.length - out.filter(o => !o.ok).length}/${out.length} ok`);
+// from far away, a regional service's slowness or unreachability is a warning (see --far above)
+const soft = o => FAR && regional.has(o.s.id) && (o.line.startsWith("fail ") || o.line.endsWith("← slow server"));
+for (const o of out) {
+  const warn = !o.ok && soft(o);
+  if (!o.ok && !warn) bad++;
+  console.log(`${o.ok ? "ok  " : warn ? "warn" : "BAD "} ${o.s.id.padEnd(14)} ${o.line}`);
+}
+console.log(`\n${out.filter(o => o.ok).length}/${out.length} ok` + (FAR ? `, ${out.filter(o => !o.ok && soft(o)).length} regional warnings` : ""));
 process.exit(bad ? 1 : 0);

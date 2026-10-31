@@ -83,7 +83,7 @@ export const PACKS = {
     { id: "yahoo-tw", name: "Yahoo奇摩", cat: "local", url: "https://tw.yahoo.com/favicon.ico", c: "#6001d2" },
     { id: "line-tw", name: "LINE", cat: "local", url: "https://line.me/favicon.ico", c: "#06c755" },
     { id: "ettoday", name: "ETtoday", cat: "local", url: "https://www.ettoday.net/favicon.ico", c: "#e60012" },
-    { id: "ptt", name: "PTT", cat: "local", url: "https://www.ptt.cc/favicon.ico", c: "#8b8b8b" },
+    { id: "ptt", name: "PTT", cat: "local", url: "https://www.ptt.cc/cdn-cgi/trace", c: "#8b8b8b" },
   ],
   jp: [
     { id: "yahoo-jp", name: "Yahoo! JAPAN", cat: "local", url: "https://www.yahoo.co.jp/favicon.ico", c: "#ff0033" },
