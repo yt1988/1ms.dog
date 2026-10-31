@@ -18,7 +18,8 @@ import { SERVICES, PACKS } from "../src/services.mjs";
 
 const SRV_MAX = 120;            // ms of server time that still counts as an edge answer
 const all = [...SERVICES, ...Object.values(PACKS).flat()];
-const FAR = process.argv.includes("--far"), regional = new Set(Object.values(PACKS).flat().map(s => s.id));
+const FAR = process.argv.includes("--far");
+const regional = new Set([...Object.values(PACKS).flat(), ...SERVICES.filter(s => s.origin)].map(s => s.id));
 const args = process.argv.slice(2).filter(a => a !== "--far"), tries =args.filter(a => a.includes("=")).map(a => { const i = a.indexOf("="); return [a.slice(0, i), a.slice(i + 1)]; });
 const pick = args.filter(a => !a.includes("="));
 const list = tries.length ? tries.map(([id, url]) => ({ ...(all.find(s => s.id === id) || { id }), url, m: undefined }))

@@ -11,6 +11,8 @@
 // cat    group key, see CATS
 // url    what the browser requests (a random query string is added to skip caches)
 // m      request method: GET (default), HEAD, or IMG (an <img> load, for hosts that reset fetch)
+// origin set when the service is hosted in one region (DeepSeek: mainland China): the far-away daily check treats it like
+//        a regional service
 // via    the edge network that answers (from its response headers), where known: landing pages name it and list the
 //        other services on the same network
 // c      tile accent color
@@ -24,7 +26,7 @@ export const SERVICES = [
   { id: "gemini", name: "Gemini", cat: "ai", url: "https://gemini.google.com/generate_204", via: "Google", c: "#4f7cf5" },
   { id: "copilot", name: "Copilot", cat: "ai", url: "https://copilot.microsoft.com/cdn-cgi/trace", via: "Cloudflare", c: "#2a84e8" },
   { id: "grok", name: "Grok", cat: "ai", url: "https://grok.com/cdn-cgi/trace", via: "Cloudflare", c: "#8b8b8b" },
-  { id: "deepseek", name: "DeepSeek", cat: "ai", url: "https://chat.deepseek.com/favicon.svg", c: "#4d6bfe" },
+  { id: "deepseek", name: "DeepSeek", cat: "ai", url: "https://chat.deepseek.com/favicon.svg", origin: "CN", c: "#4d6bfe" },
 
   // Search & everyday web
   { id: "google", name: "Google", cat: "web", url: "https://www.google.com/generate_204", via: "Google", c: "#4285f4" },
