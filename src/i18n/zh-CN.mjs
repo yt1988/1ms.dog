@@ -26,6 +26,7 @@ export default {
   med: "综合中位数",
   lost_n: "{n} 个没叼回来",
   share: "分享", copied: "已复制",
+  sub_telegram: "Telegram 数据中心", tg_dc_t: "Telegram 按手机号所属地区，把账号放在 5 个数据中心之一。这里测的是 {dc}（{city}），你所在地区的账号大多在这里。点进 Telegram 页面可以测全部 5 个。",
   qr_hint: "扫码查看完整结果",
   share_text: "我的狗狗从{where}出发，叼回了 {ok}/{n} 个服务，中位延迟 {ms} ms（{tier}）。你的狗狗有多快？",
   share_h: "分享测试结果", copy_link: "复制链接", copy_img: "复制图片", dl_img: "下载图片", more_share: "更多分享方式",

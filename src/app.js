@@ -214,7 +214,8 @@
   const ONE = D.spot ? [...SVC.list, ...Object.values(SVC.packs).flat()].find(s => s.id === D.spot) : null, ONE_N = 10;
   // a group page (/ai/, /region/jp/…) tests just that category's or region's services
   const GRP = D.set ? { ...D.set, list: D.set.kind === "cat" ? SVC.list.filter(s => s.cat === D.set.id) : PACKS[D.set.id] } : null, GRP_N = 5;
-  const allServices = () => ONE ? [ONE] : GRP ? GRP.list : [...(PACKS[pack] || []), ...SVC.list];
+  const SUBS = ONE && SVC.subs[ONE.id] || [];                  // a service page's parts: Telegram's data centers
+  const allServices = () => ONE ? [ONE, ...SUBS] : GRP ? GRP.list : [...(PACKS[pack] || []), ...SVC.list];
   function showPack(p) { pack = p; $("#localRows").innerHTML = PACKS[p].map(rowHtml).join(""); $("#pack").value = p; }
   if (!ONE && !GRP) { const saved = store.get(K.pack); if (saved && PACKS[saved] && saved !== pack) showPack(saved); }
   function pickPack(cc) { const p = PACK_OF[cc]; if (!ONE && !GRP && !store.get(K.pack) && p && p !== pack) setPack(p, false); }
@@ -253,7 +254,22 @@
     clearTimeout(tm); signal.removeEventListener("abort", stop);
     return ms;
   }
+  // Telegram: the data center most accounts in the visitor's region are on (src/services.mjs: TG_DC), chosen when
+  // the probe starts and named next to the result
+  const TG = SVC.list.find(s => s.id === "telegram");
+  // where each data center is, in the page's language (English keeps the city)
+  const dcPlace = d => LANG === "en" ? d.city : country(d.cc);
+  for (const d of SVC.subs.telegram) { d.name = `DC${d.dc} · ${dcPlace(d)}`; const el = document.querySelector(`#t-${d.id} .nm`); if (el) el.textContent = d.name; }
+  function tgDc() {
+    const d = SVC.subs.telegram.find(x => x.dc === (SVC.tgDcOf[pack] || 2));
+    TG.url = d.url;
+    const nm = document.querySelector("#t-telegram .nm"); if (!nm) return;
+    let b = nm.querySelector(".dc");
+    if (!b) { b = document.createElement("span"); b.className = "dc"; b.tabIndex = 0; b.setAttribute("role", "img"); nm.appendChild(b); tip(b); }
+    b.textContent = "DC" + d.dc; b.setAttribute("aria-label", t("tg_dc_t", { dc: "DC" + d.dc, city: dcPlace(d) }));
+  }
   async function runOne(s, n, signal) {
+    if (s === TG) tgDc();
     const r = { w: null, s: [], st: "run" }; R.set(s.id, r); paintRow(s);
     r.w = await probe(s, WARM_TIMEOUT, signal);
     let fails = r.w == null ? 2 : 0;                          // no connection at all: lost, no second wait
@@ -293,7 +309,7 @@
     const q = list.slice(), ctl = new AbortController(), run = RUN = { ctl, q, full, n: list.length, d: 0 };
     if (D.spot) q.sort((a, b) => (b.id === D.spot) - (a.id === D.spot));
     if (full) { setMood("run"); say("mood_run"); setBusy(true); }
-    const worker = async () => { while (q.length && !ctl.signal.aborted) { const s = q.shift(); await runOne(s, n, ctl.signal); run.d++; progress(run); } };
+    const worker = async () => { while (q.length && !ctl.signal.aborted) { const s = q.shift(); await runOne(s, SUBS.includes(s) ? GRP_N : n, ctl.signal); run.d++; progress(run); } };
     await Promise.all(Array.from({ length: CONC }, worker));
     if (RUN !== run) return;
     RUN = null; LAST_DONE = true; setBusy(false); progress(null);
@@ -525,13 +541,13 @@
   const img = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
   async function drawCard(link) {
     const W = 1200, P = 56, list = allServices().filter(s => R.get(s.id) && R.get(s.id).st === "done");
-    const groups = (ONE ? [] : GRP ? [{ name: GRP.name, items: GRP.list }] : [{ name: t("cat_local"), items: PACKS[pack] }, ...SVC.cats.map(c => ({ name: t("cat_" + c), items: SVC.list.filter(s => s.cat === c) }))])
+    const groups = (ONE ? (SUBS.length ? [{ name: t("sub_" + ONE.id), items: SUBS }] : []) : GRP ? [{ name: GRP.name, items: GRP.list }] : [{ name: t("cat_local"), items: PACKS[pack] }, ...SVC.cats.map(c => ({ name: t("cat_" + c), items: SVC.list.filter(s => s.cat === c) }))])
       .map(g => ({ name: g.name, items: g.items.filter(s => list.includes(s)) })).filter(g => g.items.length);
     // three columns (one on a group page), filled in order, about equally tall
-    const NC = GRP ? 1 : 3, RH = 30, GH = 40, total = groups.reduce((a, g) => a + GH + g.items.length * RH, 0), cols = Array.from({ length: NC }, () => []);
+    const NC = GRP || ONE ? 1 : 3, RH = 30, GH = 40, total = groups.reduce((a, g) => a + GH + g.items.length * RH, 0), cols = Array.from({ length: NC }, () => []);
     let ci = 0, hcol = 0;
     for (const g of groups) { const h = GH + g.items.length * RH; if (hcol && hcol + h / 2 > total / NC && ci < NC - 1) { ci++; hcol = 0; } cols[ci].push(g); hcol += h; }
-    const colH = ONE ? 70 : Math.max(...cols.map(c => c.reduce((a, g) => a + GH + g.items.length * RH, 0)));
+    const oneH = ONE ? 80 : 0, colH = oneH + Math.max(0, ...cols.map(c => c.reduce((a, g) => a + GH + g.items.length * RH, 0)));
     const qr = link && await loadQR().then(Q => { const q = Q(0, "M"); q.addData(link); q.make(); return q; }).catch(() => null), FH = qr ? 160 : 70;
     const F = "Geist, 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans', 'Malgun Gothic', sans-serif", M = "'Geist Mono', Consolas, monospace";
     // Same order as the page: headline, what it means, the three numbers, exits, then every ball.
@@ -600,7 +616,7 @@
     }
     const cw = (W - P * 2 - 40 * (NC - 1)) / NC, laneX = NC === 1 ? 200 : 128, msW = 60;
     cols.forEach((col, i) => {
-      let yy = top + 20; const x0 = P + i * (cw + 40);
+      let yy = top + oneH + 20; const x0 = P + i * (cw + 40);
       for (const g of col) {
         x.fillStyle = C.muted; x.font = `600 15px ${F}`; x.fillText(g.name.toUpperCase(), x0, yy + 22); yy += GH;   // the title sits clear of the row above
         for (const sv of g.items) {

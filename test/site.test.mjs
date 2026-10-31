@@ -56,7 +56,7 @@ test("home, service and group pages each get their own layout; every page's foot
     const one = !!data.spot, grp = !!data.set;
     assert.equal(h.includes('id="stMed"'), one || grp, p + ": service or group result");
     assert.equal(h.includes('id="slane"'), one, p + ": the samples lane only on service pages");
-    assert.equal(h.includes('id="groups"'), !one, p + ": the field on home and group pages");
+    assert.equal(h.includes('id="groups"'), !one || data.spot === "telegram", p + ": the field on home and group pages, and on a service page with parts (Telegram's data centers)");
     assert.equal(h.includes('id="stLocal"'), !one && !grp, p + ": local/global split only on home pages");
     assert.doesNotMatch(h, /<!--\/?v[:-]/, p + ": variant markers left in the page");
     assert.match(h, /<meta name="robots" content="index, follow/, p + ": indexed pages say index");

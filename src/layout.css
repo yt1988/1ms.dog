@@ -248,3 +248,6 @@ a.nm:hover { color: var(--ink); text-decoration: underline; text-underline-offse
   .grp.solo .row { grid-template-columns: 96px minmax(0, 1fr) 48px; gap: 8px; font-size: 13px; }
   .grp.solo .scale { margin: 4px calc(48px + 8px) 0 calc(96px + 8px); font-size: 10px; }
 }
+/* Telegram's data center, next to its name; hover lists why that one */
+.row .nm .dc { margin-left: 4px; padding: 0 3px; border-radius: 4px; font: 600 9.5px/14px var(--f-num); vertical-align: 1px; background: color-mix(in srgb, var(--fg) 9%, transparent); color: var(--muted); cursor: help; outline: none; }
+.row .nm .dc:hover, .row .nm .dc:focus-visible { color: var(--fg); }

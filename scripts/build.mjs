@@ -11,7 +11,7 @@ import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { build as bundle, transform } from "esbuild";
-import { CATS, SERVICES, PACKS, PACK_OF, SCALE, ZONES, USES, pos } from "../src/services.mjs";
+import { CATS, SERVICES, PACKS, PACK_OF, SCALE, ZONES, USES, SUBS, TG_DC_OF, pos } from "../src/services.mjs";
 
 const SITE = (process.env.SITE_URL || "https://1ms.dog").replace(/\/+$/, "");
 const pub = new URL("../public/", import.meta.url), src = new URL("../src/", import.meta.url);
@@ -57,7 +57,7 @@ export async function build({ check = false } = {}) {
   const langs = LANGS.filter(([l]) => I[l]);
   const tpl = await readFile(new URL("page.html", src), "utf8");
 
-  const svc = { list: SERVICES.map(({ via, origin, ...s }) => s), packs: PACKS, packOf: PACK_OF, scale: SCALE, cats: CATS, uses: USES };
+  const svc = { list: SERVICES.map(({ via, origin, ...s }) => s), packs: PACKS, packOf: PACK_OF, scale: SCALE, cats: CATS, uses: USES, subs: SUBS, tgDcOf: TG_DC_OF };
   // src/lib.mjs (the pure logic the tests import) goes inside the app's scope, at its /* @lib */ marker
   const lib = (await readFile(new URL("lib.mjs", src), "utf8")).replace(/^export /gm, "");
   const appSrc = await readFile(new URL("app.js", src), "utf8");
@@ -158,7 +158,7 @@ export async function build({ check = false } = {}) {
       ].join("\n");
 
       // every service is in the HTML, so crawlers and no-JS readers see what is tested. Local favorites come first.
-      const row = x => `<li class="row${s && x.id === s.id ? " hot" : ""}" id="t-${x.id}"><a class="nm" href="${path(slug, x.id)}">${esc(x.name)}</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li>`;
+      const row = x => `<li class="row${s && x.id === s.id ? " hot" : ""}" id="t-${x.id}">${x.dc ? `<span class="nm">${esc(x.name)}</span>` : `<a class="nm" href="${path(slug, x.id)}">${esc(x.name)}</a>`}<span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li>`;
       const order = s ? [s.cat, ...CATS.filter(c => c !== s.cat)] : CATS;
       const packOpts = Object.keys(PACKS).map(p => `<option value="${p}"${p === defPack ? " selected" : ""}>${esc(T("pk_" + p))}</option>`).join("");
       const local = `<div class="grp"><h2>${esc(T("cat_local"))}<label class="sel"><span class="sr">${esc(T("pack"))}</span><select id="pack">${packOpts}</select></label></h2><ul id="localRows">${PACKS[defPack].map(row).join("")}</ul></div>`;
@@ -168,7 +168,10 @@ export async function build({ check = false } = {}) {
       // A group page has one short list: it takes the full width (longer lanes, easier to compare), with the
       // speed-zone limits marked under it at the same log-scale positions as the balls.
       const scale = `<div class="scale" aria-hidden="true">${ZONES.map((z, i) => `<span style="left:${(pos(z) * 100).toFixed(1)}%">${z}${i === ZONES.length - 1 ? " ms" : ""}</span>`).join("")}</div>`;
-      const groups = g ? `<div class="grp solo"><h2>${esc(gn)}</h2><ul>${g.members.map(row).join("")}</ul>${scale}</div>` : [local, ...cats].join("\n");
+      // a service page with parts (Telegram's data centers) lists them the same way
+      const subs = s && SUBS[s.id];
+      const groups = g ? `<div class="grp solo"><h2>${esc(gn)}</h2><ul>${g.members.map(row).join("")}</ul>${scale}</div>`
+        : subs ? `<div class="grp solo"><h2>${esc(T("sub_" + s.id))}</h2><ul>${subs.map(row).join("")}</ul>${scale}</div>` : [local, ...cats].join("\n");
       const axis = ["zoom", "sprint", "trot", "stroll", "nap"].map((k, i) => `<span class="c${i + 1}"><i></i><b>${esc(T("tier_" + k))}</b>${i < 4 ? "≤ " + ZONES[i] : "> " + ZONES[3]} ms</span>`).join("") +
         `<span class="cx"><i></i><b>${esc(T("tier_lost"))}</b></span>`;
       const tools = TOOLS.map(x => `<a class="tool" href="https://${x.host}${toolHome(x.id, lang, slug)}" style="--tint:${x.tint}"><b><svg viewBox="0 0 16 16" aria-hidden="true">${x.icon}</svg>${esc(x.name)}</b><span>${esc(T("tool_" + x.id))}</span></a>`).join("");
@@ -208,8 +211,9 @@ export async function build({ check = false } = {}) {
         `<i class="br"></i><b>${esc(T("sm_regions"))}</b>` + Object.keys(PACKS).map(p => `<a href="${path(slug, "region/" + p)}"${"region/" + p === sub ? ' aria-current="page"' : ""}>${esc(T("pk_" + p))}</a>`).join("");
 
       // <!--v:full,grp--> … <!--/v-->: kept on the pages whose variant is listed (home: full, service: one, group: grp)
-      const mode = s ? "one" : g ? "grp" : "full";
-      const variant = t0 => t0.replace(/<!--v:([\w,]+)-->\n?([\s\S]*?)<!--\/v-->\n?/g, (m, list, body) => list.split(",").includes(mode) ? body : "");
+      // "sub": a service page that also lists the service's parts, so it keeps the field
+      const modes = [s ? "one" : g ? "grp" : "full", ...(subs ? ["sub"] : [])];
+      const variant = t0 => t0.replace(/<!--v:([\w,]+)-->\n?([\s\S]*?)<!--\/v-->\n?/g, (m, list, body) => list.split(",").some(v => modes.includes(v)) ? body : "");
       let html = variant(tpl)
         .replace(/(<(\w+)\b[^>]*\sdata-i="(\w+)"[^>]*>)([^<]*)(<\/\2>)/g, (m, open, tag, k, inner, close) => open + esc(T(k)) + close)
         .replace("{{waitText}}", esc(s ? fill(T("v_one_wait"), { s: s.name }) : g ? fill(T("v_grp_wait"), { g: gn }) : T("v_wait"))).replace("{{sitemap}}", sitemapNav)

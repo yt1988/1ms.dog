@@ -26,6 +26,7 @@ export default {
   med: "médiane globale",
   lost_n: "{n} jamais revenues",
   share: "Partager", copied: "Copié !",
+  sub_telegram: "Centres de données Telegram", tg_dc_t: "Telegram place chaque compte dans l'un de ses 5 centres de données, selon la région du numéro. Ici, c'est {dc} ({city}), où se trouvent la plupart des comptes de votre région. La page Telegram teste les 5.",
   qr_hint: "Scannez pour voir le résultat complet",
   share_text: "Mon chien a rapporté {ok}/{n} services depuis {where}, médiane {ms} ms ({tier}). Et le vôtre ?",
   share_h: "Partager le résultat", copy_link: "Copier le lien", copy_img: "Copier l’image", dl_img: "Télécharger l’image", more_share: "Autres options",

@@ -48,7 +48,7 @@ export const SERVICES = [
   { id: "instagram", name: "Instagram", cat: "social", url: "https://scontent.cdninstagram.com/", via: "Meta", c: "#e1306c" },
   { id: "facebook", name: "Facebook", cat: "social", url: "https://www.facebook.com/favicon.ico", via: "Meta", c: "#1877f2" },
   { id: "whatsapp", name: "WhatsApp", cat: "social", url: "https://web.whatsapp.com/favicon.ico", via: "Meta", c: "#25d366" },
-  { id: "telegram", name: "Telegram", cat: "social", url: "https://web.telegram.org/favicon.ico", c: "#26a5e4" },
+  { id: "telegram", name: "Telegram", cat: "social", url: "https://venus.web.telegram.org/apiw1", c: "#26a5e4" },
   { id: "discord", name: "Discord", cat: "social", url: "https://discord.com/cdn-cgi/trace", via: "Cloudflare", c: "#5865f2" },
   { id: "reddit", name: "Reddit", cat: "social", url: "https://www.reddit.com/robots.txt", via: "Fastly", c: "#ff4500" },
 
@@ -164,3 +164,12 @@ export const pos = ms => Math.max(0, Math.min(1, Math.log(ms / SCALE.min) / Math
 export const USES = [["game", ["steam", "playstation", "xbox", "epic"], 80, 150], ["call", ["zoom", "whatsapp", "discord", "telegram"], 150, 250],
   ["stream", ["youtube", "netflix", "twitch", "tiktok", "spotify"], 200, 400], ["ai", ["chatgpt", "claude", "gemini", "copilot", "grok", "deepseek"], 200, 400],
   ["dev", ["github", "npm", "dockerhub", "pypi", "huggingface"], 150, 300]];
+
+// Telegram keeps each account in one of five data centers, by the region of its phone number, and each data center
+// answers on its own web host (Telegram Web's names for them). The home page measures the one most accounts in the
+// visitor's region use (TG_DC_OF, by local pack) and labels it; Telegram's own page tests all five (SUBS).
+export const TG_DC = [[1, "pluto", "Miami", "US"], [2, "venus", "Amsterdam", "NL"], [3, "aurora", "Miami", "US"], [4, "vesta", "Amsterdam", "NL"], [5, "flora", "Singapore", "SG"]]
+  .map(([dc, host, city, cc]) => ({ id: "tg-dc" + dc, name: `DC${dc} · ${city}`, dc, city, cc, url: `https://${host}.web.telegram.org/apiw1`, c: "#26a5e4" }));
+export const TG_DC_OF = { cn: 5, tw: 5, jp: 5, kr: 5, sea: 5, in: 5, eu: 2, ru: 2, me: 2, na: 1, latam: 1 };
+// a service page that also tests the service's parts
+export const SUBS = { telegram: TG_DC };

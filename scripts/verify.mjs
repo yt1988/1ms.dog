@@ -14,12 +14,12 @@
 // fetches from an origin on another continent, and some reset foreign connections, while its own visitors are local.
 // Usage: node scripts/verify.mjs [--far] [id …] [id=url …]   (id=url tries another URL for that service)
 import https from "node:https";
-import { SERVICES, PACKS } from "../src/services.mjs";
+import { SERVICES, PACKS, TG_DC } from "../src/services.mjs";
 
 const SRV_MAX = 120;            // ms of server time that still counts as an edge answer
-const all = [...SERVICES, ...Object.values(PACKS).flat()];
+const all = [...SERVICES, ...Object.values(PACKS).flat(), ...TG_DC];
 const FAR = process.argv.includes("--far");
-const regional = new Set([...Object.values(PACKS).flat(), ...SERVICES.filter(s => s.origin)].map(s => s.id));
+const regional = new Set([...Object.values(PACKS).flat(), ...SERVICES.filter(s => s.origin), ...TG_DC].map(s => s.id));
 const args = process.argv.slice(2).filter(a => a !== "--far"), tries =args.filter(a => a.includes("=")).map(a => { const i = a.indexOf("="); return [a.slice(0, i), a.slice(i + 1)]; });
 const pick = args.filter(a => !a.includes("="));
 const list = tries.length ? tries.map(([id, url]) => ({ ...(all.find(s => s.id === id) || { id }), url, m: undefined }))
