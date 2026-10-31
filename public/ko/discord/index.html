@@ -48,7 +48,7 @@
 <meta name="twitter:image" content="https://1ms.dog/og/ko.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"내 네트워크에서 Discord는 얼마나 빠를까?","url":"https://1ms.dog/ko/discord/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"내 브라우저에서 Discord 지연을 측정하세요. Discord까지의 실제 HTTPS 왕복 시간, 내 출구 IP와 통신사, 다른 서비스 40개와의 비교로 Discord 문제인지 내 네트워크 문제인지 알 수 있습니다. 무료, 가입 불필요.","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/ko/"},{"@type":"ListItem","position":2,"name":"Discord","item":"https://1ms.dog/ko/discord/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.ae58544a54.css">
+<link rel="stylesheet" href="/assets/app.6dff595f3a.css">
 </head>
 <body>
 <div class="app">
@@ -95,15 +95,19 @@
         <span class="ground" aria-hidden="true"></span>
       </div>
       <div class="sum" id="sum">
-        <div class="sum-n"><b id="sumMs">–</b><small>ms <span data-i="med">전체 중앙값</span></small></div>
-        <div class="sum-txt"><span class="tier" id="sumTier">&nbsp;</span><span id="sumBack" class="m"></span></div>
+        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">출구를 킁킁 찾는 중…</p><p class="v-d" id="vText"></p></div>
         <div class="sum-acts">
           <button class="btn pri" id="run" type="button"><span data-i="run">다시 측정</span></button>
           <button class="btn" id="deep" type="button" data-i="deep">정밀 측정</button>
           <button class="btn icon" id="share" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr" data-i="share">공유</span></button>
         </div>
         <div class="prog" id="prog"><i></i></div>
-        <div class="verdict" id="verdict" hidden><p id="vText"></p><div class="segs" id="vSegs"></div><div class="uses" id="vUses"></div></div>
+        <div class="stats">
+          <div class="stat" id="stLocal"><em data-i="seg_local">지역 인기 서비스</em><b>–</b><i></i></div>
+          <div class="stat" id="stGlobal"><em data-i="seg_global">글로벌 서비스</em><b>–</b><i></i></div>
+          <div class="stat" id="stAll"><em data-i="med">전체 중앙값</em><b>–</b><i></i></div>
+        </div>
+        <div class="uses" id="vUses"></div>
       </div>
     </section>
 
@@ -161,7 +165,7 @@
     </div>
   </div>
 </div>
-<script type="application/json" id="data">{"lang":"ko","paths":{"en":"/discord/","zh-CN":"/zh-cn/discord/","zh-TW":"/zh-tw/discord/","ja":"/ja/discord/","ko":"/ko/discord/","es":"/es/discord/","fr":"/fr/discord/","de":"/de/discord/","pt":"/pt/discord/","ru":"/ru/discord/"},"pack":"kr","spot":"discord","i18n":{"k_local":"로컬","k_proxy":"프록시","seen_by":"감지: {list}","sniff":"출구를 킁킁 찾는 중…","hide":"IP 숨기기","show":"IP 보기","r_tz":"기기 시간대는 {a}, 출구는 {b}입니다","r_proxied":"{list}은(는) 보통 {c}에서 바로 접속되지 않는데 응답했습니다. 이 트래픽은 다른 출구(프록시나 VPN)로 나가며, 위의 확인에서는 보이지 않았습니다","no_net":"출구 확인에 연결하지 못했습니다. 광고 차단기가 막았을 수 있어요.","run":"다시 측정","deep":"정밀 측정","stop":"중지","deep_t":"서비스마다 3회 대신 10회 측정해 더 안정적인 결과를 냅니다(약 20초)","running":"공 물어오는 중 {d} / {n}","back":"공 {n}개 중 {ok}개 회수","med":"전체 중앙값","lost_n":"{n}개 못 돌아옴","share":"공유","copied":"복사됨","share_text":"우리 강아지가 {where}에서 서비스 {ok}/{n}개의 공을 물어왔어요. 중앙값 {ms} ms({tier}). 당신의 강아지는요?","shared_from":"{where}에서 공유한 결과 · {date}","seg_local":"지역 인기 서비스","seg_global":"글로벌 서비스","v_allgood":"지역 서비스도 글로벌 서비스도 빨라서 무엇을 써도 쾌적합니다.","v_far":"지역 서비스는 빠르고, 느린 쪽은 글로벌 서비스(중앙값 {g} ms)입니다. 보통 국제 회선이나 프록시 서버 문제이지, 내 회선 문제가 아닙니다.","v_near_slow":"지역 서비스도 느려서(중앙값 {l} ms) 원인은 내 쪽에 있을 가능성이 큽니다: Wi‑Fi, 회선 또는 기기.","v_odd":"글로벌 서비스({g} ms)가 지역 서비스({l} ms)보다 빠릅니다. 모든 트래픽이 프록시나 VPN을 거치고 있을 수 있어요.","v_down":"대부분의 서비스가 응답하지 않았습니다. 인터넷 연결이나 방화벽, 프록시 차단 여부를 확인하세요.","v_fail":"접속 불가: {list}.","v_join":", ","use_game":"게임","use_call":"영상 통화","use_stream":"동영상","use_ai":"AI 도구","use_dev":"개발 도구","st_great":"쾌적","st_ok":"양호","st_slow":"느림","st_blocked":"접속 불가","mood_legend":"1밀리초?! 데이터센터 안에 사세요?","mood_far":"가까운 공은 바로 돌아와. 먼 공은 너무 멀리 던졌어.","mood_odd":"어, 먼 공이 가까운 공보다 먼저 돌아왔네…","tier_legend":"1ms 전설견","tier_zoom":"질주","tier_sprint":"전력 질주","tier_trot":"총총","tier_stroll":"산책","tier_nap":"낮잠","tier_lost":"못 돌아옴","mood_sniff":"킁킁… 여기가 어디지?","mood_run":"물어오자! 금방 올게…","mood_zoom":"질주 모드! 온 세상이 바로 옆집이야.","mood_sprint":"오늘 발이 빠르네. 대부분 가까워.","mood_trot":"괜찮은 속도. 몇 개는 멀리 떨어졌어.","mood_stroll":"긴 산책이었어. 여기서는 세상이 좀 멀어.","mood_nap":"너무 멀어… 잠깐 낮잠 잘게.","mood_lost":"공이 많이 안 돌아왔어. 중간에 뭔가 막고 있어.","mood_pet":"헤헤, 간지러워!","mood_turbo":"1MS 모드 발동!","cat_ai":"AI","cat_web":"자주 쓰는 사이트","cat_video":"동영상·음악","cat_social":"SNS·메신저","cat_dev":"개발 도구","cat_game":"게임","cat_cdn":"CDN","cat_local":"지역 인기 서비스","d_cold":"연결 수립","d_samples":"측정값","d_jit":"지터","th_system":"시스템 설정","th_light":"라이트","th_dark":"다크"}}</script>
-<script src="/assets/app.b2d9a9b304.js" defer></script>
+<script type="application/json" id="data">{"lang":"ko","paths":{"en":"/discord/","zh-CN":"/zh-cn/discord/","zh-TW":"/zh-tw/discord/","ja":"/ja/discord/","ko":"/ko/discord/","es":"/es/discord/","fr":"/fr/discord/","de":"/de/discord/","pt":"/pt/discord/","ru":"/ru/discord/"},"pack":"kr","spot":"discord","i18n":{"k_local":"로컬","k_proxy":"프록시","seen_by":"감지: {list}","sniff":"출구를 킁킁 찾는 중…","hide":"IP 숨기기","show":"IP 보기","r_tz":"기기 시간대는 {a}, 출구는 {b}입니다","r_proxied":"{list}은(는) 보통 {c}에서 바로 접속되지 않는데 응답했습니다. 이 트래픽은 다른 출구(프록시나 VPN)로 나가며, 위의 확인에서는 보이지 않았습니다","no_net":"출구 확인에 연결하지 못했습니다. 광고 차단기가 막았을 수 있어요.","run":"다시 측정","deep":"정밀 측정","stop":"중지","deep_t":"서비스마다 3회 대신 10회 측정해 더 안정적인 결과를 냅니다(약 20초)","running":"공 물어오는 중 {d} / {n}","back":"공 {n}개 중 {ok}개 회수","med":"전체 중앙값","lost_n":"{n}개 못 돌아옴","share":"공유","copied":"복사됨","share_text":"우리 강아지가 {where}에서 서비스 {ok}/{n}개의 공을 물어왔어요. 중앙값 {ms} ms({tier}). 당신의 강아지는요?","shared_from":"{where}에서 공유한 결과 · {date}","seg_local":"지역 인기 서비스","seg_global":"글로벌 서비스","vh_allgood":"지역도 글로벌도 빠름","v_allgood":"게임, 영상 통화, 동영상 모두 쾌적합니다.","vh_far":"지역은 빠르고 글로벌 서비스는 느림","v_far":"느린 원인은 국제 회선이나 프록시 서버이지, 내 회선이 아닙니다.","vh_near_slow":"지역 서비스도 느림","v_near_slow":"원인은 내 쪽에 있을 가능성이 큽니다: Wi‑Fi, 회선 또는 기기.","vh_odd":"글로벌이 지역보다 빠름","v_odd":"모든 트래픽이 프록시나 VPN을 거치고 있을 수 있어요.","vh_down":"대부분의 서비스가 응답 없음","v_down":"인터넷 연결이나 방화벽, 프록시 차단 여부를 확인하세요.","v_fail":"접속 불가: {list}.","v_join":", ","use_game":"게임","use_call":"영상 통화","use_stream":"동영상","use_ai":"AI 도구","use_dev":"개발 도구","st_great":"쾌적","st_ok":"양호","st_slow":"느림","st_blocked":"접속 불가","mood_legend":"1밀리초?! 데이터센터 안에 사세요?","mood_far":"가까운 공은 바로 돌아와. 먼 공은 너무 멀리 던졌어.","mood_odd":"어, 먼 공이 가까운 공보다 먼저 돌아왔네…","tier_legend":"1ms 전설견","tier_zoom":"질주","tier_sprint":"전력 질주","tier_trot":"총총","tier_stroll":"산책","tier_nap":"낮잠","tier_lost":"못 돌아옴","mood_sniff":"킁킁… 여기가 어디지?","mood_run":"물어오자! 금방 올게…","mood_zoom":"질주 모드! 온 세상이 바로 옆집이야.","mood_sprint":"오늘 발이 빠르네. 대부분 가까워.","mood_trot":"괜찮은 속도. 몇 개는 멀리 떨어졌어.","mood_stroll":"긴 산책이었어. 여기서는 세상이 좀 멀어.","mood_nap":"너무 멀어… 잠깐 낮잠 잘게.","mood_lost":"공이 많이 안 돌아왔어. 중간에 뭔가 막고 있어.","mood_pet":"헤헤, 간지러워!","mood_turbo":"1MS 모드 발동!","cat_ai":"AI","cat_web":"자주 쓰는 사이트","cat_video":"동영상·음악","cat_social":"SNS·메신저","cat_dev":"개발 도구","cat_game":"게임","cat_cdn":"CDN","cat_local":"지역 인기 서비스","d_cold":"연결 수립","d_samples":"측정값","d_jit":"지터","th_system":"시스템 설정","th_light":"라이트","th_dark":"다크"}}</script>
+<script src="/assets/app.c0884168ac.js" defer></script>
 </body>
 </html>

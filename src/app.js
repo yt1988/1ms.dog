@@ -298,28 +298,31 @@
   function progress(run) {
     $("#prog i").style.width = run ? (100 * run.d / run.n).toFixed(1) + "%" : "0";
     if (!run) return;
-    $("#sumBack").textContent = t("running", { d: run.d, n: run.n });
-    // the median so far, so the big number moves while the balls come back
-    const ok = allServices().map(s => R.get(s.id)).filter(r => r && r.st === "done").map(r => median(r.s)).filter(v => v != null);
-    if (!ok.length) return;
-    const md = median(ok), [tk, cls] = tierOf(md);
-    $("#sumMs").textContent = fmt(md); $("#sumMs").className = cls;
-    $("#sumTier").textContent = t("tier_" + tk); $("#sumTier").className = "tier " + cls;
+    $("#vHead").textContent = t("running", { d: run.d, n: run.n });
+    paintStats();                                             // the three numbers move while the balls come back
   }
   function setBusy(b) { $("#run span").textContent = t(b ? "stop" : "run"); $("#deep").disabled = b; }
   let lastSum = null;
   const moodKey = () => lastSum ? "mood_" + lastSum.mood : RUN ? "mood_run" : "mood_sniff";
+  // the stats row: local favorites, global services, and the overall median with how many came back
+  function paintStats() {
+    const cell = (id, sg) => {
+      const el = $(id), [tk, cls] = tierOf(sg.md);
+      el.querySelector("b").innerHTML = sg.md != null ? `${fmt(sg.md)}<small>ms</small>` : sg.n ? "✕" : "–";
+      el.querySelector("b").className = sg.md != null ? cls : "cx";
+      return [el, tk, sg];
+    };
+    for (const [el, tk, sg] of [cell("#stLocal", segment(PACKS[pack] || [])), cell("#stGlobal", segment(SVC.list))])
+      el.querySelector("i").textContent = sg.md != null ? t("tier_" + tk) : sg.n ? t("tier_lost") : "";
+    const [el, , all] = cell("#stAll", segment(allServices()));
+    el.querySelector("i").textContent = all.n ? t("back", { ok: all.ok, n: all.n }) : "";
+    return all;
+  }
   function summarize() {
-    const meds = allServices().map(s => R.get(s.id)).filter(Boolean).map(r => median(r.s));
-    const ok = meds.filter(v => v != null), n = meds.length;
-    const md = median(ok), [tk, cls] = tierOf(md);
-    // The overall median only describes this sample of services. The verdict below, which splits local favorites,
-    // global services and failures, decides what the dog says.
-    const v = verdict();
-    lastSum = { md, ok: ok.length, n, tier: tk, mood: v.mood, v };
-    $("#sumMs").textContent = md != null ? fmt(md) : "–"; $("#sumMs").className = cls;
-    $("#sumTier").textContent = t("tier_" + tk); $("#sumTier").className = "tier " + cls;
-    $("#sumBack").textContent = t("back", { ok: ok.length, n }) + (n - ok.length ? " · " + t("lost_n", { n: n - ok.length }) : "");
+    // The overall median only describes this sample of services. The verdict, which splits local favorites,
+    // global services and failures, decides the headline and what the dog says.
+    const all = paintStats(), v = verdict();
+    lastSum = { md: all.md, ok: all.ok, n: all.n, tier: tierOf(all.md)[0], mood: v.mood, v };
     setMood(v.mood); say("mood_" + v.mood);
     hiddenExit();
     renderVerdict(v);
@@ -356,24 +359,21 @@
     }).filter(Boolean);
     return { key, mood, local, global, lg, gg, lost, uses };
   }
+  // headline: the diagnosis in a few words; detail: what it means, plus what didn't answer (numbers are in the stats)
+  const verdictHead = v => t(v.key.replace("v_", "vh_"));
   function verdictText(v) {
-    let s = t(v.key, { l: v.local.md != null ? fmt(v.local.md) : "–", g: v.global.md != null ? fmt(v.global.md) : "–" });
+    let s = t(v.key);
     if (v.lost.length) s += " " + t("v_fail", { list: v.lost.slice(0, 4).join(t("v_join")) + (v.lost.length > 4 ? "…" : "") });
     return s;
   }
   function renderVerdict(v) {
-    const box = $("#verdict");
-    if (!v) { box.hidden = true; return; }
-    $("#vText").textContent = verdictText(v);
-    const seg = (k, sg, g) => `<span class="seg s-${g}"><em>${esc(t(k))}</em><b class="${tierOf(sg.md)[1]}">${sg.md != null ? fmt(sg.md) + " ms" : "✕"}</b>${sg.md != null ? `<i>${esc(t("tier_" + tierOf(sg.md)[0]))}</i>` : ""}</span>`;
-    $("#vSegs").innerHTML = seg("seg_local", v.local, v.lg) + seg("seg_global", v.global, v.gg) +
-      (v.lost.length ? `<span class="seg s-blocked"><em>${esc(t("tier_lost"))}</em><b>${v.lost.length}</b><i title="${esc(v.lost.join(", "))}">${esc(v.lost.slice(0, 3).join(", ") + (v.lost.length > 3 ? "…" : ""))}</i></span>` : "");
-    $("#vUses").innerHTML = v.uses.map(u => `<span class="use s-${u.st}"${u.lost.length ? ` title="${esc(t("tier_lost") + ": " + u.lost.join(", "))}"` : ""}>${esc(t("use_" + u.k))}<b>${esc(t("st_" + u.st))}</b></span>`).join("");
-    box.hidden = false;
+    $("#vHead").textContent = v ? verdictHead(v) : t("running", { d: 0, n: allServices().length });
+    $("#vText").textContent = v ? verdictText(v) : "";
+    $("#vUses").innerHTML = v ? v.uses.map(u => `<span class="use s-${u.st}"${u.lost.length ? ` title="${esc(t("tier_lost") + ": " + u.lost.join(", "))}"` : ""}>${esc(t("use_" + u.k))}<b>${esc(t("st_" + u.st))}</b></span>`).join("") : "";
   }
 
   /* ---------- controls ---------- */
-  const start = n => { for (const s of allServices()) { R.delete(s.id); paintRow(s); } lastSum = null; renderVerdict(null); runList(allServices(), n, true); };
+  const start = n => { for (const s of allServices()) { R.delete(s.id); paintRow(s); } lastSum = null; renderVerdict(null); paintStats(); runList(allServices(), n, true); };
   $("#run").onclick = () => { if (RUN) { RUN.ctl.abort(); return; } leaveShared(); start(3); };
   $("#deep").title = t("deep_t");
   $("#deep").onclick = () => { leaveShared(); start(10); };
@@ -466,10 +466,14 @@
     for (const g of groups) { const h = GH + g.items.length * RH; if (hcol && hcol + h / 2 > total / 3 && ci < 2) { ci++; hcol = 0; } cols[ci].push(g); hcol += h; }
     const colH = Math.max(...cols.map(c => c.reduce((a, g) => a + GH + g.items.length * RH, 0)));
     const F = "Geist, 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans', 'Malgun Gothic', sans-serif", M = "'Geist Mono', Consolas, monospace";
-    // the verdict, wrapped to the card width (measured before the canvas size is known)
-    const vText = s0 => { const m = document.createElement("canvas").getContext("2d"); m.font = `500 24px ${F}`; return wrap(m, s0, W - P * 2); };
-    const vLines = lastSum.v ? vText(verdictText(lastSum.v)) : [];
-    const exits = NET.groups.slice(0, 3), vTop = 316, eTop = vTop + vLines.length * 34 + 30, top = eTop + exits.length * 40 - 18, H = top + colH + 90;
+    // Same order as the page: headline, what it means, the three numbers, exits, then every ball.
+    // Text is wrapped before the canvas size is known; the headline stays clear of the dog.
+    const m = document.createElement("canvas").getContext("2d");
+    const lines = (s0, font, w) => { m.font = font; return wrap(m, s0, w); };
+    const hLines = lastSum.v ? lines(verdictHead(lastSum.v), `700 44px ${F}`, W - P * 2 - 360) : [];
+    const dLines = lastSum.v ? lines(verdictText(lastSum.v), `400 24px ${F}`, W - P * 2) : [];
+    const hTop = 190, dTop = hTop + (hLines.length - 1) * 54 + 48, sTop = dTop + dLines.length * 34 + 10, SH = 108;
+    const exits = NET.groups.slice(0, 3), eTop = sTop + SH + 46, top = eTop + exits.length * 40 - 18, H = top + colH + 90;
     const c = document.createElement("canvas"); c.width = W; c.height = H;
     const x = c.getContext("2d");
     // the page's own theme colors, so the card matches what the visitor sees (light or dark)
@@ -480,16 +484,22 @@
     const [logo, dog] = await Promise.all([img(dark ? "/assets/logo-dark.svg" : "/assets/logo-light.svg"), img("/assets/shiba-run.svg")]);
     x.drawImage(logo, P, 44, 150, 60);
     x.drawImage(dog, 150, 20, 700, 420, W - P - 330, 24, 330, 198);
-    const s = lastSum, [, cls] = tierOf(s.md);
-    x.fillStyle = C[cls]; x.font = `600 96px ${M}`; x.textBaseline = "alphabetic";
-    const big = s.md != null ? fmt(s.md) : "–"; x.fillText(big, P, 228);
-    const bw = x.measureText(big).width;
-    x.fillStyle = C.muted; x.font = `500 26px ${F}`; x.fillText("ms " + t("med"), P + bw + 14, 228);
-    x.fillStyle = C[cls]; x.font = `700 30px ${F}`; x.fillText(t("tier_" + s.tier), P, 272);
-    const tw = x.measureText(t("tier_" + s.tier)).width;
-    x.fillStyle = C.muted; x.font = `400 22px ${F}`; x.fillText(t("back", { ok: s.ok, n: s.n }), P + tw + 20, 272);
-    x.fillStyle = C.fg; x.font = `500 24px ${F}`;
-    vLines.forEach((l, i) => x.fillText(l, P, vTop + 24 + i * 34));
+    x.textBaseline = "alphabetic";
+    x.fillStyle = C.fg; x.font = `700 44px ${F}`; hLines.forEach((l, i) => x.fillText(l, P, hTop + i * 54));
+    x.fillStyle = C.muted; x.font = `400 24px ${F}`; dLines.forEach((l, i) => x.fillText(l, P, dTop + i * 34));
+    // the three numbers
+    const s = lastSum, v0 = s.v, cw3 = (W - P * 2 - 2 * 16) / 3;
+    const cells = [[t("seg_local"), v0 && v0.local, ""], [t("seg_global"), v0 && v0.global, ""], [t("med"), { md: s.md }, t("back", { ok: s.ok, n: s.n })]];
+    cells.forEach(([label, sg, sub], i) => {
+      const cx0 = P + i * (cw3 + 16), md = sg ? sg.md : null, [tk, k] = tierOf(md);
+      x.fillStyle = C.panel === C.bg ? C.line + "55" : C.panel; roundRect(x, cx0, sTop, cw3, SH, 14); x.fill();
+      x.fillStyle = C.muted; x.font = `400 20px ${F}`; x.fillText(label, cx0 + 20, sTop + 34);
+      const num = md != null ? fmt(md) : "✕";
+      x.fillStyle = C[k]; x.font = `600 46px ${M}`; x.fillText(num, cx0 + 20, sTop + 86);
+      const nw = x.measureText(num).width;
+      x.fillStyle = C.muted; x.font = `400 20px ${F}`;
+      x.fillText((md != null ? "ms  " : "") + (sub || (md != null ? t("tier_" + tk) : t("tier_lost"))), cx0 + 20 + nw + 10, sTop + 86);
+    });
     // exits, without IPs
     let y = eTop;
     for (const g of exits) {
