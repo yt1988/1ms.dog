@@ -132,7 +132,6 @@
 .help-c p { font-size: 13.5px; line-height: 1.7; }
 .help-pick { display: none; gap: 8px; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--line); }
 .help-pick select { flex: 1; min-width: 0; height: 34px; padding: 0 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--fg); font: 600 16px var(--f-ui); text-overflow: ellipsis; } /* 16px: iOS zooms into smaller fields */
-.help-pick option { background-color: var(--panel); color: var(--fg); }
 .help-pick .icon-btn:disabled { opacity: .35; cursor: default; }
 /* share: the image, the link, and what to do with them */
 .dialog.share { width: 640px; }
