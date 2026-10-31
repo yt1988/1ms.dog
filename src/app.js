@@ -127,15 +127,18 @@
     // An address only a geo-less check saw (ipip.net, IPv4/IPv6-only hosts, WebRTC) is looked up right away; until
     // its network is known it isn't shown, so it never appears as an exit of its own and then merges into another.
     const lookups = [], looked = new Set();
+    // progress: checks and lookups answered, out of those started
+    const prog = NET.prog = { d: 0, n: CHECKS.length }, tick = () => { prog.d++; renderExits(); };
     const lookup = ip => {
       if (looked.has(ip) || looked.size >= 5) return;
-      looked.add(ip);
+      looked.add(ip); prog.n++;
       lookups.push(getJ("https://api.ip.sb/geoip/" + encodeURIComponent(ip)).then(j => {
         NET.geo[ip] = { cc: j.country_code, city: j.city, asn: j.asn, org: j.isp || j.asn_organization };
-        group(); renderExits();
-      }).catch(() => {}));
+        group();
+      }).catch(() => {}).finally(tick));
     };
-    await Promise.allSettled(CHECKS.map(([name, f]) => f().then(res => {
+    renderExits();
+    await Promise.allSettled(CHECKS.map(([name, f]) => f().finally(tick).then(res => {
       for (const r of [].concat(res)) {
         if (!r || !r.ip) continue;
         NET.seen.push({ ip: r.ip, by: name });
@@ -167,10 +170,13 @@
     el.addEventListener("mouseleave", hide); el.addEventListener("blur", hide);
   }
   function renderExits() {
-    // The list renders once, when every check and lookup is in: shown as answers arrive, it changed height several
-    // times and pushed the page down each time. Until then the placeholder holds one row's height.
-    if (!NET.done) return;
-    const G = NET.groups, ul = $("#exList");
+    // Answers show as they arrive, but only in the one row drawn from the start: the first exit found fills it right
+    // away (the placeholder is a real row's height). Further rows, merging and ordering wait for every check and
+    // lookup, so the list changes height at most once (adding a row per answer pushed the page down several times).
+    const pg = $("#exProg"), P = NET.prog;
+    if (pg) pg.textContent = !NET.done && P ? `${P.d}/${P.n}` : "";
+    const G = NET.done ? NET.groups : NET.groups.slice(0, 1), ul = $("#exList");
+    if (!NET.done && !G.length) return;
     if (!G.length) { ul.innerHTML = `<li class="ex sk-row">${NET.done ? esc(t("no_net")) : `<span class="sk-t">${esc(t("sniff"))}</span>`}</li>`; return; }
     ul.innerHTML = G.map(g => {
       const where = [g.city, g.cc && country(g.cc)].filter(Boolean).join(", ");
