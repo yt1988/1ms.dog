@@ -27,6 +27,7 @@ export default {
   lost_n: "{n} 個は戻らず",
   share: "シェア", copied: "コピーしました",
   sub_telegram: "Telegram データセンター", tg_dc_t: "Telegram は電話番号の地域ごとに、アカウントを 5 つのデータセンターのどれかに置いています。ここで測っているのは {dc}（{city}）で、あなたの地域のアカウントの多くがここにあります。Telegram のページでは 5 つすべてを測れます。",
+  egress_link: "サイトごとに見える IP →",
   qr_hint: "スキャンして結果をすべて見る",
   share_text: "うちの犬は{where}から {ok}/{n} サービスのボールを回収、中央値 {ms} ms（{tier}）。あなたの犬は？",
   share_h: "結果をシェア", copy_link: "リンクをコピー", copy_img: "画像をコピー", dl_img: "画像を保存", more_share: "ほかの方法でシェア",

@@ -27,6 +27,7 @@ export default {
   lost_n: "{n} 顆沒叼回來",
   share: "分享", copied: "已複製",
   sub_telegram: "Telegram 資料中心", tg_dc_t: "Telegram 依手機號碼所屬地區，把帳號放在 5 個資料中心之一。這裡測的是 {dc}（{city}），你所在地區的帳號大多在這裡。點進 Telegram 頁面可以測全部 5 個。",
+  egress_link: "查看每個網站看到的 IP →",
   qr_hint: "掃碼查看完整結果",
   share_text: "我的狗狗從{where}出發，叼回了 {ok}/{n} 個服務，中位延遲 {ms} ms（{tier}）。你的狗狗有多快？",
   share_h: "分享測試結果", copy_link: "複製連結", copy_img: "複製圖片", dl_img: "下載圖片", more_share: "更多分享方式",

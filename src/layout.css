@@ -249,3 +249,7 @@ a.nm:hover { color: var(--ink); text-decoration: underline; text-underline-offse
 .row .nm .dc:hover, .row .nm .dc:focus-visible { color: var(--fg); }
 /* exit checks answered so far ("4/7"), fixed width so nothing beside it slides */
 .ex-p { min-width: 5ch; font: 500 11px var(--f-num); font-variant-numeric: tabular-nums; color: var(--muted); letter-spacing: 0; }
+/* link to EgressLens beside the exits header: plain text, so the row keeps its height */
+.ex-h > * { flex: none; white-space: nowrap; }
+.ex-h .eg { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--ink); text-decoration: none; }
+.ex-h .eg:hover { text-decoration: underline; text-underline-offset: 3px; }
