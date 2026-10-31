@@ -15,7 +15,7 @@
   /* @lib */
   const bust = u => u + (u.includes("?") ? "&" : "?") + "_1ms=" + Math.random().toString(36).slice(2, 10);
 
-  /* ---------- theme and language (synced across the 1ms.dog tools by the shell) ---------- */
+  /* ---------- theme and language (synced across the 1ms.dog tools) ---------- */
   const thBtn = $("#theme"), TH = ["system", "light", "dark"];
   const applyTheme = th => {
     if (th === "light" || th === "dark") document.documentElement.setAttribute("data-theme", th); else document.documentElement.removeAttribute("data-theme");
@@ -392,7 +392,7 @@
   const parseHash = h => parseShare(h, PACKS);
   let shortFor = null;
   async function shortLink(long) {
-    const meta = document.querySelector('meta[name="shortener"]');          // announced by the 1ms.dog shell
+    const meta = document.querySelector('meta[name="shortener"]');          // present on 1ms.dog; absent when self-hosted
     if (!meta) return long;
     if (shortFor && shortFor[0] === long) return shortFor[1];
     try {

@@ -18,7 +18,7 @@ const pub = new URL("../public/", import.meta.url), src = new URL("../src/", imp
 export const LANGS = [["en", "", "en_US", "na"], ["zh-CN", "zh-cn", "zh_CN", "cn"], ["zh-TW", "zh-tw", "zh_TW", "tw"], ["ja", "ja", "ja_JP", "jp"],
   ["ko", "ko", "ko_KR", "kr"], ["es", "es", "es_ES", "latam"], ["fr", "fr", "fr_FR", "eu"], ["de", "de", "de_DE", "eu"], ["pt", "pt", "pt_BR", "latam"],
   ["ru", "ru", "ru_RU", "ru"]];
-// the other 1ms.dog tools (names, icons and tints as in 1ms-shell's src/sites.js)
+// the other 1ms.dog tools (names, icons and tints as the site's top bar shows them)
 const TOOLS = [
   { id: "m2c", host: "m2c.1ms.dog", name: "Me2Cloud", tint: "#3b82f6", icon: '<path d="M1.5 8.5h2.8l1.6-4.5 3.2 8 1.6-3.5h3.8"/>' },
   { id: "v2c", host: "v2c.1ms.dog", name: "VPS2Cloud", tint: "#10b981", icon: '<rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/>' },
@@ -105,7 +105,7 @@ export async function build({ check = false } = {}) {
           offers: { "@type": "Offer", price: "0", priceCurrency: "USD" }, isPartOf: { "@id": SITE + "/#site" } },
       ];
       // No FAQPage markup: Google shows FAQ rich results only for government and health sites since 2023, and the
-      // answers are already in the page (help dialog); a second copy would only make every page bigger for the shell.
+      // answers are already in the page (help dialog); a second copy would only make every page bigger.
       if (s) graph.push({ "@type": "BreadcrumbList", itemListElement: [
         { "@type": "ListItem", position: 1, name: "1ms.dog", item: SITE + path(slug, "") },
         { "@type": "ListItem", position: 2, name: s.name, item: url }] });

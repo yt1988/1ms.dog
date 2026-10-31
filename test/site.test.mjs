@@ -1,4 +1,4 @@
-// Checks the built site against the shell's tool contract and the SEO basics. Run `npm run build` first.
+// Checks the built site against the page contract (structure the 1ms.dog site relies on) and the SEO basics. Run `npm run build` first.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
@@ -23,12 +23,12 @@ test("every language has every string", async () => {
   }
 });
 
-test("pages follow the shell contract", async () => {
+test("pages follow the page contract", async () => {
   for (const p of pages) {
     const h = await page(p);
     assert.match(h, /^<!doctype html>\n<html lang="[a-zA-Z-]+"/, p);
     assert.match(h, /<head>\n<meta charset="utf-8">\n<script>/, p + ": charset first, pre-paint script right after");
-    assert.ok(h.length < 30 * 1024, p + " is " + h.length + " bytes; the shell parses every byte");
+    assert.ok(h.length < 30 * 1024, p + " is " + h.length + " bytes; HTML is parsed at the edge on every visit");
     assert.doesNotMatch(h, /\{\{\w+\}\}/, p);
   }
 });

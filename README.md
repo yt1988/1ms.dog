@@ -42,7 +42,7 @@ SITE_URL=https://ping.example.com node scripts/build.mjs
 SITE_URL=https://ping.example.com node scripts/assets.mjs
 ```
 
-On 1ms.dog the page runs behind [1ms-shell](https://1ms.dog), which adds the shared top bar, analytics and theme/language sync. When the shell announces a link shortener (`<meta name="shortener">`), share links are shortened; without it they stay as full links.
+On 1ms.dog the page also gets the site's shared top bar, analytics and theme/language sync. When the page carries a link shortener (`<meta name="shortener">`), share links are shortened; without it they stay as full links.
 
 ## Development
 

@@ -42,7 +42,7 @@ SITE_URL=https://ping.example.com node scripts/build.mjs
 SITE_URL=https://ping.example.com node scripts/assets.mjs
 ```
 
-在 1ms.dog 上，页面挂在 1ms-shell 后面，由它加上公共导航条、统计，以及跨工具的主题和语言同步。shell 用 `<meta name="shortener">` 告诉页面有短链服务时，分享链接会换成短链；没有这个 meta 就保持完整链接。
+在 1ms.dog 上，页面还会加上站点的公共导航条、统计，以及跨工具的主题和语言同步。页面里有 `<meta name="shortener">` 时，分享链接会换成短链；没有就保持完整链接。
 
 ## 开发
 

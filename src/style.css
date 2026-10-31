@@ -1,4 +1,4 @@
-/* 1ms.dog home. Same tokens as the tools (me2cloud, ls), so the shell's bar and the page switch theme together.
+/* 1ms.dog home. Same tokens as the tools (me2cloud, ls), so the site's top bar and the page switch theme together.
    The accent is the shiba's gold instead of the tools' green. */
 :root {
   --bg: #f6f6f7; --panel: #ffffff; --soft: #f0f0f2; --line: #e4e4e8;
@@ -30,7 +30,7 @@
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 html, body { margin: 0; }
-html { background: var(--bg); scrollbar-gutter: stable; }   /* same as the shell sets, so the page doesn't shift when it gets a scrollbar */
+html { background: var(--bg); scrollbar-gutter: stable; }   /* reserve the scrollbar's space, so the page doesn't shift when one appears */
 body { background: var(--bg); color: var(--fg); font: 14px/1.5 var(--f-ui); -webkit-font-smoothing: antialiased; }
 .app { max-width: 1080px; margin: 0 auto; padding-block: 20px 48px;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
