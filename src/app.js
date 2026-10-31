@@ -4,12 +4,12 @@
   "use strict";
   const $ = s => document.querySelector(s);
   const D = JSON.parse($("#data").textContent);
-  const L = D.i18n, LANG = D.lang;
+  const L = window.L1MS || {}, LANG = D.lang;                  // strings: /assets/l.<lang>.<hash>.js, loaded first
   const t = (k, v) => { let s = L[k] ?? k; if (v) for (const x in v) s = s.split("{" + x + "}").join(v[x]); return s; };
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
-  const K = { theme: "1ms:theme", lang: "1ms:lang", pack: "1ms:pack", mask: "1ms:mask" };
+  const K = { theme: "1ms:theme", lang: "1ms:lang", pack: "1ms:pack", mask: "1ms:mask", auto: "1ms:auto" };
   const country = cc => { try { return new Intl.DisplayNames([LANG], { type: "region" }).of(cc); } catch (e) { return cc; } };
   const flag = cc => /^[A-Z]{2}$/.test(cc || "") ? `<img class="flag" src="/flags/${cc.toLowerCase()}.svg" alt="" width="20" height="15">` : "";
   /* @lib */
@@ -52,7 +52,7 @@
     for (const [a, d] of durs) a.setAttribute("dur", (d / f).toFixed(3) + "s");
     dogSvg.unpauseAnimations();
   }
-  const SPEED = { sniff: 0.6, run: 1.15, legend: 2.6, zoom: 1.7, sprint: 1.25, trot: 0.85, stroll: 0.5, nap: 0, lost: 0, far: 1, odd: 0.85 };
+  const SPEED = { sniff: 0.6, idle: 0.35, run: 1.15, legend: 2.6, zoom: 1.7, sprint: 1.25, trot: 0.85, stroll: 0.5, nap: 0, lost: 0, far: 1, odd: 0.85 };
   function setMood(m) { stage.dataset.mood = m; dogSpeed(SPEED[m] ?? 1); }
   let pets = 0, petT = 0;
   $("#dog").onclick = () => {
@@ -542,12 +542,24 @@
   }
   $("#testMine").onclick = () => { leaveShared(); start(3); };
 
+  /* ---------- run on open, or wait for a click (the choice is remembered in this browser) ---------- */
+  const autoBox = $("#auto");
+  autoBox.checked = store.get(K.auto) !== "0";
+  autoBox.onchange = () => store.set(K.auto, autoBox.checked ? "1" : "0");
+  // with the switch off, the exit check still runs (a few small requests); the 40-service test waits for "Start"
+  function waitForClick() {
+    if (RUN || lastSum) return;
+    $("#vHead").textContent = t("vh_manual"); $("#vText").textContent = t("v_manual");
+    setMood("idle"); say("mood_idle");
+  }
+
   /* ---------- go ---------- */
   setMood("sniff");
   if (SHARED) { sharedOn = true; showShared(SHARED); }
   else {
     const exitP = checkExits().catch(() => {});
     // the exits pick the local pack; give them a moment, then the dog starts fetching either way
-    Promise.race([exitP, sleep(1500)]).then(() => start(3));
+    if (autoBox.checked) Promise.race([exitP, sleep(1500)]).then(() => start(3));
+    else exitP.then(waitForClick);
   }
 })();

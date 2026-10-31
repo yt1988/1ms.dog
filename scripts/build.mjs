@@ -83,10 +83,15 @@ export async function build({ check = false } = {}) {
     "name", "h1", "lang_label", "faq_h", "pack", "exit_h", "test_mine", "share_h", "copy_link", "copy_img", "dl_img", "more_share"]);
   // static text the page already shows, and region names (only the server-rendered picker uses them)
   const runtimeKey = k => !RUNTIME_SKIP.has(k) && !k.startsWith("pk_");
-  const pages = [];
+  const pages = [], stringFiles = {};
   for (const [lang, slug, locale, defPack] of langs) {
     const d = I[lang], T = k => d[k] ?? en[k] ?? k;
+    // The strings the browser code needs live in a small per-language script under /assets/ (cached for a year,
+    // served without passing through the site's HTML rewriting), not inline in every page.
     const strings = Object.fromEntries(Object.keys(en).filter(runtimeKey).map(k => [k, T(k)]));
+    const sjs = `window.L1MS=${JSON.stringify(strings).replace(/</g, "\\u003c")};\n`;
+    const sName = `l.${lang.toLowerCase()}.${hash(sjs)}.js`;
+    stringFiles["assets/" + sName] = sjs;
     for (const sub of ["", ...landOf(lang)]) {
       const s = sub ? SERVICES.find(x => x.id === sub) : null;
       const url = SITE + path(slug, sub);
@@ -161,12 +166,12 @@ export async function build({ check = false } = {}) {
       }
       const langOpts = langs.map(([l]) => `<option value="${l}"${l === lang ? " selected" : ""}>${esc(I[l].name)}</option>`).join("");
       const paths = Object.fromEntries(langs.map(([l, sl]) => [l, path(sl, sub)]));
-      const data = { lang, paths, pack: defPack, spot: s ? s.id : null, i18n: strings };
+      const data = { lang, paths, pack: defPack, spot: s ? s.id : null };
 
       let html = tpl
         .replace(/(<(\w+)\b[^>]*\sdata-i="(\w+)"[^>]*>)([^<]*)(<\/\2>)/g, (m, open, tag, k, inner, close) => open + esc(T(k)) + close)
         .replace("{{lang}}", lang).replace("{{pathsAttr}}", esc(JSON.stringify(paths))).replace("{{rootAttr}}", slug || sub ? "" : " data-root")
-        .replace("{{prepaint}}", PREPAINT).replace("{{head}}", head).replace("{{css}}", cssName).replace("{{js}}", jsName)
+        .replace("{{prepaint}}", PREPAINT).replace("{{head}}", head).replace("{{css}}", cssName).replace("{{js}}", jsName).replace("{{strings}}", sName)
         .replace("{{homeHref}}", path(slug, "")).replace("{{langOpts}}", langOpts)
         .replace("{{h1}}", esc(h1)).replace("{{intro}}", intro).replace("{{about}}", about).replace("{{uses}}", uses)
         .replace("{{axis}}", axis).replace("{{groups}}", groups).replace("{{tools}}", tools).replace("{{helpNav}}", helpNav).replace("{{helpC}}", helpC)
@@ -215,6 +220,9 @@ ${TOOLS.map(x => `- ${x.name}: https://${x.host}/ (${en["tool_" + x.id]})`).join
 /assets/app.*
   ! Cache-Control
   Cache-Control: public, max-age=31536000, immutable
+/assets/l.*
+  ! Cache-Control
+  Cache-Control: public, max-age=31536000, immutable
 /assets/fonts/*
   ! Cache-Control
   Cache-Control: public, max-age=31536000, immutable
@@ -227,7 +235,7 @@ ${TOOLS.map(x => `- ${x.name}: https://${x.host}/ (${en["tool_" + x.id]})`).join
   Content-Type: text/plain; charset=utf-8
 `;
 
-  const files = { ["assets/" + jsName]: app, ["assets/" + cssName]: css, "sitemap.xml": sitemap, "robots.txt": robots, "llms.txt": llms, "_headers": headers };
+  const files = { ["assets/" + jsName]: app, ["assets/" + cssName]: css, ...stringFiles, "sitemap.xml": sitemap, "robots.txt": robots, "llms.txt": llms, "_headers": headers };
   for (const p of pages) files[p.file] = p.html;
 
   const stale = [];
@@ -249,7 +257,7 @@ ${TOOLS.map(x => `- ${x.name}: https://${x.host}/ (${en["tool_" + x.id]})`).join
     if (check) stale.push(f + " (old)"); else await rm(new URL(f, pub));
   }
   // old bundles
-  const old = (await readdir(new URL("assets/", pub))).filter(f => /^app\.[0-9a-f]+\.(js|css)$/.test(f) && f !== jsName && f !== cssName);
+  const old = (await readdir(new URL("assets/", pub))).filter(f => /^(app|l\.[a-z-]+)\.[0-9a-f]+\.(js|css)$/.test(f) && !files["assets/" + f]);
   if (check && old.length) stale.push(...old.map(f => f + " (old)"));
   else for (const f of old) await rm(new URL("assets/" + f, pub));
   return { stale, pages: pages.length, sizes: { html: Math.max(...pages.map(p => p.html.length)), js: app.length, css: css.length } };

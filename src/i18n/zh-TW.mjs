@@ -18,6 +18,8 @@ export default {
   no_net: "出口偵測沒有回應，可能被廣告封鎖外掛擋住了。",
 
   run: "再測一次", deep: "精細測試", stop: "停止",
+  start: "開始測試", auto_label: "開啟頁面時自動測試",
+  vh_manual: "準備好了，隨時可以開始", v_manual: "自動測試已關閉。按「開始測試」後，瀏覽器會向 40 多個服務發出請求，大約需要 15 秒。",
   deep_t: "每個服務測 10 輪而不是 3 輪，結果更穩定，約 20 秒",
   running: "撿球中 {d} / {n}",
   back: "叼回 {ok}/{n} 顆球",
@@ -53,6 +55,7 @@ export default {
 
   tier_legend: "1ms 神犬", tier_zoom: "閃電狗", tier_sprint: "飛奔", tier_trot: "小跑", tier_stroll: "散步", tier_nap: "趴著睡", tier_lost: "沒叼回來",
   mood_sniff: "嗅嗅…我們在哪裡？",
+  mood_idle: "球準備好了，你說丟就丟！",
   mood_run: "撿球去囉！馬上回來…",
   mood_zoom: "閃電模式！全世界都在隔壁。",
   mood_sprint: "今天腳程很快，大部分都在附近。",

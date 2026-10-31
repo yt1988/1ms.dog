@@ -56,9 +56,12 @@
       <div class="sum" id="sum">
         <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff"></p><p class="v-d" id="vText" data-i="v_wait"></p></div>
         <div class="sum-acts">
-          <button class="btn pri" id="run" type="button"><span data-i="run"></span></button>
-          <button class="btn" id="deep" type="button" data-i="deep"></button>
-          <button class="btn icon" id="share" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr" data-i="share"></span></button>
+          <div class="sum-btns">
+            <button class="btn pri" id="run" type="button"><span data-i="start"></span></button>
+            <button class="btn" id="deep" type="button" data-i="deep"></button>
+            <button class="btn icon" id="share" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr" data-i="share"></span></button>
+          </div>
+          <label class="auto"><input type="checkbox" id="auto" checked><span class="sw" aria-hidden="true"></span><span data-i="auto_label"></span></label>
         </div>
         <div class="prog" id="prog"><i></i></div>
         <div class="stats">
@@ -120,6 +123,7 @@
   </div>
 </div>
 <script type="application/json" id="data">{{data}}</script>
+<script src="/assets/{{strings}}" defer></script>
 <script src="/assets/{{js}}" defer></script>
 </body>
 </html>

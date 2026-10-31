@@ -18,6 +18,8 @@ export default {
   no_net: "Die Ausgangstests waren nicht erreichbar. Werbeblocker blockieren sie manchmal.",
 
   run: "Neu messen", deep: "Gründlich testen", stop: "Stopp",
+  start: "Test starten", auto_label: "Beim Öffnen der Seite testen",
+  vh_manual: "Bereit, wenn du es bist", v_manual: "Der automatische Test ist aus. Beim Start schickt dein Browser Anfragen an über 40 Dienste; das dauert etwa 15 Sekunden.",
   deep_t: "10 Messungen pro Dienst statt 3: stabilere Werte, etwa 20 Sekunden",
   running: "Apportiere {d} / {n}",
   back: "{ok} von {n} Bällen zurück",
@@ -53,6 +55,7 @@ export default {
 
   tier_legend: "1ms-Hund", tier_zoom: "Blitz", tier_sprint: "Sprint", tier_trot: "Trab", tier_stroll: "Spaziergang", tier_nap: "Nickerchen", tier_lost: "Nicht zurück",
   mood_sniff: "Schnüffel, schnüffel… wo sind wir?",
+  mood_idle: "Der Ball ist bereit. Wirf ihn, wann du willst!",
   mood_run: "Apport! Bin gleich zurück…",
   mood_zoom: "Blitzmodus! Alles ist gleich nebenan.",
   mood_sprint: "Schnelle Pfoten heute. Das meiste ist nah.",

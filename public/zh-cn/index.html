@@ -53,7 +53,7 @@
 <meta name="twitter:image" content="https://1ms.dog/og/zh-cn.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"1ms.dog","url":"https://1ms.dog/zh-cn/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"一键查看本机 IP 和真实出口：运营商、城市、IPv4/IPv6，自动区分本地出口和代理出口。同时在浏览器里实测 ChatGPT、GitHub、YouTube、Steam 等 40 个常用服务的延迟。免费，无需注册。","inLanguage":"zh-CN","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.6e73ae3428.css">
+<link rel="stylesheet" href="/assets/app.5cd6ac84e4.css">
 </head>
 <body>
 <div class="app">
@@ -103,9 +103,12 @@
       <div class="sum" id="sum">
         <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">正在嗅探你的出口…</p><p class="v-d" id="vText" data-i="v_wait">球都叼回来后，狗狗会告诉你哪里快、哪里慢。</p></div>
         <div class="sum-acts">
-          <button class="btn pri" id="run" type="button"><span data-i="run">再测一次</span></button>
-          <button class="btn" id="deep" type="button" data-i="deep">精细测试</button>
-          <button class="btn icon" id="share" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr" data-i="share">分享</span></button>
+          <div class="sum-btns">
+            <button class="btn pri" id="run" type="button"><span data-i="start">开始测试</span></button>
+            <button class="btn" id="deep" type="button" data-i="deep">精细测试</button>
+            <button class="btn icon" id="share" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr" data-i="share">分享</span></button>
+          </div>
+          <label class="auto"><input type="checkbox" id="auto" checked><span class="sw" aria-hidden="true"></span><span data-i="auto_label">打开页面时自动测试</span></label>
         </div>
         <div class="prog" id="prog"><i></i></div>
         <div class="stats">
@@ -173,7 +176,8 @@
     </div>
   </div>
 </div>
-<script type="application/json" id="data">{"lang":"zh-CN","paths":{"en":"/","zh-CN":"/zh-cn/","zh-TW":"/zh-tw/","ja":"/ja/","ko":"/ko/","es":"/es/","fr":"/fr/","de":"/de/","pt":"/pt/","ru":"/ru/"},"pack":"cn","spot":null,"i18n":{"k_local":"本地","k_proxy":"代理","seen_by":"检测来源：{list}","sniff":"正在嗅探你的出口…","hide":"隐藏 IP","show":"显示 IP","r_tz":"系统时区在{a}，出口却在{b}","r_proxied":"{list} 能正常访问，但从{c}通常无法直连：这些请求走了另一个出口（代理或 VPN），上面的检测没有看到它","no_net":"出口检测没有响应，可能被广告拦截插件拦截了。","run":"再测一次","deep":"精细测试","stop":"停止","deep_t":"每个服务测 10 轮而不是 3 轮，结果更稳定，约 20 秒","running":"捡球中 {d} / {n}","back":"叼回 {ok}/{n} 个球","med":"综合中位数","lost_n":"{n} 个没叼回来","share":"分享","copied":"已复制","share_text":"我的狗狗从{where}出发，叼回了 {ok}/{n} 个服务，中位延迟 {ms} ms（{tier}）。你的狗狗有多快？","shared_from":"这是一份来自{where}的测试结果 · {date}","seg_local":"本地常用","seg_global":"全球服务","vh_allgood":"本地和全球都很快","v_allgood":"打游戏、视频通话、看视频都没问题。","vh_far":"本地很快，全球服务偏慢","v_far":"慢在国际线路或代理节点，不是你的宽带。","vh_near_slow":"连本地服务也慢","v_near_slow":"问题可能在你这一侧：Wi‑Fi、宽带或设备。","vh_odd":"全球比本地还快","v_odd":"你的流量可能全部走了代理或 VPN。","vh_down":"大部分服务连不上","v_down":"请检查网络是否连通，或者防火墙、代理是否拦截了它们。","v_wait":"球都叼回来后，狗狗会告诉你哪里快、哪里慢。","v_fail":"连不上：{list}。","v_join":"、","use_game":"游戏","use_call":"视频通话","use_stream":"看视频","use_ai":"AI 工具","use_dev":"开发工具","st_great":"流畅","st_ok":"可用","st_slow":"吃力","st_blocked":"连不上","mood_legend":"1 毫秒？！你是住在机房里吗？","mood_far":"近处的球秒回，远处的球扔得太远啦。","mood_odd":"咦，远处的球比近处的先回来了…","tier_legend":"1ms 神犬","tier_zoom":"闪电狗","tier_sprint":"飞奔","tier_trot":"小跑","tier_stroll":"散步","tier_nap":"趴窝","tier_lost":"没叼回来","mood_sniff":"嗅嗅…我们在哪儿？","mood_run":"捡球去咯！马上回来…","mood_zoom":"闪电模式！全世界都在隔壁。","mood_sprint":"今天腿脚很快，大部分都在附近。","mood_trot":"跑得还行，有几个球扔得有点远。","mood_stroll":"走了好长一段路，世界离这儿有点远。","mood_nap":"太远啦…我先趴会儿。","mood_lost":"好多球都没叼回来，路上有东西挡着。","mood_pet":"嘿嘿，好痒！","mood_turbo":"1MS 模式启动！","cat_ai":"AI","cat_web":"常用网站","cat_video":"视频与音乐","cat_social":"社交与聊天","cat_dev":"开发工具","cat_game":"游戏","cat_cdn":"CDN 服务商","cat_local":"本地常用","d_cold":"建连耗时","d_samples":"采样","d_jit":"抖动","th_system":"跟随系统","th_light":"浅色","th_dark":"深色"}}</script>
-<script src="/assets/app.e6bd3b6d91.js" defer></script>
+<script type="application/json" id="data">{"lang":"zh-CN","paths":{"en":"/","zh-CN":"/zh-cn/","zh-TW":"/zh-tw/","ja":"/ja/","ko":"/ko/","es":"/es/","fr":"/fr/","de":"/de/","pt":"/pt/","ru":"/ru/"},"pack":"cn","spot":null}</script>
+<script src="/assets/l.zh-cn.9e4f23a645.js" defer></script>
+<script src="/assets/app.af5fa68e04.js" defer></script>
 </body>
 </html>

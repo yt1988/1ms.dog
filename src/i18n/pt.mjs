@@ -18,6 +18,8 @@ export default {
   no_net: "Não foi possível acessar os testes de saída. Bloqueadores de anúncios às vezes os bloqueiam.",
 
   run: "Medir de novo", deep: "Teste completo", stop: "Parar",
+  start: "Iniciar teste", auto_label: "Testar ao abrir a página",
+  vh_manual: "Pronto quando você quiser", v_manual: "O teste automático está desligado. Ao iniciar, seu navegador envia requisições a mais de 40 serviços; leva cerca de 15 segundos.",
   deep_t: "10 rodadas por serviço em vez de 3: resultados mais estáveis, cerca de 20 segundos",
   running: "Buscando {d} / {n}",
   back: "{ok} de {n} bolinhas de volta",
@@ -53,6 +55,7 @@ export default {
 
   tier_legend: "Cão 1ms", tier_zoom: "Relâmpago", tier_sprint: "Disparada", tier_trot: "Trote", tier_stroll: "Passeio", tier_nap: "Soneca", tier_lost: "Não voltou",
   mood_sniff: "Fareja, fareja… onde estamos?",
+  mood_idle: "A bolinha está pronta. Jogue quando quiser!",
   mood_run: "Vai buscar! Já volto…",
   mood_zoom: "Modo relâmpago! Tudo fica logo ali.",
   mood_sprint: "Patas rápidas hoje. Quase tudo está perto.",

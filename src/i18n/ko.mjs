@@ -18,6 +18,8 @@ export default {
   no_net: "출구 확인에 연결하지 못했습니다. 광고 차단기가 막았을 수 있어요.",
 
   run: "다시 측정", deep: "정밀 측정", stop: "중지",
+  start: "테스트 시작", auto_label: "페이지를 열면 자동으로 테스트",
+  vh_manual: "준비됐어요", v_manual: "자동 테스트가 꺼져 있습니다. 「테스트 시작」을 누르면 브라우저가 서비스 40여 곳에 요청을 보냅니다(약 15초).",
   deep_t: "서비스마다 3회 대신 10회 측정해 더 안정적인 결과를 냅니다(약 20초)",
   running: "공 물어오는 중 {d} / {n}",
   back: "공 {n}개 중 {ok}개 회수",
@@ -53,6 +55,7 @@ export default {
 
   tier_legend: "1ms 전설견", tier_zoom: "질주", tier_sprint: "전력 질주", tier_trot: "총총", tier_stroll: "산책", tier_nap: "낮잠", tier_lost: "못 돌아옴",
   mood_sniff: "킁킁… 여기가 어디지?",
+  mood_idle: "공 준비 완료. 언제든 던져 줘!",
   mood_run: "물어오자! 금방 올게…",
   mood_zoom: "질주 모드! 온 세상이 바로 옆집이야.",
   mood_sprint: "오늘 발이 빠르네. 대부분 가까워.",

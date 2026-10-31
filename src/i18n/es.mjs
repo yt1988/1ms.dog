@@ -18,6 +18,8 @@ export default {
   no_net: "No se pudo conectar con las pruebas de salida. A veces los bloqueadores de anuncios las bloquean.",
 
   run: "Medir otra vez", deep: "Prueba a fondo", stop: "Detener",
+  start: "Empezar prueba", auto_label: "Probar al abrir la página",
+  vh_manual: "Listo cuando quieras", v_manual: "La prueba automática está desactivada. Al empezar, tu navegador envía solicitudes a más de 40 servicios; tarda unos 15 segundos.",
   deep_t: "10 rondas por servicio en lugar de 3: resultados más estables, unos 20 segundos",
   running: "Trayendo {d} / {n}",
   back: "{ok} de {n} pelotas de vuelta",
@@ -53,6 +55,7 @@ export default {
 
   tier_legend: "Perro 1ms", tier_zoom: "Rayo", tier_sprint: "Carrera", tier_trot: "Trote", tier_stroll: "Paseo", tier_nap: "Siesta", tier_lost: "No volvió",
   mood_sniff: "Snif, snif… ¿dónde estamos?",
+  mood_idle: "La pelota está lista. ¡Lánzala cuando quieras!",
   mood_run: "¡A buscar! Vuelvo en un segundo…",
   mood_zoom: "¡Modo rayo! Todo está a la vuelta de la esquina.",
   mood_sprint: "Hoy tengo las patas rápidas. Casi todo está cerca.",

@@ -38,7 +38,7 @@
 <meta name="twitter:image" content="https://1ms.dog/og/en/x.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"How fast is X from your network?","url":"https://1ms.dog/x/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"Test X latency from your own browser: real HTTPS round trips to X, your exit IP and ISP, and 40 other services to compare, so you can tell whether it's X or your connection. Free, no sign-up.","inLanguage":"en","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/"},{"@type":"ListItem","position":2,"name":"X","item":"https://1ms.dog/x/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.6e73ae3428.css">
+<link rel="stylesheet" href="/assets/app.5cd6ac84e4.css">
 </head>
 <body>
 <div class="app">
@@ -88,9 +88,12 @@
       <div class="sum" id="sum">
         <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">Sniffing out your exit…</p><p class="v-d" id="vText" data-i="v_wait">When the balls are back, the dog will tell you where it's fast and where it's slow.</p></div>
         <div class="sum-acts">
-          <button class="btn pri" id="run" type="button"><span data-i="run">Fetch again</span></button>
-          <button class="btn" id="deep" type="button" data-i="deep">Deep test</button>
-          <button class="btn icon" id="share" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr" data-i="share">Share</span></button>
+          <div class="sum-btns">
+            <button class="btn pri" id="run" type="button"><span data-i="start">Start test</span></button>
+            <button class="btn" id="deep" type="button" data-i="deep">Deep test</button>
+            <button class="btn icon" id="share" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr" data-i="share">Share</span></button>
+          </div>
+          <label class="auto"><input type="checkbox" id="auto" checked><span class="sw" aria-hidden="true"></span><span data-i="auto_label">Test when the page opens</span></label>
         </div>
         <div class="prog" id="prog"><i></i></div>
         <div class="stats">
@@ -158,7 +161,8 @@
     </div>
   </div>
 </div>
-<script type="application/json" id="data">{"lang":"en","paths":{"en":"/x/","zh-CN":"/zh-cn/x/","zh-TW":"/zh-tw/x/","ja":"/ja/x/","ko":"/ko/x/","es":"/es/x/","fr":"/fr/x/","de":"/de/x/","pt":"/pt/x/","ru":"/ru/x/"},"pack":"na","spot":"x","i18n":{"k_local":"Local","k_proxy":"Proxy","seen_by":"seen by {list}","sniff":"Sniffing out your exit…","hide":"Hide IPs","show":"Show IPs","r_tz":"Your clock says {a}, your exit says {b}","r_proxied":"{list} answered, though they are usually unreachable from {c}: that traffic leaves through another exit (a proxy or VPN) the checks above didn't see","no_net":"Couldn't reach the exit checks. Ad blockers sometimes block them.","run":"Fetch again","deep":"Deep test","stop":"Stop","deep_t":"10 rounds per service instead of 3: steadier numbers, about 20 seconds","running":"Fetching {d} / {n}","back":"{ok}/{n} balls back","med":"overall median","lost_n":"{n} didn't come back","share":"Share","copied":"Copied!","share_text":"My dog fetched {ok}/{n} services from {where}, median {ms} ms ({tier}). How fast is yours?","shared_from":"A result shared from {where} · {date}","seg_local":"Local favorites","seg_global":"Global services","vh_allgood":"Fast nearby and worldwide","v_allgood":"Gaming, calls and streaming should all feel smooth from here.","vh_far":"Local is fast, global services are slow","v_far":"The slowness is in international routes or the proxy server, not your own line.","vh_near_slow":"Even local services are slow","v_near_slow":"The problem is likely on your side: Wi-Fi, your line or the device.","vh_odd":"Global is faster than local","v_odd":"All your traffic probably goes through a proxy or VPN.","vh_down":"Most services didn't answer","v_down":"Check that you're online, or whether a firewall or proxy is blocking them.","v_wait":"When the balls are back, the dog will tell you where it's fast and where it's slow.","v_fail":"Unreachable: {list}.","v_join":", ","use_game":"Gaming","use_call":"Video calls","use_stream":"Streaming","use_ai":"AI tools","use_dev":"Dev tools","st_great":"smooth","st_ok":"fine","st_slow":"laggy","st_blocked":"unreachable","mood_legend":"1 ms?! Do you live inside the data center?","mood_far":"Nearby balls come right back. The far ones were thrown too far.","mood_odd":"Huh, the far balls came back before the near ones…","tier_legend":"1ms dog","tier_zoom":"Zoomies","tier_sprint":"Sprint","tier_trot":"Trot","tier_stroll":"Stroll","tier_nap":"Nap","tier_lost":"Not back","mood_sniff":"Sniff, sniff… where are we?","mood_run":"Fetching! Back in a sec…","mood_zoom":"Zoomies! Everything is right next door.","mood_sprint":"Fast legs today. Most things are close.","mood_trot":"A decent trot. A few balls landed far away.","mood_stroll":"That was a long walk. The world is far from here.","mood_nap":"Too far… I'm taking a nap.","mood_lost":"Lots of balls never came back. Something is in the way.","mood_pet":"Hehe, that tickles!","mood_turbo":"1MS MODE ACTIVATED","cat_ai":"AI","cat_web":"Everyday web","cat_video":"Video & music","cat_social":"Social & chat","cat_dev":"Developer tools","cat_game":"Gaming","cat_cdn":"CDN providers","cat_local":"Local favorites","d_cold":"connection setup","d_samples":"samples","d_jit":"jitter","th_system":"System theme","th_light":"Light","th_dark":"Dark"}}</script>
-<script src="/assets/app.e6bd3b6d91.js" defer></script>
+<script type="application/json" id="data">{"lang":"en","paths":{"en":"/x/","zh-CN":"/zh-cn/x/","zh-TW":"/zh-tw/x/","ja":"/ja/x/","ko":"/ko/x/","es":"/es/x/","fr":"/fr/x/","de":"/de/x/","pt":"/pt/x/","ru":"/ru/x/"},"pack":"na","spot":"x"}</script>
+<script src="/assets/l.en.25c43875a6.js" defer></script>
+<script src="/assets/app.af5fa68e04.js" defer></script>
 </body>
 </html>

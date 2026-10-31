@@ -18,6 +18,8 @@ export default {
   no_net: "出口检测没有响应，可能被广告拦截插件拦截了。",
 
   run: "再测一次", deep: "精细测试", stop: "停止",
+  start: "开始测试", auto_label: "打开页面时自动测试",
+  vh_manual: "准备好了，随时可以开始", v_manual: "自动测试已关闭。点「开始测试」后，浏览器会向 40 多个服务发出请求，大约需要 15 秒。",
   deep_t: "每个服务测 10 轮而不是 3 轮，结果更稳定，约 20 秒",
   running: "捡球中 {d} / {n}",
   back: "叼回 {ok}/{n} 个球",
@@ -53,6 +55,7 @@ export default {
 
   tier_legend: "1ms 神犬", tier_zoom: "闪电狗", tier_sprint: "飞奔", tier_trot: "小跑", tier_stroll: "散步", tier_nap: "趴窝", tier_lost: "没叼回来",
   mood_sniff: "嗅嗅…我们在哪儿？",
+  mood_idle: "球准备好了，你说扔就扔！",
   mood_run: "捡球去咯！马上回来…",
   mood_zoom: "闪电模式！全世界都在隔壁。",
   mood_sprint: "今天腿脚很快，大部分都在附近。",

@@ -20,6 +20,8 @@ export default {
   no_net: "Couldn't reach the exit checks. Ad blockers sometimes block them.",
 
   run: "Fetch again", deep: "Deep test", stop: "Stop",
+  start: "Start test", auto_label: "Test when the page opens",
+  vh_manual: "Ready when you are", v_manual: "Automatic testing is off. Start sends requests to 40+ services from your browser and takes about 15 seconds.",
   deep_t: "10 rounds per service instead of 3: steadier numbers, about 20 seconds",
   running: "Fetching {d} / {n}",
   back: "{ok}/{n} balls back",
@@ -55,6 +57,7 @@ export default {
 
   tier_legend: "1ms dog", tier_zoom: "Zoomies", tier_sprint: "Sprint", tier_trot: "Trot", tier_stroll: "Stroll", tier_nap: "Nap", tier_lost: "Not back",
   mood_sniff: "Sniff, sniff… where are we?",
+  mood_idle: "Ball's ready. Throw it when you are!",
   mood_run: "Fetching! Back in a sec…",
   mood_zoom: "Zoomies! Everything is right next door.",
   mood_sprint: "Fast legs today. Most things are close.",

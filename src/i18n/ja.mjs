@@ -18,6 +18,8 @@ export default {
   no_net: "出口チェックに接続できませんでした。広告ブロッカーが遮断している可能性があります。",
 
   run: "もう一度", deep: "精密テスト", stop: "停止",
+  start: "テスト開始", auto_label: "ページを開いたら自動でテスト",
+  vh_manual: "準備できました", v_manual: "自動テストはオフです。「テスト開始」を押すと、ブラウザから 40 以上のサービスにリクエストを送ります（約 15 秒）。",
   deep_t: "各サービスを 3 回ではなく 10 回測定。結果が安定します（約 20 秒）",
   running: "とってこい中 {d} / {n}",
   back: "{n} 個中 {ok} 個のボールを回収",
@@ -53,6 +55,7 @@ export default {
 
   tier_legend: "1ms 伝説犬", tier_zoom: "爆走", tier_sprint: "ダッシュ", tier_trot: "トコトコ", tier_stroll: "おさんぽ", tier_nap: "おひるね", tier_lost: "戻らず",
   mood_sniff: "クンクン…ここはどこ？",
+  mood_idle: "ボールの準備はできたよ。いつでも投げて！",
   mood_run: "とってこーい！すぐ戻るね…",
   mood_zoom: "爆走モード！世界中がお隣さん。",
   mood_sprint: "今日は足が速い。ほとんどが近くだよ。",

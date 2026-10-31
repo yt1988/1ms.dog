@@ -50,7 +50,7 @@
 <meta name="twitter:image" content="https://1ms.dog/og/fr.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"1ms.dog","url":"https://1ms.dog/fr/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"Affichez votre adresse IP et toutes les sorties qu’emprunte vraiment votre connexion, locale et VPN ou proxy, avec fournisseur, ville et IPv4/IPv6. Puis mesurez le ping de 40 services courants depuis votre navigateur : ChatGPT, YouTube, Discord, Steam, Twitch et d’autres. Gratuit, sans inscription.","inLanguage":"fr","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.6e73ae3428.css">
+<link rel="stylesheet" href="/assets/app.5cd6ac84e4.css">
 </head>
 <body>
 <div class="app">
@@ -100,9 +100,12 @@
       <div class="sum" id="sum">
         <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">Je renifle votre sortie…</p><p class="v-d" id="vText" data-i="v_wait">Une fois les balles revenues, le chien vous dira où ça va vite et où ça traîne.</p></div>
         <div class="sum-acts">
-          <button class="btn pri" id="run" type="button"><span data-i="run">Relancer</span></button>
-          <button class="btn" id="deep" type="button" data-i="deep">Test approfondi</button>
-          <button class="btn icon" id="share" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr" data-i="share">Partager</span></button>
+          <div class="sum-btns">
+            <button class="btn pri" id="run" type="button"><span data-i="start">Lancer le test</span></button>
+            <button class="btn" id="deep" type="button" data-i="deep">Test approfondi</button>
+            <button class="btn icon" id="share" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr" data-i="share">Partager</span></button>
+          </div>
+          <label class="auto"><input type="checkbox" id="auto" checked><span class="sw" aria-hidden="true"></span><span data-i="auto_label">Tester à l’ouverture de la page</span></label>
         </div>
         <div class="prog" id="prog"><i></i></div>
         <div class="stats">
@@ -170,7 +173,8 @@
     </div>
   </div>
 </div>
-<script type="application/json" id="data">{"lang":"fr","paths":{"en":"/","zh-CN":"/zh-cn/","zh-TW":"/zh-tw/","ja":"/ja/","ko":"/ko/","es":"/es/","fr":"/fr/","de":"/de/","pt":"/pt/","ru":"/ru/"},"pack":"eu","spot":null,"i18n":{"k_local":"Locale","k_proxy":"Proxy","seen_by":"vue par {list}","sniff":"Je renifle votre sortie…","hide":"Masquer les IP","show":"Afficher les IP","r_tz":"Votre horloge indique {a}, votre sortie {b}","r_proxied":"{list} ont répondu, alors qu’ils sont d’habitude inaccessibles depuis ce pays ({c}) : ce trafic passe par une autre sortie (proxy ou VPN) que les tests ci-dessus ne voient pas","no_net":"Impossible de joindre les tests de sortie. Les bloqueurs de publicité les bloquent parfois.","run":"Relancer","deep":"Test approfondi","stop":"Arrêter","deep_t":"10 mesures par service au lieu de 3 : des résultats plus stables, environ 20 secondes","running":"Va chercher… {d} / {n}","back":"{ok} balles rapportées sur {n}","med":"médiane globale","lost_n":"{n} jamais revenues","share":"Partager","copied":"Copié !","share_text":"Mon chien a rapporté {ok}/{n} services depuis {where}, médiane {ms} ms ({tier}). Et le vôtre ?","shared_from":"Résultat partagé depuis {where} · {date}","seg_local":"Favoris locaux","seg_global":"Services mondiaux","vh_allgood":"Rapide de près comme de loin","v_allgood":"Jeux, appels vidéo et streaming devraient être fluides d’ici.","vh_far":"Le local est rapide, le mondial est lent","v_far":"La lenteur vient des routes internationales ou du serveur proxy, pas de votre ligne.","vh_near_slow":"Même le local est lent","v_near_slow":"Le problème est sans doute de votre côté : Wi‑Fi, ligne ou appareil.","vh_odd":"Le mondial répond plus vite que le local","v_odd":"Tout votre trafic passe probablement par un proxy ou un VPN.","vh_down":"La plupart n’ont pas répondu","v_down":"Vérifiez votre connexion, ou si un pare-feu ou un proxy les bloque.","v_wait":"Une fois les balles revenues, le chien vous dira où ça va vite et où ça traîne.","v_fail":"Inaccessibles : {list}.","v_join":", ","use_game":"Jeux","use_call":"Appels vidéo","use_stream":"Streaming","use_ai":"IA","use_dev":"Dév","st_great":"fluide","st_ok":"correct","st_slow":"lent","st_blocked":"inaccessible","mood_legend":"1 ms ?! Vous dormez dans le datacenter ?","mood_far":"Les balles proches reviennent tout de suite. Les lointaines, c’était trop loin.","mood_odd":"Tiens, les balles lointaines sont revenues avant les proches…","tier_legend":"Chien 1ms","tier_zoom":"Éclair","tier_sprint":"Sprint","tier_trot":"Trot","tier_stroll":"Balade","tier_nap":"Sieste","tier_lost":"Pas revenu","mood_sniff":"Snif, snif… on est où ?","mood_run":"Va chercher ! Je reviens tout de suite…","mood_zoom":"Mode éclair ! Tout est juste à côté.","mood_sprint":"Pattes rapides aujourd’hui. Presque tout est proche.","mood_trot":"Un bon petit trot. Quelques balles sont tombées loin.","mood_stroll":"Quelle longue balade. D’ici, le monde est loin.","mood_nap":"Trop loin… je fais la sieste.","mood_lost":"Beaucoup de balles ne sont pas revenues. Quelque chose bloque le chemin.","mood_pet":"Hihi, ça chatouille !","mood_turbo":"MODE 1MS ACTIVÉ","cat_ai":"IA","cat_web":"Sites du quotidien","cat_video":"Vidéo et musique","cat_social":"Réseaux et messageries","cat_dev":"Outils de développement","cat_game":"Jeux","cat_cdn":"Fournisseurs CDN","cat_local":"Favoris locaux","d_cold":"ouverture de la connexion","d_samples":"mesures","d_jit":"gigue","th_system":"Thème du système","th_light":"Clair","th_dark":"Sombre"}}</script>
-<script src="/assets/app.e6bd3b6d91.js" defer></script>
+<script type="application/json" id="data">{"lang":"fr","paths":{"en":"/","zh-CN":"/zh-cn/","zh-TW":"/zh-tw/","ja":"/ja/","ko":"/ko/","es":"/es/","fr":"/fr/","de":"/de/","pt":"/pt/","ru":"/ru/"},"pack":"eu","spot":null}</script>
+<script src="/assets/l.fr.7b37addb53.js" defer></script>
+<script src="/assets/app.af5fa68e04.js" defer></script>
 </body>
 </html>

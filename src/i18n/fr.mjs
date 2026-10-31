@@ -18,6 +18,8 @@ export default {
   no_net: "Impossible de joindre les tests de sortie. Les bloqueurs de publicité les bloquent parfois.",
 
   run: "Relancer", deep: "Test approfondi", stop: "Arrêter",
+  start: "Lancer le test", auto_label: "Tester à l’ouverture de la page",
+  vh_manual: "Prêt quand vous l’êtes", v_manual: "Le test automatique est désactivé. Lancer le test envoie des requêtes à plus de 40 services depuis votre navigateur (environ 15 secondes).",
   deep_t: "10 mesures par service au lieu de 3 : des résultats plus stables, environ 20 secondes",
   running: "Va chercher… {d} / {n}",
   back: "{ok} balles rapportées sur {n}",
@@ -53,6 +55,7 @@ export default {
 
   tier_legend: "Chien 1ms", tier_zoom: "Éclair", tier_sprint: "Sprint", tier_trot: "Trot", tier_stroll: "Balade", tier_nap: "Sieste", tier_lost: "Pas revenu",
   mood_sniff: "Snif, snif… on est où ?",
+  mood_idle: "La balle est prête. Lancez-la quand vous voulez !",
   mood_run: "Va chercher ! Je reviens tout de suite…",
   mood_zoom: "Mode éclair ! Tout est juste à côté.",
   mood_sprint: "Pattes rapides aujourd’hui. Presque tout est proche.",
