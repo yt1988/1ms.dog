@@ -26,6 +26,7 @@ export default {
   med: "综合中位数",
   lost_n: "{n} 个没叼回来",
   share: "分享", copied: "已复制",
+  qr_hint: "扫码查看完整结果",
   share_text: "我的狗狗从{where}出发，叼回了 {ok}/{n} 个服务，中位延迟 {ms} ms（{tier}）。你的狗狗有多快？",
   share_h: "分享测试结果", copy_link: "复制链接", copy_img: "复制图片", dl_img: "下载图片", more_share: "更多分享方式",
   shared_from: "这是一份来自{where}的测试结果 · {date}", test_mine: "测我自己的网络",

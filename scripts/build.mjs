@@ -3,13 +3,14 @@
 //   index.html, <lang>/index.html                 home page per language
 //   <id>/, <lang>/<id>/                           a landing page per searched-for service (land: true)
 //   assets/app.<hash>.js, assets/app.<hash>.css   app code and styles, shared and cached by every page
+//   assets/qr.<hash>.js                           QR encoder, loaded only when someone shares a result
 //   sitemap.xml, robots.txt, llms.txt, _headers   SEO and security headers (CSP)
 // Usage: node scripts/build.mjs          write the files
 //        node scripts/build.mjs --check  exit 1 if anything is out of date, or the app code does not parse (CI)
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
-import { transform } from "esbuild";
+import { build as bundle, transform } from "esbuild";
 import { CATS, SERVICES, PACKS, PACK_OF, SCALE, ZONES, USES, pos } from "../src/services.mjs";
 
 const SITE = (process.env.SITE_URL || "https://1ms.dog").replace(/\/+$/, "");
@@ -61,7 +62,11 @@ export async function build({ check = false } = {}) {
   const lib = (await readFile(new URL("lib.mjs", src), "utf8")).replace(/^export /gm, "");
   const appSrc = await readFile(new URL("app.js", src), "utf8");
   if (!appSrc.includes("/* @lib */")) throw new Error("src/app.js has no /* @lib */ marker");
-  const appFull = `const SVC = ${JSON.stringify(svc)};\n` + appSrc.replace("/* @lib */", () => lib);
+  // the QR encoder for the share card stays out of the app bundle: only a visitor who shares downloads it
+  const qr = (await bundle({ stdin: { contents: 'import q from "qrcode-generator"; self.QR1MS = q;', resolveDir: fileURLToPath(new URL("..", import.meta.url)) },
+    bundle: true, minify: true, format: "iife", target: "es2020", legalComments: "none", write: false })).outputFiles[0].text;
+  const qrName = `qr.${hash(qr)}.js`;
+  const appFull = `const SVC = ${JSON.stringify(svc)}, QR_JS = "/assets/${qrName}";\n` + appSrc.replace("/* @lib */", () => lib);
   new Function(appFull);                                                // must parse
   // the lanes are colored by speed zone, at the same log-scale positions the page puts the balls
   const pct = ms => (pos(ms) * 100).toFixed(1) + "%", Z = ZONES.map(pct);
@@ -274,7 +279,7 @@ ${TOOLS.map(x => `- ${x.name}: https://${x.host}/ (${en["tool_" + x.id]})`).join
   Content-Type: text/plain; charset=utf-8
 `;
 
-  const files = { ["assets/" + jsName]: app, ["assets/" + cssName]: css, ...stringFiles, "sitemap.xml": sitemap, "robots.txt": robots, "llms.txt": llms, "_headers": headers };
+  const files = { ["assets/" + jsName]: app, ["assets/" + cssName]: css, ["assets/" + qrName]: qr, ...stringFiles, "sitemap.xml": sitemap, "robots.txt": robots, "llms.txt": llms, "_headers": headers };
   for (const p of pages) files[p.file] = p.html;
 
   const stale = [];
@@ -296,7 +301,7 @@ ${TOOLS.map(x => `- ${x.name}: https://${x.host}/ (${en["tool_" + x.id]})`).join
     if (check) stale.push(f + " (old)"); else await rm(new URL(f, pub));
   }
   // old bundles
-  const old = (await readdir(new URL("assets/", pub))).filter(f => /^(app|l\.[a-z-]+)\.[0-9a-f]+\.(js|css)$/.test(f) && !files["assets/" + f]);
+  const old = (await readdir(new URL("assets/", pub))).filter(f => /^(app|qr|l\.[a-z-]+)\.[0-9a-f]+\.(js|css)$/.test(f) && !files["assets/" + f]);
   if (check && old.length) stale.push(...old.map(f => f + " (old)"));
   else for (const f of old) await rm(new URL("assets/" + f, pub));
   return { stale, pages: pages.length, sizes: { html: Math.max(...pages.map(p => p.html.length)), js: app.length, css: css.length } };

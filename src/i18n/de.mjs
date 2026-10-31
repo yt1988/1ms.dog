@@ -26,6 +26,7 @@ export default {
   med: "Gesamt-Median",
   lost_n: "{n} nicht zurückgekommen",
   share: "Teilen", copied: "Kopiert!",
+  qr_hint: "Scannen für das ganze Ergebnis",
   share_text: "Mein Hund hat von {where} aus {ok}/{n} Dienste apportiert, Median {ms} ms ({tier}). Wie schnell ist deiner?",
   share_h: "Ergebnis teilen", copy_link: "Link kopieren", copy_img: "Bild kopieren", dl_img: "Bild herunterladen", more_share: "Weitere Optionen",
   shared_from: "Geteiltes Ergebnis aus {where} · {date}", test_mine: "Meine Verbindung testen",

@@ -497,9 +497,19 @@
     $("#nativeShare").hidden = !navigator.share;
     openDlg("shareDlg");
     shareBlob = null;
-    drawCard().then(c => { $("#shareImg").src = c.toDataURL("image/png"); c.toBlob(b => { shareBlob = b; }, "image/png"); }).catch(() => {});
-    $("#shareUrl").value = await shortLink(long);
+    loadQR().catch(() => {});
+    const url = await shortLink(long);
+    $("#shareUrl").value = url;
+    // the QR code carries the short link; without one, a long result link would make it too dense to scan, so it points at the page
+    drawCard(url.length <= 300 ? url : location.origin + location.pathname)
+      .then(c => { $("#shareImg").src = c.toDataURL("image/png"); c.toBlob(b => { shareBlob = b; }, "image/png"); }).catch(() => {});
   };
+  let qrP = null;
+  const loadQR = () => qrP ||= new Promise((res, rej) => {
+    const el = document.createElement("script"); el.src = QR_JS;
+    el.onload = () => res(self.QR1MS); el.onerror = () => { qrP = null; rej(); };
+    document.head.appendChild(el);
+  });
   const flash = (btn, k) => { const o = btn.textContent; btn.textContent = t(k); setTimeout(() => { btn.textContent = o; }, 1500); };
   $("#copyLink").onclick = async e => { try { await navigator.clipboard.writeText($("#shareUrl").value); flash(e.target, "copied"); } catch (x) { $("#shareUrl").select(); } };
   $("#copyImg").onclick = async e => { try { await navigator.clipboard.write([new ClipboardItem({ "image/png": shareBlob })]); flash(e.target, "copied"); } catch (x) {} };
@@ -510,26 +520,30 @@
     try { await navigator.share(file && navigator.canShare && navigator.canShare({ files: [file] }) ? { text, url: $("#shareUrl").value, files: [file] } : { text, url: $("#shareUrl").value }); } catch (e) {}
   };
 
-  // The card: the same picture as the page (dog, median, exits, every ball at its distance), always in the dark theme
+  // The card: the same picture as the page (dog, headline, the three numbers, exits, every ball at its distance), in
+  // the page's theme, with a QR code for the link. A group page draws its one group full width, a single service its samples.
   const img = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
-  async function drawCard() {
+  async function drawCard(link) {
     const W = 1200, P = 56, list = allServices().filter(s => R.get(s.id) && R.get(s.id).st === "done");
-    const groups = [{ name: t("cat_local"), items: PACKS[pack] }, ...SVC.cats.map(c => ({ name: t("cat_" + c), items: SVC.list.filter(s => s.cat === c) }))]
+    const groups = (ONE ? [] : GRP ? [{ name: GRP.name, items: GRP.list }] : [{ name: t("cat_local"), items: PACKS[pack] }, ...SVC.cats.map(c => ({ name: t("cat_" + c), items: SVC.list.filter(s => s.cat === c) }))])
       .map(g => ({ name: g.name, items: g.items.filter(s => list.includes(s)) })).filter(g => g.items.length);
-    // three columns, filled in order, about equally tall
-    const RH = 30, GH = 40, total = groups.reduce((a, g) => a + GH + g.items.length * RH, 0), cols = [[], [], []];
+    // three columns (one on a group page), filled in order, about equally tall
+    const NC = GRP ? 1 : 3, RH = 30, GH = 40, total = groups.reduce((a, g) => a + GH + g.items.length * RH, 0), cols = Array.from({ length: NC }, () => []);
     let ci = 0, hcol = 0;
-    for (const g of groups) { const h = GH + g.items.length * RH; if (hcol && hcol + h / 2 > total / 3 && ci < 2) { ci++; hcol = 0; } cols[ci].push(g); hcol += h; }
-    const colH = Math.max(...cols.map(c => c.reduce((a, g) => a + GH + g.items.length * RH, 0)));
+    for (const g of groups) { const h = GH + g.items.length * RH; if (hcol && hcol + h / 2 > total / NC && ci < NC - 1) { ci++; hcol = 0; } cols[ci].push(g); hcol += h; }
+    const colH = ONE ? 70 : Math.max(...cols.map(c => c.reduce((a, g) => a + GH + g.items.length * RH, 0)));
+    const qr = link && await loadQR().then(Q => { const q = Q(0, "M"); q.addData(link); q.make(); return q; }).catch(() => null), FH = qr ? 160 : 70;
     const F = "Geist, 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans', 'Malgun Gothic', sans-serif", M = "'Geist Mono', Consolas, monospace";
     // Same order as the page: headline, what it means, the three numbers, exits, then every ball.
     // Text is wrapped before the canvas size is known; the headline stays clear of the dog.
     const m = document.createElement("canvas").getContext("2d");
     const lines = (s0, font, w) => { m.font = font; return wrap(m, s0, w); };
-    const hLines = lastSum.v ? lines(verdictHead(lastSum.v), `700 44px ${F}`, W - P * 2 - 360) : [];
-    const dLines = lastSum.v ? lines(verdictText(lastSum.v), `400 24px ${F}`, W - P * 2) : [];
+    // the headline and its detail: the home page's verdict, or what a group or service page says
+    const head = lastSum.v ? verdictHead(lastSum.v) : $("#vHead").textContent, detail = lastSum.v ? verdictText(lastSum.v) : $("#vText").textContent;
+    const hLines = head ? lines(head, `700 44px ${F}`, W - P * 2 - 360) : [];
+    const dLines = detail ? lines(detail, `400 24px ${F}`, W - P * 2) : [];
     const hTop = 190, dTop = hTop + (hLines.length - 1) * 54 + 48, sTop = dTop + dLines.length * 34 + 10, SH = 108;
-    const exits = NET.groups.slice(0, 3), eTop = sTop + SH + 46, top = eTop + exits.length * 40 - 18, H = top + colH + 110;
+    const exits = NET.groups.slice(0, 3), eTop = sTop + SH + 46, top = eTop + exits.length * 40 - 18, H = top + colH + 40 + FH;
     const c = document.createElement("canvas"); c.width = W; c.height = H;
     const x = c.getContext("2d");
     // the page's own theme colors, so the card matches what the visitor sees (light or dark)
@@ -545,16 +559,21 @@
     x.fillStyle = C.muted; x.font = `400 24px ${F}`; dLines.forEach((l, i) => x.fillText(l, P, dTop + i * 34));
     // the three numbers
     const s = lastSum, v0 = s.v, cw3 = (W - P * 2 - 2 * 16) / 3;
-    const cells = [[t("seg_local"), v0 && v0.local, ""], [t("seg_global"), v0 && v0.global, ""], [t("med"), { md: s.md }, t("back", { ok: s.ok, n: s.n })]];
-    cells.forEach(([label, sg, sub], i) => {
-      const cx0 = P + i * (cw3 + 16), md = sg ? sg.md : null, [tk, k] = tierOf(md);
+    const cells = v0 ? [[t("seg_local"), v0.local, ""], [t("seg_global"), v0.global, ""], [t("med"), { md: s.md }, t("back", { ok: s.ok, n: s.n })]].map(([label, sg, sub]) => {
+      const md = sg ? sg.md : null, [tk, k] = tierOf(md);
+      return { label, num: md != null ? fmt(md) : "✕", ms: md != null, k, sub: sub || (md != null ? t("tier_" + tk) : t("tier_lost")) };
+    }) : [...document.querySelectorAll("#sum .stat")].map(el => {          // group and service pages: their stats as shown
+      const b = el.querySelector("b");
+      return { label: el.querySelector("em").textContent, num: b.firstChild ? b.firstChild.textContent : "–", ms: !!b.querySelector("small"), k: C[b.className] ? b.className : "fg", sub: el.querySelector("i").textContent };
+    });
+    cells.forEach((cl, i) => {
+      const cx0 = P + i * (cw3 + 16);
       x.fillStyle = C.panel === C.bg ? C.line + "55" : C.panel; roundRect(x, cx0, sTop, cw3, SH, 14); x.fill();
-      x.fillStyle = C.muted; x.font = `400 20px ${F}`; x.fillText(label, cx0 + 20, sTop + 34);
-      const num = md != null ? fmt(md) : "✕";
-      x.fillStyle = C[k]; x.font = `600 46px ${M}`; x.fillText(num, cx0 + 20, sTop + 86);
-      const nw = x.measureText(num).width;
+      x.fillStyle = C.muted; x.font = `400 20px ${F}`; x.fillText(cl.label, cx0 + 20, sTop + 34);
+      x.fillStyle = C[cl.k]; x.font = `600 46px ${M}`; x.fillText(cl.num, cx0 + 20, sTop + 86);
+      const nw = x.measureText(cl.num).width;
       x.fillStyle = C.muted; x.font = `400 20px ${F}`;
-      x.fillText((md != null ? "ms  " : "") + (sub || (md != null ? t("tier_" + tk) : t("tier_lost"))), cx0 + 20 + nw + 10, sTop + 86);
+      x.fillText(clip(x, (cl.ms ? "ms  " : "") + cl.sub, cw3 - 50 - nw), cx0 + 20 + nw + 10, sTop + 86);
     });
     // exits, without IPs
     let y = eTop;
@@ -570,8 +589,16 @@
       x.fillStyle = C.muted; x.font = `400 20px ${F}`; x.fillText(g.org + (g.asn ? " · AS" + g.asn : ""), xx, y);
       y += 40;
     }
-    // the field
-    const cw = (W - P * 2 - 40 * 2) / 3, laneX = 128, msW = 60;
+    // the field: a single service's samples on one lane, the median the big ball
+    if (ONE) {
+      const r = R.get(ONE.id), ok = r ? r.s.filter(v => v != null) : [], md = median(ok), [, k] = tierOf(md), l0 = P + 200, l1 = W - P - 90, cy = top + 40;
+      x.fillStyle = C.fg; x.font = `600 22px ${F}`; x.fillText(clip(x, ONE.name, 180), P, cy + 8);
+      x.fillStyle = C.line; x.fillRect(l0, cy - 2, l1 - l0, 4);
+      for (const v of ok) { x.beginPath(); x.arc(l0 + (l1 - l0) * pos(v), cy, 7, 0, Math.PI * 2); x.fillStyle = C[tierOf(v)[1]] + "88"; x.fill(); }
+      if (md != null) { x.beginPath(); x.arc(l0 + (l1 - l0) * pos(md), cy, 12, 0, Math.PI * 2); x.fillStyle = C[k]; x.fill(); }
+      x.fillStyle = md == null ? C.muted : C[k]; x.font = `600 24px ${M}`; x.textAlign = "right"; x.fillText(md == null ? "✕" : fmt(md), W - P, cy + 8); x.textAlign = "left";
+    }
+    const cw = (W - P * 2 - 40 * (NC - 1)) / NC, laneX = NC === 1 ? 200 : 128, msW = 60;
     cols.forEach((col, i) => {
       let yy = top + 20; const x0 = P + i * (cw + 40);
       for (const g of col) {
@@ -589,10 +616,21 @@
         }
       }
     });
-    x.fillStyle = C.line; x.fillRect(P, H - 70, W - P * 2, 1);
-    x.fillStyle = C.gold; x.font = `600 24px ${M}`; x.fillText("1ms.dog", P, H - 30);
-    x.fillStyle = C.muted; x.font = `400 18px ${F}`; x.textAlign = "right";
-    x.fillText(new Date(SHARED ? SHARED.ts : Date.now()).toLocaleString(LANG, { dateStyle: "medium", timeStyle: "short" }), W - P, H - 30); x.textAlign = "left";
+    x.fillStyle = C.line; x.fillRect(P, H - FH, W - P * 2, 1);
+    const when = new Date(SHARED ? SHARED.ts : Date.now()).toLocaleString(LANG, { dateStyle: "medium", timeStyle: "short" });
+    if (qr) {
+      // dark modules on a white tile in either theme (scanners expect that), with a two-module quiet zone
+      const n = qr.getModuleCount(), S = 116, m0 = S / (n + 4), qx = W - P - S, qy = H - FH + 22;
+      x.fillStyle = "#fff"; roundRect(x, qx, qy, S, S, 10); x.fill();
+      x.fillStyle = "#111";
+      for (let r0 = 0; r0 < n; r0++) for (let c0 = 0; c0 < n; c0++) if (qr.isDark(r0, c0)) x.fillRect(qx + (c0 + 2) * m0, qy + (r0 + 2) * m0, m0 + 0.3, m0 + 0.3);
+      x.fillStyle = C.gold; x.font = `600 28px ${M}`; x.fillText("1ms.dog", P, H - FH + 62);
+      x.fillStyle = C.fg; x.font = `400 20px ${F}`; x.fillText(t("qr_hint"), P, H - FH + 98);
+      x.fillStyle = C.muted; x.font = `400 18px ${F}`; x.fillText(when, P, H - FH + 130);
+    } else {
+      x.fillStyle = C.gold; x.font = `600 24px ${M}`; x.fillText("1ms.dog", P, H - 30);
+      x.fillStyle = C.muted; x.font = `400 18px ${F}`; x.textAlign = "right"; x.fillText(when, W - P, H - 30); x.textAlign = "left";
+    }
     return c;
   }
   function roundRect(x, l, t0, w, h, r) { x.beginPath(); x.moveTo(l + r, t0); x.arcTo(l + w, t0, l + w, t0 + h, r); x.arcTo(l + w, t0 + h, l, t0 + h, r); x.arcTo(l, t0 + h, l, t0, r); x.arcTo(l, t0, l + w, t0, r); x.closePath(); }
@@ -609,9 +647,9 @@
 
   /* ---------- a shared result ---------- */
   // Opening a shared link shows that result and doesn't test until the visitor asks for their own
-  const SHARED = ONE || GRP ? null : parseHash(location.hash);   // shared results open on the home page
+  const SHARED = parseHash(location.hash);
   function showShared(S) {
-    if (S.pack !== pack) showPack(S.pack);
+    if (!ONE && !GRP && S.pack !== pack) showPack(S.pack);
     NET.groups = S.groups; NET.done = true; renderExits(); $("#eye").hidden = true;
     for (const s of allServices()) if (s.id in S.res) { R.set(s.id, { w: null, s: S.res[s.id] == null ? [] : [S.res[s.id]], st: "done" }); paintRow(s); }
     summarize(false);

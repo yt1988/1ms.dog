@@ -26,6 +26,7 @@ export default {
   med: "綜合中位數",
   lost_n: "{n} 顆沒叼回來",
   share: "分享", copied: "已複製",
+  qr_hint: "掃碼查看完整結果",
   share_text: "我的狗狗從{where}出發，叼回了 {ok}/{n} 個服務，中位延遲 {ms} ms（{tier}）。你的狗狗有多快？",
   share_h: "分享測試結果", copy_link: "複製連結", copy_img: "複製圖片", dl_img: "下載圖片", more_share: "更多分享方式",
   shared_from: "這是一份來自{where}的測試結果 · {date}", test_mine: "測我自己的網路",

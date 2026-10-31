@@ -26,6 +26,7 @@ export default {
   med: "전체 중앙값",
   lost_n: "{n}개 못 돌아옴",
   share: "공유", copied: "복사됨",
+  qr_hint: "스캔해서 전체 결과 보기",
   share_text: "우리 강아지가 {where}에서 서비스 {ok}/{n}개의 공을 물어왔어요. 중앙값 {ms} ms({tier}). 당신의 강아지는요?",
   share_h: "결과 공유", copy_link: "링크 복사", copy_img: "이미지 복사", dl_img: "이미지 저장", more_share: "다른 방법으로 공유",
   shared_from: "{where}에서 공유한 결과 · {date}", test_mine: "내 네트워크 측정",

@@ -26,6 +26,7 @@ export default {
   med: "全体の中央値",
   lost_n: "{n} 個は戻らず",
   share: "シェア", copied: "コピーしました",
+  qr_hint: "スキャンして結果をすべて見る",
   share_text: "うちの犬は{where}から {ok}/{n} サービスのボールを回収、中央値 {ms} ms（{tier}）。あなたの犬は？",
   share_h: "結果をシェア", copy_link: "リンクをコピー", copy_img: "画像をコピー", dl_img: "画像を保存", more_share: "ほかの方法でシェア",
   shared_from: "{where}からシェアされた結果 · {date}", test_mine: "自分の回線を測る",

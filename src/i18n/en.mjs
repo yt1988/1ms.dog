@@ -28,6 +28,7 @@ export default {
   med: "overall median",
   lost_n: "{n} didn't come back",
   share: "Share", copied: "Copied!",
+  qr_hint: "Scan to see the full result",
   share_text: "My dog fetched {ok}/{n} services from {where}, median {ms} ms ({tier}). How fast is yours?",
   share_h: "Share your result", copy_link: "Copy link", copy_img: "Copy image", dl_img: "Download image", more_share: "More options",
   shared_from: "A result shared from {where} · {date}", test_mine: "Test my network",

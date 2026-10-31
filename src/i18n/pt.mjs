@@ -26,6 +26,7 @@ export default {
   med: "mediana geral",
   lost_n: "{n} não voltaram",
   share: "Compartilhar", copied: "Copiado!",
+  qr_hint: "Escaneie para ver o resultado completo",
   share_text: "Meu cachorro buscou {ok}/{n} serviços a partir de {where}, mediana de {ms} ms ({tier}). E o seu?",
   share_h: "Compartilhar resultado", copy_link: "Copiar link", copy_img: "Copiar imagem", dl_img: "Baixar imagem", more_share: "Mais opções",
   shared_from: "Resultado compartilhado de {where} · {date}", test_mine: "Testar minha rede",
