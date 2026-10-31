@@ -19,7 +19,8 @@
 .ex .ips span { overflow-wrap: anywhere; }
 .ex .ips em { font-style: normal; color: var(--muted); font-family: var(--f-ui); font-size: 11.5px; margin-right: 4px; }
 .ex .by { grid-column: 2; font-size: 11.5px; color: var(--muted); }
-.sk-row { display: block; color: var(--muted); }
+/* the placeholder is as tall as one real exit row: most visitors have a single exit, so nothing moves when it arrives */
+.sk-row { display: flex; align-items: center; color: var(--muted); min-height: 75px; }
 .sk-t { animation: blink 1.2s ease-in-out infinite; }
 @keyframes blink { 50% { opacity: .45; } }
 .ex-note { font-size: 12.5px; color: var(--warn); margin: 6px 0 0; }
@@ -27,7 +28,8 @@
 .masked .ips span, .masked .ipv { filter: blur(5px); }
 
 /* the dog */
-.stage { grid-area: stage; position: relative; height: 170px; align-self: center; --spd: .76s; }
+/* pinned to the top: centered, the dog would move every time the exit list changes height */
+.stage { grid-area: stage; position: relative; height: 170px; align-self: start; margin-top: 8px; --spd: .76s; }
 .dog { position: absolute; inset: 26px 0 6px 0; border: 0; padding: 0; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .dog img, .dog svg { display: block; width: 100%; height: 100%; object-fit: contain; }
 .dog:focus-visible { outline-offset: -4px; border-radius: 12px; }
@@ -62,17 +64,21 @@
 .sum-head { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
 .v-h { font-size: 18px; font-weight: 700; letter-spacing: -.01em; line-height: 1.3; }
 .v-d { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
-.v-d:empty { display: none; }
 .sum-acts { display: flex; gap: 8px; }
 .stats { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .stat { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; gap: 2px 8px; background: var(--soft); border-radius: 12px; padding: 10px 14px 12px; min-width: 0; }
 .stat em { grid-column: 1 / -1; font-style: normal; font-size: 12px; color: var(--muted); }
 .stat b { font: 600 28px/1.1 var(--f-num); letter-spacing: -.03em; }
 .stat b small { font: 400 13px var(--f-ui); color: var(--muted); margin-left: 4px; letter-spacing: 0; }
-.stat i { font-style: normal; font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* the sub-line keeps its height while empty, so the numbers don't jump when it fills in */
+.stat i { min-height: 1.5em; font-style: normal; font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .uses { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; color: var(--muted); }
-.uses:empty { display: none; }
-.use { display: inline-flex; align-items: center; gap: 5px; }
+.use { display: inline-flex; align-items: center; gap: 5px; font: inherit; color: inherit; background: none; border: 0; padding: 2px 6px; margin: 0 -6px; border-radius: 6px; }
+button.use { cursor: pointer; }
+button.use:hover, button.use[aria-pressed="true"] { background: var(--soft); color: var(--fg); }
+/* the rows a use is judged on, while its chip is hovered, focused or pinned */
+.row.hl { background: color-mix(in srgb, var(--ink) 12%, transparent); border-radius: 6px; box-shadow: 0 0 0 4px color-mix(in srgb, var(--ink) 12%, transparent); }
+.row.hl .nm { font-weight: 600; }
 .use b { font-weight: 600; }
 .use.s-great b { color: var(--t1); } .use.s-ok b { color: var(--t3); } .use.s-slow b { color: var(--t5); } .use.s-blocked b { color: var(--muted); }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); cursor: pointer; font-weight: 500; white-space: nowrap; }
@@ -101,14 +107,16 @@
 .row .trk { position: relative; height: 14px; }
 /* the lane: a faint line colored by speed zone */
 .row .trk::before { content: ""; position: absolute; left: 0; right: 0; top: 6px; height: 2px; border-radius: 2px; background: var(--bands); opacity: .3; }
-.row .tail { position: absolute; top: 6px; left: 0; height: 2px; width: 0; border-radius: 2px; background: currentColor; opacity: .6; transition: width .7s cubic-bezier(.2, .8, .3, 1.1); }
-.row .b { position: absolute; top: 2px; left: 0; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: var(--line);
-  transition: left .7s cubic-bezier(.2, .8, .3, 1.1), background .3s; }
-.row .ms { font: 600 12.5px var(--f-num); text-align: right; white-space: nowrap; }
-.row.run .b { background: #b9e82a; animation: wiggle .45s ease-in-out infinite alternate; }
+/* The ball and its tail move with transforms, not left/width: same animation, no layout work and no layout shift.
+   .b spans the whole lane and is shifted by p% of its own width (= the lane's); the dot is its ::after. */
+.row .tail { position: absolute; top: 6px; left: 0; width: 100%; height: 2px; border-radius: 2px; background: currentColor; opacity: .6;
+  transform: scaleX(0); transform-origin: left; transition: transform .7s cubic-bezier(.2, .8, .3, 1.1); }
+.row .b { position: absolute; inset: 0; pointer-events: none; transition: transform .7s cubic-bezier(.2, .8, .3, 1.1); }
+.row .b::after { content: ""; position: absolute; top: 2px; left: -5px; width: 10px; height: 10px; border-radius: 50%; background: var(--line); transition: background .3s; }
+.row.run .b::after { background: #b9e82a; animation: wiggle .45s ease-in-out infinite alternate; }
 @keyframes wiggle { from { transform: translateX(0); } to { transform: translateX(7px); } }
-.row.done .b { background: currentColor; box-shadow: 0 0 0 2px var(--panel); }
-.row.lost .b { background: var(--panel); box-shadow: inset 0 0 0 1.5px var(--muted); }
+.row.done .b::after { background: currentColor; box-shadow: 0 0 0 2px var(--panel); }
+.row.lost .b::after { background: var(--panel); box-shadow: inset 0 0 0 1.5px var(--muted); }
 .row.lost .ms { font-weight: 400; color: var(--muted); }
 .row:not(.done) .ms { color: var(--muted); }
 .row.hot .nm { font-weight: 700; color: var(--ink); }
@@ -153,7 +161,7 @@
 .share-link input { flex: 1; min-width: 0; height: 36px; padding: 0 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--fg); font: 13px var(--f-num); outline: none; }
 .share-acts { display: flex; gap: 8px; flex-wrap: wrap; }
 
-@media (prefers-reduced-motion: reduce) { .ground, .zzz, .bubble.pop, .row .b, .row .tail { animation: none !important; transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { .ground, .zzz, .bubble.pop, .row .b, .row .b::after, .row .tail { animation: none !important; transition: none !important; } }
 @media (max-width: 720px) {
   .hero { grid-template-columns: minmax(0, 1fr); grid-template-areas: "stage" "l" "sum"; padding: 14px 16px 0; gap: 10px; }
   .stage { height: 140px; }
@@ -161,6 +169,7 @@
   .stats { gap: 6px; }
   .stat { padding: 8px 10px 10px; grid-template-columns: minmax(0, 1fr); }
   .stat b { font-size: 22px; }
+  .stat i { white-space: normal; }
   .sum-acts .btn:not(.icon) { flex: 1; }
   .field { padding: 12px 14px 4px; }
   .tool-list { grid-template-columns: minmax(0, 1fr); }

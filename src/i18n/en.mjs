@@ -37,6 +37,7 @@ export default {
   vh_near_slow: "Even local services are slow", v_near_slow: "The problem is likely on your side: Wi-Fi, your line or the device.",
   vh_odd: "Global is faster than local", v_odd: "All your traffic probably goes through a proxy or VPN.",
   vh_down: "Most services didn't answer", v_down: "Check that you're online, or whether a firewall or proxy is blocking them.",
+  v_wait: "When the balls are back, the dog will tell you where it's fast and where it's slow.",
   v_fail: "Unreachable: {list}.",
   v_join: ", ",
   use_game: "Gaming",

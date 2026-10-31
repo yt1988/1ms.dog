@@ -35,6 +35,7 @@ export default {
   vh_near_slow: "Incluso lo local va lento", v_near_slow: "El problema probablemente está de tu lado: el Wi‑Fi, tu línea o el dispositivo.",
   vh_odd: "Lo global va más rápido que lo local", v_odd: "Probablemente todo tu tráfico pasa por un proxy o una VPN.",
   vh_down: "La mayoría no respondió", v_down: "Comprueba que tienes conexión o si un firewall o proxy los bloquea.",
+  v_wait: "Cuando vuelvan las pelotas, el perro te dirá dónde va rápido y dónde lento.",
   v_fail: "Inaccesibles: {list}.",
   v_join: ", ",
   use_game: "Juegos",

@@ -135,19 +135,27 @@
     // this site's own Cloudflare trace says whether WARP carries the traffic
     fetch("/cdn-cgi/trace", { cache: "no-store", signal: AbortSignal.timeout(5000) }).then(r => r.ok ? r.text() : "")
       .then(x => { NET.warp = (/^warp=(\w+)/m.exec(x) || [])[1] || "off"; }).catch(() => {});
+    // An address only a geo-less check saw (ipip.net, IPv4/IPv6-only hosts, WebRTC) is looked up right away; until
+    // its network is known it isn't shown, so it never appears as an exit of its own and then merges into another.
+    const lookups = [], looked = new Set();
+    const lookup = ip => {
+      if (looked.has(ip) || looked.size >= 5) return;
+      looked.add(ip);
+      lookups.push(getJ("https://api.ip.sb/geoip/" + encodeURIComponent(ip)).then(j => {
+        NET.geo[ip] = { cc: j.country_code, city: j.city, asn: j.asn, org: j.isp || j.asn_organization };
+        group(); renderExits();
+      }).catch(() => {}));
+    };
     await Promise.allSettled(CHECKS.map(([name, f]) => f().then(res => {
       for (const r of [].concat(res)) {
         if (!r || !r.ip) continue;
         NET.seen.push({ ip: r.ip, by: name });
         if (r.geo && r.geo.cc) NET.geo[r.ip] = r.geo;
       }
+      for (const { ip } of NET.seen) if (!geoOf(ip)) lookup(ip);
       group(); renderExits();
     })));
-    // addresses only geo-less checks saw (ipip.net, IPv4/IPv6-only hosts, WebRTC): look up their network
-    const need = [...new Set(NET.seen.map(x => x.ip))].filter(ip => !geoOf(ip));
-    await Promise.allSettled(need.slice(0, 5).map(ip => getJ("https://api.ip.sb/geoip/" + encodeURIComponent(ip)).then(j => {
-      NET.geo[ip] = { cc: j.country_code, city: j.city, asn: j.asn, org: j.isp || j.asn_organization };
-    })));
+    await Promise.allSettled(lookups);
     NET.done = true; group(); renderExits();
     if (NET.groups[0] && NET.groups[0].cc) pickPack(NET.groups[0].cc);
   }
@@ -169,11 +177,15 @@
       if (g0) { g.cc = g.cc || g0.cc || ""; g.city = g.city || g0.city || ""; g.asn = g.asn || g0.asn || null; g.org = g.org || g0.org || ""; }
     }
     for (const g of G) g.proxy = !!(g.org && DC_RE.test(g.org)) || (g.asn === 13335 && NET.warp !== "off");
-    // the network most checks agree on first; local before proxy when tied
-    G.sort((a, b) => b.by.length - a.by.length || a.proxy - b.proxy);
+    // local exits first, then proxies; within each, the network most checks agree on. A fixed order, so rows don't
+    // swap places while answers arrive.
+    G.sort((a, b) => a.proxy - b.proxy || b.by.length - a.by.length);
     NET.groups = G;
   }
   function renderExits() {
+    // The list renders once, when every check and lookup is in: shown as answers arrive, it changed height several
+    // times and pushed the page down each time. Until then the placeholder holds one row's height.
+    if (!NET.done) return;
     const G = NET.groups, ul = $("#exList");
     if (!G.length) { ul.innerHTML = `<li class="ex sk-row">${NET.done ? esc(t("no_net")) : `<span class="sk-t">${esc(t("sniff"))}</span>`}</li>`; return; }
     ul.innerHTML = G.map(g => {
@@ -271,12 +283,12 @@
     const r = R.get(s.id), hot = D.spot === s.id ? " hot" : "";
     const b = el.querySelector(".b"), tail = el.querySelector(".tail"), ms = el.querySelector(".ms");
     if (!r || r.st === "run") {
-      el.className = "row" + (r ? " run" : "") + hot; b.style.left = "0"; tail.style.width = "0"; ms.textContent = r ? "…" : "–"; el.title = ""; return;
+      el.className = "row" + (r ? " run" : "") + hot; b.style.transform = ""; tail.style.transform = ""; ms.textContent = r ? "…" : "–"; el.title = ""; return;
     }
     const md = median(r.s), [tk, cls] = tierOf(md);
     el.className = "row " + (md == null ? "lost" : "done " + cls) + hot;
     const p = md == null ? 100 : pos(md) * 100;
-    b.style.left = p + "%"; tail.style.width = md == null ? "0" : p + "%";
+    b.style.transform = `translateX(${p}%)`; tail.style.transform = md == null ? "" : `scaleX(${p / 100})`;
     ms.textContent = md == null ? "✕" : fmt(md);
     const ok = r.s.filter(x => x != null);
     el.title = [s.name + " · " + t("tier_" + tk), r.w != null ? `${t("d_cold")} ${fmt(r.w)} ms` : "",
@@ -331,11 +343,7 @@
   /* ---------- verdict: where it's fast, where it's slow, what that means ---------- */
   // A segment's median in ms → good (zoomies, sprint), ok (trot) or slow (stroll, nap)
   const grade = md => md == null ? "blocked" : md <= 80 ? "good" : md <= 150 ? "ok" : "slow";
-  // everyday uses: [use, services, smooth up to, fine up to] in ms. Streaming buffers and AI answers take seconds
-  // anyway, so they tolerate more; games and calls feel every round trip.
-  const USES = [["game", ["steam", "playstation", "xbox", "epic"], 80, 150], ["call", ["zoom", "whatsapp", "discord", "telegram"], 150, 250],
-    ["stream", ["youtube", "netflix", "twitch", "tiktok", "spotify"], 200, 400], ["ai", ["chatgpt", "claude", "gemini", "copilot", "grok", "deepseek"], 200, 400],
-    ["dev", ["github", "npm", "dockerhub", "pypi", "huggingface"], 150, 300]];
+  const USES = SVC.uses;                                      // see src/services.mjs
   const doneOf = list => list.filter(s => s && R.get(s.id) && R.get(s.id).st === "done");
   function segment(list) {
     const svcs = doneOf(list), meds = svcs.map(s => median(R.get(s.id).s)), ok = meds.filter(v => v != null);
@@ -355,7 +363,7 @@
     const uses = USES.map(([k, ids, good, ok]) => {
       const sg = segment(ids.map(id => SVC.list.find(s => s.id === id)));
       if (!sg.n) return null;
-      return { k, lost: sg.lost, st: sg.ok < sg.n / 2 ? "blocked" : sg.md <= good ? "great" : sg.md <= ok ? "ok" : "slow" };
+      return { k, ids, md: sg.md, lost: sg.lost, st: sg.ok < sg.n / 2 ? "blocked" : sg.md <= good ? "great" : sg.md <= ok ? "ok" : "slow" };
     }).filter(Boolean);
     return { key, mood, local, global, lg, gg, lost, uses };
   }
@@ -368,9 +376,28 @@
   }
   function renderVerdict(v) {
     $("#vHead").textContent = v ? verdictHead(v) : t("running", { d: 0, n: allServices().length });
-    $("#vText").textContent = v ? verdictText(v) : "";
-    $("#vUses").innerHTML = v ? v.uses.map(u => `<span class="use s-${u.st}"${u.lost.length ? ` title="${esc(t("tier_lost") + ": " + u.lost.join(", "))}"` : ""}>${esc(t("use_" + u.k))}<b>${esc(t("st_" + u.st))}</b></span>`).join("") : "";
+    // while testing, the same lines hold placeholders, so nothing moves when the verdict arrives
+    $("#vText").textContent = v ? verdictText(v) : t("v_wait");
+    // each use names the services it is judged on, and points at them in the field (hover, focus or tap)
+    const based = u => u.ids.map(id => SVC.list.find(s => s.id === id).name).join(t("v_join")) + (u.md != null ? ` · ${fmt(u.md)} ms` : "") +
+      (u.lost.length ? ` · ${t("tier_lost")}: ${u.lost.join(t("v_join"))}` : "");
+    $("#vUses").innerHTML = v ? v.uses.map(u => `<button type="button" class="use s-${u.st}" data-ids="${u.ids.join(",")}" title="${esc(based(u))}" aria-label="${esc(t("use_" + u.k) + " " + t("st_" + u.st) + ": " + based(u))}">${esc(t("use_" + u.k))}<b>${esc(t("st_" + u.st))}</b></button>`).join("")
+      : USES.map(([k]) => `<span class="use">${esc(t("use_" + k))}<b>…</b></span>`).join("");
   }
+  let pinned = null;
+  const mark = ids => document.querySelectorAll(".row").forEach(r => r.classList.toggle("hl", !!ids && ids.includes(r.id.slice(2))));
+  const useOf = e => e.target.closest && e.target.closest("button.use");
+  $("#vUses").addEventListener("mouseover", e => { const b = useOf(e); if (b) mark(b.dataset.ids.split(",")); });
+  $("#vUses").addEventListener("mouseout", e => { if (useOf(e)) mark(pinned); });
+  $("#vUses").addEventListener("focusin", e => { const b = useOf(e); if (b) mark(b.dataset.ids.split(",")); });
+  $("#vUses").addEventListener("focusout", () => mark(pinned));
+  $("#vUses").addEventListener("click", e => {                // a tap pins the highlight (phones have no hover)
+    const b = useOf(e); if (!b) return;
+    const ids = b.dataset.ids.split(",");
+    pinned = pinned && pinned.join() === ids.join() ? null : ids;
+    document.querySelectorAll("button.use").forEach(x => x.setAttribute("aria-pressed", x === b && !!pinned));
+    mark(pinned || ids);
+  });
 
   /* ---------- controls ---------- */
   const start = n => { for (const s of allServices()) { R.delete(s.id); paintRow(s); } lastSum = null; renderVerdict(null); paintStats(); runList(allServices(), n, true); };

@@ -9,7 +9,7 @@
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
-import { CATS, SERVICES, PACKS, PACK_OF, SCALE, ZONES, pos } from "../src/services.mjs";
+import { CATS, SERVICES, PACKS, PACK_OF, SCALE, ZONES, USES, pos } from "../src/services.mjs";
 
 const SITE = (process.env.SITE_URL || "https://1ms.dog").replace(/\/+$/, "");
 const pub = new URL("../public/", import.meta.url), src = new URL("../src/", import.meta.url);
@@ -47,7 +47,7 @@ export async function build({ check = false } = {}) {
   const langs = LANGS.filter(([l]) => I[l]);
   const tpl = await readFile(new URL("page.html", src), "utf8");
 
-  const svc = { list: SERVICES.map(({ land, ...s }) => s), packs: PACKS, packOf: PACK_OF, scale: SCALE, cats: CATS };
+  const svc = { list: SERVICES.map(({ land, ...s }) => s), packs: PACKS, packOf: PACK_OF, scale: SCALE, cats: CATS, uses: USES };
   const app = `const SVC = ${JSON.stringify(svc)};\n` + await readFile(new URL("app.js", src), "utf8");
   new Function(app);                                                    // must parse
   // the lanes are colored by speed zone, at the same log-scale positions the page puts the balls
@@ -127,6 +127,8 @@ export async function build({ check = false } = {}) {
       // help dialog: in the HTML (crawlers read it), one answer shown at a time
       const helpNav = docs.map(([q], i) => `<button type="button" role="tab" data-hq="${i}" aria-selected="${i === 0}">${esc(q)}</button>`).join("");
       const helpC = docs.map(([q, a], i) => `<article data-hqb="${i}"${i ? " hidden" : ""}><h3>${esc(q)}</h3><p>${esc(a)}</p></article>`).join("");
+      // the uses row is in the HTML from the start, so it already takes its space while the test runs
+      const uses = USES.map(([k]) => `<span class="use">${esc(T("use_" + k))}<b>…</b></span>`).join("");
       const intro = s ? `<p class="intro">${esc(fill(T("lp_intro"), { s: s.name }))}</p>` : "";
       const langOpts = langs.map(([l]) => `<option value="${l}"${l === lang ? " selected" : ""}>${esc(I[l].name)}</option>`).join("");
       const paths = Object.fromEntries(langs.map(([l, sl]) => [l, path(sl, sub)]));
@@ -137,7 +139,7 @@ export async function build({ check = false } = {}) {
         .replace("{{lang}}", lang).replace("{{pathsAttr}}", esc(JSON.stringify(paths))).replace("{{rootAttr}}", slug || sub ? "" : " data-root")
         .replace("{{prepaint}}", PREPAINT).replace("{{head}}", head).replace("{{css}}", cssName).replace("{{js}}", jsName)
         .replace("{{homeHref}}", path(slug, "")).replace("{{langOpts}}", langOpts)
-        .replace("{{h1}}", esc(h1)).replace("{{intro}}", intro)
+        .replace("{{h1}}", esc(h1)).replace("{{intro}}", intro).replace("{{uses}}", uses)
         .replace("{{axis}}", axis).replace("{{groups}}", groups).replace("{{tools}}", tools).replace("{{helpNav}}", helpNav).replace("{{helpC}}", helpC)
         .replace("{{data}}", JSON.stringify(data).replace(/</g, "\\u003c"));
       if (/\{\{\w+\}\}/.test(html)) throw new Error("unfilled placeholder in " + path(slug, sub) + ": " + /\{\{\w+\}\}/.exec(html)[0]);

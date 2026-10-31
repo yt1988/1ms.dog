@@ -35,6 +35,7 @@ export default {
   vh_near_slow: "连本地服务也慢", v_near_slow: "问题可能在你这一侧：Wi‑Fi、宽带或设备。",
   vh_odd: "全球比本地还快", v_odd: "你的流量可能全部走了代理或 VPN。",
   vh_down: "大部分服务连不上", v_down: "请检查网络是否连通，或者防火墙、代理是否拦截了它们。",
+  v_wait: "球都叼回来后，狗狗会告诉你哪里快、哪里慢。",
   v_fail: "连不上：{list}。",
   v_join: "、",
   use_game: "游戏",

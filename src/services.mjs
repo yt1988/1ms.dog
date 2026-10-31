@@ -1,6 +1,7 @@
 // The services the dog plays fetch with. Every visitor gets the global groups; one local pack is added by the exit
 // country (the visitor can switch it). Each url is a small, cacheable, same-host answer: no redirect, so the timing
-// is one round trip on a reused connection. No Cross-Origin-Resource-Policy: same-origin/same-site either, or the
+// is one round trip on a reused connection, answered by the service's edge rather than its application server
+// (otherwise the number includes the server's work: Gemini's favicon took 430 ms of Google server time). No Cross-Origin-Resource-Policy: same-origin/same-site either, or the
 // browser blocks the answer and the service looks unreachable (claude.ai and Epic send it on every file,
 // hence their /cdn-cgi/trace URLs: same host and edge, without the header).
 // `npm run verify` checks all of this.
@@ -18,18 +19,18 @@ export const SERVICES = [
   // AI
   { id: "chatgpt", name: "ChatGPT", cat: "ai", url: "https://chatgpt.com/favicon.ico", c: "#10a37f" },
   { id: "claude", name: "Claude", cat: "ai", url: "https://claude.ai/cdn-cgi/trace", c: "#d97757" },
-  { id: "gemini", name: "Gemini", cat: "ai", url: "https://gemini.google.com/favicon.ico", c: "#4f7cf5" },
-  { id: "copilot", name: "Copilot", cat: "ai", url: "https://copilot.microsoft.com/favicon.ico", c: "#2a84e8" },
-  { id: "grok", name: "Grok", cat: "ai", url: "https://grok.com/robots.txt", c: "#8b8b8b" },
+  { id: "gemini", name: "Gemini", cat: "ai", url: "https://gemini.google.com/generate_204", c: "#4f7cf5" },
+  { id: "copilot", name: "Copilot", cat: "ai", url: "https://copilot.microsoft.com/cdn-cgi/trace", c: "#2a84e8" },
+  { id: "grok", name: "Grok", cat: "ai", url: "https://grok.com/cdn-cgi/trace", c: "#8b8b8b" },
   { id: "deepseek", name: "DeepSeek", cat: "ai", url: "https://chat.deepseek.com/favicon.svg", c: "#4d6bfe" },
 
   // Search & everyday web
   { id: "google", name: "Google", cat: "web", url: "https://www.google.com/generate_204", c: "#4285f4" },
   { id: "apple", name: "Apple", cat: "web", url: "https://www.apple.com/favicon.ico", c: "#8e8e93" },
   { id: "microsoft", name: "Microsoft", cat: "web", url: "https://www.microsoft.com/favicon.ico", c: "#00a4ef" },
-  { id: "wikipedia", name: "Wikipedia", cat: "web", url: "https://www.wikipedia.org/static/favicon/wikipedia.ico", c: "#9a9a9a" },
+  { id: "wikipedia", name: "Wikipedia", cat: "web", url: "https://upload.wikimedia.org/favicon.ico", c: "#9a9a9a" },
   { id: "amazon", name: "Amazon", cat: "web", url: "https://www.amazon.com/favicon.ico", c: "#ff9900" },
-  { id: "zoom", name: "Zoom", cat: "web", url: "https://zoom.us/favicon.ico", c: "#0b5cff" },
+  { id: "zoom", name: "Zoom", cat: "web", url: "https://zoom.us/cdn-cgi/trace", c: "#0b5cff" },
 
   // Video & music
   { id: "youtube", name: "YouTube", cat: "video", url: "https://www.youtube.com/generate_204", c: "#ff0033" },
@@ -40,19 +41,19 @@ export const SERVICES = [
 
   // Social & messaging
   { id: "x", name: "X", cat: "social", url: "https://abs.twimg.com/favicons/twitter.3.ico", c: "#8b8b8b" },
-  { id: "instagram", name: "Instagram", cat: "social", url: "https://www.instagram.com/favicon.ico", m: "HEAD", c: "#e1306c" },
+  { id: "instagram", name: "Instagram", cat: "social", url: "https://scontent.cdninstagram.com/", c: "#e1306c" },
   { id: "facebook", name: "Facebook", cat: "social", url: "https://www.facebook.com/favicon.ico", c: "#1877f2" },
   { id: "whatsapp", name: "WhatsApp", cat: "social", url: "https://web.whatsapp.com/favicon.ico", c: "#25d366" },
   { id: "telegram", name: "Telegram", cat: "social", url: "https://web.telegram.org/favicon.ico", c: "#26a5e4" },
-  { id: "discord", name: "Discord", cat: "social", url: "https://discord.com/favicon.ico", c: "#5865f2" },
-  { id: "reddit", name: "Reddit", cat: "social", url: "https://www.reddit.com/favicon.ico", c: "#ff4500" },
+  { id: "discord", name: "Discord", cat: "social", url: "https://discord.com/cdn-cgi/trace", c: "#5865f2" },
+  { id: "reddit", name: "Reddit", cat: "social", url: "https://www.reddit.com/robots.txt", c: "#ff4500" },
 
   // Developers
   { id: "github", name: "GitHub", cat: "dev", url: "https://github.com/favicon.ico", c: "#8b8b8b" },
   { id: "npm", name: "npm", cat: "dev", url: "https://registry.npmjs.org/-/ping", c: "#cb3837" },
   { id: "dockerhub", name: "Docker Hub", cat: "dev", url: "https://registry-1.docker.io/v2/", c: "#1d63ed" },
   { id: "pypi", name: "PyPI", cat: "dev", url: "https://pypi.org/static/images/favicon.35549fe8.ico", c: "#3775a9" },
-  { id: "huggingface", name: "Hugging Face", cat: "dev", url: "https://huggingface.co/robots.txt", c: "#ffbd45" },
+  { id: "huggingface", name: "Hugging Face", cat: "dev", url: "https://huggingface.co/favicon.ico", m: "HEAD", c: "#ffbd45" },
 
   // Gaming
   { id: "steam", name: "Steam", cat: "game", url: "https://store.steampowered.com/favicon.ico", c: "#66c0f4" },
@@ -62,18 +63,18 @@ export const SERVICES = [
 
   // CDN backbones: most sites above sit on one of these
   { id: "cloudflare", name: "Cloudflare", cat: "cdn", url: "https://speed.cloudflare.com/__down?bytes=0", c: "#f38020" },
-  { id: "fastly", name: "Fastly", cat: "cdn", url: "https://www.fastly.com/favicon.ico", c: "#ff282d" },
+  { id: "fastly", name: "Fastly", cat: "cdn", url: "https://www.fastly.com/robots.txt", c: "#ff282d" },
   { id: "akamai", name: "Akamai", cat: "cdn", url: "https://www.akamai.com/favicon.ico", c: "#0096d6" },
-  { id: "cloudfront", name: "CloudFront", cat: "cdn", url: "https://d1.awsstatic.com/favicon.ico", c: "#8c4fff" },
+  { id: "cloudfront", name: "CloudFront", cat: "cdn", url: "https://aws.amazon.com/favicon.ico", c: "#8c4fff" },
 ];
 
-// Local packs: what people in a region open every day. PACK_OF maps exit country → pack.
+// Local packs: what people in a region open every day. PACK_OF maps exit country → pack. Every pack has the same
+// length: the pack switches once the exit country is known, and a longer one would push the page down.
 export const PACKS = {
   cn: [
     { id: "baidu", name: "百度", cat: "local", url: "https://www.baidu.com/favicon.ico", c: "#2932e1" },
     { id: "bilibili", name: "哔哩哔哩", cat: "local", url: "https://www.bilibili.com/favicon.ico", c: "#fb7299" },
     { id: "wechat", name: "微信", cat: "local", url: "https://weixin.qq.com/favicon.ico", c: "#07c160" },
-    { id: "taobao", name: "淘宝", cat: "local", url: "https://www.taobao.com/robots.txt", c: "#ff5000" },
     { id: "douyin", name: "抖音", cat: "local", url: "https://www.douyin.com/robots.txt", c: "#fe2c55" },
   ],
   tw: [
@@ -89,9 +90,9 @@ export const PACKS = {
     { id: "niconico", name: "ニコニコ", cat: "local", url: "https://www.nicovideo.jp/favicon.ico", c: "#8b8b8b" },
   ],
   kr: [
-    { id: "naver", name: "NAVER", cat: "local", url: "https://www.naver.com/favicon.ico", c: "#03c75a" },
+    { id: "naver", name: "NAVER", cat: "local", url: "https://www.naver.com/robots.txt", c: "#03c75a" },
     { id: "kakao", name: "Kakao", cat: "local", url: "https://www.kakaocorp.com/robots.txt", c: "#fee500" },
-    { id: "coupang", name: "Coupang", cat: "local", url: "https://www.coupang.com/favicon.ico", c: "#e52528" },
+    { id: "coupang", name: "Coupang", cat: "local", url: "https://image7.coupangcdn.com/image/coupang/favicon/v2/favicon.ico", c: "#e52528" },
     { id: "daum", name: "Daum", cat: "local", url: "https://www.daum.net/favicon.ico", c: "#4a7cf6" },
   ],
   ru: [
@@ -101,20 +102,20 @@ export const PACKS = {
     { id: "mailru", name: "Mail.ru", cat: "local", url: "https://mail.ru/favicon.ico", c: "#005ff9" },
   ],
   in: [
-    { id: "flipkart", name: "Flipkart", cat: "local", url: "https://www.flipkart.com/favicon.ico", c: "#2874f0" },
-    { id: "hotstar", name: "JioHotstar", cat: "local", url: "https://www.hotstar.com/favicon.ico", m: "HEAD", c: "#1f80e0" },
+    { id: "flipkart", name: "Flipkart", cat: "local", url: "https://static-assets-web.flixcart.com/favicon.ico", c: "#2874f0" },
+    { id: "hotstar", name: "JioHotstar", cat: "local", url: "https://www.hotstar.com/robots.txt", m: "HEAD", c: "#1f80e0" },
     { id: "paytm", name: "Paytm", cat: "local", url: "https://paytm.com/favicon.ico", c: "#00baf2" },
     { id: "amazon-in", name: "Amazon.in", cat: "local", url: "https://www.amazon.in/favicon.ico", c: "#ff9900" },
   ],
   sea: [
     { id: "shopee", name: "Shopee", cat: "local", url: "https://shopee.sg/favicon.ico", c: "#ee4d2d" },
     { id: "lazada", name: "Lazada", cat: "local", url: "https://www.lazada.sg/favicon.ico", c: "#0f146d" },
-    { id: "grab", name: "Grab", cat: "local", url: "https://www.grab.com/favicon.ico", c: "#00b14f" },
+    { id: "grab", name: "Grab", cat: "local", url: "https://www.grab.com/robots.txt", c: "#00b14f" },
     { id: "line-sea", name: "LINE", cat: "local", url: "https://line.me/favicon.ico", c: "#06c755" },
   ],
   eu: [
     { id: "bbc", name: "BBC", cat: "local", url: "https://www.bbc.co.uk/favicon.ico", c: "#bb1919" },
-    { id: "booking", name: "Booking.com", cat: "local", url: "https://www.booking.com/favicon.ico", c: "#003b95" },
+    { id: "booking", name: "Booking.com", cat: "local", url: "https://www.booking.com/robots.txt", m: "HEAD", c: "#003b95" },
     { id: "zalando", name: "Zalando", cat: "local", url: "https://www.zalando.com/favicon.ico", c: "#ff6900" },
     { id: "allegro", name: "Allegro", cat: "local", url: "https://allegro.pl/favicon.ico", c: "#ff5a00" },
   ],
@@ -122,19 +123,19 @@ export const PACKS = {
     { id: "mercadolibre", name: "Mercado Libre", cat: "local", url: "https://www.mercadolibre.com/favicon.ico", c: "#ffe600" },
     { id: "globo", name: "Globo", cat: "local", url: "https://www.globo.com/favicon.ico", c: "#f15a24" },
     { id: "nubank", name: "Nubank", cat: "local", url: "https://nubank.com.br/favicon.ico", m: "HEAD", c: "#820ad1" },
-    { id: "uol", name: "UOL", cat: "local", url: "https://www.uol.com.br/favicon.ico", c: "#f6a500" },
+    { id: "ifood", name: "iFood", cat: "local", url: "https://www.ifood.com.br/cdn-cgi/trace", c: "#ea1d2c" },
   ],
   na: [
     { id: "espn", name: "ESPN", cat: "local", url: "https://www.espn.com/favicon.ico", c: "#d00" },
-    { id: "hulu", name: "Hulu", cat: "local", url: "https://www.hulu.com/favicon.ico", c: "#1ce783" },
-    { id: "walmart", name: "Walmart", cat: "local", url: "https://www.walmart.com/favicon.ico", c: "#0071dc" },
+    { id: "disneyplus", name: "Disney+", cat: "local", url: "https://www.disneyplus.com/favicon.ico", c: "#113ccf" },
+    { id: "yahoo", name: "Yahoo", cat: "local", url: "https://www.yahoo.com/favicon.ico", c: "#6001d2" },
     { id: "target", name: "Target", cat: "local", url: "https://www.target.com/favicon.ico", c: "#cc0000" },
   ],
   me: [
-    { id: "noon", name: "noon", cat: "local", url: "https://www.noon.com/favicon.ico", c: "#feee00" },
+    { id: "talabat", name: "talabat", cat: "local", url: "https://www.talabat.com/cdn-cgi/trace", c: "#ff5a00" },
     { id: "careem", name: "Careem", cat: "local", url: "https://www.careem.com/favicon.ico", c: "#00e784" },
     { id: "aljazeera", name: "Al Jazeera", cat: "local", url: "https://www.aljazeera.com/favicon_aje.ico", c: "#fa9000" },
-    { id: "trendyol", name: "Trendyol", cat: "local", url: "https://www.trendyol.com/favicon.ico", c: "#f27a1a" },
+    { id: "trendyol", name: "Trendyol", cat: "local", url: "https://www.trendyol.com/cdn-cgi/trace", c: "#f27a1a" },
   ],
 };
 
@@ -153,3 +154,9 @@ export const PACK_IDS = Object.keys(PACKS);
 export const SCALE = { min: 5, max: 1000 };
 export const ZONES = [30, 80, 150, 300];
 export const pos = ms => Math.max(0, Math.min(1, Math.log(ms / SCALE.min) / Math.log(SCALE.max / SCALE.min)));
+
+// Everyday uses the verdict reports on: [use, services, smooth up to, fine up to] in ms. Streaming buffers and AI
+// answers take seconds anyway, so they tolerate more; games and calls feel every round trip.
+export const USES = [["game", ["steam", "playstation", "xbox", "epic"], 80, 150], ["call", ["zoom", "whatsapp", "discord", "telegram"], 150, 250],
+  ["stream", ["youtube", "netflix", "twitch", "tiktok", "spotify"], 200, 400], ["ai", ["chatgpt", "claude", "gemini", "copilot", "grok", "deepseek"], 200, 400],
+  ["dev", ["github", "npm", "dockerhub", "pypi", "huggingface"], 150, 300]];
