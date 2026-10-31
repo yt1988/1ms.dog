@@ -1,0 +1,11 @@
+# Cloudflare Workers with static assets: `npx wrangler deploy` uploads ./public.
+# There is no Worker script, so every request is a static asset request (free and not metered).
+# The 1ms.dog domain is routed through 1ms-shell (bar, analytics, shared 404), which reaches this Worker over a
+# service binding. Don't bind a custom domain here: it would bypass the shell.
+name = "1ms-index"
+compatibility_date = "2025-10-01"
+workers_dev = false
+preview_urls = false
+
+[assets]
+directory = "./public"

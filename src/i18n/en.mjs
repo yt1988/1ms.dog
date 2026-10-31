@@ -1,0 +1,72 @@
+// English strings: the reference set. Other languages fall back to these key by key.
+// {x} placeholders are filled at build time (SEO) or in the browser (results).
+export default {
+  name: "English",
+  seo_title: "What's My IP? Exit IP & Latency to ChatGPT, YouTube, Netflix · 1ms.dog",
+  seo_desc: "See where your internet really exits (IP, ISP, city, IPv4 and IPv6, proxy and VPN hints) and how fast 40 major services answer: ChatGPT, Google, YouTube, Netflix, GitHub, Steam and more. Measured in your own browser, free, no sign-up.",
+  seo_kw: "what is my ip, my ip address, exit ip, latency test, ping test, chatgpt latency, youtube ping, netflix speed, vpn check, proxy check, ipv6 test",
+  og_sub: "Your exit IP and live latency to 40 services, from your browser",
+
+  h1: "Where you exit, and how far the world is",
+
+  exit_h: "Your exit",
+  k_local: "Local", k_proxy: "Proxy", seen_by: "seen by {list}",
+  sniff: "Sniffing out your exit…",
+  hide: "Hide IPs", show: "Show IPs",
+  r_tz: "Your clock says {a}, your exit says {b}",
+  r_proxied: "{list} answered, though they are usually unreachable from {c}. That traffic leaves through another exit (a proxy or VPN), not the one shown here",
+  no_net: "Couldn't reach the exit checks. Ad blockers sometimes block them.",
+
+  run: "Fetch again", deep: "Deep test", stop: "Stop",
+  deep_t: "10 rounds per service instead of 3: steadier numbers, about 20 seconds",
+  running: "Fetching {d} / {n}",
+  back: "{ok}/{n} balls back",
+  med: "median",
+  lost_n: "{n} didn't come back",
+  faster: "{d} ms faster than your last visit",
+  slower: "{d} ms slower than your last visit",
+  new_exit: "New exit since your last visit: {a} → {b}",
+  share: "Share", copied: "Copied!",
+  share_text: "My dog fetched {ok}/{n} services from {where}, median {ms} ms ({tier}). How fast is yours?",
+
+  tier_legend: "1ms dog", tier_zoom: "Zoomies", tier_sprint: "Sprint", tier_trot: "Trot", tier_stroll: "Stroll", tier_nap: "Nap", tier_lost: "Not back",
+  mood_sniff: "Sniff, sniff… where are we?",
+  mood_run: "Fetching! Back in a sec…",
+  mood_zoom: "Zoomies! Everything is right next door.",
+  mood_sprint: "Fast legs today. Most things are close.",
+  mood_trot: "A decent trot. A few balls landed far away.",
+  mood_stroll: "That was a long walk. The world is far from here.",
+  mood_nap: "Too far… I'm taking a nap.",
+  mood_lost: "Lots of balls never came back. Something is in the way.",
+  mood_pet: "Hehe, that tickles!",
+  mood_turbo: "1MS MODE ACTIVATED",
+
+  cat_ai: "AI", cat_web: "Everyday web", cat_video: "Video & music", cat_social: "Social & chat", cat_dev: "Developers",
+  cat_game: "Gaming", cat_cdn: "CDN backbones", cat_local: "Local favorites",
+  pack: "Local pack",
+  pk_cn: "China", pk_tw: "Taiwan · Hong Kong", pk_jp: "Japan", pk_kr: "Korea", pk_ru: "Russia", pk_in: "South Asia",
+  pk_sea: "Southeast Asia", pk_eu: "Europe", pk_latam: "Latin America", pk_na: "North America", pk_me: "Middle East",
+  d_cold: "first connection", d_samples: "samples", d_jit: "jitter", 
+  tool_m2c: "Latency from your browser to 360+ cloud regions: AWS, Azure, Google Cloud, Alibaba and more.",
+  tool_v2c: "The same test run from your server: pick where to put the next one.",
+  tool_ls: "Work out AWS Lightsail transfer allowances and what overage would cost.",
+
+  faq_h: "How it works",
+  docs: [
+    ["What is an exit IP?", "It's the address websites see when you visit them. At home it usually belongs to your ISP. With a VPN, proxy, company network or iCloud Private Relay, it belongs to whoever forwards your traffic, and that can be in another city or country. The exit decides which server a service sends you to, so it decides your speed too."],
+    ["Why can I have more than one exit?", "Split-routing proxies and VPNs send some traffic one way and the rest another. IPv4 and IPv6 can also leave through different networks, and WebRTC (used by video calls) uses UDP, which many proxies don't carry. We ask several independent checks at once and list every exit they see, so you know which path each kind of traffic takes."],
+    ["How is latency measured?", "Your browser opens a real HTTPS connection to each service. The first request only sets up the connection (DNS, TCP, TLS) and is shown separately; then the same connection is reused for timed requests, and we show the median. That is one round trip from your device to the service's nearest server, through your Wi-Fi, ISP and any proxy: the delay your apps actually get."],
+    ["Why is this different from ping?", "Ping uses ICMP, which browsers can't send, and many networks treat it differently from normal traffic. HTTPS timing follows the same path as the apps you use. Numbers are usually a few milliseconds higher than ping, because the server has to answer the request."],
+    ["What do the dog speeds mean?", "Zoomies ≤ 30 ms: same city. Sprint ≤ 80 ms: same region. Trot ≤ 150 ms: fine for almost everything. Stroll ≤ 300 ms: noticeable in games and calls. Nap > 300 ms: far away or congested. Not back: no connection within 5 seconds, so the service is blocked or unreachable from here. Under 2 ms earns the legendary 1ms dog."],
+    ["Is my data sent anywhere?", "No. Every request goes straight from your browser to the service being tested. 1ms.dog only serves the static page; it never receives your results. Your last result is kept in this browser so the dog can tell you if things changed."],
+  ],
+  foot: "Runs entirely in your browser. No account, no tracking of results.",
+
+  th_system: "System theme", th_light: "Light", th_dark: "Dark",
+  lang_label: "Language",
+
+  lp_title: "{s} Latency Test: Is {s} Slow From Your Network? · 1ms.dog",
+  lp_desc: "Test {s} latency from your own browser: real HTTPS round trips to {s}, your exit IP and ISP, and 40 other services for comparison. Free, no sign-up.",
+  lp_h1: "How fast is {s} from your network?",
+  lp_intro: "Your browser times real HTTPS round trips to {s} through your actual Wi-Fi, ISP and any VPN or proxy, and compares them with 40 other services. If {s} feels slow, this shows whether it's {s}, your exit, or everything.",
+  };

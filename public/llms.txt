@@ -1,0 +1,15 @@
+# 1ms.dog
+
+> Free browser tool: shows the visitor's exit IP (IPv4, IPv6, ISP/ASN, city, nearest Cloudflare edge, proxy/VPN/WebRTC
+> hints) and times real HTTPS round trips from their browser to 37 major services plus a local pack
+> chosen by exit country. Everything runs client-side; no results are sent to 1ms.dog.
+
+- Home: https://1ms.dog/ (also /zh-cn/, /zh-tw/, /ja/, /ko/, /es/, /fr/, /de/, /pt/, /ru/)
+- Service pages: https://1ms.dog/chatgpt/, https://1ms.dog/claude/, https://1ms.dog/gemini/, https://1ms.dog/deepseek/, https://1ms.dog/google/, https://1ms.dog/youtube/, https://1ms.dog/netflix/, https://1ms.dog/tiktok/, https://1ms.dog/x/, https://1ms.dog/telegram/, https://1ms.dog/discord/, https://1ms.dog/github/, https://1ms.dog/steam/
+- Services tested: ChatGPT, Claude, Gemini, Copilot, Grok, DeepSeek, Google, Apple, Microsoft, Wikipedia, Amazon, Zoom, YouTube, Netflix, TikTok, Twitch, Spotify, X, Instagram, Facebook, WhatsApp, Telegram, Discord, Reddit, GitHub, npm, Docker Hub, PyPI, Hugging Face, Steam, PlayStation, Xbox, Epic Games, Cloudflare, Fastly, Akamai, CloudFront
+- Speed grades (median HTTPS round trip): 1ms dog < 2 ms, Zoomies ≤ 30, Sprint ≤ 80, Trot ≤ 150, Stroll ≤ 300, Nap > 300, Not back = no connection in 5 s
+
+## Other 1ms.dog tools
+- Me2Cloud: https://m2c.1ms.dog/ (Latency from your browser to 360+ cloud regions: AWS, Azure, Google Cloud, Alibaba and more.)
+- VPS2Cloud: https://v2c.1ms.dog/ (The same test run from your server: pick where to put the next one.)
+- Lightsail Cost Saver: https://ls.1ms.dog/ (Work out AWS Lightsail transfer allowances and what overage would cost.)

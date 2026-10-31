@@ -1,0 +1,17 @@
+{
+  "name": "1ms-index",
+  "private": true,
+  "type": "module",
+  "description": "1ms.dog home page: where your traffic exits and how fast the world's main services answer, measured in the visitor's browser",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/build.mjs --check && node --test \"test/*.test.mjs\"",
+    "dev": "node scripts/dev.mjs",
+    "assets": "node scripts/assets.mjs",
+    "verify": "node scripts/verify.mjs"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "svgo": "^3.3.2"
+  }
+}

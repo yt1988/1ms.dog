@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="{{lang}}" data-paths="{{pathsAttr}}"{{rootAttr}}>
+<head>
+<meta charset="utf-8">
+<script>{{prepaint}}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+{{head}}
+<link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/{{css}}">
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <a class="brand" href="{{homeHref}}" aria-label="1ms.dog">
+      <img class="logo-light" src="/assets/logo-light.svg" width="90" height="36" alt="1ms">
+      <img class="logo-dark" src="/assets/logo-dark.svg" width="90" height="36" alt="1ms">
+    </a>
+    <div class="top-acts">
+      <label class="sel"><span class="sr" data-i="lang_label"></span>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M1.5 8h13M8 1.5c2 2 2.8 4 2.8 6.5S10 12.5 8 14.5C6 12.5 5.2 10.5 5.2 8S6 3.5 8 1.5z"/></svg>
+        <select id="lang">{{langOpts}}</select>
+      </label>
+      <button class="icon-btn" id="theme" type="button" aria-label="Theme">
+        <svg class="i-sys" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="9" rx="1.5"/><path d="M5.5 14h5M8 11.5V14"/></svg>
+        <svg class="i-light" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3"/></svg>
+        <svg class="i-dark" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.8A5.8 5.8 0 0 1 6.2 2.5a5.8 5.8 0 1 0 7.3 7.3z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero card">
+      <div class="hero-l">
+        <h1>{{h1}}</h1>
+        {{intro}}
+        <div class="exits" id="exits">
+          <div class="ex-h"><span data-i="exit_h"></span><button class="mini" id="eye" type="button" data-i="hide"></button></div>
+          <ul id="exList"><li class="ex sk-row"><span class="sk-t" data-i="sniff"></span></li></ul>
+          <p class="ex-note" id="exNote" hidden></p>
+        </div>
+      </div>
+      <div class="stage" id="stage" data-mood="sniff">
+        <p class="bubble" id="bubble" aria-live="polite" data-i="mood_sniff"></p>
+        <button class="dog" id="dog" type="button" aria-label="Pet the dog">
+          <img src="/assets/shiba-run.svg" width="960" height="540" alt="1ms.dog shiba" id="dogImg">
+          <span class="zzz" aria-hidden="true">z<i>z</i><b>z</b></span>
+        </button>
+        <span class="ground" aria-hidden="true"></span>
+      </div>
+      <div class="sum" id="sum">
+        <div class="sum-n"><b id="sumMs">–</b><small>ms <span data-i="med"></span></small></div>
+        <div class="sum-txt"><span class="tier" id="sumTier">&nbsp;</span><span id="sumBack" class="m"></span><span id="sumHist" class="m"></span></div>
+        <div class="sum-acts">
+          <button class="btn pri" id="run" type="button"><span data-i="run"></span></button>
+          <button class="btn" id="deep" type="button" data-i="deep"></button>
+          <button class="btn icon" id="share" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr" data-i="share"></span></button>
+        </div>
+        <div class="prog" id="prog"><i></i></div>
+      </div>
+    </section>
+
+    <section class="field card" aria-label="latency">
+      <div class="axis" aria-hidden="true">{{axis}}</div>
+      <div class="groups" id="groups">
+{{groups}}
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <details class="faq">
+      <summary data-i="faq_h"></summary>
+      {{faq}}
+    </details>
+    <nav class="tools">{{tools}}</nav>
+    <p class="m" data-i="foot"></p>
+  </footer>
+</div>
+<script type="application/json" id="data">{{data}}</script>
+<script src="/assets/{{js}}" defer></script>
+</body>
+</html>
