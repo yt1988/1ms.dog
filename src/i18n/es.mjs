@@ -28,6 +28,7 @@ export default {
   share: "Compartir", copied: "¡Copiado!",
   sub_telegram: "Centros de datos de Telegram", tg_dc_t: "Telegram guarda cada cuenta en uno de sus 5 centros de datos, según la región del número. Aquí se mide {dc} ({city}), donde están la mayoría de las cuentas de tu región. En la página de Telegram puedes medir los 5.",
   egress_link: "Qué IP ve cada sitio →",
+  a_pet: "Acariciar al perro", a_dog: "Shiba de 1ms.dog", a_field: "Latencia por servicio", a_nav: "Todas las pruebas de ping", a_close: "Cerrar", a_prev: "Anterior", a_next: "Siguiente", a_link: "Enlace",
   qr_hint: "Escanea para ver el resultado completo",
   share_text: "Mi perro trajo {ok}/{n} servicios desde {where}, mediana de {ms} ms ({tier}). ¿Qué tan rápido es el tuyo?",
   share_h: "Compartir resultado", copy_link: "Copiar enlace", copy_img: "Copiar imagen", dl_img: "Descargar imagen", more_share: "Más opciones",

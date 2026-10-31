@@ -107,7 +107,7 @@ export async function build({ check = false } = {}) {
   const RUNTIME_SKIP = new Set(["docs", "egress_link", "seo_title", "seo_desc", "seo_kw", "og_sub", "lede", "lp_title", "lp_desc", "lp_intro", "lp_h1", "lp_kw", "lp_peers", "lp_via", "lp_via_same", "land", "lg_title", "lg_desc", "lg_h1", "lg_kw", "lg_intro", "lg_about", "lg_region", "sm_cats", "sm_regions", "grp_best", "grp_worst", "sitemap_h", "sm_item", "cta_h", "cta_d", "cta_btn", "one_med", "one_cold", "one_jit", "tool_m2c", "tool_v2c", "tool_ls", "tool_ipqs", "foot", "tools_h",
     "name", "h1", "lang_label", "faq_h", "pack", "exit_h", "test_mine", "share_h", "copy_link", "copy_img", "dl_img", "more_share"]);
   // static text the page already shows, and region names (only the server-rendered picker uses them)
-  const runtimeKey = k => !RUNTIME_SKIP.has(k) && !k.startsWith("pk_");
+  const runtimeKey = k => !RUNTIME_SKIP.has(k) && !k.startsWith("pk_") && !k.startsWith("a_");
   const pages = [], stringFiles = {};
   for (const [lang, slug, locale, defPack] of langs) {
     const d = I[lang], T = k => d[k] ?? en[k] ?? k;
@@ -231,7 +231,7 @@ export async function build({ check = false } = {}) {
         // the exit list links to EgressLens (which IP each site sees), in the same language
         .replace("{{egressHref}}", `https://egress.1ms.dog${path(slug, "")}`).replace("{{h1}}", esc(h1)).replace("{{intro}}", intro).replace("{{uses}}", uses)
         .replace("{{axis}}", axis).replace("{{groups}}", groups).replace("{{tools}}", tools).replace("{{helpNav}}", helpNav).replace("{{helpC}}", helpC)
-        .replace("{{data}}", JSON.stringify(data).replace(/</g, "\\u003c"));
+        .replace(/\{\{a:(\w+)\}\}/g, (_, k) => esc(T(k))).replace("{{data}}", JSON.stringify(data).replace(/</g, "\\u003c"));
       if (/\{\{\w+\}\}/.test(html)) throw new Error("unfilled placeholder in " + path(slug, sub) + ": " + /\{\{\w+\}\}/.exec(html)[0]);
       pages.push({ file: (slug ? slug + "/" : "") + (sub ? sub + "/" : "") + "index.html", url, lang, sub, html, idx });
     }

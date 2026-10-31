@@ -66,7 +66,7 @@
       <button class="icon-btn" id="helpBtn" type="button" aria-haspopup="dialog" aria-controls="help"><span class="sr" data-i="faq_h">작동 방식과 자주 묻는 질문</span>
         <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M6.3 6.2a1.8 1.8 0 1 1 2.5 1.7c-.5.2-.8.6-.8 1.1v.4M8 11.3v.1"/></svg>
       </button>
-      <button class="icon-btn" id="theme" type="button" aria-label="Theme">
+      <button class="icon-btn" id="theme" type="button" aria-label="시스템 설정">
         <svg class="i-sys" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="9" rx="1.5"/><path d="M5.5 14h5M8 11.5V14"/></svg>
         <svg class="i-light" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3"/></svg>
         <svg class="i-dark" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.8A5.8 5.8 0 0 1 6.2 2.5a5.8 5.8 0 1 0 7.3 7.3z"/></svg>
@@ -89,8 +89,8 @@
       </div>
       <div class="stage" id="stage" data-mood="sniff">
         <p class="bubble" id="bubble" aria-live="polite" data-i="mood_sniff">킁킁… 여기가 어디지?</p>
-        <button class="dog" id="dog" type="button" aria-label="Pet the dog">
-          <img src="/assets/shiba-run.svg" width="960" height="540" alt="1ms.dog shiba" id="dogImg">
+        <button class="dog" id="dog" type="button" aria-label="강아지 쓰다듬기">
+          <img src="/assets/shiba-run.svg" width="960" height="540" alt="1ms.dog 시바견" id="dogImg">
           <span class="zzz" aria-hidden="true">z<i>z</i><b>z</b></span>
         </button>
         <span class="ground" aria-hidden="true"></span>
@@ -123,7 +123,7 @@
   </main>
 
   <footer class="foot">
-    <nav class="sitemap" aria-label="sitemap"><b>서비스별 측정:</b><a href="/ko/">전체 서비스 측정</a><a href="/ko/chatgpt/">ChatGPT 핑 테스트</a><a href="/ko/claude/">Claude 핑 테스트</a><a href="/ko/gemini/">Gemini 핑 테스트</a><a href="/ko/youtube/">YouTube 핑 테스트</a><a href="/ko/netflix/">Netflix 핑 테스트</a><a href="/ko/discord/" aria-current="page">Discord 핑 테스트</a><a href="/ko/steam/">Steam 핑 테스트</a><a href="/ko/github/">GitHub 핑 테스트</a><a href="/ko/tiktok/">TikTok 핑 테스트</a><i class="br"></i><b>카테고리별:</b><a href="/ko/ai/">AI</a><a href="/ko/web/">자주 쓰는 사이트</a><a href="/ko/video/">동영상·음악</a><a href="/ko/social/">SNS·메신저</a><a href="/ko/dev/">개발 도구</a><a href="/ko/game/">게임</a><a href="/ko/cdn/">CDN</a><i class="br"></i><b>지역별:</b><a href="/ko/region/cn/">중국 본토</a><a href="/ko/region/tw/">대만 · 홍콩</a><a href="/ko/region/jp/">일본</a><a href="/ko/region/kr/">한국</a><a href="/ko/region/ru/">러시아</a><a href="/ko/region/in/">남아시아</a><a href="/ko/region/sea/">동남아시아</a><a href="/ko/region/eu/">유럽</a><a href="/ko/region/latam/">중남미</a><a href="/ko/region/na/">북미</a><a href="/ko/region/me/">중동</a></nav>
+    <nav class="sitemap" aria-label="전체 측정 페이지"><b>서비스별 측정:</b><a href="/ko/">전체 서비스 측정</a><a href="/ko/chatgpt/">ChatGPT 핑 테스트</a><a href="/ko/claude/">Claude 핑 테스트</a><a href="/ko/gemini/">Gemini 핑 테스트</a><a href="/ko/youtube/">YouTube 핑 테스트</a><a href="/ko/netflix/">Netflix 핑 테스트</a><a href="/ko/discord/" aria-current="page">Discord 핑 테스트</a><a href="/ko/steam/">Steam 핑 테스트</a><a href="/ko/github/">GitHub 핑 테스트</a><a href="/ko/tiktok/">TikTok 핑 테스트</a><i class="br"></i><b>카테고리별:</b><a href="/ko/ai/">AI</a><a href="/ko/web/">자주 쓰는 사이트</a><a href="/ko/video/">동영상·음악</a><a href="/ko/social/">SNS·메신저</a><a href="/ko/dev/">개발 도구</a><a href="/ko/game/">게임</a><a href="/ko/cdn/">CDN</a><i class="br"></i><b>지역별:</b><a href="/ko/region/cn/">중국 본토</a><a href="/ko/region/tw/">대만 · 홍콩</a><a href="/ko/region/jp/">일본</a><a href="/ko/region/kr/">한국</a><a href="/ko/region/ru/">러시아</a><a href="/ko/region/in/">남아시아</a><a href="/ko/region/sea/">동남아시아</a><a href="/ko/region/eu/">유럽</a><a href="/ko/region/latam/">중남미</a><a href="/ko/region/na/">북미</a><a href="/ko/region/me/">중동</a></nav>
     <div class="foot-l"><span data-i="foot">모두 내 브라우저에서 실행됩니다. 계정 불필요, 결과를 수집하지 않습니다.</span><span>© 1ms.dog</span></div>
   </footer>
 </div>
@@ -131,13 +131,13 @@
 <div class="scrim" id="help" hidden>
   <div class="dialog help" role="dialog" aria-modal="true" aria-labelledby="helpT">
     <div class="dlg-h"><h2 id="helpT" data-i="faq_h">작동 방식과 자주 묻는 질문</h2>
-      <button class="icon-btn" data-close type="button" aria-label="Close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+      <button class="icon-btn" data-close type="button" aria-label="닫기"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
     <div class="help-b">
       <nav class="help-nav" id="helpNav" role="tablist"><button type="button" role="tab" data-hq="0" aria-selected="true">내 네트워크에서 Discord는 얼마나 빠를까?</button><button type="button" role="tab" data-hq="1" aria-selected="false">출구 IP란?</button><button type="button" role="tab" data-hq="2" aria-selected="false">로컬 출구와 프록시 출구가 함께 보이는 이유는?</button><button type="button" role="tab" data-hq="3" aria-selected="false">지연은 어떻게 측정하나요?</button><button type="button" role="tab" data-hq="4" aria-selected="false">핑과 결과가 다른 이유는?</button><button type="button" role="tab" data-hq="5" aria-selected="false">강아지 속도 등급의 의미는?</button><button type="button" role="tab" data-hq="6" aria-selected="false">내 데이터가 어딘가로 전송되나요?</button></nav>
       <div class="help-pick">
-        <button class="icon-btn" type="button" data-hstep="-1" aria-label="Previous"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 4L6 8l4 4"/></svg></button>
+        <button class="icon-btn" type="button" data-hstep="-1" aria-label="이전"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 4L6 8l4 4"/></svg></button>
         <select id="helpSel" aria-labelledby="helpT"></select>
-        <button class="icon-btn" type="button" data-hstep="1" aria-label="Next"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg></button>
+        <button class="icon-btn" type="button" data-hstep="1" aria-label="다음"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg></button>
       </div>
       <div class="help-c" id="helpC"><article data-hqb="0"><h3>내 네트워크에서 Discord는 얼마나 빠를까?</h3><p>비교하고 싶다면 홈에서 Discord와 다른 SNS·메신저 서비스를 함께 측정할 수 있습니다: X, Instagram, Facebook, WhatsApp, Telegram, Reddit. Discord는 Cloudflare 네트워크가 응답하며, 왕복의 끝은 가장 가까운 Cloudflare 거점입니다. ChatGPT, Claude, Copilot, Grok, Zoom, npm, Epic Games, Cloudflare도 같은 네트워크를 쓰므로, 이들도 느리다면 문제는 Discord가 아니라 Cloudflare까지의 경로입니다.</p></article><article data-hqb="1" hidden><h3>출구 IP란?</h3><p>웹사이트에 접속할 때 상대방이 보는 주소입니다. 집에서는 보통 통신사 주소지만, VPN, 프록시, 회사 네트워크, iCloud 비공개 릴레이를 쓰면 트래픽을 대신 전달하는 쪽의 주소가 되고, 다른 도시나 나라에 있을 수도 있습니다. 출구에 따라 연결되는 서버가 정해지므로 속도도 출구가 결정합니다.</p></article><article data-hqb="2" hidden><h3>로컬 출구와 프록시 출구가 함께 보이는 이유는?</h3><p>규칙 기반 프록시와 VPN은 목적지에 따라 경로를 고릅니다. 그래서 IP 확인 하나로는 그 확인의 경로만 보입니다. 중국 본토 사이트, Cloudflare, ip.sb, ipinfo.io, IPv4 전용과 IPv6 전용 확인, WebRTC(UDP)에 동시에 물어보고, 네트워크별로 묶어 로컬인지 프록시인지 표시합니다.</p></article><article data-hqb="3" hidden><h3>지연은 어떻게 측정하나요?</h3><p>브라우저가 각 서비스와 실제 HTTPS 연결을 엽니다. 첫 요청은 연결 수립(DNS, TCP, TLS)용이라 집계하지 않습니다. 이후 같은 연결을 재사용해 측정하고 중앙값을 보여 줍니다. Wi‑Fi, 통신사, 프록시를 모두 거친, 기기에서 서비스의 가장 가까운 서버까지의 왕복 시간으로, 앱이 실제로 겪는 지연입니다.</p></article><article data-hqb="4" hidden><h3>핑과 결과가 다른 이유는?</h3><p>핑은 ICMP를 쓰는데 브라우저는 보낼 수 없고, 많은 네트워크가 ICMP를 일반 트래픽과 다르게 처리합니다. HTTPS 측정은 평소 쓰는 앱과 같은 경로를 따릅니다. 서버가 요청에 응답해야 하므로 보통 핑보다 몇 밀리초 높게 나옵니다.</p></article><article data-hqb="5" hidden><h3>강아지 속도 등급의 의미는?</h3><p>질주 ≤ 30 ms: 같은 도시. 전력 질주 ≤ 80 ms: 같은 지역. 총총 ≤ 150 ms: 거의 모든 용도에 충분. 산책 ≤ 300 ms: 게임과 통화에서 체감. 낮잠 &gt; 300 ms: 멀거나 혼잡. 못 돌아옴: 5초 안에 연결되지 않아 여기서는 이용할 수 없음. 2 ms 미만이면 전설의 1ms 강아지.</p></article><article data-hqb="6" hidden><h3>내 데이터가 어딘가로 전송되나요?</h3><p>아니요. 모든 요청은 브라우저에서 테스트 대상 서비스로 바로 갑니다. 1ms.dog는 정적인 페이지만 제공하며 결과를 받지 않습니다. 지난 결과는 이 브라우저에만 저장됩니다. 공유 링크에는 도시, 네트워크, 지연만 담기고 IP 주소는 담기지 않습니다.</p></article></div>
     </div>
@@ -147,10 +147,10 @@
 <div class="scrim" id="shareDlg" hidden>
   <div class="dialog share" role="dialog" aria-modal="true" aria-labelledby="shareT">
     <div class="dlg-h"><h2 id="shareT" data-i="share_h">결과 공유</h2>
-      <button class="icon-btn" data-close type="button" aria-label="Close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+      <button class="icon-btn" data-close type="button" aria-label="닫기"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
     <div class="share-b">
       <img id="shareImg" alt="" width="1200" height="1000">
-      <div class="share-link"><input id="shareUrl" readonly aria-label="Link"><button class="btn pri" id="copyLink" type="button" data-i="copy_link">링크 복사</button></div>
+      <div class="share-link"><input id="shareUrl" readonly aria-label="링크"><button class="btn pri" id="copyLink" type="button" data-i="copy_link">링크 복사</button></div>
       <div class="share-acts">
         <button class="btn" id="copyImg" type="button" data-i="copy_img">이미지 복사</button>
         <button class="btn" id="dlImg" type="button" data-i="dl_img">이미지 저장</button>

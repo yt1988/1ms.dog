@@ -49,7 +49,7 @@
       <button class="icon-btn" id="helpBtn" type="button" aria-haspopup="dialog" aria-controls="help"><span class="sr" data-i="faq_h">仕組みとよくある質問</span>
         <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M6.3 6.2a1.8 1.8 0 1 1 2.5 1.7c-.5.2-.8.6-.8 1.1v.4M8 11.3v.1"/></svg>
       </button>
-      <button class="icon-btn" id="theme" type="button" aria-label="Theme">
+      <button class="icon-btn" id="theme" type="button" aria-label="システム設定に合わせる">
         <svg class="i-sys" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="9" rx="1.5"/><path d="M5.5 14h5M8 11.5V14"/></svg>
         <svg class="i-light" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3"/></svg>
         <svg class="i-dark" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.8A5.8 5.8 0 0 1 6.2 2.5a5.8 5.8 0 1 0 7.3 7.3z"/></svg>
@@ -72,8 +72,8 @@
       </div>
       <div class="stage" id="stage" data-mood="sniff">
         <p class="bubble" id="bubble" aria-live="polite" data-i="mood_sniff">クンクン…ここはどこ？</p>
-        <button class="dog" id="dog" type="button" aria-label="Pet the dog">
-          <img src="/assets/shiba-run.svg" width="960" height="540" alt="1ms.dog shiba" id="dogImg">
+        <button class="dog" id="dog" type="button" aria-label="犬をなでる">
+          <img src="/assets/shiba-run.svg" width="960" height="540" alt="1ms.dog の柴犬" id="dogImg">
           <span class="zzz" aria-hidden="true">z<i>z</i><b>z</b></span>
         </button>
         <span class="ground" aria-hidden="true"></span>
@@ -106,7 +106,7 @@
   </main>
 
   <footer class="foot">
-    <nav class="sitemap" aria-label="sitemap"><b>サービス別の測定：</b><a href="/ja/">全サービスを測る</a><a href="/ja/chatgpt/">ChatGPT の遅延テスト</a><a href="/ja/claude/">Claude の遅延テスト</a><a href="/ja/gemini/">Gemini の遅延テスト</a><a href="/ja/youtube/">YouTube の遅延テスト</a><a href="/ja/netflix/">Netflix の遅延テスト</a><a href="/ja/x/">X の遅延テスト</a><a href="/ja/discord/">Discord の遅延テスト</a><a href="/ja/steam/">Steam の遅延テスト</a><a href="/ja/playstation/">PlayStation の遅延テスト</a><a href="/ja/github/">GitHub の遅延テスト</a><i class="br"></i><b>カテゴリ別：</b><a href="/ja/ai/">AI</a><a href="/ja/web/">よく使うサイト</a><a href="/ja/video/">動画・音楽</a><a href="/ja/social/">SNS・チャット</a><a href="/ja/dev/">開発ツール</a><a href="/ja/game/">ゲーム</a><a href="/ja/cdn/">CDN</a><i class="br"></i><b>地域別：</b><a href="/ja/region/cn/">中国本土</a><a href="/ja/region/tw/">台湾・香港</a><a href="/ja/region/jp/">日本</a><a href="/ja/region/kr/">韓国</a><a href="/ja/region/ru/">ロシア</a><a href="/ja/region/in/">南アジア</a><a href="/ja/region/sea/">東南アジア</a><a href="/ja/region/eu/">ヨーロッパ</a><a href="/ja/region/latam/">中南米</a><a href="/ja/region/na/">北米</a><a href="/ja/region/me/">中東</a></nav>
+    <nav class="sitemap" aria-label="すべての測定ページ"><b>サービス別の測定：</b><a href="/ja/">全サービスを測る</a><a href="/ja/chatgpt/">ChatGPT の遅延テスト</a><a href="/ja/claude/">Claude の遅延テスト</a><a href="/ja/gemini/">Gemini の遅延テスト</a><a href="/ja/youtube/">YouTube の遅延テスト</a><a href="/ja/netflix/">Netflix の遅延テスト</a><a href="/ja/x/">X の遅延テスト</a><a href="/ja/discord/">Discord の遅延テスト</a><a href="/ja/steam/">Steam の遅延テスト</a><a href="/ja/playstation/">PlayStation の遅延テスト</a><a href="/ja/github/">GitHub の遅延テスト</a><i class="br"></i><b>カテゴリ別：</b><a href="/ja/ai/">AI</a><a href="/ja/web/">よく使うサイト</a><a href="/ja/video/">動画・音楽</a><a href="/ja/social/">SNS・チャット</a><a href="/ja/dev/">開発ツール</a><a href="/ja/game/">ゲーム</a><a href="/ja/cdn/">CDN</a><i class="br"></i><b>地域別：</b><a href="/ja/region/cn/">中国本土</a><a href="/ja/region/tw/">台湾・香港</a><a href="/ja/region/jp/">日本</a><a href="/ja/region/kr/">韓国</a><a href="/ja/region/ru/">ロシア</a><a href="/ja/region/in/">南アジア</a><a href="/ja/region/sea/">東南アジア</a><a href="/ja/region/eu/">ヨーロッパ</a><a href="/ja/region/latam/">中南米</a><a href="/ja/region/na/">北米</a><a href="/ja/region/me/">中東</a></nav>
     <div class="foot-l"><span data-i="foot">すべてブラウザ内で動作します。アカウント不要、結果は収集しません。</span><span>© 1ms.dog</span></div>
   </footer>
 </div>
@@ -114,13 +114,13 @@
 <div class="scrim" id="help" hidden>
   <div class="dialog help" role="dialog" aria-modal="true" aria-labelledby="helpT">
     <div class="dlg-h"><h2 id="helpT" data-i="faq_h">仕組みとよくある質問</h2>
-      <button class="icon-btn" data-close type="button" aria-label="Close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+      <button class="icon-btn" data-close type="button" aria-label="閉じる"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
     <div class="help-b">
       <nav class="help-nav" id="helpNav" role="tablist"><button type="button" role="tab" data-hq="0" aria-selected="true">あなたの回線から VK はどれくらい速い？</button><button type="button" role="tab" data-hq="1" aria-selected="false">出口 IP とは？</button><button type="button" role="tab" data-hq="2" aria-selected="false">ローカルとプロキシの出口が両方表示されるのはなぜ？</button><button type="button" role="tab" data-hq="3" aria-selected="false">遅延はどう測っていますか？</button><button type="button" role="tab" data-hq="4" aria-selected="false">ping と結果が違うのはなぜ？</button><button type="button" role="tab" data-hq="5" aria-selected="false">犬のスピードの意味は？</button><button type="button" role="tab" data-hq="6" aria-selected="false">データはどこかに送られますか？</button></nav>
       <div class="help-pick">
-        <button class="icon-btn" type="button" data-hstep="-1" aria-label="Previous"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 4L6 8l4 4"/></svg></button>
+        <button class="icon-btn" type="button" data-hstep="-1" aria-label="前へ"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 4L6 8l4 4"/></svg></button>
         <select id="helpSel" aria-labelledby="helpT"></select>
-        <button class="icon-btn" type="button" data-hstep="1" aria-label="Next"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg></button>
+        <button class="icon-btn" type="button" data-hstep="1" aria-label="次へ"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg></button>
       </div>
       <div class="help-c" id="helpC"><article data-hqb="0"><h3>あなたの回線から VK はどれくらい速い？</h3><p>比べたいときは、トップページで VK と他の地域の定番サービスをまとめて測れます：Яндекс、Wildberries、Mail.ru。</p></article><article data-hqb="1" hidden><h3>出口 IP とは？</h3><p>サイトにアクセスしたとき、相手から見えるアドレスです。自宅では通常プロバイダのものですが、VPN、プロキシ、社内ネットワーク、iCloud プライベートリレーを使うと、通信を中継する側のアドレスになり、別の都市や国にあることもあります。出口によって接続先サーバーが決まるので、速度も出口で決まります。</p></article><article data-hqb="2" hidden><h3>ローカルとプロキシの出口が両方表示されるのはなぜ？</h3><p>ルールで振り分けるプロキシや VPN は、宛先によって経路を変えます。そのため 1 つの IP チェックでは、そのチェックの経路しか見えません。中国本土のサイト、Cloudflare、ip.sb、ipinfo.io、IPv4 専用と IPv6 専用のチェック、WebRTC（UDP）に同時に問い合わせ、ネットワークごとにまとめて、ローカルかプロキシかを表示します。</p></article><article data-hqb="3" hidden><h3>遅延はどう測っていますか？</h3><p>ブラウザが各サービスと本物の HTTPS 接続を開きます。最初のリクエストは接続の確立（DNS、TCP、TLS）用で集計しません。その後同じ接続を再利用して計測し、中央値を表示します。Wi‑Fi、プロバイダ、プロキシを含む、端末からサービスの最寄りサーバーまでの往復時間で、アプリが実際に体感する遅延です。</p></article><article data-hqb="4" hidden><h3>ping と結果が違うのはなぜ？</h3><p>ping は ICMP を使いますが、ブラウザからは送れず、ネットワークによっては通常の通信と扱いが異なります。HTTPS の計測は普段のアプリと同じ経路を通ります。サーバーがリクエストに応答する分、ping より数ミリ秒高くなるのが普通です。</p></article><article data-hqb="5" hidden><h3>犬のスピードの意味は？</h3><p>爆走 ≤ 30 ms：同じ都市。ダッシュ ≤ 80 ms：同じ地域。トコトコ ≤ 150 ms：ほぼ何でも快適。おさんぽ ≤ 300 ms：ゲームや通話で気になる。おひるね &gt; 300 ms：遠いか混雑。戻らず：5 秒以内に接続できず、ここからは利用できません。2 ms 未満なら伝説の 1ms 犬。</p></article><article data-hqb="6" hidden><h3>データはどこかに送られますか？</h3><p>いいえ。すべてのリクエストはブラウザからテスト対象のサービスへ直接送られます。1ms.dog は静的なページを配信するだけで、結果を受け取りません。前回の結果はこのブラウザ内にだけ保存されます。シェア用リンクに含まれるのは都市・ネットワーク・遅延だけで、IP アドレスは含みません。</p></article></div>
     </div>
@@ -130,10 +130,10 @@
 <div class="scrim" id="shareDlg" hidden>
   <div class="dialog share" role="dialog" aria-modal="true" aria-labelledby="shareT">
     <div class="dlg-h"><h2 id="shareT" data-i="share_h">結果をシェア</h2>
-      <button class="icon-btn" data-close type="button" aria-label="Close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+      <button class="icon-btn" data-close type="button" aria-label="閉じる"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
     <div class="share-b">
       <img id="shareImg" alt="" width="1200" height="1000">
-      <div class="share-link"><input id="shareUrl" readonly aria-label="Link"><button class="btn pri" id="copyLink" type="button" data-i="copy_link">リンクをコピー</button></div>
+      <div class="share-link"><input id="shareUrl" readonly aria-label="リンク"><button class="btn pri" id="copyLink" type="button" data-i="copy_link">リンクをコピー</button></div>
       <div class="share-acts">
         <button class="btn" id="copyImg" type="button" data-i="copy_img">画像をコピー</button>
         <button class="btn" id="dlImg" type="button" data-i="dl_img">画像を保存</button>

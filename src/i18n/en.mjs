@@ -30,6 +30,7 @@ export default {
   share: "Share", copied: "Copied!",
   sub_telegram: "Telegram data centers", tg_dc_t: "Telegram keeps each account in one of 5 data centers, by the phone number's region. This is {dc} ({city}), where most accounts in your region are. Open Telegram's page to test all 5.",
   egress_link: "Which IP each site sees →",
+  a_pet: "Pet the dog", a_dog: "1ms.dog shiba", a_field: "Latency by service", a_nav: "All ping tests", a_close: "Close", a_prev: "Previous", a_next: "Next", a_link: "Link",
   qr_hint: "Scan to see the full result",
   share_text: "My dog fetched {ok}/{n} services from {where}, median {ms} ms ({tier}). How fast is yours?",
   share_h: "Share your result", copy_link: "Copy link", copy_img: "Copy image", dl_img: "Download image", more_share: "More options",

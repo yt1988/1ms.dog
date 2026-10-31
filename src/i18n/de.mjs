@@ -28,6 +28,7 @@ export default {
   share: "Teilen", copied: "Kopiert!",
   sub_telegram: "Telegram-Rechenzentren", tg_dc_t: "Telegram legt jedes Konto je nach Region der Telefonnummer in eines von 5 Rechenzentren. Gemessen wird hier {dc} ({city}), wo die meisten Konten deiner Region liegen. Auf der Telegram-Seite lassen sich alle 5 testen.",
   egress_link: "Welche IP jede Seite sieht →",
+  a_pet: "Hund streicheln", a_dog: "1ms.dog-Shiba", a_field: "Latenz je Dienst", a_nav: "Alle Ping-Tests", a_close: "Schließen", a_prev: "Zurück", a_next: "Weiter", a_link: "Link",
   qr_hint: "Scannen für das ganze Ergebnis",
   share_text: "Mein Hund hat von {where} aus {ok}/{n} Dienste apportiert, Median {ms} ms ({tier}). Wie schnell ist deiner?",
   share_h: "Ergebnis teilen", copy_link: "Link kopieren", copy_img: "Bild kopieren", dl_img: "Bild herunterladen", more_share: "Weitere Optionen",
