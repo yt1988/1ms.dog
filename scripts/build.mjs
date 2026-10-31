@@ -160,7 +160,10 @@ export async function build({ check = false } = {}) {
       // on the home page each category heading links to that category's own page
       const cats = order.map(c => `<div class="grp"><h2><a href="${path(slug, c)}">${esc(T("cat_" + c))}</a></h2><ul>${SERVICES.filter(x => x.cat === c).map(row).join("")}</ul></div>`);
       // a group page shows only its own services
-      const groups = g ? `<div class="grp"><h2>${esc(gn)}</h2><ul>${g.members.map(row).join("")}</ul></div>` : [local, ...cats].join("\n");
+      // A group page has one short list: it takes the full width (longer lanes, easier to compare), with the
+      // speed-zone limits marked under it at the same log-scale positions as the balls.
+      const scale = `<div class="scale" aria-hidden="true">${ZONES.map((z, i) => `<span style="left:${(pos(z) * 100).toFixed(1)}%">${z}${i === ZONES.length - 1 ? " ms" : ""}</span>`).join("")}</div>`;
+      const groups = g ? `<div class="grp solo"><h2>${esc(gn)}</h2><ul>${g.members.map(row).join("")}</ul>${scale}</div>` : [local, ...cats].join("\n");
       const axis = ["zoom", "sprint", "trot", "stroll", "nap"].map((k, i) => `<span class="c${i + 1}"><i></i><b>${esc(T("tier_" + k))}</b>${i < 4 ? "≤ " + ZONES[i] : "> " + ZONES[3]} ms</span>`).join("") +
         `<span class="cx"><i></i><b>${esc(T("tier_lost"))}</b></span>`;
       const tools = TOOLS.map(x => `<a class="tool" href="https://${x.host}${toolHome(x.id, lang, slug)}" style="--tint:${x.tint}"><b><svg viewBox="0 0 16 16" aria-hidden="true">${x.icon}</svg>${esc(x.name)}</b><span>${esc(T("tool_" + x.id))}</span></a>`).join("");

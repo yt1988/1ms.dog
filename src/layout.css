@@ -102,7 +102,10 @@ button.use:hover, button.use[aria-pressed="true"] { background: var(--soft); col
 .c0 { color: var(--t0); } .c1 { color: var(--t1); } .c2 { color: var(--t2); } .c3 { color: var(--t3); } .c4 { color: var(--t4); } .c5 { color: var(--t5); } .cx { color: var(--muted); }
 
 /* the field: every service is a ball, thrown as far as its latency (log scale) */
-.field { padding: 14px 18px 6px; display: flex; flex-direction: column; gap: 10px; }
+/* overflow-x: clip: each ball's layer spans its lane and is shifted right by up to 100%, so without it the far side
+   sticks out past the card and the page gets a horizontal scroll (clip makes no scroll container; the padding keeps
+   the end balls visible) */
+.field { padding: 14px 18px 6px; display: flex; flex-direction: column; gap: 10px; overflow-x: clip; }
 .axis { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 11.5px; color: var(--muted); }
 .axis span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
 .axis i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
@@ -229,3 +232,15 @@ a.nm:hover { color: var(--ink); text-decoration: underline; text-underline-offse
 .grp h2 a:hover { color: var(--ink); }
 /* footer sitemap rows: services, categories, regions */
 .sitemap .br { flex-basis: 100%; height: 0; }
+
+/* group page: its one list spans the full width, with the zone limits marked under the lanes */
+.groups:has(.solo) { columns: auto; }
+.grp.solo .row { grid-template-columns: 150px minmax(0, 1fr) 64px; height: 32px; font-size: 14px; gap: 14px; }
+.grp.solo .row .ms { font-size: 14px; }
+.grp.solo .scale { position: relative; height: 18px; margin: 4px calc(64px + 14px) 0 calc(150px + 14px); font: 11px var(--f-num); color: var(--muted); }
+.grp.solo .scale span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.grp.solo .scale span::before { content: ""; position: absolute; left: 50%; top: -6px; height: 4px; border-left: 1px solid var(--line); }
+@media (max-width: 720px) {
+  .grp.solo .row { grid-template-columns: 96px minmax(0, 1fr) 48px; gap: 8px; font-size: 13px; }
+  .grp.solo .scale { margin: 4px calc(48px + 8px) 0 calc(96px + 8px); font-size: 10px; }
+}
