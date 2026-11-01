@@ -28,7 +28,7 @@ export default {
   share: "Compartir", copied: "¡Copiado!",
   sub_telegram: "Centros de datos de Telegram", tg_dc_t: "Telegram guarda cada cuenta en uno de sus 5 centros de datos, según la región del número. Aquí se mide {dc} ({city}), donde están la mayoría de las cuentas de tu región. En la página de Telegram puedes medir los 5.",
   pop_t: "Nodo de borde que respondió: {pop}", pop_s: "nodo {pop}",
-  egress_link: "Qué IP ve cada sitio →",
+  egress_link: "Qué IP ve cada sitio",
   a_pet: "Acariciar al perro", a_dog: "Shiba de 1ms.dog", a_field: "Latencia por servicio", a_nav: "Todas las pruebas de ping", a_close: "Cerrar", a_prev: "Anterior", a_next: "Siguiente", a_link: "Enlace",
   qr_hint: "Escanea para ver el resultado completo",
   share_text: "Mi perro trajo {ok}/{n} servicios desde {where}, mediana de {ms} ms ({tier}). ¿Qué tan rápido es el tuyo?",
@@ -80,7 +80,7 @@ export default {
 
   ipqs_t: "Comprobar la calidad de esta IP",
 
-  asn_t: "Consultar este AS", l_v6: "Prueba completa de IPv6 →", l_v6_none: "No se detectó IPv6: pruébalo →", l_who: "Qué más pueden ver los sitios de ti →", l_speed: "Mide tu velocidad de descarga y subida →", l_ai: "Qué IP ve {s} →",
+  asn_t: "Consultar este AS", l_v6: "Prueba completa de IPv6", l_v6_none: "No se detectó IPv6: pruébalo", l_who: "Qué más pueden ver los sitios de ti", l_speed: "Mide tu velocidad de descarga y subida", l_ai: "Qué IP ve {s}",
 
   faq_h: "Cómo funciona",
   docs: [

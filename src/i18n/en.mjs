@@ -30,7 +30,7 @@ export default {
   share: "Share", copied: "Copied!",
   sub_telegram: "Telegram data centers", tg_dc_t: "Telegram keeps each account in one of 5 data centers, by the phone number's region. This is {dc} ({city}), where most accounts in your region are. Open Telegram's page to test all 5.",
   pop_t: "Edge node that answered: {pop}", pop_s: "edge {pop}",
-  egress_link: "Which IP each site sees →",
+  egress_link: "Which IP each site sees",
   a_pet: "Pet the dog", a_dog: "1ms.dog shiba", a_field: "Latency by service", a_nav: "All ping tests", a_close: "Close", a_prev: "Previous", a_next: "Next", a_link: "Link",
   qr_hint: "Scan to see the full result",
   share_text: "My dog fetched {ok}/{n} services from {where}, median {ms} ms ({tier}). How fast is yours?",
@@ -82,7 +82,7 @@ export default {
 
   ipqs_t: "Check this IP’s quality",
 
-  asn_t: "Look up this AS", l_v6: "Full IPv6 test →", l_v6_none: "No IPv6 found: test it →", l_who: "What else sites can see about you →", l_speed: "Test download and upload speed →", l_ai: "Which IP {s} sees →",
+  asn_t: "Look up this AS", l_v6: "Full IPv6 test", l_v6_none: "No IPv6 found: test it", l_who: "What else sites can see about you", l_speed: "Test download and upload speed", l_ai: "Which IP {s} sees",
 
   faq_h: "How it works",
   docs: [

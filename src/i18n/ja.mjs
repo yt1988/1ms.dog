@@ -28,7 +28,7 @@ export default {
   share: "シェア", copied: "コピーしました",
   sub_telegram: "Telegram データセンター", tg_dc_t: "Telegram は電話番号の地域ごとに、アカウントを 5 つのデータセンターのどれかに置いています。ここで測っているのは {dc}（{city}）で、あなたの地域のアカウントの多くがここにあります。Telegram のページでは 5 つすべてを測れます。",
   pop_t: "応答したエッジノード：{pop}", pop_s: "ノード {pop}",
-  egress_link: "サイトごとに見える IP →",
+  egress_link: "サイトごとに見える IP",
   a_pet: "犬をなでる", a_dog: "1ms.dog の柴犬", a_field: "サービスごとの遅延", a_nav: "すべての測定ページ", a_close: "閉じる", a_prev: "前へ", a_next: "次へ", a_link: "リンク",
   qr_hint: "スキャンして結果をすべて見る",
   share_text: "うちの犬は{where}から {ok}/{n} サービスのボールを回収、中央値 {ms} ms（{tier}）。あなたの犬は？",
@@ -80,7 +80,7 @@ export default {
 
   ipqs_t: "この IP の品質を調べる",
 
-  asn_t: "この AS を調べる", l_v6: "IPv6 を詳しくテスト →", l_v6_none: "IPv6 が見つかりません：テストする →", l_who: "サイトから見えるほかの情報 →", l_speed: "ダウンロード・アップロード速度を測る →", l_ai: "{s} から見える IP →",
+  asn_t: "この AS を調べる", l_v6: "IPv6 を詳しくテスト", l_v6_none: "IPv6 が見つかりません：テストする", l_who: "サイトから見えるほかの情報", l_speed: "ダウンロード・アップロード速度を測る", l_ai: "{s} から見える IP",
 
   faq_h: "仕組みとよくある質問",
   docs: [

@@ -33,9 +33,9 @@
 /* one short line per link to another 1ms.dog tool, beside the result it goes deeper on */
 .links { display: flex; flex-wrap: wrap; gap: 2px 16px; margin: 6px 0 0; font-size: 12.5px; }
 .links a { color: var(--ink); text-decoration: none; }
+a.ext { display: inline-flex; align-items: center; gap: 3px; }
+a.ext svg { width: .95em; height: .95em; flex: none; }
 .links a:hover { text-decoration: underline; text-underline-offset: 3px; }
-.links a.ext { display: inline-flex; align-items: center; gap: 3px; }
-.links a.ext svg { width: .95em; height: .95em; flex: none; }
 .ex .m a.q { color: inherit; text-decoration: none; border-bottom: 1px dotted color-mix(in srgb, var(--muted) 60%, transparent); }
 .ex .m a.q:hover { color: var(--ink); border-bottom-color: currentColor; }
 .flag { width: 20px; height: 15px; border-radius: 3px; box-shadow: 0 0 0 1px var(--line); object-fit: cover; flex: none; }
@@ -254,5 +254,6 @@ a.nm:hover { color: var(--ink); text-decoration: underline; text-underline-offse
 .ex-p { min-width: 5ch; font: 500 11px var(--f-num); font-variant-numeric: tabular-nums; color: var(--muted); letter-spacing: 0; }
 /* link to EgressLens beside the exits header: plain text, so the row keeps its height */
 .ex-h > * { flex: none; white-space: nowrap; }
-.ex-h .eg { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--ink); text-decoration: none; }
+.ex-h .eg span { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ex-h .eg { flex: 0 1 auto; min-width: 0; text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--ink); text-decoration: none; }
 .ex-h .eg:hover { text-decoration: underline; text-underline-offset: 3px; }
