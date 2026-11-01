@@ -90,3 +90,20 @@ export function parseShare(h, packs) {
   for (const p of m[4].split(",")) { const [id, v] = p.split(":"); if (/^[\w-]+$/.test(id || "") && v) res[id] = v === "x" ? null : parseInt(v, 36) / 10; }
   return { ts: parseInt(m[1], 36) * 1000, pack: m[2], groups, res };
 }
+
+// Fills {name} placeholders. In Korean a particle right after a name goes by how the name ends when read aloud:
+// 은/이/을/과 after a final consonant, 는/가/를/와 after a vowel. Hangul shows it; a Latin or CJK name is in `fin`
+// (the Korean strings' josa_fin) when it is read with a final consonant, e.g. CDN (씨디엔), Steam (스팀).
+const JOSA = [["은", "는"], ["이", "가"], ["을", "를"], ["과", "와"]];
+export function fillIn(s, v, fin = []) {
+  for (const k in v) {
+    const val = String(v[k]);
+    s = s.split("{" + k + "}").map((rest, i) => {
+      const p = i && !/^.\(.\)/.test(rest) && JOSA.find(x => x.includes(rest[0]));
+      if (!p) return rest;
+      const c = val.charCodeAt(val.length - 1), hangul = c >= 0xac00 && c <= 0xd7a3;
+      return p[(hangul ? (c - 0xac00) % 28 : fin.includes(val)) ? 0 : 1] + rest.slice(1);
+    }).join(val);
+  }
+  return s;
+}

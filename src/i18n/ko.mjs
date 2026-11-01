@@ -142,4 +142,6 @@ export default {
   lp_via: "{s}는 {via} 네트워크가 응답하므로, 왕복의 끝은 {s}의 데이터센터가 아니라 가장 가까운 {via} 거점입니다.",
   lp_via_same: "{s}는 {via} 네트워크가 응답하며, 왕복의 끝은 가장 가까운 {via} 거점입니다. {list}도 같은 네트워크를 쓰므로, 이들도 느리다면 문제는 {s}가 아니라 {via}까지의 경로입니다.",
   lp_intro: "브라우저가 실제 Wi‑Fi, 통신사, VPN이나 프록시를 거쳐 {s}까지의 HTTPS 왕복을 10회 재고, 중앙값·첫 연결·지터를 보여 줍니다.",
+  // names (not in Hangul) read with a final consonant, so particles after them take 은/이/을/과 (see fillIn in src/lib.mjs)
+  josa_fin: ["CDN", "Copilot", "Grok", "Google", "Apple", "Amazon", "Zoom", "TikTok", "Instagram", "Facebook", "WhatsApp", "Telegram", "Reddit", "npm", "Steam", "PlayStation", "Google Cloud CDN", "微信", "抖音", "LINE", "Yahoo! JAPAN", "楽天", "Coupang", "Daum", "Paytm", "Amazon.in", "Grab", "Booking.com", "ESPN", "Target", "Careem", "Trendyol"],
 };

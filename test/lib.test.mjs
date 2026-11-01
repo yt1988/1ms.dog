@@ -92,3 +92,17 @@ test("share links round-trip and carry no IP addresses", () => {
   assert.equal(parseShare("#r=1|abc|nopack||", PACKS), null);
   assert.equal(parseShare("#nothing", PACKS), null);
 });
+
+test("Korean particles follow how the name is read", async () => {
+  const { fillIn } = await import("../src/lib.mjs");
+  const fin = (await import("../src/i18n/ko.mjs")).default.josa_fin;
+  const h = g => fillIn("내 네트워크에서 {g}는 얼마나 빠를까?", { g }, fin);
+  assert.equal(h("CDN"), "내 네트워크에서 CDN은 얼마나 빠를까?");
+  assert.equal(h("AI"), "내 네트워크에서 AI는 얼마나 빠를까?");
+  assert.equal(h("게임"), "내 네트워크에서 게임은 얼마나 빠를까?");
+  assert.equal(h("개발 도구"), "내 네트워크에서 개발 도구는 얼마나 빠를까?");
+  assert.equal(fillIn("{s}가 차단됐거나 {s}와 {s}를", { s: "Steam" }, fin), "Steam이 차단됐거나 Steam과 Steam을");
+  assert.equal(fillIn("{s}은 {s}가", { s: "GitHub" }, fin), "GitHub는 GitHub가");
+  assert.equal(fillIn("{list}은(는) 보통", { list: "A, B" }, fin), "A, B은(는) 보통");
+  assert.equal(fillIn("{s} 延迟", { s: "Steam" }, fin), "Steam 延迟");
+});

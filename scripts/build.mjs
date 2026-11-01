@@ -11,6 +11,8 @@ import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { build as bundle, transform } from "esbuild";
+import { fillIn } from "../src/lib.mjs";
+import KO from "../src/i18n/ko.mjs";
 import { CATS, SERVICES, PACKS, PACK_OF, SCALE, ZONES, USES, SUBS, TG_DC_OF, pos } from "../src/services.mjs";
 
 const SITE = (process.env.SITE_URL || "https://1ms.dog").replace(/\/+$/, "");
@@ -39,7 +41,7 @@ const toolHome = (id, lang, slug) => (TOOL_PATH[id][lang] || (slug ? "/" + slug 
 const PREPAINT = `(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en")location.replace(P[l]+location.hash)})();`;
 
 const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-const fill = (s, v) => { for (const k in v) s = s.split("{" + k + "}").join(v[k]); return s; };
+const fill = (s, v) => fillIn(s, v, KO.josa_fin);
 // a group name can start or end in Latin ("CDN", "AI") inside Chinese or Japanese text: put a space at that boundary
 const CJK = "\u3040-\u30ff\u3400-\u9fff";
 const spaced = s => s.replace(new RegExp(`([${CJK}])([A-Za-z0-9])`, "g"), "$1 $2").replace(new RegExp(`([A-Za-z0-9])([${CJK}])`, "g"), "$1 $2");
