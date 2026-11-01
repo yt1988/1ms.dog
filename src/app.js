@@ -171,10 +171,14 @@
   }
   // Links to the other 1ms.dog tools, in this page's language. The shell names each tool's address in
   // <meta name="<id>">; without it (a copy hosted elsewhere) there is no link.
-  const toolHref = (id, p = "") => { const m = document.querySelector(`meta[name="${id}"]`), h = m && m.content.replace(/\/+$/, ""); return h ? h + D.home[LANG] + p : ""; };
+  const LANG_DIR = LANG === "en" ? "/" : "/" + LANG.toLowerCase() + "/";     // every tool uses the same language folders
+  const toolHref = (id, p = "") => { const m = document.querySelector(`meta[name="${id}"]`), h = m && m.content.replace(/\/+$/, ""); return h ? h + LANG_DIR + p : ""; };
   const toolA = (id, p, txt, cls, title) => { const h = toolHref(id, p); return h ? `<a${cls ? ` class="${cls}"` : ""} href="${esc(h)}" target="_blank" rel="noopener"${title ? ` title="${esc(title)}"` : ""}>${esc(txt)}</a>` : esc(txt); };
   for (const a of document.querySelectorAll("a[data-tool]")) { const h = toolHref(a.dataset.tool); if (h) { a.href = h; a.hidden = false; } }
   // each exit address links to its quality check (IP quality test), its AS number to the AS lookup
+  // a link to another tool ends in the external-link icon (the contract's, not an arrow)
+  const EXT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg>';
+  const toolExt = (id, p, txt) => toolA(id, p, txt, "ext").slice(0, -4) + EXT + "</a>";   // only called once toolHref(id) is known
   const ipLink = ip => toolA("ipqs", "?ip=" + encodeURIComponent(ip), ip, "q", t("ipqs_t"));
   const asLink = n => toolA("asn", "AS" + n, "AS" + n, "q", t("asn_t"));
   // under the exits: the IPv6 test (worded by whether an IPv6 exit showed up) and what else sites can see
@@ -188,7 +192,7 @@
   const EGRESS_AI = ["chatgpt", "claude", "grok", "copilot"];
   {
     const l = [D.spot && EGRESS_AI.includes(D.spot) && toolHref("egress") && toolA("egress", "chatgpt-ip/", t("l_ai", { s: SVC.list.find(s => s.id === D.spot).name })),
-      D.spot && SVC.unlock[D.spot] && toolHref("unlock") && toolA("unlock", SVC.unlock[D.spot] + "/", t("unlock_one", { s: SVC.list.find(s => s.id === D.spot).name })),
+      D.spot && SVC.unlock[D.spot] && toolHref("unlock") && toolExt("unlock", SVC.unlock[D.spot] + "/", t("unlock_one", { s: SVC.list.find(s => s.id === D.spot).name })),
       toolHref("speed") && toolA("speed", "", t("l_speed"))].filter(Boolean);
     const el = $("#vLinks"); el.innerHTML = l.join(""); el.hidden = !l.length;
   }

@@ -199,8 +199,7 @@ export async function build({ check = false } = {}) {
       const helpC = qa.map(([q, a], i) => `<article data-hqb="${i}"${i ? " hidden" : ""}><h3>${esc(q)}</h3><p>${a}</p></article>`).join("");
       const langOpts = langs.map(([l]) => `<option value="${l}"${l === lang ? " selected" : ""}>${esc(I[l].name)}</option>`).join("");
       const paths = Object.fromEntries(langs.map(([l, sl]) => [l, path(sl, sub)]));
-      const home = Object.fromEntries(langs.map(([l, sl]) => [l, path(sl, "")]));
-      const data = { lang, paths, home, pack: defPack, spot: s ? s.id : null, set: g ? { kind: g.kind, id: g.id, name: gn } : null };
+      const data = { lang, paths, pack: defPack, spot: s ? s.id : null, set: g ? { kind: g.kind, id: g.id, name: gn } : null };
       // footer sitemap: this language's home and every single-service page, with anchor texts people search for
       const sitemapNav = `<b>${esc(T("sitemap_h"))}</b><a href="${path(slug, "")}"${sub ? "" : ' aria-current="page"'}>${esc(T("cta_btn"))}</a>` +
         landOf(lang).map(id => { const x = SERVICES.find(v => v.id === id);

@@ -129,7 +129,7 @@ export default {
   one_samples: "{n} mesures",
   running_one: "Test de {s} : {d} / {n}",
   v_one_wait: "Une fois les mesures faites, vous saurez à quelle vitesse {s} répond d’ici.",
-  unlock_one: "{s} : accessible sur cette connexion ? →",
+  unlock_one: "{s} : accessible sur cette connexion ?",
   vh_one: "{s} : {tier}",
   vh_one_lost: "{s} injoignable",
   v_one_fast: "Rapide : {s} devrait répondre instantanément.",
