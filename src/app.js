@@ -629,7 +629,7 @@
         x.fillStyle = C.muted; x.font = `600 15px ${F}`; x.fillText(g.name.toUpperCase(), x0, yy + 22); yy += GH;   // the title sits clear of the row above
         for (const sv of g.items) {
           const md = median(R.get(sv.id).s), [, k] = tierOf(md), l0 = x0 + laneX, l1 = x0 + cw - msW - 10, cy = yy + 6;
-          x.fillStyle = C.fg; x.font = `400 18px ${F}`; x.fillText(clip(x, sv.name, laneX - 12), x0, yy + 12);
+          x.fillStyle = C.fg; x.font = `400 18px ${F}`; x.fillText(clip(x, sv.short || sv.name, laneX - 12), x0, yy + 12);
           x.fillStyle = C.line; x.fillRect(l0, cy - 1.5, l1 - l0, 3);
           const px = md == null ? l1 : l0 + (l1 - l0) * pos(md);
           if (md != null) { x.fillStyle = C[k] + "99"; x.fillRect(l0, cy - 1.5, px - l0, 3); }
