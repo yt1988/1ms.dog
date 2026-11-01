@@ -4,9 +4,6 @@
   "use strict";
   const $ = s => document.querySelector(s);
   const D = JSON.parse($("#data").textContent);
-  // a service page's link to the unlock check, when the host announces it with <meta name="unlock" content="https://…">
-  const UNLOCK = document.querySelector('meta[name="unlock"]'), ulLink = $("#ulLink");
-  if (UNLOCK && ulLink) { ulLink.href = UNLOCK.content + ulLink.dataset.p; ulLink.hidden = false; }
   const L = window.L1MS || {}, LANG = D.lang;                  // strings: /assets/l.<lang>.<hash>.js, loaded first
   const t = (k, v) => v ? fillIn(L[k] ?? k, v, L.josa_fin) : L[k] ?? k;
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
@@ -172,8 +169,29 @@
     el.addEventListener("mouseenter", show); el.addEventListener("focus", show);
     el.addEventListener("mouseleave", hide); el.addEventListener("blur", hide);
   }
-  // each exit address links to its quality check on IPQS (same 1ms.dog site; it opens in the saved language)
-  const ipLink = ip => `<a class="q" href="https://ipqs.1ms.dog/?ip=${encodeURIComponent(ip)}" target="_blank" rel="noopener" title="${esc(t("ipqs_t"))}">${esc(ip)}</a>`;
+  // Links to the other 1ms.dog tools, in this page's language. The shell names each tool's address in
+  // <meta name="<id>">; without it (a copy hosted elsewhere) there is no link.
+  const toolHref = (id, p = "") => { const m = document.querySelector(`meta[name="${id}"]`), h = m && m.content.replace(/\/+$/, ""); return h ? h + D.home[LANG] + p : ""; };
+  const toolA = (id, p, txt, cls, title) => { const h = toolHref(id, p); return h ? `<a${cls ? ` class="${cls}"` : ""} href="${esc(h)}" target="_blank" rel="noopener"${title ? ` title="${esc(title)}"` : ""}>${esc(txt)}</a>` : esc(txt); };
+  for (const a of document.querySelectorAll("a[data-tool]")) { const h = toolHref(a.dataset.tool); if (h) { a.href = h; a.hidden = false; } }
+  // each exit address links to its quality check (IP quality test), its AS number to the AS lookup
+  const ipLink = ip => toolA("ipqs", "?ip=" + encodeURIComponent(ip), ip, "q", t("ipqs_t"));
+  const asLink = n => toolA("asn", "AS" + n, "AS" + n, "q", t("asn_t"));
+  // under the exits: the IPv6 test (worded by whether an IPv6 exit showed up) and what else sites can see
+  function renderExLinks() {
+    const v6 = NET.groups.some(g => g.ips.some(ip => fam(ip) === 6));
+    const l = [toolHref("ipv6") && toolA("ipv6", "", t(v6 ? "l_v6" : "l_v6_none")), toolHref("who") && toolA("who", "", t("l_who"))].filter(Boolean);
+    const el = $("#exLinks"); el.innerHTML = l.join(""); el.hidden = !l.length;
+  }
+  // under the verdict: an AI service's page links to the IP that AI services see (EgressLens checks these), a service
+  // the unlock check covers to its page there, every page to the speed test
+  const EGRESS_AI = ["chatgpt", "claude", "grok", "copilot"];
+  {
+    const l = [D.spot && EGRESS_AI.includes(D.spot) && toolHref("egress") && toolA("egress", "chatgpt-ip/", t("l_ai", { s: SVC.list.find(s => s.id === D.spot).name })),
+      D.spot && SVC.unlock[D.spot] && toolHref("unlock") && toolA("unlock", SVC.unlock[D.spot] + "/", t("unlock_one", { s: SVC.list.find(s => s.id === D.spot).name })),
+      toolHref("speed") && toolA("speed", "", t("l_speed"))].filter(Boolean);
+    const el = $("#vLinks"); el.innerHTML = l.join(""); el.hidden = !l.length;
+  }
   function renderExits() {
     // Answers show as they arrive, but only in the one row drawn from the start: the first exit found fills it right
     // away (the placeholder is a real row's height). Further rows, merging and ordering wait for every check and
@@ -186,7 +204,7 @@
     ul.innerHTML = G.map(g => {
       const where = [g.city, g.cc && country(g.cc)].filter(Boolean).join(", ");
       const ips = [4, 6].map(f => [f, g.ips.filter(ip => fam(ip) === f)]).map(([f, l]) => l.length ? `<span><em>IPv${f}</em>${l.map(ipLink).join(" · ")}</span>` : "").join("");
-      const org = g.org ? esc(g.org) + (g.asn ? " · AS" + g.asn : "") : "";
+      const org = g.org ? esc(g.org) + (g.asn ? " · " + asLink(g.asn) : "") : "";
       // which checks saw this exit: a small "!" after the network, hovering (or focusing) it shows the list
       const by = g.by.length ? `<span class="src" tabindex="0" role="img" aria-label="${esc(t("seen_by", { list: g.by.join(", ") }))}">!</span>` : "";
       return `<li class="ex"><span class="kind ${g.proxy ? "proxy" : "local"}">${esc(t(g.proxy ? "k_proxy" : "k_local"))}</span>` +
@@ -194,6 +212,7 @@
         `<span class="ips">${ips}</span></li>`;
     }).join("");
     ul.querySelectorAll(".src").forEach(tip);
+    if (NET.done) renderExLinks();
     renderNote();
   }
   function renderNote() {

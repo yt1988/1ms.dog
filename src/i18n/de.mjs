@@ -80,6 +80,8 @@ export default {
 
   ipqs_t: "Qualität dieser IP prüfen",
 
+  asn_t: "Dieses AS nachschlagen", l_v6: "Vollständiger IPv6-Test →", l_v6_none: "Kein IPv6 gefunden: jetzt testen →", l_who: "Was Websites sonst noch über dich sehen →", l_speed: "Download- und Upload-Speed messen →", l_ai: "Welche IP {s} sieht →",
+
   faq_h: "So funktioniert’s",
   docs: [
     ["Was ist eine Ausgangs-IP?", "Das ist die Adresse, die Websites sehen, wenn du sie besuchst. Zu Hause gehört sie meist deinem Anbieter. Mit VPN, Proxy, Firmennetz oder iCloud Privat-Relay gehört sie dem, der deinen Verkehr weiterleitet, eventuell in einer anderen Stadt oder einem anderen Land. Der Ausgang bestimmt, zu welchem Server ein Dienst dich schickt, und damit auch deine Geschwindigkeit."],

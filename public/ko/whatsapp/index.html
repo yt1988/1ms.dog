@@ -36,7 +36,7 @@
 <meta name="twitter:image" content="https://1ms.dog/og/ko.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"내 네트워크에서 WhatsApp은 얼마나 빠를까?","url":"https://1ms.dog/ko/whatsapp/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"내 브라우저에서 WhatsApp 지연을 측정하세요. WhatsApp까지의 실제 HTTPS 왕복 10회(중앙값, 첫 연결, 지터)와 내 출구 IP, 통신사를 보여 줍니다. 무료, 가입 불필요.","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/ko/"},{"@type":"ListItem","position":2,"name":"WhatsApp","item":"https://1ms.dog/ko/whatsapp/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.dca04ba7e5.css">
+<link rel="stylesheet" href="/assets/app.e023463b21.css">
 </head>
 <body>
 <div class="app">
@@ -70,9 +70,10 @@
         <h1>내 네트워크에서 WhatsApp은 얼마나 빠를까?</h1>
         <p class="intro">브라우저가 실제 Wi‑Fi, 통신사, VPN이나 프록시를 거쳐 WhatsApp까지의 HTTPS 왕복을 10회 재고, 중앙값·첫 연결·지터를 보여 줍니다.</p>
         <div class="exits" id="exits">
-          <div class="ex-h"><span data-i="exit_h">내 출구</span><button class="mini" id="eye" type="button" data-i="hide">IP 숨기기</button><a class="eg" href="https://egress.1ms.dog/ko/" data-i="egress_link">사이트별로 보이는 IP →</a><span class="ex-p" id="exProg" aria-live="polite"></span></div>
+          <div class="ex-h"><span data-i="exit_h">내 출구</span><button class="mini" id="eye" type="button" data-i="hide">IP 숨기기</button><a class="eg" data-tool="egress" target="_blank" rel="noopener" hidden data-i="egress_link">사이트별로 보이는 IP →</a><span class="ex-p" id="exProg" aria-live="polite"></span></div>
           <ul id="exList"><li class="ex sk-row"><span class="sk-t" data-i="sniff">출구를 킁킁 찾는 중…</span></li></ul>
           <p class="ex-note" id="exNote" hidden></p>
+          <p class="links" id="exLinks" hidden></p>
         </div>
       </div>
       <div class="stage" id="stage" data-mood="sniff">
@@ -84,7 +85,7 @@
         <span class="ground" aria-hidden="true"></span>
       </div>
       <div class="sum" id="sum">
-        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">출구를 킁킁 찾는 중…</p><p class="v-d" id="vText">측정이 끝나면 여기서 WhatsApp까지 얼마나 빠른지 알려 드려요.</p><a class="ul" id="ulLink" hidden target="_blank" rel="noopener" data-p="/ko/whatsapp/">이 회선에서 WhatsApp 이용 가능 여부 →</a></div>
+        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">출구를 킁킁 찾는 중…</p><p class="v-d" id="vText">측정이 끝나면 여기서 WhatsApp까지 얼마나 빠른지 알려 드려요.</p><p class="links" id="vLinks" hidden></p></div>
         <div class="sum-acts">
           <div class="sum-btns">
             <button class="btn pri" id="run" type="button"><span data-i="start">테스트 시작</span></button>
@@ -142,8 +143,8 @@
     </div>
   </div>
 </div>
-<script type="application/json" id="data">{"lang":"ko","paths":{"en":"/whatsapp/","zh-CN":"/zh-cn/whatsapp/","zh-TW":"/zh-tw/whatsapp/","ja":"/ja/whatsapp/","ko":"/ko/whatsapp/","es":"/es/whatsapp/","fr":"/fr/whatsapp/","de":"/de/whatsapp/","pt":"/pt/whatsapp/","ru":"/ru/whatsapp/"},"pack":"kr","spot":"whatsapp","set":null}</script>
-<script src="/assets/l.ko.ccb5c1f45c.js" defer></script>
-<script src="/assets/app.555651c5c7.js" defer></script>
+<script type="application/json" id="data">{"lang":"ko","paths":{"en":"/whatsapp/","zh-CN":"/zh-cn/whatsapp/","zh-TW":"/zh-tw/whatsapp/","ja":"/ja/whatsapp/","ko":"/ko/whatsapp/","es":"/es/whatsapp/","fr":"/fr/whatsapp/","de":"/de/whatsapp/","pt":"/pt/whatsapp/","ru":"/ru/whatsapp/"},"home":{"en":"/","zh-CN":"/zh-cn/","zh-TW":"/zh-tw/","ja":"/ja/","ko":"/ko/","es":"/es/","fr":"/fr/","de":"/de/","pt":"/pt/","ru":"/ru/"},"pack":"kr","spot":"whatsapp","set":null}</script>
+<script src="/assets/l.ko.148765076c.js" defer></script>
+<script src="/assets/app.0cf95d26c5.js" defer></script>
 </body>
 </html>

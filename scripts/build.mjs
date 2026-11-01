@@ -53,7 +53,7 @@ export async function build({ check = false } = {}) {
   const langs = LANGS.filter(([l]) => I[l]);
   const tpl = await readFile(new URL("page.html", src), "utf8");
 
-  const svc = { list: SERVICES.map(({ via, origin, ...s }) => s), packs: PACKS, packOf: PACK_OF, scale: SCALE, cats: CATS, uses: USES, subs: SUBS, tgDcOf: TG_DC_OF };
+  const svc = { list: SERVICES.map(({ via, origin, ...s }) => s), packs: PACKS, packOf: PACK_OF, scale: SCALE, cats: CATS, uses: USES, subs: SUBS, tgDcOf: TG_DC_OF, unlock: UNLOCK };
   // src/lib.mjs (the pure logic the tests import) goes inside the app's scope, at its /* @lib */ marker
   const lib = (await readFile(new URL("lib.mjs", src), "utf8")).replace(/^export /gm, "");
   const appSrc = await readFile(new URL("app.js", src), "utf8");
@@ -199,7 +199,8 @@ export async function build({ check = false } = {}) {
       const helpC = qa.map(([q, a], i) => `<article data-hqb="${i}"${i ? " hidden" : ""}><h3>${esc(q)}</h3><p>${a}</p></article>`).join("");
       const langOpts = langs.map(([l]) => `<option value="${l}"${l === lang ? " selected" : ""}>${esc(I[l].name)}</option>`).join("");
       const paths = Object.fromEntries(langs.map(([l, sl]) => [l, path(sl, sub)]));
-      const data = { lang, paths, pack: defPack, spot: s ? s.id : null, set: g ? { kind: g.kind, id: g.id, name: gn } : null };
+      const home = Object.fromEntries(langs.map(([l, sl]) => [l, path(sl, "")]));
+      const data = { lang, paths, home, pack: defPack, spot: s ? s.id : null, set: g ? { kind: g.kind, id: g.id, name: gn } : null };
       // footer sitemap: this language's home and every single-service page, with anchor texts people search for
       const sitemapNav = `<b>${esc(T("sitemap_h"))}</b><a href="${path(slug, "")}"${sub ? "" : ' aria-current="page"'}>${esc(T("cta_btn"))}</a>` +
         landOf(lang).map(id => { const x = SERVICES.find(v => v.id === id);
@@ -214,13 +215,11 @@ export async function build({ check = false } = {}) {
       let html = variant(tpl)
         .replace(/(<(\w+)\b[^>]*\sdata-i="(\w+)"[^>]*>)([^<]*)(<\/\2>)/g, (m, open, tag, k, inner, close) => open + esc(T(k)) + close)
         .replace("{{waitText}}", esc(s ? fill(T("v_one_wait"), { s: s.name }) : g ? fill(T("v_grp_wait"), { g: gn }) : T("v_wait"))).replace("{{sitemap}}", sitemapNav).replace("{{autoOn}}", s || g ? " checked" : "")
-        // a service the unlock check has a page for: whether it works on this route, there (shown when the host announces it)
-        .replace("{{unlock}}", s && UNLOCK[s.id] ? `<a class="ul" id="ulLink" hidden target="_blank" rel="noopener" data-p="${path(slug, UNLOCK[s.id])}">${esc(fill(T("unlock_one"), { s: s.name }))}</a>` : "")
         .replace("{{lang}}", lang).replace("{{pathsAttr}}", esc(JSON.stringify(paths))).replace("{{rootAttr}}", slug || sub ? "" : " data-root")
         .replace("{{prepaint}}", PREPAINT).replace("{{head}}", head).replace("{{css}}", cssName).replace("{{js}}", jsName).replace("{{strings}}", sName)
         .split("{{homeHref}}").join(path(slug, "")).replace("{{langOpts}}", langOpts)
         // the exit list links to EgressLens (which IP each site sees), in the same language
-        .replace("{{egressHref}}", `https://egress.1ms.dog${path(slug, "")}`).replace("{{h1}}", esc(h1)).replace("{{intro}}", intro).replace("{{uses}}", uses)
+        .replace("{{h1}}", esc(h1)).replace("{{intro}}", intro).replace("{{uses}}", uses)
         .replace("{{axis}}", axis).replace("{{groups}}", groups).replace("{{helpNav}}", helpNav).replace("{{helpC}}", helpC)
         .replace(/\{\{a:(\w+)\}\}/g, (_, k) => esc(T(k))).replace("{{data}}", JSON.stringify(data).replace(/</g, "\\u003c"));
       if (/\{\{\w+\}\}/.test(html)) throw new Error("unfilled placeholder in " + path(slug, sub) + ": " + /\{\{\w+\}\}/.exec(html)[0]);

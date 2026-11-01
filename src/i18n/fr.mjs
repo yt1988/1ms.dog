@@ -80,6 +80,8 @@ export default {
 
   ipqs_t: "Vérifier la qualité de cette IP",
 
+  asn_t: "Consulter cet AS", l_v6: "Test IPv6 complet →", l_v6_none: "Pas d’IPv6 détecté : testez →", l_who: "Ce que les sites voient d’autre sur vous →", l_speed: "Mesurer le débit descendant et montant →", l_ai: "L’IP que voit {s} →",
+
   faq_h: "Comment ça marche",
   docs: [
     ["Qu’est-ce qu’une IP de sortie ?", "C’est l’adresse que voient les sites quand vous les visitez. À la maison, elle appartient en général à votre fournisseur. Avec un VPN, un proxy, un réseau d’entreprise ou iCloud Private Relay, elle appartient à celui qui relaie votre trafic, parfois dans une autre ville ou un autre pays. La sortie détermine vers quel serveur un service vous envoie, donc aussi votre vitesse."],
