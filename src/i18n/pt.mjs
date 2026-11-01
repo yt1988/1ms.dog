@@ -80,6 +80,8 @@ export default {
 
   ipqs_t: "Verificar a qualidade deste IP",
 
+  asn_t: "Consultar este AS", l_v6: "Teste completo de IPv6 →", l_v6_none: "Nenhum IPv6 encontrado: teste →", l_who: "O que mais os sites veem sobre você →", l_speed: "Medir velocidade de download e upload →", l_ai: "Qual IP o {s} vê →",
+
   faq_h: "Como funciona",
   docs: [
     ["O que é IP de saída?", "É o endereço que os sites veem quando você os visita. Em casa costuma ser do seu provedor. Com VPN, proxy, rede da empresa ou Retransmissão Privada do iCloud, pertence a quem encaminha seu tráfego, que pode estar em outra cidade ou outro país. A saída decide para qual servidor cada serviço manda você, então também decide sua velocidade."],

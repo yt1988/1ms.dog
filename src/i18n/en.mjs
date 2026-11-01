@@ -82,6 +82,8 @@ export default {
 
   ipqs_t: "Check this IP’s quality",
 
+  asn_t: "Look up this AS", l_v6: "Full IPv6 test →", l_v6_none: "No IPv6 found: test it →", l_who: "What else sites can see about you →", l_speed: "Test download and upload speed →", l_ai: "Which IP {s} sees →",
+
   faq_h: "How it works",
   docs: [
     ["What is an exit IP?", "It's the address websites see when you visit them. At home it usually belongs to your ISP. With a VPN, proxy, company network or iCloud Private Relay, it belongs to whoever forwards your traffic, and that can be in another city or country. The exit decides which server a service sends you to, so it decides your speed too."],

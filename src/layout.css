@@ -30,6 +30,12 @@
 .sk-t { animation: blink 1.2s ease-in-out infinite; }
 @keyframes blink { 50% { opacity: .45; } }
 .ex-note { font-size: 12.5px; color: var(--warn); margin: 6px 0 0; }
+/* one short line per link to another 1ms.dog tool, beside the result it goes deeper on */
+.links { display: flex; flex-wrap: wrap; gap: 2px 16px; margin: 6px 0 0; font-size: 12.5px; }
+.links a { color: var(--ink); text-decoration: none; }
+.links a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.ex .m a.q { color: inherit; text-decoration: none; border-bottom: 1px dotted color-mix(in srgb, var(--muted) 60%, transparent); }
+.ex .m a.q:hover { color: var(--ink); border-bottom-color: currentColor; }
 .flag { width: 20px; height: 15px; border-radius: 3px; box-shadow: 0 0 0 1px var(--line); object-fit: cover; flex: none; }
 .masked .ips span, .masked .ipv { filter: blur(5px); }
 

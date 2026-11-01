@@ -218,7 +218,7 @@ export async function build({ check = false } = {}) {
         .replace("{{prepaint}}", PREPAINT).replace("{{head}}", head).replace("{{css}}", cssName).replace("{{js}}", jsName).replace("{{strings}}", sName)
         .split("{{homeHref}}").join(path(slug, "")).replace("{{langOpts}}", langOpts)
         // the exit list links to EgressLens (which IP each site sees), in the same language
-        .replace("{{egressHref}}", `https://egress.1ms.dog${path(slug, "")}`).replace("{{h1}}", esc(h1)).replace("{{intro}}", intro).replace("{{uses}}", uses)
+        .replace("{{h1}}", esc(h1)).replace("{{intro}}", intro).replace("{{uses}}", uses)
         .replace("{{axis}}", axis).replace("{{groups}}", groups).replace("{{helpNav}}", helpNav).replace("{{helpC}}", helpC)
         .replace(/\{\{a:(\w+)\}\}/g, (_, k) => esc(T(k))).replace("{{data}}", JSON.stringify(data).replace(/</g, "\\u003c"));
       if (/\{\{\w+\}\}/.test(html)) throw new Error("unfilled placeholder in " + path(slug, sub) + ": " + /\{\{\w+\}\}/.exec(html)[0]);
