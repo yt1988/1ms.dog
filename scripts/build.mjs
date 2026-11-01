@@ -40,6 +40,9 @@ const PREPAINT = `(function(){var d=document.documentElement,th=null,s=null;try{
 
 const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const fill = (s, v) => { for (const k in v) s = s.split("{" + k + "}").join(v[k]); return s; };
+// a group name can start or end in Latin ("CDN", "AI") inside Chinese or Japanese text: put a space at that boundary
+const CJK = "\u3040-\u30ff\u3400-\u9fff";
+const spaced = s => s.replace(new RegExp(`([${CJK}])([A-Za-z0-9])`, "g"), "$1 $2").replace(new RegExp(`([A-Za-z0-9])([${CJK}])`, "g"), "$1 $2");
 const hash = s => createHash("sha256").update(s).digest("hex").slice(0, 10);
 const sha = s => createHash("sha256").update(s).digest("base64");
 
@@ -123,9 +126,9 @@ export async function build({ check = false } = {}) {
       const s = sub ? ALL.find(x => x.id === sub) || null : null, g = s ? null : groupOf(sub), idx = indexed(lang, sub);
       const gn = g ? gName(g) : "", gList = g ? g.members.map(x => x.name) : [];
       const url = SITE + path(slug, sub);
-      const title = s ? fill(T("lp_title"), { s: s.name }) : g ? fill(T("lg_title"), { g: gn, list: gList.slice(0, 4).join(T("v_join")) }) : T("seo_title");
-      const desc = s ? fill(T("lp_desc"), { s: s.name }) : g ? fill(T("lg_desc"), { g: gn, list: gList.join(T("v_join")) }) : T("seo_desc");
-      const h1 = s ? fill(T("lp_h1"), { s: s.name }) : g ? fill(T("lg_h1"), { g: gn }) : T("h1");
+      const title = s ? fill(T("lp_title"), { s: s.name }) : g ? spaced(fill(T("lg_title"), { g: gn, list: gList.slice(0, 4).join(T("v_join")) })) : T("seo_title");
+      const desc = s ? fill(T("lp_desc"), { s: s.name }) : g ? spaced(fill(T("lg_desc"), { g: gn, list: gList.join(T("v_join")) })) : T("seo_desc");
+      const h1 = s ? fill(T("lp_h1"), { s: s.name }) : g ? spaced(fill(T("lg_h1"), { g: gn })) : T("h1");
       // hreflang lists the languages where this page is indexed; x-default is the English one when it is
       const alts = altsOf(sub).map(([l, sl]) => `<link rel="alternate" hreflang="${l}" href="${SITE + path(sl, sub)}">`).join("\n") +
         (indexed("en", sub) ?`\n<link rel="alternate" hreflang="x-default" href="${SITE + path("", sub)}">` : "");
@@ -164,7 +167,7 @@ export async function build({ check = false } = {}) {
       ].join("\n");
 
       // every service is in the HTML, so crawlers and no-JS readers see what is tested. Local favorites come first.
-      const row = x => `<li class="row${s && x.id === s.id ? " hot" : ""}" id="t-${x.id}">${x.dc ? `<span class="nm">${esc(x.name)}</span>` : `<a class="nm" href="${path(slug, x.id)}">${esc(x.name)}</a>`}<span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li>`;
+      const row = x => `<li class="row${s && x.id === s.id ? " hot" : ""}" id="t-${x.id}">${x.dc ? `<span class="nm">${esc(x.name)}</span>` : `<a class="nm" href="${path(slug, x.id)}"${x.short ? ` title="${esc(x.name)}"` : ""}>${esc(x.short || x.name)}</a>`}<span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li>`;
       const order = s ? [s.cat, ...CATS.filter(c => c !== s.cat)] : CATS;
       const packOpts = Object.keys(PACKS).map(p => `<option value="${p}"${p === defPack ? " selected" : ""}>${esc(T("pk_" + p))}</option>`).join("");
       const local = `<div class="grp"><h2>${esc(T("cat_local"))}<label class="sel"><span class="sr">${esc(T("pack"))}</span><select id="pack">${packOpts}</select></label></h2><ul id="localRows">${PACKS[defPack].map(row).join("")}</ul></div>`;

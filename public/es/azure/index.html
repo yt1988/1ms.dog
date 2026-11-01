@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="es" data-paths="{&quot;en&quot;:&quot;/azure/&quot;,&quot;zh-CN&quot;:&quot;/zh-cn/azure/&quot;,&quot;zh-TW&quot;:&quot;/zh-tw/azure/&quot;,&quot;ja&quot;:&quot;/ja/azure/&quot;,&quot;ko&quot;:&quot;/ko/azure/&quot;,&quot;es&quot;:&quot;/es/azure/&quot;,&quot;fr&quot;:&quot;/fr/azure/&quot;,&quot;de&quot;:&quot;/de/azure/&quot;,&quot;pt&quot;:&quot;/pt/azure/&quot;,&quot;ru&quot;:&quot;/ru/azure/&quot;}">
+<head>
+<meta charset="utf-8">
+<script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en")location.replace(P[l]+location.hash)})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Test de ping de Azure Front Door: ¿Azure Front Door va lento o no funciona en tu red? · 1ms.dog</title>
+<meta name="description" content="Mide la latencia de Azure Front Door desde tu navegador: 10 viajes HTTPS reales a Azure Front Door (mediana, primera conexión y variación), más tu IP de salida y proveedor. Gratis, sin registro.">
+<meta name="keywords" content="ping Azure Front Door, Azure Front Door lento, Azure Front Door no funciona, Azure Front Door lag, latencia Azure Front Door, Azure Front Door caído, test Azure Front Door">
+<meta name="robots" content="noindex, follow, max-image-preview:large">
+<meta name="application-name" content="1ms.dog">
+<meta name="theme-color" content="#f6f6f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1c1c1c" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://1ms.dog/es/azure/">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="1ms.dog">
+<meta property="og:title" content="Test de ping de Azure Front Door: ¿Azure Front Door va lento o no funciona en tu red? · 1ms.dog">
+<meta property="og:description" content="Mide la latencia de Azure Front Door desde tu navegador: 10 viajes HTTPS reales a Azure Front Door (mediana, primera conexión y variación), más tu IP de salida y proveedor. Gratis, sin registro.">
+<meta property="og:url" content="https://1ms.dog/es/azure/">
+<meta property="og:image" content="https://1ms.dog/og/es.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="es_ES">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Test de ping de Azure Front Door: ¿Azure Front Door va lento o no funciona en tu red? · 1ms.dog">
+<meta name="twitter:description" content="Mide la latencia de Azure Front Door desde tu navegador: 10 viajes HTTPS reales a Azure Front Door (mediana, primera conexión y variación), más tu IP de salida y proveedor. Gratis, sin registro.">
+<meta name="twitter:image" content="https://1ms.dog/og/es.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"¿Qué tan rápido es Azure Front Door desde tu red?","url":"https://1ms.dog/es/azure/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"Mide la latencia de Azure Front Door desde tu navegador: 10 viajes HTTPS reales a Azure Front Door (mediana, primera conexión y variación), más tu IP de salida y proveedor. Gratis, sin registro.","inLanguage":"es","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/es/"},{"@type":"ListItem","position":2,"name":"Azure Front Door","item":"https://1ms.dog/es/azure/"}]}]}</script>
+<link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/app.f610e96d75.css">
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <a class="brand" href="/es/" aria-label="1ms.dog">
+      <img class="logo-light" src="/assets/logo-light.svg" width="90" height="36" alt="1ms">
+      <img class="logo-dark" src="/assets/logo-dark.svg" width="90" height="36" alt="1ms">
+    </a>
+    <div class="top-acts">
+      <label class="sel"><span class="sr" data-i="lang_label">Idioma</span>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M1.5 8h13M8 1.5c2 2 2.8 4 2.8 6.5S10 12.5 8 14.5C6 12.5 5.2 10.5 5.2 8S6 3.5 8 1.5z"/></svg>
+        <select id="lang"><option value="en">English</option><option value="zh-CN">简体中文</option><option value="zh-TW">繁體中文</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="es" selected>Español</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="pt">Português</option><option value="ru">Русский</option></select>
+      </label>
+      <button class="icon-btn" id="helpBtn" type="button" aria-haspopup="dialog" aria-controls="help"><span class="sr" data-i="faq_h">Cómo funciona</span>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M6.3 6.2a1.8 1.8 0 1 1 2.5 1.7c-.5.2-.8.6-.8 1.1v.4M8 11.3v.1"/></svg>
+      </button>
+      <a class="icon-btn gh" href="https://github.com/yt1988/1ms.dog" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a>
+      <button class="icon-btn" id="theme" type="button" aria-label="Tema del sistema">
+        <svg class="i-sys" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="9" rx="1.5"/><path d="M5.5 14h5M8 11.5V14"/></svg>
+        <svg class="i-light" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3"/></svg>
+        <svg class="i-dark" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.8A5.8 5.8 0 0 1 6.2 2.5a5.8 5.8 0 1 0 7.3 7.3z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="shared" id="shared" hidden><span id="sharedTxt"></span><button class="btn pri" id="testMine" type="button" data-i="test_mine">Medir mi red</button></div>
+
+    <section class="hero card">
+      <div class="hero-l">
+        <h1>¿Qué tan rápido es Azure Front Door desde tu red?</h1>
+        <p class="intro">Tu navegador mide 10 viajes HTTPS reales a Azure Front Door a través de tu Wi‑Fi, tu proveedor y cualquier VPN o proxy, y muestra la mediana, la primera conexión y la variación.</p>
+        <div class="exits" id="exits">
+          <div class="ex-h"><span data-i="exit_h">Tu salida</span><button class="mini" id="eye" type="button" data-i="hide">Ocultar IP</button><a class="eg" href="https://egress.1ms.dog/es/" data-i="egress_link">Qué IP ve cada sitio →</a><span class="ex-p" id="exProg" aria-live="polite"></span></div>
+          <ul id="exList"><li class="ex sk-row"><span class="sk-t" data-i="sniff">Olfateando tu salida…</span></li></ul>
+          <p class="ex-note" id="exNote" hidden></p>
+        </div>
+      </div>
+      <div class="stage" id="stage" data-mood="sniff">
+        <p class="bubble" id="bubble" aria-live="polite" data-i="mood_sniff">Snif, snif… ¿dónde estamos?</p>
+        <button class="dog" id="dog" type="button" aria-label="Acariciar al perro">
+          <img src="/assets/shiba-run.svg" width="960" height="540" alt="Shiba de 1ms.dog" id="dogImg">
+          <span class="zzz" aria-hidden="true">z<i>z</i><b>z</b></span>
+        </button>
+        <span class="ground" aria-hidden="true"></span>
+      </div>
+      <div class="sum" id="sum">
+        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">Olfateando tu salida…</p><p class="v-d" id="vText">Cuando terminen las muestras, verás qué tan rápido va Azure Front Door desde aquí.</p></div>
+        <div class="sum-acts">
+          <div class="sum-btns">
+            <button class="btn pri" id="run" type="button"><span data-i="start">Empezar prueba</span></button>
+            <button class="btn icon" id="share" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr" data-i="share">Compartir</span></button>
+          </div>
+          <label class="auto"><input type="checkbox" id="auto" checked><span class="sw" aria-hidden="true"></span><span data-i="auto_label">Probar al abrir la página</span></label>
+        </div>
+        <div class="prog" id="prog"><i></i></div>
+        <div class="stats">
+          <div class="stat" id="stMed"><em data-i="one_med">Latencia (mediana)</em><b>–</b><i></i></div>
+          <div class="stat" id="stCold"><em data-i="one_cold">Primera conexión</em><b>–</b><i></i></div>
+          <div class="stat" id="stJit"><em data-i="one_jit">Variación</em><b>–</b><i></i></div>
+        </div>
+        <div class="slane" id="slane" aria-hidden="true"><span class="trk"></span><span class="dots" id="dots"></span></div>
+      </div>
+    </section>
+
+    <a class="cta card" href="/es/"><span><b data-i="cta_h">¿Y el resto de servicios?</b><i data-i="cta_d">La página principal mide 40 servicios a la vez y te dice dónde va lento.</i></span><span class="btn pri" data-i="cta_btn">Medir todos</span></a>
+
+    <section class="tools">
+      <h2 data-i="tools_h">Más de 1ms.dog</h2>
+      <div class="tool-list"><a class="tool" href="https://m2c.1ms.dog/es/" style="--tint:#3b82f6"><b><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 8.5h2.8l1.6-4.5 3.2 8 1.6-3.5h3.8"/></svg>Me2Cloud</b><span>Latencia desde tu navegador a más de 360 regiones de nube: AWS, Azure, Google Cloud y más.</span></a><a class="tool" href="https://v2c.1ms.dog/es/" style="--tint:#10b981"><b><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 10h3"/></svg>VPS2Cloud</b><span>La misma prueba desde tu servidor, para decidir dónde poner el siguiente.</span></a><a class="tool" href="https://ipqs.1ms.dog/es/" style="--tint:#8b5cf6"><b><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5 2.5 3.5v4c0 3.2 2.3 5.8 5.5 7 3.2-1.2 5.5-3.8 5.5-7v-4z"/><path d="M5.5 8l1.8 1.8 3.2-3.3"/></svg>Test de calidad IP</b><span>Comprueba lo limpia que está tu IP: marcas de VPN, proxy y centro de datos de una docena de fuentes, con nota de A a F.</span></a><a class="tool" href="https://ls.1ms.dog/es/" style="--tint:#f59e0b"><b><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="1.5" width="10" height="13" rx="2"/><path d="M5.5 4.5h5M5.5 8h0M8 8h0M10.5 8h0M5.5 11h0M8 11h0M10.5 11h0"/></svg>Calculadora de ahorro Lightsail</b><span>Calcula la transferencia incluida en AWS Lightsail y cuánto costaría pasarte.</span></a></div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <nav class="sitemap" aria-label="Todas las pruebas de ping"><b>Test por servicio:</b><a href="/es/">Medir todos</a><a href="/es/chatgpt/">Test de ping de ChatGPT</a><a href="/es/gemini/">Test de ping de Gemini</a><a href="/es/youtube/">Test de ping de YouTube</a><a href="/es/netflix/">Test de ping de Netflix</a><a href="/es/tiktok/">Test de ping de TikTok</a><a href="/es/whatsapp/">Test de ping de WhatsApp</a><a href="/es/instagram/">Test de ping de Instagram</a><a href="/es/discord/">Test de ping de Discord</a><a href="/es/steam/">Test de ping de Steam</a><a href="/es/playstation/">Test de ping de PlayStation</a><a href="/es/xbox/">Test de ping de Xbox</a><i class="br"></i><b>Por categoría:</b><a href="/es/ai/">IA</a><a href="/es/web/">Sitios de cada día</a><a href="/es/video/">Video y música</a><a href="/es/social/">Redes y mensajería</a><a href="/es/dev/">Herramientas para desarrolladores</a><a href="/es/game/">Juegos</a><a href="/es/cdn/">Proveedores CDN</a><i class="br"></i><b>Por región:</b><a href="/es/region/cn/">China continental</a><a href="/es/region/tw/">Taiwán · Hong Kong</a><a href="/es/region/jp/">Japón</a><a href="/es/region/kr/">Corea</a><a href="/es/region/ru/">Rusia</a><a href="/es/region/in/">Asia del Sur</a><a href="/es/region/sea/">Sudeste Asiático</a><a href="/es/region/eu/">Europa</a><a href="/es/region/latam/">Latinoamérica</a><a href="/es/region/na/">Norteamérica</a><a href="/es/region/me/">Oriente Medio</a></nav>
+    <div class="foot-l"><span data-i="foot">Funciona por completo en tu navegador. Sin cuenta y sin recopilar resultados.</span><span>© 1ms.dog</span></div>
+  </footer>
+</div>
+
+<div class="scrim" id="help" hidden>
+  <div class="dialog help" role="dialog" aria-modal="true" aria-labelledby="helpT">
+    <div class="dlg-h"><h2 id="helpT" data-i="faq_h">Cómo funciona</h2>
+      <button class="icon-btn" data-close type="button" aria-label="Cerrar"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="help-b">
+      <nav class="help-nav" id="helpNav" role="tablist"><button type="button" role="tab" data-hq="0" aria-selected="true">¿Qué tan rápido es Azure Front Door desde tu red?</button><button type="button" role="tab" data-hq="1" aria-selected="false">¿Qué es la IP de salida?</button><button type="button" role="tab" data-hq="2" aria-selected="false">¿Por qué veo una salida local y otra de proxy?</button><button type="button" role="tab" data-hq="3" aria-selected="false">¿Cómo se mide la latencia?</button><button type="button" role="tab" data-hq="4" aria-selected="false">¿Por qué es distinto del ping?</button><button type="button" role="tab" data-hq="5" aria-selected="false">¿Qué significan las velocidades del perro?</button><button type="button" role="tab" data-hq="6" aria-selected="false">¿Se envían mis datos a algún sitio?</button></nav>
+      <div class="help-pick">
+        <button class="icon-btn" type="button" data-hstep="-1" aria-label="Anterior"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 4L6 8l4 4"/></svg></button>
+        <select id="helpSel" aria-labelledby="helpT"></select>
+        <button class="icon-btn" type="button" data-hstep="1" aria-label="Siguiente"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg></button>
+      </div>
+      <div class="help-c" id="helpC"><article data-hqb="0"><h3>¿Qué tan rápido es Azure Front Door desde tu red?</h3><p>Para comparar, la página principal mide Azure Front Door junto con los demás servicios de Proveedores CDN: Cloudflare, Akamai, Amazon CloudFront, Google Cloud CDN, Fastly. Azure Front Door responde a través de la red de Azure Front Door, así que el viaje termina en el punto de Azure Front Door más cercano y no en los centros de datos de Azure Front Door.</p></article><article data-hqb="1" hidden><h3>¿Qué es la IP de salida?</h3><p>Es la dirección que ven los sitios web cuando los visitas. En casa suele ser de tu proveedor. Con una VPN, un proxy, la red de tu empresa o iCloud Private Relay, pertenece a quien reenvía tu tráfico, que puede estar en otra ciudad u otro país. La salida decide a qué servidor te envía cada servicio, así que también decide tu velocidad.</p></article><article data-hqb="2" hidden><h3>¿Por qué veo una salida local y otra de proxy?</h3><p>Los proxies y VPN con reglas eligen el camino según el destino: algunos sitios van directo y el resto por el proxy, así que una sola prueba de IP solo ve su propio camino. Consultamos varias a la vez (un sitio en China continental, Cloudflare, ip.sb, ipinfo.io, pruebas solo IPv4 y solo IPv6, y WebRTC por UDP), agrupamos lo que ven por red y marcamos cada salida como local o proxy.</p></article><article data-hqb="3" hidden><h3>¿Cómo se mide la latencia?</h3><p>Tu navegador abre una conexión HTTPS real con cada servicio. La primera petición solo establece la conexión (DNS, TCP, TLS) y no cuenta; luego se reutiliza la misma conexión para las peticiones cronometradas y mostramos la mediana. Es un viaje de ida y vuelta desde tu dispositivo al servidor más cercano del servicio, a través de tu Wi‑Fi, tu proveedor y cualquier proxy: el retraso que notan tus apps.</p></article><article data-hqb="4" hidden><h3>¿Por qué es distinto del ping?</h3><p>El ping usa ICMP, que los navegadores no pueden enviar, y muchas redes lo tratan distinto del tráfico normal. La medición HTTPS sigue el mismo camino que tus apps. Las cifras suelen ser unos milisegundos más altas que el ping, porque el servidor tiene que responder la petición.</p></article><article data-hqb="5" hidden><h3>¿Qué significan las velocidades del perro?</h3><p>Rayo ≤ 30 ms: misma ciudad. Carrera ≤ 80 ms: misma región. Trote ≤ 150 ms: suficiente para casi todo. Paseo ≤ 300 ms: se nota en juegos y llamadas. Siesta &gt; 300 ms: lejos o congestionado. No volvió: sin conexión en 5 segundos, así que el servicio no es accesible desde aquí. Por debajo de 2 ms ganas el legendario perro 1ms.</p></article><article data-hqb="6" hidden><h3>¿Se envían mis datos a algún sitio?</h3><p>No. Cada petición va directamente de tu navegador al servicio probado. 1ms.dog solo sirve la página estática y nunca recibe tus resultados. Tu último resultado se guarda en este navegador. Los enlaces compartidos llevan ciudades, redes y tiempos, nunca direcciones IP.</p></article></div>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="shareDlg" hidden>
+  <div class="dialog share" role="dialog" aria-modal="true" aria-labelledby="shareT">
+    <div class="dlg-h"><h2 id="shareT" data-i="share_h">Compartir resultado</h2>
+      <button class="icon-btn" data-close type="button" aria-label="Cerrar"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+    <div class="share-b">
+      <img id="shareImg" alt="" width="1200" height="1000">
+      <div class="share-link"><input id="shareUrl" readonly aria-label="Enlace"><button class="btn pri" id="copyLink" type="button" data-i="copy_link">Copiar enlace</button></div>
+      <div class="share-acts">
+        <button class="btn" id="copyImg" type="button" data-i="copy_img">Copiar imagen</button>
+        <button class="btn" id="dlImg" type="button" data-i="dl_img">Descargar imagen</button>
+        <button class="btn" id="nativeShare" type="button" data-i="more_share" hidden>Más opciones</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="application/json" id="data">{"lang":"es","paths":{"en":"/azure/","zh-CN":"/zh-cn/azure/","zh-TW":"/zh-tw/azure/","ja":"/ja/azure/","ko":"/ko/azure/","es":"/es/azure/","fr":"/fr/azure/","de":"/de/azure/","pt":"/pt/azure/","ru":"/ru/azure/"},"pack":"latam","spot":"azure","set":null}</script>
+<script src="/assets/l.es.879ba341f1.js" defer></script>
+<script src="/assets/app.020192cf60.js" defer></script>
+</body>
+</html>

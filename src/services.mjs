@@ -67,10 +67,15 @@ export const SERVICES = [
   { id: "epic", name: "Epic Games", cat: "game", url: "https://store.epicgames.com/cdn-cgi/trace", via: "Cloudflare", c: "#8b8b8b" },
 
   // CDN backbones: most sites above sit on one of these
-  { id: "cloudflare", name: "Cloudflare", cat: "cdn", url: "https://speed.cloudflare.com/__down?bytes=0", via: "Cloudflare", c: "#f38020" },
-  { id: "fastly", name: "Fastly", cat: "cdn", url: "https://www.fastly.com/robots.txt", via: "Fastly", c: "#ff282d" },
-  { id: "akamai", name: "Akamai", cat: "cdn", url: "https://www.akamai.com/favicon.ico", via: "Akamai", c: "#0096d6" },
-  { id: "cloudfront", name: "CloudFront", cat: "cdn", url: "https://aws.amazon.com/favicon.ico", via: "Amazon CloudFront", c: "#8c4fff" },
+  // CDN rows follow the list shared with me2cloud and vps2cloud (1ms.dog docs: CDN list). raw: no cache-busting query;
+  // Akamai and Azure go back to origin with one. cache: "no-store" still keeps the browser cache out.
+  // short: the label in the field, whose name column is 86px; pages and titles use the full name.
+  { id: "cloudflare", name: "Cloudflare", cat: "cdn", url: "https://www.cloudflare.com/cdn-cgi/trace", raw: true, via: "Cloudflare", c: "#f38020" },
+  { id: "akamai", name: "Akamai", cat: "cdn", url: "https://store.akamai.steamstatic.com/favicon.ico", raw: true, via: "Akamai", c: "#0096d6" },
+  { id: "cloudfront", name: "Amazon CloudFront", short: "CloudFront", cat: "cdn", url: "https://a0.awsstatic.com/libra-css/images/site/fav/favicon.ico", raw: true, via: "Amazon CloudFront", c: "#8c4fff" },
+  { id: "google-cdn", name: "Google Cloud CDN", short: "Google CDN", cat: "cdn", url: "https://www.gstatic.com/generate_204", raw: true, via: "Google", c: "#4285f4" },
+  { id: "fastly", name: "Fastly", cat: "cdn", url: "https://github.githubassets.com/favicons/favicon.svg", raw: true, via: "Fastly", c: "#ff282d" },
+  { id: "azure", name: "Azure Front Door", short: "Front Door", cat: "cdn", url: "https://assets.xboxservices.com/assets/f8/67/f86740d7-eedd-4d9c-a963-76af7e36c4b2.svg?n=Xbox-Follow-Footer_Image-0_Mail_32x32_02.svg", raw: true, via: "Azure Front Door", c: "#0078d4" },
 ];
 
 // Local packs: what people in a region open every day. PACK_OF maps exit country → pack. Every pack has the same

@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en")location.replace(P[l]+location.hash)})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>CloudFront の Ping・遅延テスト｜CloudFront が重い・つながらない原因をチェック · 1ms.dog</title>
-<meta name="description" content="ブラウザから CloudFront の遅延を測定：CloudFront への本物の HTTPS 往復を 10 回測り、中央値・初回接続・ジッターと、あなたの出口 IP・プロバイダを表示します。無料・登録不要。">
-<meta name="keywords" content="CloudFront 重い, CloudFront 遅い, CloudFront つながらない, CloudFront Ping, CloudFront 遅延, CloudFront 障害, CloudFront 接続テスト">
+<title>Amazon CloudFront の Ping・遅延テスト｜Amazon CloudFront が重い・つながらない原因をチェック · 1ms.dog</title>
+<meta name="description" content="ブラウザから Amazon CloudFront の遅延を測定：Amazon CloudFront への本物の HTTPS 往復を 10 回測り、中央値・初回接続・ジッターと、あなたの出口 IP・プロバイダを表示します。無料・登録不要。">
+<meta name="keywords" content="Amazon CloudFront 重い, Amazon CloudFront 遅い, Amazon CloudFront つながらない, Amazon CloudFront Ping, Amazon CloudFront 遅延, Amazon CloudFront 障害, Amazon CloudFront 接続テスト">
 <meta name="robots" content="noindex, follow, max-image-preview:large">
 <meta name="application-name" content="1ms.dog">
 <meta name="theme-color" content="#f6f6f7" media="(prefers-color-scheme: light)">
@@ -18,18 +18,18 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="1ms.dog">
-<meta property="og:title" content="CloudFront の Ping・遅延テスト｜CloudFront が重い・つながらない原因をチェック · 1ms.dog">
-<meta property="og:description" content="ブラウザから CloudFront の遅延を測定：CloudFront への本物の HTTPS 往復を 10 回測り、中央値・初回接続・ジッターと、あなたの出口 IP・プロバイダを表示します。無料・登録不要。">
+<meta property="og:title" content="Amazon CloudFront の Ping・遅延テスト｜Amazon CloudFront が重い・つながらない原因をチェック · 1ms.dog">
+<meta property="og:description" content="ブラウザから Amazon CloudFront の遅延を測定：Amazon CloudFront への本物の HTTPS 往復を 10 回測り、中央値・初回接続・ジッターと、あなたの出口 IP・プロバイダを表示します。無料・登録不要。">
 <meta property="og:url" content="https://1ms.dog/ja/cloudfront/">
 <meta property="og:image" content="https://1ms.dog/og/ja.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="CloudFront の Ping・遅延テスト｜CloudFront が重い・つながらない原因をチェック · 1ms.dog">
-<meta name="twitter:description" content="ブラウザから CloudFront の遅延を測定：CloudFront への本物の HTTPS 往復を 10 回測り、中央値・初回接続・ジッターと、あなたの出口 IP・プロバイダを表示します。無料・登録不要。">
+<meta name="twitter:title" content="Amazon CloudFront の Ping・遅延テスト｜Amazon CloudFront が重い・つながらない原因をチェック · 1ms.dog">
+<meta name="twitter:description" content="ブラウザから Amazon CloudFront の遅延を測定：Amazon CloudFront への本物の HTTPS 往復を 10 回測り、中央値・初回接続・ジッターと、あなたの出口 IP・プロバイダを表示します。無料・登録不要。">
 <meta name="twitter:image" content="https://1ms.dog/og/ja.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"あなたの回線から CloudFront はどれくらい速い？","url":"https://1ms.dog/ja/cloudfront/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"ブラウザから CloudFront の遅延を測定：CloudFront への本物の HTTPS 往復を 10 回測り、中央値・初回接続・ジッターと、あなたの出口 IP・プロバイダを表示します。無料・登録不要。","inLanguage":"ja","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/ja/"},{"@type":"ListItem","position":2,"name":"CloudFront","item":"https://1ms.dog/ja/cloudfront/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"あなたの回線から Amazon CloudFront はどれくらい速い？","url":"https://1ms.dog/ja/cloudfront/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"ブラウザから Amazon CloudFront の遅延を測定：Amazon CloudFront への本物の HTTPS 往復を 10 回測り、中央値・初回接続・ジッターと、あなたの出口 IP・プロバイダを表示します。無料・登録不要。","inLanguage":"ja","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/ja/"},{"@type":"ListItem","position":2,"name":"Amazon CloudFront","item":"https://1ms.dog/ja/cloudfront/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/app.f610e96d75.css">
 </head>
@@ -62,8 +62,8 @@
 
     <section class="hero card">
       <div class="hero-l">
-        <h1>あなたの回線から CloudFront はどれくらい速い？</h1>
-        <p class="intro">ブラウザが実際の Wi‑Fi、プロバイダ、VPN やプロキシを通して CloudFront への HTTPS 往復を 10 回測り、中央値・初回接続・ジッターを表示します。</p>
+        <h1>あなたの回線から Amazon CloudFront はどれくらい速い？</h1>
+        <p class="intro">ブラウザが実際の Wi‑Fi、プロバイダ、VPN やプロキシを通して Amazon CloudFront への HTTPS 往復を 10 回測り、中央値・初回接続・ジッターを表示します。</p>
         <div class="exits" id="exits">
           <div class="ex-h"><span data-i="exit_h">あなたの出口</span><button class="mini" id="eye" type="button" data-i="hide">IP を隠す</button><a class="eg" href="https://egress.1ms.dog/ja/" data-i="egress_link">サイトごとに見える IP →</a><span class="ex-p" id="exProg" aria-live="polite"></span></div>
           <ul id="exList"><li class="ex sk-row"><span class="sk-t" data-i="sniff">出口をクンクン調査中…</span></li></ul>
@@ -79,7 +79,7 @@
         <span class="ground" aria-hidden="true"></span>
       </div>
       <div class="sum" id="sum">
-        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">出口をクンクン調査中…</p><p class="v-d" id="vText">測定が終わると、ここから CloudFront までの速さがわかります。</p></div>
+        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">出口をクンクン調査中…</p><p class="v-d" id="vText">測定が終わると、ここから Amazon CloudFront までの速さがわかります。</p></div>
         <div class="sum-acts">
           <div class="sum-btns">
             <button class="btn pri" id="run" type="button"><span data-i="start">テスト開始</span></button>
@@ -116,13 +116,13 @@
     <div class="dlg-h"><h2 id="helpT" data-i="faq_h">仕組みとよくある質問</h2>
       <button class="icon-btn" data-close type="button" aria-label="閉じる"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
     <div class="help-b">
-      <nav class="help-nav" id="helpNav" role="tablist"><button type="button" role="tab" data-hq="0" aria-selected="true">あなたの回線から CloudFront はどれくらい速い？</button><button type="button" role="tab" data-hq="1" aria-selected="false">出口 IP とは？</button><button type="button" role="tab" data-hq="2" aria-selected="false">ローカルとプロキシの出口が両方表示されるのはなぜ？</button><button type="button" role="tab" data-hq="3" aria-selected="false">遅延はどう測っていますか？</button><button type="button" role="tab" data-hq="4" aria-selected="false">ping と結果が違うのはなぜ？</button><button type="button" role="tab" data-hq="5" aria-selected="false">犬のスピードの意味は？</button><button type="button" role="tab" data-hq="6" aria-selected="false">データはどこかに送られますか？</button></nav>
+      <nav class="help-nav" id="helpNav" role="tablist"><button type="button" role="tab" data-hq="0" aria-selected="true">あなたの回線から Amazon CloudFront はどれくらい速い？</button><button type="button" role="tab" data-hq="1" aria-selected="false">出口 IP とは？</button><button type="button" role="tab" data-hq="2" aria-selected="false">ローカルとプロキシの出口が両方表示されるのはなぜ？</button><button type="button" role="tab" data-hq="3" aria-selected="false">遅延はどう測っていますか？</button><button type="button" role="tab" data-hq="4" aria-selected="false">ping と結果が違うのはなぜ？</button><button type="button" role="tab" data-hq="5" aria-selected="false">犬のスピードの意味は？</button><button type="button" role="tab" data-hq="6" aria-selected="false">データはどこかに送られますか？</button></nav>
       <div class="help-pick">
         <button class="icon-btn" type="button" data-hstep="-1" aria-label="前へ"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 4L6 8l4 4"/></svg></button>
         <select id="helpSel" aria-labelledby="helpT"></select>
         <button class="icon-btn" type="button" data-hstep="1" aria-label="次へ"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg></button>
       </div>
-      <div class="help-c" id="helpC"><article data-hqb="0"><h3>あなたの回線から CloudFront はどれくらい速い？</h3><p>比べたいときは、トップページで CloudFront と他のCDNサービスをまとめて測れます：Cloudflare、Fastly、Akamai。 CloudFront は Amazon CloudFront のネットワークが応答し、往復の終点は最寄りの Amazon CloudFront の拠点です。Amazon、Hugging Face も同じネットワークなので、それらも遅ければ原因は CloudFront ではなく Amazon CloudFront までの経路です。</p></article><article data-hqb="1" hidden><h3>出口 IP とは？</h3><p>サイトにアクセスしたとき、相手から見えるアドレスです。自宅では通常プロバイダのものですが、VPN、プロキシ、社内ネットワーク、iCloud プライベートリレーを使うと、通信を中継する側のアドレスになり、別の都市や国にあることもあります。出口によって接続先サーバーが決まるので、速度も出口で決まります。</p></article><article data-hqb="2" hidden><h3>ローカルとプロキシの出口が両方表示されるのはなぜ？</h3><p>ルールで振り分けるプロキシや VPN は、宛先によって経路を変えます。そのため 1 つの IP チェックでは、そのチェックの経路しか見えません。中国本土のサイト、Cloudflare、ip.sb、ipinfo.io、IPv4 専用と IPv6 専用のチェック、WebRTC（UDP）に同時に問い合わせ、ネットワークごとにまとめて、ローカルかプロキシかを表示します。</p></article><article data-hqb="3" hidden><h3>遅延はどう測っていますか？</h3><p>ブラウザが各サービスと本物の HTTPS 接続を開きます。最初のリクエストは接続の確立（DNS、TCP、TLS）用で集計しません。その後同じ接続を再利用して計測し、中央値を表示します。Wi‑Fi、プロバイダ、プロキシを含む、端末からサービスの最寄りサーバーまでの往復時間で、アプリが実際に体感する遅延です。</p></article><article data-hqb="4" hidden><h3>ping と結果が違うのはなぜ？</h3><p>ping は ICMP を使いますが、ブラウザからは送れず、ネットワークによっては通常の通信と扱いが異なります。HTTPS の計測は普段のアプリと同じ経路を通ります。サーバーがリクエストに応答する分、ping より数ミリ秒高くなるのが普通です。</p></article><article data-hqb="5" hidden><h3>犬のスピードの意味は？</h3><p>爆走 ≤ 30 ms：同じ都市。ダッシュ ≤ 80 ms：同じ地域。トコトコ ≤ 150 ms：ほぼ何でも快適。おさんぽ ≤ 300 ms：ゲームや通話で気になる。おひるね &gt; 300 ms：遠いか混雑。戻らず：5 秒以内に接続できず、ここからは利用できません。2 ms 未満なら伝説の 1ms 犬。</p></article><article data-hqb="6" hidden><h3>データはどこかに送られますか？</h3><p>いいえ。すべてのリクエストはブラウザからテスト対象のサービスへ直接送られます。1ms.dog は静的なページを配信するだけで、結果を受け取りません。前回の結果はこのブラウザ内にだけ保存されます。シェア用リンクに含まれるのは都市・ネットワーク・遅延だけで、IP アドレスは含みません。</p></article></div>
+      <div class="help-c" id="helpC"><article data-hqb="0"><h3>あなたの回線から Amazon CloudFront はどれくらい速い？</h3><p>比べたいときは、トップページで Amazon CloudFront と他のCDNサービスをまとめて測れます：Cloudflare、Akamai、Google Cloud CDN、Fastly、Azure Front Door。 Amazon CloudFront は Amazon CloudFront のネットワークが応答し、往復の終点は最寄りの Amazon CloudFront の拠点です。Amazon、Hugging Face も同じネットワークなので、それらも遅ければ原因は Amazon CloudFront ではなく Amazon CloudFront までの経路です。</p></article><article data-hqb="1" hidden><h3>出口 IP とは？</h3><p>サイトにアクセスしたとき、相手から見えるアドレスです。自宅では通常プロバイダのものですが、VPN、プロキシ、社内ネットワーク、iCloud プライベートリレーを使うと、通信を中継する側のアドレスになり、別の都市や国にあることもあります。出口によって接続先サーバーが決まるので、速度も出口で決まります。</p></article><article data-hqb="2" hidden><h3>ローカルとプロキシの出口が両方表示されるのはなぜ？</h3><p>ルールで振り分けるプロキシや VPN は、宛先によって経路を変えます。そのため 1 つの IP チェックでは、そのチェックの経路しか見えません。中国本土のサイト、Cloudflare、ip.sb、ipinfo.io、IPv4 専用と IPv6 専用のチェック、WebRTC（UDP）に同時に問い合わせ、ネットワークごとにまとめて、ローカルかプロキシかを表示します。</p></article><article data-hqb="3" hidden><h3>遅延はどう測っていますか？</h3><p>ブラウザが各サービスと本物の HTTPS 接続を開きます。最初のリクエストは接続の確立（DNS、TCP、TLS）用で集計しません。その後同じ接続を再利用して計測し、中央値を表示します。Wi‑Fi、プロバイダ、プロキシを含む、端末からサービスの最寄りサーバーまでの往復時間で、アプリが実際に体感する遅延です。</p></article><article data-hqb="4" hidden><h3>ping と結果が違うのはなぜ？</h3><p>ping は ICMP を使いますが、ブラウザからは送れず、ネットワークによっては通常の通信と扱いが異なります。HTTPS の計測は普段のアプリと同じ経路を通ります。サーバーがリクエストに応答する分、ping より数ミリ秒高くなるのが普通です。</p></article><article data-hqb="5" hidden><h3>犬のスピードの意味は？</h3><p>爆走 ≤ 30 ms：同じ都市。ダッシュ ≤ 80 ms：同じ地域。トコトコ ≤ 150 ms：ほぼ何でも快適。おさんぽ ≤ 300 ms：ゲームや通話で気になる。おひるね &gt; 300 ms：遠いか混雑。戻らず：5 秒以内に接続できず、ここからは利用できません。2 ms 未満なら伝説の 1ms 犬。</p></article><article data-hqb="6" hidden><h3>データはどこかに送られますか？</h3><p>いいえ。すべてのリクエストはブラウザからテスト対象のサービスへ直接送られます。1ms.dog は静的なページを配信するだけで、結果を受け取りません。前回の結果はこのブラウザ内にだけ保存されます。シェア用リンクに含まれるのは都市・ネットワーク・遅延だけで、IP アドレスは含みません。</p></article></div>
     </div>
   </div>
 </div>
@@ -144,6 +144,6 @@
 </div>
 <script type="application/json" id="data">{"lang":"ja","paths":{"en":"/cloudfront/","zh-CN":"/zh-cn/cloudfront/","zh-TW":"/zh-tw/cloudfront/","ja":"/ja/cloudfront/","ko":"/ko/cloudfront/","es":"/es/cloudfront/","fr":"/fr/cloudfront/","de":"/de/cloudfront/","pt":"/pt/cloudfront/","ru":"/ru/cloudfront/"},"pack":"jp","spot":"cloudfront","set":null}</script>
 <script src="/assets/l.ja.e3267cce00.js" defer></script>
-<script src="/assets/app.5fb60e7cef.js" defer></script>
+<script src="/assets/app.020192cf60.js" defer></script>
 </body>
 </html>

@@ -250,13 +250,13 @@
       img.onload = img.onerror = () => fin(performance.now() - t0);
       const tm = setTimeout(() => fin(null), timeout);
       signal.addEventListener("abort", () => fin(null), { once: true });
-      img.referrerPolicy = "no-referrer"; img.src = bust(s.url);
+      img.referrerPolicy = "no-referrer"; img.src = s.raw ? s.url : bust(s.url);
     });
     const ctl = new AbortController(), stop = () => ctl.abort(), tm = setTimeout(stop, timeout);
     signal.addEventListener("abort", stop);
     let ms = null;
     try {
-      await fetch(bust(s.url), { method: s.m || "GET", mode: "no-cors", cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", signal: ctl.signal });
+      await fetch(s.raw ? s.url : bust(s.url), { method: s.m || "GET", mode: "no-cors", cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", signal: ctl.signal });
       ms = performance.now() - t0;
     } catch (e) {}
     clearTimeout(tm); signal.removeEventListener("abort", stop);

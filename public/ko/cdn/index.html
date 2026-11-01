@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en")location.replace(P[l]+location.hash)})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>CDN 지연 테스트: Cloudflare, Fastly, Akamai, CloudFront 내 네트워크에서 얼마나 빠를까 · 1ms.dog</title>
-<meta name="description" content="내 브라우저에서 CDN 지연을 측정하세요: Cloudflare, Fastly, Akamai, CloudFront. 실제 HTTPS 왕복으로 중앙값과 가장 빠른·느린 서비스, 출구 IP를 보여 줍니다. 무료, 가입 불필요.">
-<meta name="keywords" content="CDN 지연, CDN 핑, Cloudflare, Fastly, Akamai, CloudFront">
+<title>CDN 지연 테스트: Cloudflare, Akamai, Amazon CloudFront, Google Cloud CDN 내 네트워크에서 얼마나 빠를까 · 1ms.dog</title>
+<meta name="description" content="내 브라우저에서 CDN 지연을 측정하세요: Cloudflare, Akamai, Amazon CloudFront, Google Cloud CDN, Fastly, Azure Front Door. 실제 HTTPS 왕복으로 중앙값과 가장 빠른·느린 서비스, 출구 IP를 보여 줍니다. 무료, 가입 불필요.">
+<meta name="keywords" content="CDN 지연, CDN 핑, Cloudflare, Akamai, Amazon CloudFront, Google Cloud CDN, Fastly, Azure Front Door">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="application-name" content="1ms.dog">
 <meta name="theme-color" content="#f6f6f7" media="(prefers-color-scheme: light)">
@@ -28,8 +28,8 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="1ms.dog">
-<meta property="og:title" content="CDN 지연 테스트: Cloudflare, Fastly, Akamai, CloudFront 내 네트워크에서 얼마나 빠를까 · 1ms.dog">
-<meta property="og:description" content="내 브라우저에서 CDN 지연을 측정하세요: Cloudflare, Fastly, Akamai, CloudFront. 실제 HTTPS 왕복으로 중앙값과 가장 빠른·느린 서비스, 출구 IP를 보여 줍니다. 무료, 가입 불필요.">
+<meta property="og:title" content="CDN 지연 테스트: Cloudflare, Akamai, Amazon CloudFront, Google Cloud CDN 내 네트워크에서 얼마나 빠를까 · 1ms.dog">
+<meta property="og:description" content="내 브라우저에서 CDN 지연을 측정하세요: Cloudflare, Akamai, Amazon CloudFront, Google Cloud CDN, Fastly, Azure Front Door. 실제 HTTPS 왕복으로 중앙값과 가장 빠른·느린 서비스, 출구 IP를 보여 줍니다. 무료, 가입 불필요.">
 <meta property="og:url" content="https://1ms.dog/ko/cdn/">
 <meta property="og:image" content="https://1ms.dog/og/ko.png">
 <meta property="og:image:width" content="1200">
@@ -45,10 +45,10 @@
 <meta property="og:locale:alternate" content="pt_BR">
 <meta property="og:locale:alternate" content="ru_RU">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="CDN 지연 테스트: Cloudflare, Fastly, Akamai, CloudFront 내 네트워크에서 얼마나 빠를까 · 1ms.dog">
-<meta name="twitter:description" content="내 브라우저에서 CDN 지연을 측정하세요: Cloudflare, Fastly, Akamai, CloudFront. 실제 HTTPS 왕복으로 중앙값과 가장 빠른·느린 서비스, 출구 IP를 보여 줍니다. 무료, 가입 불필요.">
+<meta name="twitter:title" content="CDN 지연 테스트: Cloudflare, Akamai, Amazon CloudFront, Google Cloud CDN 내 네트워크에서 얼마나 빠를까 · 1ms.dog">
+<meta name="twitter:description" content="내 브라우저에서 CDN 지연을 측정하세요: Cloudflare, Akamai, Amazon CloudFront, Google Cloud CDN, Fastly, Azure Front Door. 실제 HTTPS 왕복으로 중앙값과 가장 빠른·느린 서비스, 출구 IP를 보여 줍니다. 무료, 가입 불필요.">
 <meta name="twitter:image" content="https://1ms.dog/og/ko.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"내 네트워크에서 CDN는 얼마나 빠를까?","url":"https://1ms.dog/ko/cdn/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"내 브라우저에서 CDN 지연을 측정하세요: Cloudflare, Fastly, Akamai, CloudFront. 실제 HTTPS 왕복으로 중앙값과 가장 빠른·느린 서비스, 출구 IP를 보여 줍니다. 무료, 가입 불필요.","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/ko/"},{"@type":"ListItem","position":2,"name":"CDN","item":"https://1ms.dog/ko/cdn/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"내 네트워크에서 CDN는 얼마나 빠를까?","url":"https://1ms.dog/ko/cdn/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"내 브라우저에서 CDN 지연을 측정하세요: Cloudflare, Akamai, Amazon CloudFront, Google Cloud CDN, Fastly, Azure Front Door. 실제 HTTPS 왕복으로 중앙값과 가장 빠른·느린 서비스, 출구 IP를 보여 줍니다. 무료, 가입 불필요.","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/ko/"},{"@type":"ListItem","position":2,"name":"CDN","item":"https://1ms.dog/ko/cdn/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/app.f610e96d75.css">
 </head>
@@ -82,7 +82,7 @@
     <section class="hero card">
       <div class="hero-l">
         <h1>내 네트워크에서 CDN는 얼마나 빠를까?</h1>
-        <p class="intro">브라우저에서 CDN 4곳을 한 번에 측정: Cloudflare, Fastly, Akamai, CloudFront. 각각 5회, 중앙값을 보여 줍니다.</p>
+        <p class="intro">브라우저에서 CDN 6곳을 한 번에 측정: Cloudflare, Akamai, Amazon CloudFront, Google Cloud CDN, Fastly, Azure Front Door. 각각 5회, 중앙값을 보여 줍니다.</p>
         <div class="exits" id="exits">
           <div class="ex-h"><span data-i="exit_h">내 출구</span><button class="mini" id="eye" type="button" data-i="hide">IP 숨기기</button><a class="eg" href="https://egress.1ms.dog/ko/" data-i="egress_link">사이트별로 보이는 IP →</a><span class="ex-p" id="exProg" aria-live="polite"></span></div>
           <ul id="exList"><li class="ex sk-row"><span class="sk-t" data-i="sniff">출구를 킁킁 찾는 중…</span></li></ul>
@@ -118,7 +118,7 @@
     <section class="field card" aria-label="서비스별 지연">
       <div class="axis" aria-hidden="true"><span class="c1"><i></i><b>질주</b>≤ 30 ms</span><span class="c2"><i></i><b>전력 질주</b>≤ 80 ms</span><span class="c3"><i></i><b>총총</b>≤ 150 ms</span><span class="c4"><i></i><b>산책</b>≤ 300 ms</span><span class="c5"><i></i><b>낮잠</b>> 300 ms</span><span class="cx"><i></i><b>못 돌아옴</b></span></div>
       <div class="groups" id="groups">
-<div class="grp solo"><h2>CDN</h2><ul><li class="row" id="t-cloudflare"><a class="nm" href="/ko/cloudflare/">Cloudflare</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-fastly"><a class="nm" href="/ko/fastly/">Fastly</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-akamai"><a class="nm" href="/ko/akamai/">Akamai</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-cloudfront"><a class="nm" href="/ko/cloudfront/">CloudFront</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul><div class="scale" aria-hidden="true"><span style="left:33.8%">30</span><span style="left:52.3%">80</span><span style="left:64.2%">150</span><span style="left:77.3%">300 ms</span></div></div>
+<div class="grp solo"><h2>CDN</h2><ul><li class="row" id="t-cloudflare"><a class="nm" href="/ko/cloudflare/">Cloudflare</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-akamai"><a class="nm" href="/ko/akamai/">Akamai</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-cloudfront"><a class="nm" href="/ko/cloudfront/" title="Amazon CloudFront">CloudFront</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-google-cdn"><a class="nm" href="/ko/google-cdn/" title="Google Cloud CDN">Google CDN</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-fastly"><a class="nm" href="/ko/fastly/">Fastly</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-azure"><a class="nm" href="/ko/azure/" title="Azure Front Door">Front Door</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul><div class="scale" aria-hidden="true"><span style="left:33.8%">30</span><span style="left:52.3%">80</span><span style="left:64.2%">150</span><span style="left:77.3%">300 ms</span></div></div>
       </div>
     </section>
     <a class="cta card" href="/ko/"><span><b data-i="cta_h">다른 서비스는 어떨까요?</b><i data-i="cta_d">홈에서는 서비스 40개를 한 번에 측정하고 어디가 느린지 알려 줍니다.</i></span><span class="btn pri" data-i="cta_btn">전체 서비스 측정</span></a>
@@ -168,6 +168,6 @@
 </div>
 <script type="application/json" id="data">{"lang":"ko","paths":{"en":"/cdn/","zh-CN":"/zh-cn/cdn/","zh-TW":"/zh-tw/cdn/","ja":"/ja/cdn/","ko":"/ko/cdn/","es":"/es/cdn/","fr":"/fr/cdn/","de":"/de/cdn/","pt":"/pt/cdn/","ru":"/ru/cdn/"},"pack":"kr","spot":null,"set":{"kind":"cat","id":"cdn","name":"CDN"}}</script>
 <script src="/assets/l.ko.e8cc25b391.js" defer></script>
-<script src="/assets/app.5fb60e7cef.js" defer></script>
+<script src="/assets/app.020192cf60.js" defer></script>
 </body>
 </html>

@@ -33,7 +33,7 @@ for (const s of all) { if (ids.has(s.id)) { console.log(`duplicate id ${s.id}`);
 function get(s, agent) {
   return new Promise((resolve, reject) => {
     const t0 = performance.now(), tm = {};
-    const req = https.request(s.url + (s.url.includes("?") ? "&" : "?") + "_v=" + Math.random().toString(36).slice(2), {
+    const req = https.request(s.raw ? s.url : s.url + (s.url.includes("?") ? "&" : "?") + "_v=" + Math.random().toString(36).slice(2), {
       method: s.m === "HEAD" ? "HEAD" : "GET", agent, headers: { "user-agent": UA, accept: "*/*" }, timeout: 8000 }, res => {
       tm.ttfb = performance.now() - t0;
       let n = 0; res.on("data", c => { n += c.length; }); res.on("end", () => resolve({ res, n, tm }));
