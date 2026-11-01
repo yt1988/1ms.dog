@@ -27,6 +27,7 @@ export default {
   lost_n: "{n} 个没叼回来",
   share: "分享", copied: "已复制",
   sub_telegram: "Telegram 数据中心", tg_dc_t: "Telegram 按手机号所属地区，把账号放在 5 个数据中心之一。这里测的是 {dc}（{city}），你所在地区的账号大多在这里。点进 Telegram 页面可以测全部 5 个。",
+  pop_t: "响应的边缘节点：{pop}", pop_s: "节点 {pop}",
   egress_link: "查看每个网站看到的 IP →",
   a_pet: "摸摸小狗", a_dog: "1ms.dog 柴犬", a_field: "各服务延迟", a_nav: "全部测速页面", a_close: "关闭", a_prev: "上一个", a_next: "下一个", a_link: "链接",
   qr_hint: "扫码查看完整结果",

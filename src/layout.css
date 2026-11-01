@@ -124,7 +124,7 @@ button.use:hover, button.use[aria-pressed="true"] { background: var(--soft); col
 .grp ul { list-style: none; margin: 0; padding: 0; }
 /* rows carry their own side padding (outset by the same margin), so a highlight is a plain background that neither
    moves anything nor spills onto the next row */
-.row { display: grid; grid-template-columns: 86px minmax(0, 1fr) 46px; align-items: center; gap: 8px; height: 24px; font-size: 12.5px; margin: 0 -6px; padding: 0 6px; border-radius: 6px; }
+.row { display: grid; grid-template-columns: 100px minmax(0, 1fr) 46px; align-items: center; gap: 8px; height: 24px; font-size: 12.5px; margin: 0 -6px; padding: 0 6px; border-radius: 6px; }
 .row .nm { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--fg); text-decoration: none; }
 /* each name opens that service's own test page */
 a.nm:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
@@ -240,6 +240,8 @@ a.nm:hover { color: var(--ink); text-decoration: underline; text-underline-offse
 /* Telegram's data center, next to its name; hover lists why that one */
 .row .nm .dc { margin-left: 4px; padding: 0 3px; border-radius: 4px; font: 600 9.5px/14px var(--f-num); vertical-align: 1px; background: color-mix(in srgb, var(--fg) 9%, transparent); color: var(--muted); cursor: help; outline: none; }
 .row .nm .dc:hover, .row .nm .dc:focus-visible { color: var(--fg); }
+/* the edge node that answered, at the right end of the name (which gives way to it) */
+.row .nm .pop { float: right; margin: 2px 0 0 4px; }
 /* exit checks answered so far ("4/7"), fixed width so nothing beside it slides */
 .ex-p { min-width: 5ch; font: 500 11px var(--f-num); font-variant-numeric: tabular-nums; color: var(--muted); letter-spacing: 0; }
 /* link to EgressLens beside the exits header: plain text, so the row keeps its height */

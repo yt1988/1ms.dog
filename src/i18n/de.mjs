@@ -27,6 +27,7 @@ export default {
   lost_n: "{n} nicht zurückgekommen",
   share: "Teilen", copied: "Kopiert!",
   sub_telegram: "Telegram-Rechenzentren", tg_dc_t: "Telegram legt jedes Konto je nach Region der Telefonnummer in eines von 5 Rechenzentren. Gemessen wird hier {dc} ({city}), wo die meisten Konten deiner Region liegen. Auf der Telegram-Seite lassen sich alle 5 testen.",
+  pop_t: "Antwortender Edge-Knoten: {pop}", pop_s: "Knoten {pop}",
   egress_link: "Welche IP jede Seite sieht →",
   a_pet: "Hund streicheln", a_dog: "1ms.dog-Shiba", a_field: "Latenz je Dienst", a_nav: "Alle Ping-Tests", a_close: "Schließen", a_prev: "Zurück", a_next: "Weiter", a_link: "Link",
   qr_hint: "Scannen für das ganze Ergebnis",

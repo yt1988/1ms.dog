@@ -27,6 +27,7 @@ export default {
   lost_n: "{n} 顆沒叼回來",
   share: "分享", copied: "已複製",
   sub_telegram: "Telegram 資料中心", tg_dc_t: "Telegram 依手機號碼所屬地區，把帳號放在 5 個資料中心之一。這裡測的是 {dc}（{city}），你所在地區的帳號大多在這裡。點進 Telegram 頁面可以測全部 5 個。",
+  pop_t: "回應的邊緣節點：{pop}", pop_s: "節點 {pop}",
   egress_link: "查看每個網站看到的 IP →",
   a_pet: "摸摸小狗", a_dog: "1ms.dog 柴犬", a_field: "各服務延遲", a_nav: "全部測速頁面", a_close: "關閉", a_prev: "上一個", a_next: "下一個", a_link: "連結",
   qr_hint: "掃碼查看完整結果",

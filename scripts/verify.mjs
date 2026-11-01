@@ -75,5 +75,20 @@ for (const o of out) {
   if (!o.ok && !warn) bad++;
   console.log(`${o.ok ? "ok  " : warn ? "warn" : "BAD "} ${o.s.id.padEnd(14)} ${o.line}`);
 }
+// The edge-node badge (src/services.mjs: pop): the host must still allow cors and show the node. Only a warning:
+// without it the page times the service as before and just drops the badge.
+const popOk = async s => {
+  const u = s.popUrl || (s.raw ? s.url : s.url + (s.url.includes("?") ? "&" : "?") + "_v=1");
+  const r = await fetch(u, { method: s.popUrl ? "GET" : s.m === "HEAD" ? "HEAD" : "GET", headers: { origin: "https://1ms.dog", "user-agent": UA }, signal: AbortSignal.timeout(8000) });
+  const h = k => r.headers.get(k) || "", exp = h("access-control-expose-headers").toLowerCase();
+  if (!/^(\*|https:\/\/1ms\.dog)$/.test(h("access-control-allow-origin"))) return "no cors";
+  if (s.pop === "trace") return /\bcolo=[A-Z]{3}\b/.test(await r.text()) ? "" : "no colo in the trace";
+  if (s.pop === "wmf") return h("timing-allow-origin") === "*" && /host;desc="?cp\d/.test(h("server-timing")) ? "" : "no Server-Timing host";
+  return !h(s.pop) ? `no ${s.pop}` : exp !== "*" && !exp.split(/\s*,\s*/).includes(s.pop) ? `${s.pop} not exposed` : "";
+};
+for (const s of list.filter(s => s.pop)) {
+  const why = await popOk(s).catch(e => e.message);
+  if (why) console.log(`warn ${s.id.padEnd(14)} edge node not readable: ${why}`);
+}
 console.log(`\n${out.filter(o => o.ok).length}/${out.length} ok` + (FAR ? `, ${out.filter(o => !o.ok && soft(o)).length} regional warnings` : ""));
-process.exit(bad ? 1 : 0);
+process.exitCode = bad ? 1 : 0;              // not exit(): let the fetch sockets above close first

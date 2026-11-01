@@ -29,6 +29,7 @@ export default {
   lost_n: "{n} didn't come back",
   share: "Share", copied: "Copied!",
   sub_telegram: "Telegram data centers", tg_dc_t: "Telegram keeps each account in one of 5 data centers, by the phone number's region. This is {dc} ({city}), where most accounts in your region are. Open Telegram's page to test all 5.",
+  pop_t: "Edge node that answered: {pop}", pop_s: "edge {pop}",
   egress_link: "Which IP each site sees →",
   a_pet: "Pet the dog", a_dog: "1ms.dog shiba", a_field: "Latency by service", a_nav: "All ping tests", a_close: "Close", a_prev: "Previous", a_next: "Next", a_link: "Link",
   qr_hint: "Scan to see the full result",

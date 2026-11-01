@@ -27,6 +27,7 @@ export default {
   lost_n: "{n} jamais revenues",
   share: "Partager", copied: "Copié !",
   sub_telegram: "Centres de données Telegram", tg_dc_t: "Telegram place chaque compte dans l'un de ses 5 centres de données, selon la région du numéro. Ici, c'est {dc} ({city}), où se trouvent la plupart des comptes de votre région. La page Telegram teste les 5.",
+  pop_t: "Nœud de périphérie qui a répondu : {pop}", pop_s: "nœud {pop}",
   egress_link: "Quelle IP voit chaque site →",
   a_pet: "Caresser le chien", a_dog: "Shiba de 1ms.dog", a_field: "Latence par service", a_nav: "Tous les tests de ping", a_close: "Fermer", a_prev: "Précédent", a_next: "Suivant", a_link: "Lien",
   qr_hint: "Scannez pour voir le résultat complet",

@@ -242,7 +242,29 @@
   // connection. no-cors with no custom headers is a simple request: no preflight, no cookies, no referrer.
   const R = new Map();          // id → { w, s: [], st }
   const TIMEOUT = 4000, WARM_TIMEOUT = 5000, GAP = 120, CONC = 8;
-  async function probe(s, timeout, signal) {
+  // The edge node that answered, as each network writes it (src/services.mjs: pop), down to its airport code; Wikimedia
+  // names a cache host whose first digit is the data center
+  try { performance.setResourceTimingBufferSize(3000); } catch (e) {}   // the default 250 fills up during a full test
+  const WMF = { cp1: "IAD", cp2: "DFW", cp3: "AMS", cp4: "SFO", cp5: "SIN", cp6: "MRS", cp7: "GRU" };
+  const POP = {
+    trace: async r => /\bcolo=([A-Z]{3})\b/.exec(await r.text())?.[1],
+    wmf: async (r, u) => { await r.blob(); const e = performance.getEntriesByName(u).pop(), h = e && e.serverTiming.find(x => x.name === "host"); return h && WMF[h.description.slice(0, 3)]; },
+    "x-served-by": async r => /([A-Z]{3})\s*$/.exec(r.headers.get("x-served-by") || "")?.[1],
+    "x-amz-cf-pop": async r => /^[A-Z]{3}/.exec(r.headers.get("x-amz-cf-pop") || "")?.[0],
+  };
+  // where each code is, for the badge's hint (unknown codes show without a country)
+  const POP_CC = {};
+  for (const g of ("JP:NRT,HND,TYO,OSA,KIX,ITM,FUK,OKA,CTS,NGO TW:TPE,KHH,TSA HK:HKG MO:MFM KR:ICN,SEL,GMP,PUS CN:PEK,PKX,SHA,PVG,CAN,SZX,CTU,CKG,HGH,NKG,TSN,WUH,XIY,CGO,TAO,SJW,FOC,XMN,KMG,NNG,CSX,HFE,SHE,DLC,TNA,TYN,LHW,HAK " +
+    "SG:SIN,QPG MY:KUL,JHB,PEN TH:BKK,CNX ID:CGK,SUB,DPS PH:MNL,CEB VN:SGN,HAN,DAD KH:PNH MM:RGN IN:BOM,DEL,MAA,BLR,HYD,CCU,AMD,COK,NAG,PNQ,KNU BD:DAC PK:KHI,LHE,ISB LK:CMB NP:KTM " +
+    "AU:SYD,MEL,BNE,PER,ADL,CBR NZ:AKL,CHC GU:GUM AE:DXB,AUH,FJR QA:DOH SA:RUH,JED,DMM BH:BAH KW:KWI OM:MCT IL:TLV,HFA TR:IST,ADB,ESB JO:AMM IQ:BGW,EBL IR:THR KZ:ALA,NQZ UZ:TAS GE:TBS AM:EVN AZ:GYD " +
+    "US:IAD,DCA,IAH,DFW,DAL,LAX,SJC,SFO,SEA,ORD,ATL,MIA,EWR,JFK,LGA,BOS,DEN,PHX,MSP,DTW,PHL,PDX,SLC,LAS,SAN,MCI,STL,CLT,BNA,AUS,TPA,MCO,JAX,IND,CMH,CLE,PIT,RIC,RDU,BUF,OMA,OKC,MEM,SMF,BWI,HNL,ANC,SAT,ABQ,FSD,BGR,ORF " +
+    "CA:YYZ,YUL,YVR,YYC,YEG,YOW,YWG,YHZ,YXE MX:MEX,QRO,GDL,MTY BR:GRU,GIG,FOR,POA,CWB,BSB,SSA,REC,BEL,CNF,VCP AR:EZE,COR CL:SCL CO:BOG,MDE PE:LIM EC:UIO,GYE UY:MVD PY:ASU BO:LPB VE:CCS CR:SJO PA:PTY GT:GUA DO:SDQ PR:SJU " +
+    "GB:LHR,LGW,LCY,MAN,EDI,LON IE:DUB,ORK FR:CDG,ORY,PAR,MRS,LYS,BOD NL:AMS DE:FRA,MUC,TXL,BER,HAM,DUS,STR,CGN,HHN BE:BRU LU:LUX CH:ZRH,GVA AT:VIE IT:MXP,LIN,FCO,PMO ES:MAD,BCN,AGP PT:LIS,OPO " +
+    "DK:CPH SE:ARN,GOT NO:OSL FI:HEL IS:KEF PL:WAW,KRK CZ:PRG SK:BTS HU:BUD RO:OTP,CLJ BG:SOF GR:ATH,SKG HR:ZAG RS:BEG SI:LJU UA:KBP,HRK,ODS LT:VNO LV:RIX EE:TLL MD:KIV CY:LCA MT:MLA " +
+    "RU:SVO,DME,LED,KJA,VVO,OVB,SVX,KZN ZA:JNB,CPT,DUR EG:CAI NG:LOS,ABV KE:NBO MA:CMN,RAK TN:TUN DZ:ALG GH:ACC SN:DKR ET:ADD TZ:DAR UG:EBB RW:KGL MU:MRU AO:LAD MZ:MPM").split(" ")) {
+    const [cc, codes] = g.split(":"); for (const c of codes.split(",")) POP_CC[c] = cc;
+  }
+  async function probe(s, timeout, signal, cors) {
     const t0 = performance.now();
     if (s.m === "IMG") return new Promise(res => {
       const img = new Image(); let done = false;
@@ -254,13 +276,46 @@
     });
     const ctl = new AbortController(), stop = () => ctl.abort(), tm = setTimeout(stop, timeout);
     signal.addEventListener("abort", stop);
-    let ms = null;
+    let ms = null, pop = null;
     try {
-      await fetch(s.raw ? s.url : bust(s.url), { method: s.m || "GET", mode: "no-cors", cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", signal: ctl.signal });
+      // a service whose node can be read goes in cors mode: still a simple request (GET or HEAD, no custom
+      // headers), so no preflight and the same single round trip
+      const u = s.raw ? s.url : bust(s.url);
+      const r = await fetch(u, { method: s.m || "GET", mode: cors ? "cors" : "no-cors", cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", signal: ctl.signal });
       ms = performance.now() - t0;
+      if (cors) pop = await POP[s.pop](r, u).catch(() => null);
     } catch (e) {}
     clearTimeout(tm); signal.removeEventListener("abort", stop);
-    return ms;
+    return cors ? { ms, pop } : ms;
+  }
+  // one sample: the time, and the node when this service can show it (when the host stops allowing cors, the
+  // service is timed as before and just loses its badge)
+  async function sample(s, r, timeout, signal) {
+    if (!s.pop || s.popUrl || r.noPop) return probe(s, timeout, signal);
+    const v = await probe(s, timeout, signal, true);
+    if (v.ms == null && !signal.aborted) { const w = await probe(s, timeout, signal); if (w != null) r.noPop = true; return w; }
+    if (v.pop) { r.pop = v.pop; paintPop(s); }
+    return v.ms;
+  }
+  // the node from a sibling URL on the same edge network, once, while the timed requests run
+  async function sidePop(s, r) {
+    try {
+      const u = s.popUrl, x = await fetch(u, { mode: "cors", cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", signal: AbortSignal.timeout(WARM_TIMEOUT) });
+      const p = await POP[s.pop](x, u);
+      if (p && R.get(s.id) === r) { r.pop = p; paintPop(s); }
+    } catch (e) {}
+  }
+  function paintPop(s) {
+    const r = R.get(s.id), nm = document.querySelector(`#t-${s.id} .nm`);
+    if (nm) {
+      let b = nm.querySelector(".pop");
+      if (!r || !r.pop) { if (b) b.remove(); }
+      else {
+        if (!b) { b = document.createElement("span"); b.className = "dc pop"; b.tabIndex = 0; b.setAttribute("role", "img"); nm.prepend(b); tip(b); }
+        b.textContent = r.pop; b.setAttribute("aria-label", t("pop_t", { pop: r.pop + (POP_CC[r.pop] ? " · " + country(POP_CC[r.pop]) : "") }));
+      }
+    }
+    if (ONE && s === ONE) paintOne();
   }
   // Telegram: the data center most accounts in the visitor's region are on (src/services.mjs: TG_DC), chosen when
   // the probe starts and named next to the result
@@ -278,13 +333,14 @@
   }
   async function runOne(s, n, signal) {
     if (s === TG) tgDc();
-    const r = { w: null, s: [], st: "run" }; R.set(s.id, r); paintRow(s);
-    r.w = await probe(s, WARM_TIMEOUT, signal);
+    const r = { w: null, s: [], st: "run" }; R.set(s.id, r); paintRow(s); paintPop(s);
+    if (s.popUrl) sidePop(s, r);
+    r.w = await sample(s, r, WARM_TIMEOUT, signal);
     let fails = r.w == null ? 2 : 0;                          // no connection at all: lost, no second wait
     while (r.s.length < n && !signal.aborted && fails < 2) {
       await sleep(GAP + Math.random() * 80);
       if (signal.aborted) break;
-      const v = await probe(s, TIMEOUT, signal);
+      const v = await sample(s, r, TIMEOUT, signal);
       if (signal.aborted) break;
       r.s.push(v == null ? null : Math.round(v * 10) / 10);
       fails = v == null ? fails + 1 : 0;
@@ -445,7 +501,7 @@
       b.innerHTML = v != null ? `${pre}${fmt(v)}<small>ms</small>` : r.st === "done" ? "✕" : "–"; b.className = v != null ? c || "" : "cx";
       $(id + " i").textContent = sub;
     };
-    cell("#stMed", md, md != null ? t("tier_" + tk) : r.st === "done" ? t("tier_lost") : "", cls);
+    cell("#stMed", md, (md != null ? t("tier_" + tk) : r.st === "done" ? t("tier_lost") : "") + (r.pop ? " · " + t("pop_s", { pop: r.pop }) : ""), cls);
     cell("#stCold", r.w, r.w != null ? "DNS + TCP + TLS" : "");
     cell("#stJit", ok.length > 1 ? jitter(ok) : null, ok.length ? t("one_samples", { n: ok.length }) : "", "", "±");
     // every sample is a ball on the lane, the median a bigger one

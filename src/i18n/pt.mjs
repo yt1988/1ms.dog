@@ -27,6 +27,7 @@ export default {
   lost_n: "{n} não voltaram",
   share: "Compartilhar", copied: "Copiado!",
   sub_telegram: "Data centers do Telegram", tg_dc_t: "O Telegram guarda cada conta em um de seus 5 data centers, conforme a região do número. Aqui é medido o {dc} ({city}), onde está a maioria das contas da sua região. Na página do Telegram dá para testar os 5.",
+  pop_t: "Nó de borda que respondeu: {pop}", pop_s: "nó {pop}",
   egress_link: "Qual IP cada site vê →",
   a_pet: "Fazer carinho no cachorro", a_dog: "Shiba do 1ms.dog", a_field: "Latência por serviço", a_nav: "Todos os testes de ping", a_close: "Fechar", a_prev: "Anterior", a_next: "Próximo", a_link: "Link",
   qr_hint: "Escaneie para ver o resultado completo",

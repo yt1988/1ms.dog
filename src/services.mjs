@@ -15,6 +15,10 @@
 //        a regional service
 // via    the edge network that answers (from its response headers), where known: landing pages name it and list the
 //        other services on the same network
+// pop    how to read which edge node answered, for the badge beside the name: a response header (x-served-by,
+//        x-amz-cf-pop), "trace" (a Cloudflare trace body) or "wmf" (Wikimedia's Server-Timing host). The host must allow
+//        cors and expose that header, since the request then goes in cors mode
+// popUrl read the node from this URL instead, when the timed one can't show it (same edge network)
 // c      tile accent color
 
 export const CATS = ["ai", "web", "video", "social", "dev", "game", "cdn"];
@@ -32,7 +36,7 @@ export const SERVICES = [
   { id: "google", name: "Google", cat: "web", url: "https://www.google.com/generate_204", via: "Google", c: "#4285f4" },
   { id: "apple", name: "Apple", cat: "web", url: "https://www.apple.com/favicon.ico", via: "Apple", c: "#8e8e93" },
   { id: "microsoft", name: "Microsoft", cat: "web", url: "https://www.microsoft.com/favicon.ico", c: "#00a4ef" },
-  { id: "wikipedia", name: "Wikipedia", cat: "web", url: "https://upload.wikimedia.org/favicon.ico", via: "Wikimedia", c: "#9a9a9a" },
+  { id: "wikipedia", name: "Wikipedia", cat: "web", url: "https://upload.wikimedia.org/favicon.ico", pop: "wmf", via: "Wikimedia", c: "#9a9a9a" },
   { id: "amazon", name: "Amazon", cat: "web", url: "https://www.amazon.com/favicon.ico", via: "Amazon CloudFront", c: "#ff9900" },
   { id: "zoom", name: "Zoom", cat: "web", url: "https://zoom.us/cdn-cgi/trace", via: "Cloudflare", c: "#0b5cff" },
 
@@ -57,7 +61,7 @@ export const SERVICES = [
   { id: "npm", name: "npm", cat: "dev", url: "https://registry.npmjs.org/-/ping", via: "Cloudflare", c: "#cb3837" },
   { id: "dockerhub", name: "Docker Hub", cat: "dev", url: "https://registry-1.docker.io/v2/", c: "#1d63ed" },
   { id: "pypi", name: "PyPI", cat: "dev", url: "https://pypi.org/static/images/favicon.35549fe8.ico", via: "Fastly", c: "#3775a9" },
-  { id: "huggingface", name: "Hugging Face", cat: "dev", url: "https://huggingface.co/favicon.ico", m: "HEAD", via: "Amazon CloudFront", c: "#ffbd45" },
+  { id: "huggingface", name: "Hugging Face", cat: "dev", url: "https://huggingface.co/favicon.ico", m: "HEAD", pop: "x-amz-cf-pop", via: "Amazon CloudFront", c: "#ffbd45" },
 
   // Gaming
   { id: "steam", name: "Steam", cat: "game", url: "https://store.steampowered.com/favicon.ico", c: "#66c0f4" },
@@ -70,11 +74,12 @@ export const SERVICES = [
   // CDN rows follow the list shared with me2cloud and vps2cloud (1ms.dog docs: CDN list). raw: no cache-busting query;
   // Akamai and Azure go back to origin with one. cache: "no-store" still keeps the browser cache out.
   // short: the label in the field, whose name column is 86px; pages and titles use the full name.
-  { id: "cloudflare", name: "Cloudflare", cat: "cdn", url: "https://www.cloudflare.com/cdn-cgi/trace", raw: true, via: "Cloudflare", c: "#f38020" },
+  { id: "cloudflare", name: "Cloudflare", cat: "cdn", url: "https://www.cloudflare.com/cdn-cgi/trace", raw: true, pop: "trace", via: "Cloudflare", c: "#f38020" },
   { id: "akamai", name: "Akamai", cat: "cdn", url: "https://store.akamai.steamstatic.com/favicon.ico", raw: true, via: "Akamai", c: "#0096d6" },
-  { id: "cloudfront", name: "Amazon CloudFront", short: "CloudFront", cat: "cdn", url: "https://a0.awsstatic.com/libra-css/images/site/fav/favicon.ico", raw: true, via: "Amazon CloudFront", c: "#8c4fff" },
+  { id: "cloudfront", name: "Amazon CloudFront", short: "CloudFront", cat: "cdn", url: "https://a0.awsstatic.com/libra-css/images/site/fav/favicon.ico", raw: true, pop: "x-amz-cf-pop",
+    popUrl: "https://huggingface.co/front/assets/huggingface_logo-noborder.svg", via: "Amazon CloudFront", c: "#8c4fff" },
   { id: "google-cdn", name: "Google Cloud CDN", short: "Google CDN", cat: "cdn", url: "https://www.gstatic.com/generate_204", raw: true, via: "Google", c: "#4285f4" },
-  { id: "fastly", name: "Fastly", cat: "cdn", url: "https://github.githubassets.com/favicons/favicon.svg", raw: true, via: "Fastly", c: "#ff282d" },
+  { id: "fastly", name: "Fastly", cat: "cdn", url: "https://fastly.jsdelivr.net/npm/jquery@3.7.1/package.json", raw: true, pop: "x-served-by", via: "Fastly", c: "#ff282d" },
   { id: "azure", name: "Azure Front Door", short: "Front Door", cat: "cdn", url: "https://assets.xboxservices.com/assets/f8/67/f86740d7-eedd-4d9c-a963-76af7e36c4b2.svg?n=Xbox-Follow-Footer_Image-0_Mail_32x32_02.svg", raw: true, via: "Azure Front Door", c: "#0078d4" },
 ];
 
