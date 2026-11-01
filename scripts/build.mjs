@@ -13,7 +13,7 @@ import { fileURLToPath } from "node:url";
 import { build as bundle, transform } from "esbuild";
 import { fillIn } from "../src/lib.mjs";
 import KO from "../src/i18n/ko.mjs";
-import { CATS, SERVICES, PACKS, PACK_OF, SCALE, ZONES, USES, SUBS, TG_DC_OF, pos } from "../src/services.mjs";
+import { CATS, SERVICES, PACKS, PACK_OF, SCALE, ZONES, USES, SUBS, TG_DC_OF, UNLOCK, pos } from "../src/services.mjs";
 
 const SITE = (process.env.SITE_URL || "https://1ms.dog").replace(/\/+$/, "");
 const pub = new URL("../public/", import.meta.url), src = new URL("../src/", import.meta.url);
@@ -214,6 +214,8 @@ export async function build({ check = false } = {}) {
       let html = variant(tpl)
         .replace(/(<(\w+)\b[^>]*\sdata-i="(\w+)"[^>]*>)([^<]*)(<\/\2>)/g, (m, open, tag, k, inner, close) => open + esc(T(k)) + close)
         .replace("{{waitText}}", esc(s ? fill(T("v_one_wait"), { s: s.name }) : g ? fill(T("v_grp_wait"), { g: gn }) : T("v_wait"))).replace("{{sitemap}}", sitemapNav).replace("{{autoOn}}", s || g ? " checked" : "")
+        // a service the unlock check has a page for: whether it works on this route, there (shown when the host announces it)
+        .replace("{{unlock}}", s && UNLOCK[s.id] ? `<a class="ul" id="ulLink" hidden target="_blank" rel="noopener" data-p="${path(slug, UNLOCK[s.id])}">${esc(fill(T("unlock_one"), { s: s.name }))}</a>` : "")
         .replace("{{lang}}", lang).replace("{{pathsAttr}}", esc(JSON.stringify(paths))).replace("{{rootAttr}}", slug || sub ? "" : " data-root")
         .replace("{{prepaint}}", PREPAINT).replace("{{head}}", head).replace("{{css}}", cssName).replace("{{js}}", jsName).replace("{{strings}}", sName)
         .split("{{homeHref}}").join(path(slug, "")).replace("{{langOpts}}", langOpts)

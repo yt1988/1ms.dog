@@ -184,3 +184,8 @@ export const TG_DC = [[1, "pluto", "Miami", "US"], [2, "venus", "Amsterdam", "NL
 export const TG_DC_OF = { cn: 5, tw: 5, jp: 5, kr: 5, sea: 5, in: 5, eu: 2, ru: 2, me: 2, na: 1, latam: 1 };
 // a service page that also tests the service's parts
 export const SUBS = { telegram: TG_DC };
+// services the Streaming & AI Unlock Check (unlock.1ms.dog) has a page for: id → its slug there. A service page links
+// to it when the host announces the check with <meta name="unlock">
+export const UNLOCK = { chatgpt: "chatgpt", claude: "claude", gemini: "gemini", copilot: "copilot", grok: "grok", youtube: "youtube",
+  netflix: "netflix", tiktok: "tiktok", twitch: "twitch", x: "x-twitter", instagram: "instagram", whatsapp: "whatsapp", telegram: "telegram",
+  discord: "discord", reddit: "reddit", disneyplus: "disney-plus" };

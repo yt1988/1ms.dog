@@ -127,6 +127,7 @@ export default {
   one_samples: "{n} 次采样",
   running_one: "正在测 {s}：{d} / {n}",
   v_one_wait: "采样完成后，告诉你从这里访问 {s} 有多快。",
+  unlock_one: "这条线路能解锁 {s} 吗 →",
   vh_one: "{s}：{tier}",
   vh_one_lost: "{s} 连不上",
   v_one_fast: "很快，用 {s} 基本感觉不到延迟。",

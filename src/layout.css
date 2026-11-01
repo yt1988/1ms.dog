@@ -68,6 +68,8 @@
    up, and the everyday uses come last, quieter */
 .sum { grid-area: sum; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px 20px; margin: 0 -22px; padding: 16px 22px 18px; border-top: 1px solid var(--line); position: relative; }
 .sum-head { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.sum-head .ul { align-self: flex-start; font-size: 13px; color: var(--ink); text-decoration: none; }
+.sum-head .ul:hover { text-decoration: underline; text-underline-offset: 3px; }
 .v-h { font-size: 18px; font-weight: 700; letter-spacing: -.01em; line-height: 1.3; }
 .v-d { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
 .sum-acts { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }

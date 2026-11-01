@@ -127,6 +127,7 @@ export default {
   one_samples: "{n} Messungen",
   running_one: "Teste {s}: {d} / {n}",
   v_one_wait: "Sind die Messungen fertig, siehst du, wie schnell {s} von hier antwortet.",
+  unlock_one: "Ist {s} über diese Verbindung verfügbar? →",
   vh_one: "{s}: {tier}",
   vh_one_lost: "{s} nicht erreichbar",
   v_one_fast: "Schnell: {s} sollte sich sofort anfühlen.",

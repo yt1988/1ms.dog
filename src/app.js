@@ -4,6 +4,9 @@
   "use strict";
   const $ = s => document.querySelector(s);
   const D = JSON.parse($("#data").textContent);
+  // a service page's link to the unlock check, when the host announces it with <meta name="unlock" content="https://…">
+  const UNLOCK = document.querySelector('meta[name="unlock"]'), ulLink = $("#ulLink");
+  if (UNLOCK && ulLink) { ulLink.href = UNLOCK.content + ulLink.dataset.p; ulLink.hidden = false; }
   const L = window.L1MS || {}, LANG = D.lang;                  // strings: /assets/l.<lang>.<hash>.js, loaded first
   const t = (k, v) => v ? fillIn(L[k] ?? k, v, L.josa_fin) : L[k] ?? k;
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
