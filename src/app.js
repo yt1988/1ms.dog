@@ -171,7 +171,8 @@
   }
   // Links to the other 1ms.dog tools, in this page's language. The shell names each tool's address in
   // <meta name="<id>">; without it (a copy hosted elsewhere) there is no link.
-  const toolHref = (id, p = "") => { const m = document.querySelector(`meta[name="${id}"]`), h = m && m.content.replace(/\/+$/, ""); return h ? h + D.paths[LANG] + p : ""; };
+  const LANG_DIR = LANG === "en" ? "/" : "/" + LANG.toLowerCase() + "/";     // every tool uses the same language folders
+  const toolHref = (id, p = "") => { const m = document.querySelector(`meta[name="${id}"]`), h = m && m.content.replace(/\/+$/, ""); return h ? h + LANG_DIR + p : ""; };
   const toolA = (id, p, txt, cls, title) => { const h = toolHref(id, p); return h ? `<a${cls ? ` class="${cls}"` : ""} href="${esc(h)}" target="_blank" rel="noopener"${title ? ` title="${esc(title)}"` : ""}>${esc(txt)}</a>` : esc(txt); };
   for (const a of document.querySelectorAll("a[data-tool]")) { const h = toolHref(a.dataset.tool); if (h) { a.href = h; a.hidden = false; } }
   // each exit address links to its quality check (IP quality test), its AS number to the AS lookup
