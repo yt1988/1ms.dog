@@ -89,7 +89,13 @@ test("share links round-trip and carry no IP addresses", () => {
   assert.equal(back.groups[0].org, "China Unicom, Beijing|net");
   assert.equal(back.groups[1].proxy, true);
   assert.deepEqual(back.res, { baidu: 21.3, chatgpt: 188, claude: null });
+  assert.match(h, /^2\.[0-9a-z]+\.cn\.[\w%~,-]*\.[\w%:,-]*$/, "one plain path segment");
+  // links from before the /r/ path put the result after #, and still open
+  const old = parseShare("#r=1|tbvhs0|cn|CN~Beijing~China%20Unicom%2C%20Beijing%7Cnet~4808~l|baidu:5x,claude:x", PACKS);
+  assert.equal(old.groups[0].org, "China Unicom, Beijing|net");
+  assert.deepEqual(old.res, { baidu: 21.3, claude: null });
   assert.equal(parseShare("#r=1|abc|nopack||", PACKS), null);
+  assert.equal(parseShare("2.abc.nopack..", PACKS), null);
   assert.equal(parseShare("#nothing", PACKS), null);
 });
 

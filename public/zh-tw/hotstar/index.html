@@ -2,7 +2,7 @@
 <html lang="zh-TW" data-paths="{&quot;en&quot;:&quot;/hotstar/&quot;,&quot;zh-CN&quot;:&quot;/zh-cn/hotstar/&quot;,&quot;zh-TW&quot;:&quot;/zh-tw/hotstar/&quot;,&quot;ja&quot;:&quot;/ja/hotstar/&quot;,&quot;ko&quot;:&quot;/ko/hotstar/&quot;,&quot;es&quot;:&quot;/es/hotstar/&quot;,&quot;fr&quot;:&quot;/fr/hotstar/&quot;,&quot;de&quot;:&quot;/de/hotstar/&quot;,&quot;pt&quot;:&quot;/pt/hotstar/&quot;,&quot;ru&quot;:&quot;/ru/hotstar/&quot;}">
 <head>
 <meta charset="utf-8">
-<script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en")location.replace(P[l]+location.hash)})();</script>
+<script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en"){var r=location.pathname.match(/[/]r[/][^/]+[/]?$/);location.replace(P[l]+(r?r[0].slice(1):"")+location.hash)}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>JioHotstar 延遲測試：JioHotstar 很慢、連不上？線上檢測 · 1ms.dog</title>
 <meta name="description" content="在瀏覽器裡測試 JioHotstar 的真實延遲：10 次到 JioHotstar 的 HTTPS 往返，給出中位數、首次連線耗時和抖動，以及你的出口 IP 和電信業者。免費，免註冊。">
@@ -31,7 +31,7 @@
 <meta name="twitter:image" content="https://1ms.dog/og/zh-tw.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"從你的網路連 JioHotstar 有多快？","url":"https://1ms.dog/zh-tw/hotstar/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在瀏覽器裡測試 JioHotstar 的真實延遲：10 次到 JioHotstar 的 HTTPS 往返，給出中位數、首次連線耗時和抖動，以及你的出口 IP 和電信業者。免費，免註冊。","inLanguage":"zh-TW","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/zh-tw/"},{"@type":"ListItem","position":2,"name":"JioHotstar","item":"https://1ms.dog/zh-tw/hotstar/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.1840758605.css">
+<link rel="stylesheet" href="/assets/app.868e3c6af4.css">
 </head>
 <body>
 <div class="app">
@@ -118,28 +118,13 @@
         <select id="helpSel" aria-labelledby="helpT"></select>
         <button class="icon-btn" type="button" data-hstep="1" aria-label="下一個"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg></button>
       </div>
-      <div class="help-c" id="helpC"><article data-hqb="0"><h3>從你的網路連 JioHotstar 有多快？</h3><p>想比較的話，首頁會把 JioHotstar 和其他在地常用服務一起測：Flipkart、Paytm、Amazon.in。</p></article><article data-hqb="1" hidden><h3>什麼是出口 IP？</h3><p>出口 IP 是你造訪網站時，對方看到的位址。在家裡通常屬於你的電信業者；使用 VPN、代理、公司網路或 iCloud 私密轉送時，它屬於幫你轉送流量的那一方，可能在另一個城市甚至另一個國家。出口決定了服務把你分配到哪台伺服器，所以也決定了你的速度。</p></article><article data-hqb="2" hidden><h3>為什麼會同時有本地出口和代理出口？</h3><p>依規則分流的代理和 VPN 會按目標網站選路：有些網站直連，其餘走代理，所以只問一個偵測點，只看得到它那條路。我們同時詢問中國大陸站點、Cloudflare、ip.sb、ipinfo.io、僅 IPv4 與僅 IPv6 的偵測，以及 WebRTC（UDP），依網路歸併後列出每個出口，並標出本地或代理。</p></article><article data-hqb="3" hidden><h3>延遲是怎麼測的？</h3><p>你的瀏覽器與每個服務建立一條真實的 HTTPS 連線。第一個請求只用來建立連線（DNS、TCP、TLS），不計入；之後重複使用這條連線發出計時請求，取中位數。這就是從你的裝置到該服務最近伺服器的一次往返，經過你的 Wi‑Fi、電信業者和代理，也就是你的應用程式實際感受到的延遲。</p></article><article data-hqb="4" hidden><h3>為什麼和 ping 的結果不一樣？</h3><p>ping 使用 ICMP，瀏覽器送不出去，而且很多網路對 ICMP 的處理和一般流量不同。HTTPS 計時和你日常使用的應用程式走同一條路。數字通常會比 ping 高幾毫秒，因為伺服器需要處理一次請求。</p></article><article data-hqb="5" hidden><h3>狗狗的速度等級是什麼意思？</h3><p>閃電狗 ≤ 30 ms：同城。飛奔 ≤ 80 ms：同一地區。小跑 ≤ 150 ms：幾乎做什麼都夠用。散步 ≤ 300 ms：玩遊戲、視訊通話會有感。趴著睡 &gt; 300 ms：距離遠或線路壅塞。沒叼回來：5 秒內連不上，代表從這裡無法存取。低於 2 ms 可以解鎖傳說中的 1ms 神犬。</p></article><article data-hqb="6" hidden><h3>我的資料會被傳送到哪裡嗎？</h3><p>不會。每個請求都從你的瀏覽器直接送往被測試的服務，1ms.dog 只提供這個靜態頁面，從不接收你的測試結果。上一次的結果只保存在你的瀏覽器裡。分享連結只包含城市、電信業者和延遲，不含 IP 位址。</p></article></div>
+      <div class="help-c" id="helpC"><article data-hqb="0"><h3>從你的網路連 JioHotstar 有多快？</h3><p>想比較的話，首頁會把 JioHotstar 和其他在地常用服務一起測：Flipkart、Paytm、Amazon.in。</p></article><article data-hqb="1" hidden><h3>什麼是出口 IP？</h3><p>出口 IP 是你造訪網站時，對方看到的位址。在家裡通常屬於你的電信業者；使用 VPN、代理、公司網路或 iCloud 私密轉送時，它屬於幫你轉送流量的那一方，可能在另一個城市甚至另一個國家。出口決定了服務把你分配到哪台伺服器，所以也決定了你的速度。</p></article><article data-hqb="2" hidden><h3>為什麼會同時有本地出口和代理出口？</h3><p>依規則分流的代理和 VPN 會按目標網站選路：有些網站直連，其餘走代理，所以只問一個偵測點，只看得到它那條路。我們同時詢問中國大陸站點、Cloudflare、ip.sb、ipinfo.io、僅 IPv4 與僅 IPv6 的偵測，以及 WebRTC（UDP），依網路歸併後列出每個出口，並標出本地或代理。</p></article><article data-hqb="3" hidden><h3>延遲是怎麼測的？</h3><p>你的瀏覽器與每個服務建立一條真實的 HTTPS 連線。第一個請求只用來建立連線（DNS、TCP、TLS），不計入；之後重複使用這條連線發出計時請求，取中位數。這就是從你的裝置到該服務最近伺服器的一次往返，經過你的 Wi‑Fi、電信業者和代理，也就是你的應用程式實際感受到的延遲。</p></article><article data-hqb="4" hidden><h3>為什麼和 ping 的結果不一樣？</h3><p>ping 使用 ICMP，瀏覽器送不出去，而且很多網路對 ICMP 的處理和一般流量不同。HTTPS 計時和你日常使用的應用程式走同一條路。數字通常會比 ping 高幾毫秒，因為伺服器需要處理一次請求。</p></article><article data-hqb="5" hidden><h3>狗狗的速度等級是什麼意思？</h3><p>閃電狗 ≤ 30 ms：同城。飛奔 ≤ 80 ms：同一地區。小跑 ≤ 150 ms：幾乎做什麼都夠用。散步 ≤ 300 ms：玩遊戲、視訊通話會有感。趴著睡 &gt; 300 ms：距離遠或線路壅塞。沒叼回來：5 秒內連不上，代表從這裡無法存取。低於 2 ms 可以解鎖傳說中的 1ms 神犬。</p></article><article data-hqb="6" hidden><h3>我的資料會被傳送到哪裡嗎？</h3><p>不會。每個請求都從你的瀏覽器直接送往被測試的服務，1ms.dog 只提供這個靜態頁面，從不接收你的測試結果。上一次的結果只保存在你的瀏覽器裡。分享連結本身就帶著結果：國家和延遲，勾選後才加上城市和電信業者，不含 IP 位址。別人打開連結時，伺服器只讀取它來產生連結預覽。</p></article></div>
     </div>
   </div>
 </div>
 
-<div class="scrim" id="shareDlg" hidden>
-  <div class="dialog share" role="dialog" aria-modal="true" aria-labelledby="shareT">
-    <div class="dlg-h"><h2 id="shareT" data-i="share_h">分享測試結果</h2>
-      <button class="icon-btn" data-close type="button" aria-label="關閉"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
-    <div class="share-b">
-      <img id="shareImg" alt="" width="1200" height="1000">
-      <div class="share-link"><input id="shareUrl" readonly aria-label="連結"><button class="btn pri" id="copyLink" type="button" data-i="copy_link">複製連結</button></div>
-      <div class="share-acts">
-        <button class="btn" id="copyImg" type="button" data-i="copy_img">複製圖片</button>
-        <button class="btn" id="dlImg" type="button" data-i="dl_img">下載圖片</button>
-        <button class="btn" id="nativeShare" type="button" data-i="more_share" hidden>更多分享方式</button>
-      </div>
-    </div>
-  </div>
-</div>
 <script type="application/json" id="data">{"lang":"zh-TW","paths":{"en":"/hotstar/","zh-CN":"/zh-cn/hotstar/","zh-TW":"/zh-tw/hotstar/","ja":"/ja/hotstar/","ko":"/ko/hotstar/","es":"/es/hotstar/","fr":"/fr/hotstar/","de":"/de/hotstar/","pt":"/pt/hotstar/","ru":"/ru/hotstar/"},"pack":"tw","spot":"hotstar","set":null}</script>
-<script src="/assets/l.zh-tw.3213f731a1.js" defer></script>
-<script src="/assets/app.3276c38d7d.js" defer></script>
+<script src="/assets/l.zh-tw.17d6ab7011.js" defer></script>
+<script src="/assets/app.2e67ec5f26.js" defer></script>
 </body>
 </html>

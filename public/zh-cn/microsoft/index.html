@@ -2,7 +2,7 @@
 <html lang="zh-CN" data-paths="{&quot;en&quot;:&quot;/microsoft/&quot;,&quot;zh-CN&quot;:&quot;/zh-cn/microsoft/&quot;,&quot;zh-TW&quot;:&quot;/zh-tw/microsoft/&quot;,&quot;ja&quot;:&quot;/ja/microsoft/&quot;,&quot;ko&quot;:&quot;/ko/microsoft/&quot;,&quot;es&quot;:&quot;/es/microsoft/&quot;,&quot;fr&quot;:&quot;/fr/microsoft/&quot;,&quot;de&quot;:&quot;/de/microsoft/&quot;,&quot;pt&quot;:&quot;/pt/microsoft/&quot;,&quot;ru&quot;:&quot;/ru/microsoft/&quot;}">
 <head>
 <meta charset="utf-8">
-<script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en")location.replace(P[l]+location.hash)})();</script>
+<script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en"){var r=location.pathname.match(/[/]r[/][^/]+[/]?$/);location.replace(P[l]+(r?r[0].slice(1):"")+location.hash)}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Microsoft 延迟测试：Microsoft 访问慢、连不上？在线检测 · 1ms.dog</title>
 <meta name="description" content="在浏览器里测试 Microsoft 的真实延迟：10 次到 Microsoft 的 HTTPS 往返，给出中位数、首次连接耗时和抖动，以及你的出口 IP 和运营商。免费，无需注册。">
@@ -34,7 +34,7 @@
 <meta name="twitter:image" content="https://1ms.dog/og/zh-cn.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"从你的网络访问 Microsoft 有多快？","url":"https://1ms.dog/zh-cn/microsoft/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在浏览器里测试 Microsoft 的真实延迟：10 次到 Microsoft 的 HTTPS 往返，给出中位数、首次连接耗时和抖动，以及你的出口 IP 和运营商。免费，无需注册。","inLanguage":"zh-CN","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/zh-cn/"},{"@type":"ListItem","position":2,"name":"Microsoft","item":"https://1ms.dog/zh-cn/microsoft/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.1840758605.css">
+<link rel="stylesheet" href="/assets/app.868e3c6af4.css">
 </head>
 <body>
 <div class="app">
@@ -121,28 +121,13 @@
         <select id="helpSel" aria-labelledby="helpT"></select>
         <button class="icon-btn" type="button" data-hstep="1" aria-label="下一个"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg></button>
       </div>
-      <div class="help-c" id="helpC"><article data-hqb="0"><h3>从你的网络访问 Microsoft 有多快？</h3><p>想对比的话，首页会把 Microsoft 和其他常用网站服务一起测：Google、Apple、Wikipedia、Amazon、Zoom。</p></article><article data-hqb="1" hidden><h3>什么是出口 IP？</h3><p>出口 IP 是你访问网站时，对方看到的地址。在家里一般属于你的宽带运营商；用了 VPN、代理、公司网络或 iCloud 专用代理时，它属于帮你转发流量的那一方，可能在另一个城市甚至另一个国家。出口决定了服务把你分配到哪台服务器，所以也决定了你的速度。</p></article><article data-hqb="2" hidden><h3>为什么会同时有本地出口和代理出口？</h3><p>分流规则的代理和 VPN 会按目标网站选路：国内网站直连，其他网站走代理。所以只问一个检测点，只能看到它那条路。我们同时询问国内站点、Cloudflare、ip.sb、ipinfo.io、仅 IPv4 和仅 IPv6 的检测，以及 WebRTC（UDP），按网络归并后列出每个出口，并标出本地还是代理。如果某些通常连不上的服务却能连上，也会提示你还有一个检测不到的出口。</p></article><article data-hqb="3" hidden><h3>延迟是怎么测的？</h3><p>你的浏览器和每个服务建立一条真实的 HTTPS 连接。第一个请求只用来建立连接（DNS、TCP、TLS），单独显示、不计入；之后复用这条连接发出计时请求，取中位数。这就是从你的设备到该服务最近服务器的一次往返，经过你的 Wi‑Fi、运营商和代理，也就是你的应用实际感受到的延迟。</p></article><article data-hqb="4" hidden><h3>为什么和 ping 的结果不一样？</h3><p>ping 用的是 ICMP，浏览器发不了，而且很多网络对 ICMP 的处理和普通流量不一样。HTTPS 计时和你日常用的应用走同一条路。数字通常会比 ping 高几毫秒，因为服务器需要处理一次请求。</p></article><article data-hqb="5" hidden><h3>狗狗的速度等级是什么意思？</h3><p>闪电狗 ≤ 30 ms：同城。飞奔 ≤ 80 ms：同一地区。小跑 ≤ 150 ms：几乎干什么都够用。散步 ≤ 300 ms：打游戏、视频通话会有感觉。趴窝 &gt; 300 ms：离得远或者线路拥堵。没叼回来：5 秒内连不上，说明从这里无法访问。低于 2 ms 可以解锁传说中的 1ms 神犬。</p></article><article data-hqb="6" hidden><h3>我的数据会被发送到哪里吗？</h3><p>不会。每个请求都从你的浏览器直接发往被测试的服务，1ms.dog 只提供这个静态页面，从不接收你的测试结果。上一次的结果只保存在你的浏览器里，方便狗狗告诉你网络有没有变化。分享链接里只有城市、运营商和延迟，不含 IP 地址。</p></article></div>
+      <div class="help-c" id="helpC"><article data-hqb="0"><h3>从你的网络访问 Microsoft 有多快？</h3><p>想对比的话，首页会把 Microsoft 和其他常用网站服务一起测：Google、Apple、Wikipedia、Amazon、Zoom。</p></article><article data-hqb="1" hidden><h3>什么是出口 IP？</h3><p>出口 IP 是你访问网站时，对方看到的地址。在家里一般属于你的宽带运营商；用了 VPN、代理、公司网络或 iCloud 专用代理时，它属于帮你转发流量的那一方，可能在另一个城市甚至另一个国家。出口决定了服务把你分配到哪台服务器，所以也决定了你的速度。</p></article><article data-hqb="2" hidden><h3>为什么会同时有本地出口和代理出口？</h3><p>分流规则的代理和 VPN 会按目标网站选路：国内网站直连，其他网站走代理。所以只问一个检测点，只能看到它那条路。我们同时询问国内站点、Cloudflare、ip.sb、ipinfo.io、仅 IPv4 和仅 IPv6 的检测，以及 WebRTC（UDP），按网络归并后列出每个出口，并标出本地还是代理。如果某些通常连不上的服务却能连上，也会提示你还有一个检测不到的出口。</p></article><article data-hqb="3" hidden><h3>延迟是怎么测的？</h3><p>你的浏览器和每个服务建立一条真实的 HTTPS 连接。第一个请求只用来建立连接（DNS、TCP、TLS），单独显示、不计入；之后复用这条连接发出计时请求，取中位数。这就是从你的设备到该服务最近服务器的一次往返，经过你的 Wi‑Fi、运营商和代理，也就是你的应用实际感受到的延迟。</p></article><article data-hqb="4" hidden><h3>为什么和 ping 的结果不一样？</h3><p>ping 用的是 ICMP，浏览器发不了，而且很多网络对 ICMP 的处理和普通流量不一样。HTTPS 计时和你日常用的应用走同一条路。数字通常会比 ping 高几毫秒，因为服务器需要处理一次请求。</p></article><article data-hqb="5" hidden><h3>狗狗的速度等级是什么意思？</h3><p>闪电狗 ≤ 30 ms：同城。飞奔 ≤ 80 ms：同一地区。小跑 ≤ 150 ms：几乎干什么都够用。散步 ≤ 300 ms：打游戏、视频通话会有感觉。趴窝 &gt; 300 ms：离得远或者线路拥堵。没叼回来：5 秒内连不上，说明从这里无法访问。低于 2 ms 可以解锁传说中的 1ms 神犬。</p></article><article data-hqb="6" hidden><h3>我的数据会被发送到哪里吗？</h3><p>不会。每个请求都从你的浏览器直接发往被测试的服务，1ms.dog 只提供这个静态页面，从不接收你的测试结果。上一次的结果只保存在你的浏览器里，方便狗狗告诉你网络有没有变化。分享链接本身就带着结果：国家和延迟，勾选后才加上城市和运营商，不含 IP 地址。别人打开链接时，服务器只读取它来生成链接预览。</p></article></div>
     </div>
   </div>
 </div>
 
-<div class="scrim" id="shareDlg" hidden>
-  <div class="dialog share" role="dialog" aria-modal="true" aria-labelledby="shareT">
-    <div class="dlg-h"><h2 id="shareT" data-i="share_h">分享测试结果</h2>
-      <button class="icon-btn" data-close type="button" aria-label="关闭"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
-    <div class="share-b">
-      <img id="shareImg" alt="" width="1200" height="1000">
-      <div class="share-link"><input id="shareUrl" readonly aria-label="链接"><button class="btn pri" id="copyLink" type="button" data-i="copy_link">复制链接</button></div>
-      <div class="share-acts">
-        <button class="btn" id="copyImg" type="button" data-i="copy_img">复制图片</button>
-        <button class="btn" id="dlImg" type="button" data-i="dl_img">下载图片</button>
-        <button class="btn" id="nativeShare" type="button" data-i="more_share" hidden>更多分享方式</button>
-      </div>
-    </div>
-  </div>
-</div>
 <script type="application/json" id="data">{"lang":"zh-CN","paths":{"en":"/microsoft/","zh-CN":"/zh-cn/microsoft/","zh-TW":"/zh-tw/microsoft/","ja":"/ja/microsoft/","ko":"/ko/microsoft/","es":"/es/microsoft/","fr":"/fr/microsoft/","de":"/de/microsoft/","pt":"/pt/microsoft/","ru":"/ru/microsoft/"},"pack":"cn","spot":"microsoft","set":null}</script>
-<script src="/assets/l.zh-cn.f7a96fb3a8.js" defer></script>
-<script src="/assets/app.3276c38d7d.js" defer></script>
+<script src="/assets/l.zh-cn.3f849fc65d.js" defer></script>
+<script src="/assets/app.2e67ec5f26.js" defer></script>
 </body>
 </html>

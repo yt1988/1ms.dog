@@ -4,6 +4,8 @@
   "use strict";
   const $ = s => document.querySelector(s);
   const D = JSON.parse($("#data").textContent);
+  // a shared result opens at <page>r/<code> (src/lib.mjs); the page itself is the path before it
+  const RLINK = /\/r\/([^/]+)\/?$/.exec(location.pathname), PAGE = RLINK ? location.pathname.slice(0, RLINK.index + 1) : location.pathname.replace(/\/?$/, "/");
   const L = window.L1MS || {}, LANG = D.lang;                  // strings: /assets/l.<lang>.<hash>.js, loaded first
   const t = (k, v) => v ? fillIn(L[k] ?? k, v, L.josa_fin) : L[k] ?? k;
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
@@ -23,7 +25,7 @@
   };
   applyTheme(TH.includes(store.get(K.theme)) ? store.get(K.theme) : "system");
   thBtn.onclick = () => { const n = TH[(TH.indexOf(thBtn.dataset.th) + 1) % 3]; store.set(K.theme, n); applyTheme(n); };
-  $("#lang").onchange = e => { const l = e.target.value; store.set(K.lang, l); location.href = D.paths[l] + location.hash; };
+  $("#lang").onchange = e => { const l = e.target.value; store.set(K.lang, l); location.href = D.paths[l] + (RLINK ? "r/" + RLINK[1] : location.hash); };
 
   /* ---------- speed zones (tiers and helpers: src/lib.mjs) ---------- */
   const pos = ms => posOf(ms, SVC.scale);
@@ -577,167 +579,124 @@
   $("#helpSel").onchange = e => showHelp(+e.target.value);
   $$("[data-hstep]").forEach(b => { b.onclick = () => showHelp(helpIdx + +b.dataset.hstep); });
 
-  /* ---------- share: a link that carries the result, and an image drawn here ---------- */
-  // the link carries no IP addresses (format and parsing: src/lib.mjs)
-  const shareHash = () => encodeShare({ ts: Date.now(), pack, groups: NET.groups,
-    res: Object.fromEntries(allServices().filter(s => R.get(s.id) && R.get(s.id).st === "done").map(s => [s.id, median(R.get(s.id).s)])) });
-  const parseHash = h => parseShare(h, PACKS);
-  let shortFor = null;
-  async function shortLink(long) {
-    const meta = document.querySelector('meta[name="shortener"]');          // present on 1ms.dog; absent when self-hosted
-    if (!meta) return long;
-    if (shortFor && shortFor[0] === long) return shortFor[1];
-    try {
-      const r = await fetch(meta.content, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ url: long }), signal: AbortSignal.timeout(5000) });
-      const j = await r.json(); if (j.url) { shortFor = [long, j.url]; return j.url; }
-    } catch (e) {}
-    return long;
-  }
+  /* ---------- share: the shared dialog (/assets/share/, from 1ms-shell), a link that carries the result ---------- */
+  // The link carries no IP address (format and parsing: src/lib.mjs). City and network go in only when the visitor
+  // ticks the dialog's box; the country always does, since it says which sites were local.
   const whereOf = g => g ? [g.city, g.cc && country(g.cc)].filter(Boolean).join(", ") : "";
-  let shareBlob = null;
+  const exitsFor = show => show ? NET.groups : NET.groups.map(g => ({ ...g, city: "", org: "", asn: null }));
+  const resultCode = show => encodeShare({ ts: SHARED && sharedOn ? SHARED.ts : Date.now(), pack, groups: exitsFor(show),
+    res: Object.fromEntries(allServices().filter(s => R.get(s.id) && R.get(s.id).st === "done").map(s => [s.id, median(R.get(s.id).s)])) });
   if ($("#share")) $("#share").title = t("share");
   if ($("#share")) $("#share").onclick = async () => {
     if (!lastSum) return;
-    const long = location.origin + location.pathname + shareHash();
-    $("#shareUrl").value = long; $("#shareImg").removeAttribute("src");
-    $("#nativeShare").hidden = !navigator.share;
-    openDlg("shareDlg");
-    shareBlob = null;
-    loadQR().catch(() => {});
-    const url = await shortLink(long);
-    $("#shareUrl").value = url;
-    // the QR code carries the short link; without one, a long result link would make it too dense to scan, so it points at the page
-    drawCard(url.length <= 300 ? url : location.origin + location.pathname)
-      .then(c => { $("#shareImg").src = c.toDataURL("image/png"); c.toBlob(b => { shareBlob = b; }, "image/png"); }).catch(() => {});
-  };
-  let qrP = null;
-  const loadQR = () => qrP ||= new Promise((res, rej) => {
-    const el = document.createElement("script"); el.src = QR_JS;
-    el.onload = () => res(self.QR1MS); el.onerror = () => { qrP = null; rej(); };
-    document.head.appendChild(el);
-  });
-  const flash = (btn, k) => { const o = btn.textContent; btn.textContent = t(k); setTimeout(() => { btn.textContent = o; }, 1500); };
-  $("#copyLink").onclick = async e => { try { await navigator.clipboard.writeText($("#shareUrl").value); flash(e.target, "copied"); } catch (x) { $("#shareUrl").select(); } };
-  $("#copyImg").onclick = async e => { try { await navigator.clipboard.write([new ClipboardItem({ "image/png": shareBlob })]); flash(e.target, "copied"); } catch (x) {} };
-  $("#dlImg").onclick = () => { const a = document.createElement("a"); a.href = $("#shareImg").src; a.download = "1ms-dog.png"; a.click(); };
-  $("#nativeShare").onclick = async () => {
-    const s = lastSum, text = t("share_text", { ok: s.ok, n: s.n, where: whereOf(NET.groups[0]) || "?", ms: s.md != null ? fmt(s.md) : "–", tier: t("tier_" + s.tier) });
-    const file = shareBlob && new File([shareBlob], "1ms-dog.png", { type: "image/png" });
-    try { await navigator.share(file && navigator.canShare && navigator.canShare({ files: [file] }) ? { text, url: $("#shareUrl").value, files: [file] } : { text, url: $("#shareUrl").value }); } catch (e) {}
+    const { share } = await import("/assets/share/share.js");
+    const s = lastSum, card = cardLayout();
+    share({
+      lang: LANG, name: $("h1").textContent, file: "1ms-dog",
+      show: ["city", "isp"], never: ["ip", "colo"], canShow: NET.groups.some(g => g.city || g.org || g.asn),
+      link: show => location.origin + PAGE + "r/" + resultCode(show),
+      home: location.origin + PAGE,
+      text: show => t("share_text", { ok: s.ok, n: s.n, where: whereOf(exitsFor(show)[0]) || "?", ms: s.md != null ? fmt(s.md) : "–", tier: t("tier_" + s.tier) }),
+      height: card.height, draw: card.draw,
+      ts: SHARED && sharedOn ? SHARED.ts : Date.now(),
+    }).open();
   };
 
-  // The card: the same picture as the page (dog, headline, the three numbers, exits, every ball at its distance), in
-  // the page's theme, with a QR code for the link. A group page draws its one group full width, a single service its samples.
+  // The card's middle: the same picture as the page (dog, headline, the three numbers, exits, every ball at its
+  // distance), in the page's theme. A group page draws its one group full width, a single service its samples.
+  // The dialog draws the frame (logo, QR code, date) around it, between kit.top and kit.bottom.
   const img = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
-  async function drawCard(link) {
-    const W = 1200, P = 56, list = allServices().filter(s => R.get(s.id) && R.get(s.id).st === "done");
-    const groups = (ONE ? (SUBS.length ? [{ name: t("sub_" + ONE.id), items: SUBS }] : []) : GRP ? [{ name: GRP.name, items: GRP.list }] : [{ name: t("cat_local"), items: PACKS[pack] }, ...SVC.cats.map(c => ({ name: t("cat_" + c), items: SVC.list.filter(s => s.cat === c) }))])
-      .map(g => ({ name: g.name, items: g.items.filter(s => list.includes(s)) })).filter(g => g.items.length);
-    // three columns (one on a group page), filled in order, about equally tall
-    const NC = GRP || ONE ? 1 : 3, RH = 30, GH = 40, total = groups.reduce((a, g) => a + GH + g.items.length * RH, 0), cols = Array.from({ length: NC }, () => []);
-    let ci = 0, hcol = 0;
-    for (const g of groups) { const h = GH + g.items.length * RH; if (hcol && hcol + h / 2 > total / NC && ci < NC - 1) { ci++; hcol = 0; } cols[ci].push(g); hcol += h; }
-    const oneH = ONE ? 80 : 0, colH = oneH + Math.max(0, ...cols.map(c => c.reduce((a, g) => a + GH + g.items.length * RH, 0)));
-    const qr = link && await loadQR().then(Q => { const q = Q(0, "M"); q.addData(link); q.make(); return q; }).catch(() => null), FH = qr ? 160 : 70;
-    const F = "Geist, 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans', 'Malgun Gothic', sans-serif", M = "'Geist Mono', Consolas, monospace";
-    // Same order as the page: headline, what it means, the three numbers, exits, then every ball.
-    // Text is wrapped before the canvas size is known; the headline stays clear of the dog.
-    const m = document.createElement("canvas").getContext("2d");
-    const lines = (s0, font, w) => { m.font = font; return wrap(m, s0, w); };
-    // the headline and its detail: the home page's verdict, or what a group or service page says
-    const head = lastSum.v ? verdictHead(lastSum.v) : $("#vHead").textContent, detail = lastSum.v ? verdictText(lastSum.v) : $("#vText").textContent;
-    const hLines = head ? lines(head, `700 44px ${F}`, W - P * 2 - 360) : [];
-    const dLines = detail ? lines(detail, `400 24px ${F}`, W - P * 2) : [];
-    const hTop = 190, dTop = hTop + (hLines.length - 1) * 54 + 48, sTop = dTop + dLines.length * 34 + 10, SH = 108;
-    const exits = NET.groups.slice(0, 3), eTop = sTop + SH + 46, top = eTop + exits.length * 40 - 18, H = top + colH + 40 + FH;
-    const c = document.createElement("canvas"); c.width = W; c.height = H;
-    const x = c.getContext("2d");
-    // the page's own theme colors, so the card matches what the visitor sees (light or dark)
-    const css = getComputedStyle(document.documentElement), v = n => css.getPropertyValue("--" + n).trim();
-    const dark = css.colorScheme === "dark";
-    const C = { bg: v("bg"), panel: v("panel"), line: v("line"), fg: v("fg"), muted: v("muted"), c0: v("t0"), c1: v("t1"), c2: v("t2"), c3: v("t3"), c4: v("t4"), c5: v("t5"), cx: v("muted"), gold: v("ink"), warn: v("warn") };
-    x.fillStyle = C.bg; x.fillRect(0, 0, W, H);
-    const [logo, dog] = await Promise.all([img(dark ? "/assets/logo-dark.svg" : "/assets/logo-light.svg"), img("/assets/shiba-run.svg")]);
-    x.drawImage(logo, P, 44, 150, 60);
-    x.drawImage(dog, 150, 20, 700, 420, W - P - 330, 24, 330, 198);
-    x.textBaseline = "alphabetic";
-    x.fillStyle = C.fg; x.font = `700 44px ${F}`; hLines.forEach((l, i) => x.fillText(l, P, hTop + i * 54));
-    x.fillStyle = C.muted; x.font = `400 24px ${F}`; dLines.forEach((l, i) => x.fillText(l, P, dTop + i * 34));
-    // the three numbers
-    const s = lastSum, v0 = s.v, cw3 = (W - P * 2 - 2 * 16) / 3;
-    const cells = v0 ? [[t("seg_local"), v0.local, ""], [t("seg_global"), v0.global, ""], [t("med"), { md: s.md }, t("back", { ok: s.ok, n: s.n })]].map(([label, sg, sub]) => {
-      const md = sg ? sg.md : null, [tk, k] = tierOf(md);
-      return { label, num: md != null ? fmt(md) : "✕", ms: md != null, k, sub: sub || (md != null ? t("tier_" + tk) : t("tier_lost")) };
-    }) : [...document.querySelectorAll("#sum .stat")].map(el => {          // group and service pages: their stats as shown
-      const b = el.querySelector("b");
-      return { label: el.querySelector("em").textContent, num: b.firstChild ? b.firstChild.textContent : "–", ms: !!b.querySelector("small"), k: C[b.className] ? b.className : "fg", sub: el.querySelector("i").textContent };
-    });
-    cells.forEach((cl, i) => {
-      const cx0 = P + i * (cw3 + 16);
-      x.fillStyle = C.panel === C.bg ? C.line + "55" : C.panel; roundRect(x, cx0, sTop, cw3, SH, 14); x.fill();
-      x.fillStyle = C.muted; x.font = `400 20px ${F}`; x.fillText(cl.label, cx0 + 20, sTop + 34);
-      x.fillStyle = C[cl.k]; x.font = `600 46px ${M}`; x.fillText(cl.num, cx0 + 20, sTop + 86);
-      const nw = x.measureText(cl.num).width;
-      x.fillStyle = C.muted; x.font = `400 20px ${F}`;
-      x.fillText(clip(x, (cl.ms ? "ms  " : "") + cl.sub, cw3 - 50 - nw), cx0 + 20 + nw + 10, sTop + 86);
-    });
-    // exits, without IPs
-    let y = eTop;
-    for (const g of exits) {
-      const k = t(g.proxy ? "k_proxy" : "k_local");
-      x.font = `600 18px ${F}`; const kw = x.measureText(k).width + 20;
-      x.fillStyle = (g.proxy ? C.warn : C.c1) + "30"; roundRect(x, P, y - 22, kw, 30, 7); x.fill();
-      x.fillStyle = g.proxy ? C.warn : C.c1; x.fillText(k, P + 10, y);
-      let xx = P + kw + 12;
-      if (g.cc) { try { const f = await img(`/flags/${g.cc.toLowerCase()}.svg`); x.drawImage(f, xx, y - 19, 32, 24); xx += 42; } catch (e) {} }
-      x.fillStyle = C.fg; x.font = `600 22px ${F}`; const w = whereOf(g) || "?"; x.fillText(w, xx, y);
-      xx += x.measureText(w).width + 14;
-      x.fillStyle = C.muted; x.font = `400 20px ${F}`; x.fillText(g.org + (g.asn ? " · AS" + g.asn : ""), xx, y);
-      y += 40;
-    }
-    // the field: a single service's samples on one lane, the median the big ball
-    if (ONE) {
-      const r = R.get(ONE.id), ok = r ? r.s.filter(v => v != null) : [], md = median(ok), [, k] = tierOf(md), l0 = P + 200, l1 = W - P - 90, cy = top + 40;
-      x.fillStyle = C.fg; x.font = `600 22px ${F}`; x.fillText(clip(x, ONE.name, 180), P, cy + 8);
-      x.fillStyle = C.line; x.fillRect(l0, cy - 2, l1 - l0, 4);
-      for (const v of ok) { x.beginPath(); x.arc(l0 + (l1 - l0) * pos(v), cy, 7, 0, Math.PI * 2); x.fillStyle = C[tierOf(v)[1]] + "88"; x.fill(); }
-      if (md != null) { x.beginPath(); x.arc(l0 + (l1 - l0) * pos(md), cy, 12, 0, Math.PI * 2); x.fillStyle = C[k]; x.fill(); }
-      x.fillStyle = md == null ? C.muted : C[k]; x.font = `600 24px ${M}`; x.textAlign = "right"; x.fillText(md == null ? "✕" : fmt(md), W - P, cy + 8); x.textAlign = "left";
-    }
-    const cw = (W - P * 2 - 40 * (NC - 1)) / NC, laneX = NC === 1 ? 200 : 128, msW = 60;
-    cols.forEach((col, i) => {
-      let yy = top + oneH + 20; const x0 = P + i * (cw + 40);
-      for (const g of col) {
-        x.fillStyle = C.muted; x.font = `600 15px ${F}`; x.fillText(g.name.toUpperCase(), x0, yy + 22); yy += GH;   // the title sits clear of the row above
-        for (const sv of g.items) {
-          const md = median(R.get(sv.id).s), [, k] = tierOf(md), l0 = x0 + laneX, l1 = x0 + cw - msW - 10, cy = yy + 6;
-          x.fillStyle = C.fg; x.font = `400 18px ${F}`; x.fillText(clip(x, sv.short || sv.name, laneX - 12), x0, yy + 12);
-          x.fillStyle = C.line; x.fillRect(l0, cy - 1.5, l1 - l0, 3);
-          const px = md == null ? l1 : l0 + (l1 - l0) * pos(md);
-          if (md != null) { x.fillStyle = C[k] + "99"; x.fillRect(l0, cy - 1.5, px - l0, 3); }
-          x.beginPath(); x.arc(px, cy, 7, 0, Math.PI * 2);
-          if (md == null) { x.strokeStyle = C.muted; x.lineWidth = 2; x.stroke(); } else { x.fillStyle = C[k]; x.fill(); }
-          x.fillStyle = md == null ? C.muted : C[k]; x.font = `600 18px ${M}`; x.textAlign = "right"; x.fillText(md == null ? "✕" : fmt(md), x0 + cw, yy + 12); x.textAlign = "left";
-          yy += RH;
-        }
+  function cardLayout() {
+    let L = null;
+    // measured first, for the card's height; the exits depend on the share box (city and network, or not)
+    const height = (m, kit) => {
+      const { W, P, top: T, F } = kit, list = allServices().filter(s => R.get(s.id) && R.get(s.id).st === "done");
+      const groups = (ONE ? (SUBS.length ? [{ name: t("sub_" + ONE.id), items: SUBS }] : []) : GRP ? [{ name: GRP.name, items: GRP.list }] : [{ name: t("cat_local"), items: PACKS[pack] }, ...SVC.cats.map(c => ({ name: t("cat_" + c), items: SVC.list.filter(s => s.cat === c) }))])
+        .map(g => ({ name: g.name, items: g.items.filter(s => list.includes(s)) })).filter(g => g.items.length);
+      // three columns (one on a group page), filled in order, about equally tall
+      const NC = GRP || ONE ? 1 : 3, RH = 30, GH = 40, total = groups.reduce((a, g) => a + GH + g.items.length * RH, 0), cols = Array.from({ length: NC }, () => []);
+      let ci = 0, hcol = 0;
+      for (const g of groups) { const h = GH + g.items.length * RH; if (hcol && hcol + h / 2 > total / NC && ci < NC - 1) { ci++; hcol = 0; } cols[ci].push(g); hcol += h; }
+      const oneH = ONE ? 80 : 0, colH = oneH + Math.max(0, ...cols.map(c => c.reduce((a, g) => a + GH + g.items.length * RH, 0)));
+      // Same order as the page: headline, what it means, the three numbers, exits, then every ball.
+      // The headline and its detail stay clear of the dog on the right.
+      const lines = (s0, font, w) => { m.font = font; return wrap(m, s0, w); };
+      const head = lastSum.v ? verdictHead(lastSum.v) : $("#vHead").textContent, detail = lastSum.v ? verdictText(lastSum.v) : $("#vText").textContent;
+      const hLines = head ? lines(head, `700 44px ${F}`, W - P * 2 - 250) : [];
+      const dLines = detail ? lines(detail, `400 24px ${F}`, W - P * 2 - 250) : [];
+      const hTop = T + 44, dTop = hTop + (hLines.length - 1) * 54 + 48, sTop = Math.max(dTop + dLines.length * 34 + 10, T + 150), SH = 108;
+      const exits = exitsFor(kit.show).slice(0, 3), eTop = sTop + SH + 46, top = eTop + exits.length * 40 - 18;
+      L = { groups, cols, NC, RH, GH, oneH, hLines, dLines, hTop, dTop, sTop, SH, exits, eTop, top };
+      return top + colH + 30 + 70;
+    };
+    const draw = async (x, kit) => {
+      const { W, P, F, M, v } = kit, { cols, NC, RH, GH, oneH, hLines, dLines, hTop, dTop, sTop, SH, exits, eTop, top } = L;
+      const C = { bg: v("bg"), panel: v("panel"), line: v("line"), fg: v("fg"), muted: v("muted"), c0: v("t0"), c1: v("t1"), c2: v("t2"), c3: v("t3"), c4: v("t4"), c5: v("t5"), cx: v("muted"), gold: v("ink"), warn: v("warn") };
+      try { x.drawImage(await img("/assets/shiba-run.svg"), 150, 20, 700, 420, W - P - 220, kit.top, 220, 132); } catch (e) {}
+      x.textBaseline = "alphabetic";
+      x.fillStyle = C.fg; x.font = `700 44px ${F}`; hLines.forEach((l, i) => x.fillText(l, P, hTop + i * 54));
+      x.fillStyle = C.muted; x.font = `400 24px ${F}`; dLines.forEach((l, i) => x.fillText(l, P, dTop + i * 34));
+      // the three numbers
+      const s = lastSum, v0 = s.v, cw3 = (W - P * 2 - 2 * 16) / 3;
+      const cells = v0 ? [[t("seg_local"), v0.local, ""], [t("seg_global"), v0.global, ""], [t("med"), { md: s.md }, t("back", { ok: s.ok, n: s.n })]].map(([label, sg, sub]) => {
+        const md = sg ? sg.md : null, [tk, k] = tierOf(md);
+        return { label, num: md != null ? fmt(md) : "✕", ms: md != null, k, sub: sub || (md != null ? t("tier_" + tk) : t("tier_lost")) };
+      }) : [...document.querySelectorAll("#sum .stat")].map(el => {          // group and service pages: their stats as shown
+        const b = el.querySelector("b");
+        return { label: el.querySelector("em").textContent, num: b.firstChild ? b.firstChild.textContent : "–", ms: !!b.querySelector("small"), k: C[b.className] ? b.className : "fg", sub: el.querySelector("i").textContent };
+      });
+      cells.forEach((cl, i) => {
+        const cx0 = P + i * (cw3 + 16);
+        x.fillStyle = C.panel === C.bg ? C.line + "55" : C.panel; roundRect(x, cx0, sTop, cw3, SH, 14); x.fill();
+        x.fillStyle = C.muted; x.font = `400 20px ${F}`; x.fillText(cl.label, cx0 + 20, sTop + 34);
+        x.fillStyle = C[cl.k]; x.font = `600 46px ${M}`; x.fillText(cl.num, cx0 + 20, sTop + 86);
+        const nw = x.measureText(cl.num).width;
+        x.fillStyle = C.muted; x.font = `400 20px ${F}`;
+        x.fillText(clip(x, (cl.ms ? "ms  " : "") + cl.sub, cw3 - 50 - nw), cx0 + 20 + nw + 10, sTop + 86);
+      });
+      // exits, without IPs
+      let y = eTop;
+      for (const g of exits) {
+        const k = t(g.proxy ? "k_proxy" : "k_local");
+        x.font = `600 18px ${F}`; const kw = x.measureText(k).width + 20;
+        x.fillStyle = (g.proxy ? C.warn : C.c1) + "30"; roundRect(x, P, y - 22, kw, 30, 7); x.fill();
+        x.fillStyle = g.proxy ? C.warn : C.c1; x.fillText(k, P + 10, y);
+        let xx = P + kw + 12;
+        if (g.cc) { try { const f = await img(`/flags/${g.cc.toLowerCase()}.svg`); x.drawImage(f, xx, y - 19, 32, 24); xx += 42; } catch (e) {} }
+        x.fillStyle = C.fg; x.font = `600 22px ${F}`; const w = whereOf(g) || "?"; x.fillText(w, xx, y);
+        xx += x.measureText(w).width + 14;
+        x.fillStyle = C.muted; x.font = `400 20px ${F}`; x.fillText([g.org, g.asn && "AS" + g.asn].filter(Boolean).join(" · "), xx, y);
+        y += 40;
       }
-    });
-    x.fillStyle = C.line; x.fillRect(P, H - FH, W - P * 2, 1);
-    const when = new Date(SHARED ? SHARED.ts : Date.now()).toLocaleString(LANG, { dateStyle: "medium", timeStyle: "short" });
-    if (qr) {
-      // dark modules on a white tile in either theme (scanners expect that), with a two-module quiet zone
-      const n = qr.getModuleCount(), S = 116, m0 = S / (n + 4), qx = W - P - S, qy = H - FH + 22;
-      x.fillStyle = "#fff"; roundRect(x, qx, qy, S, S, 10); x.fill();
-      x.fillStyle = "#111";
-      for (let r0 = 0; r0 < n; r0++) for (let c0 = 0; c0 < n; c0++) if (qr.isDark(r0, c0)) x.fillRect(qx + (c0 + 2) * m0, qy + (r0 + 2) * m0, m0 + 0.3, m0 + 0.3);
-      x.fillStyle = C.gold; x.font = `600 28px ${M}`; x.fillText("1ms.dog", P, H - FH + 62);
-      x.fillStyle = C.fg; x.font = `400 20px ${F}`; x.fillText(t("qr_hint"), P, H - FH + 98);
-      x.fillStyle = C.muted; x.font = `400 18px ${F}`; x.fillText(when, P, H - FH + 130);
-    } else {
-      x.fillStyle = C.gold; x.font = `600 24px ${M}`; x.fillText("1ms.dog", P, H - 30);
-      x.fillStyle = C.muted; x.font = `400 18px ${F}`; x.textAlign = "right"; x.fillText(when, W - P, H - 30); x.textAlign = "left";
-    }
-    return c;
+      // the field: a single service's samples on one lane, the median the big ball
+      if (ONE) {
+        const r = R.get(ONE.id), ok = r ? r.s.filter(v => v != null) : [], md = median(ok), [, k] = tierOf(md), l0 = P + 200, l1 = W - P - 90, cy = top + 40;
+        x.fillStyle = C.fg; x.font = `600 22px ${F}`; x.fillText(clip(x, ONE.name, 180), P, cy + 8);
+        x.fillStyle = C.line; x.fillRect(l0, cy - 2, l1 - l0, 4);
+        for (const v of ok) { x.beginPath(); x.arc(l0 + (l1 - l0) * pos(v), cy, 7, 0, Math.PI * 2); x.fillStyle = C[tierOf(v)[1]] + "88"; x.fill(); }
+        if (md != null) { x.beginPath(); x.arc(l0 + (l1 - l0) * pos(md), cy, 12, 0, Math.PI * 2); x.fillStyle = C[k]; x.fill(); }
+        x.fillStyle = md == null ? C.muted : C[k]; x.font = `600 24px ${M}`; x.textAlign = "right"; x.fillText(md == null ? "✕" : fmt(md), W - P, cy + 8); x.textAlign = "left";
+      }
+      const cw = (W - P * 2 - 40 * (NC - 1)) / NC, laneX = NC === 1 ? 200 : 128, msW = 60;
+      cols.forEach((col, i) => {
+        let yy = top + oneH + 20; const x0 = P + i * (cw + 40);
+        for (const g of col) {
+          x.fillStyle = C.muted; x.font = `600 15px ${F}`; x.fillText(g.name.toUpperCase(), x0, yy + 22); yy += GH;   // the title sits clear of the row above
+          for (const sv of g.items) {
+            const md = median(R.get(sv.id).s), [, k] = tierOf(md), l0 = x0 + laneX, l1 = x0 + cw - msW - 10, cy = yy + 6;
+            x.fillStyle = C.fg; x.font = `400 18px ${F}`; x.fillText(clip(x, sv.short || sv.name, laneX - 12), x0, yy + 12);
+            x.fillStyle = C.line; x.fillRect(l0, cy - 1.5, l1 - l0, 3);
+            const px = md == null ? l1 : l0 + (l1 - l0) * pos(md);
+            if (md != null) { x.fillStyle = C[k] + "99"; x.fillRect(l0, cy - 1.5, px - l0, 3); }
+            x.beginPath(); x.arc(px, cy, 7, 0, Math.PI * 2);
+            if (md == null) { x.strokeStyle = C.muted; x.lineWidth = 2; x.stroke(); } else { x.fillStyle = C[k]; x.fill(); }
+            x.fillStyle = md == null ? C.muted : C[k]; x.font = `600 18px ${M}`; x.textAlign = "right"; x.fillText(md == null ? "✕" : fmt(md), x0 + cw, yy + 12); x.textAlign = "left";
+            yy += RH;
+          }
+        }
+      });
+    };
+    return { height, draw };
   }
   function roundRect(x, l, t0, w, h, r) { x.beginPath(); x.moveTo(l + r, t0); x.arcTo(l + w, t0, l + w, t0 + h, r); x.arcTo(l + w, t0 + h, l, t0 + h, r); x.arcTo(l, t0 + h, l, t0, r); x.arcTo(l, t0, l + w, t0, r); x.closePath(); }
   // lines that fit width w: break at spaces, or anywhere in CJK text
@@ -753,7 +712,7 @@
 
   /* ---------- a shared result ---------- */
   // Opening a shared link shows that result and doesn't test until the visitor asks for their own
-  const SHARED = parseHash(location.hash);
+  const SHARED = parseShare(RLINK ? RLINK[1] : location.hash, PACKS);
   function showShared(S) {
     if (!ONE && !GRP && S.pack !== pack) showPack(S.pack);
     NET.groups = S.groups; NET.done = true; renderExits(); $("#eye").hidden = true;
@@ -766,7 +725,7 @@
   function leaveShared() {
     if (!sharedOn) return;
     sharedOn = false; $("#shared").hidden = true; $("#eye").hidden = false;
-    history.replaceState(null, "", location.pathname + location.search);
+    history.replaceState(null, "", PAGE + location.search);
     NET.groups = []; NET.seen = []; NET.geo = {}; NET.done = false; NET.hidden = null; renderExits();
     checkExits().catch(() => {});
   }

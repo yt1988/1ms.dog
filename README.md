@@ -11,9 +11,9 @@ Where does your internet really exit, and how far is the world from there? [1ms.
 - **Every exit, local and proxy.** A rule-based proxy picks the route by destination, so a single "what is my IP" check only sees its own route. The page asks checks in different places at once: a site in mainland China, Cloudflare, ip.sb, ipinfo.io, IPv4-only and IPv6-only hosts, and WebRTC over UDP. It groups their answers by network and marks each exit as local or proxy. When services that are usually unreachable from your country answer anyway, it points out the exit none of the checks could see.
 - **Latency to 40 services, measured at their edge.** Covers AI, everyday web, video and music, social, developer tools, gaming and CDNs, plus a local pack picked by exit country (mainland China, Japan, Korea, Russia, Europe, Latin America…).
 - **A verdict, not just a median.** Local favorites and global services are judged separately, so the page tells you *where* it's slow: international routes or the proxy server, your own line, or everything going through a proxy. It also translates the numbers into everyday uses: gaming, video calls, streaming, AI tools and dev tools.
-- **Share a result** as an image drawn in your browser, or as a link that carries the result itself. Links contain cities, networks and timings, never IP addresses.
+- **Share a result** as an image drawn in your browser, or as a link that carries the result itself. Links hold the country and timings, plus city and network only if you tick the box; never IP addresses.
 - **10 languages**, all pre-rendered, plus landing pages chosen per language for the services people search latency for there (`/chatgpt/`, `/zh-cn/dockerhub/`, `/ru/discord/`…).
-- **Private by design:** every request goes straight from your browser to the service being tested. The site is static files; it never receives your results.
+- **Private by design:** every request goes straight from your browser to the service being tested. The site is static files; it never receives your results. A shared link carries its result in the path (`/r/…`), and a small Worker reads it to put the result in the link preview.
 
 ## How latency is measured
 
@@ -23,16 +23,16 @@ Each test URL has to be **answered by the service's edge**. Otherwise the number
 
 ## Self-hosting
 
-The site is static: `public/` is committed, so you don't need to build anything unless you change the code.
+The page is static: `public/` is committed, so you don't need to build anything unless you change the code.
 
 ```bash
 git clone https://github.com/yt1988/1ms.dog
 cd 1ms.dog
 npx wrangler login
-npx wrangler deploy        # a static-assets Worker: no script, free and unmetered
+npx wrangler deploy        # static assets (free and unmetered) and src/worker.js, which only runs for /r/ links
 ```
 
-`wrangler.toml` turns off `*.workers.dev` and preview URLs. Bind your own domain under **Workers & Pages → 1ms-index → Settings → Domains & Routes**, or set `workers_dev = true` for a quick test. Any static host works too; `public/_headers` holds the security headers (CSP) in Cloudflare's format.
+`wrangler.toml` turns off `*.workers.dev` and preview URLs. Bind your own domain under **Workers & Pages → 1ms-index → Settings → Domains & Routes**, or set `workers_dev = true` for a quick test. Any static host works too, without the result-link previews (`/r/` links then need a rewrite to their page); `public/_headers` holds the security headers (CSP) in Cloudflare's format.
 
 To put your own domain into canonical tags, the sitemap and preview images, rebuild with `SITE_URL`:
 
@@ -61,6 +61,7 @@ On 1ms.dog, every push to `main` deploys automatically (Cloudflare Workers Build
 src/page.html        page template
 src/app.js           browser code: exit checks, timing, the dog, the verdict, sharing
 src/lib.mjs          pure logic (medians, speed levels, diagnosis, exit grouping, share links), unit-tested
+src/worker.js        the Worker for shared result links (/r/…): the page with the result in its preview title
 src/services.mjs     services, local packs, country → pack, the distance scale and everyday uses
 src/i18n/*.mjs       strings for 10 languages; en is the reference, other languages fall back key by key
 src/*.css            design tokens (shared with the other 1ms.dog tools) and the layout

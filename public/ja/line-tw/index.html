@@ -2,7 +2,7 @@
 <html lang="ja" data-paths="{&quot;en&quot;:&quot;/line-tw/&quot;,&quot;zh-CN&quot;:&quot;/zh-cn/line-tw/&quot;,&quot;zh-TW&quot;:&quot;/zh-tw/line-tw/&quot;,&quot;ja&quot;:&quot;/ja/line-tw/&quot;,&quot;ko&quot;:&quot;/ko/line-tw/&quot;,&quot;es&quot;:&quot;/es/line-tw/&quot;,&quot;fr&quot;:&quot;/fr/line-tw/&quot;,&quot;de&quot;:&quot;/de/line-tw/&quot;,&quot;pt&quot;:&quot;/pt/line-tw/&quot;,&quot;ru&quot;:&quot;/ru/line-tw/&quot;}">
 <head>
 <meta charset="utf-8">
-<script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en")location.replace(P[l]+location.hash)})();</script>
+<script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en"){var r=location.pathname.match(/[/]r[/][^/]+[/]?$/);location.replace(P[l]+(r?r[0].slice(1):"")+location.hash)}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>LINE の Ping・遅延テスト｜LINE が重い・つながらない原因をチェック · 1ms.dog</title>
 <meta name="description" content="ブラウザから LINE の遅延を測定：LINE への本物の HTTPS 往復を 10 回測り、中央値・初回接続・ジッターと、あなたの出口 IP・プロバイダを表示します。無料・登録不要。">
@@ -31,7 +31,7 @@
 <meta name="twitter:image" content="https://1ms.dog/og/ja.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"あなたの回線から LINE はどれくらい速い？","url":"https://1ms.dog/ja/line-tw/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"ブラウザから LINE の遅延を測定：LINE への本物の HTTPS 往復を 10 回測り、中央値・初回接続・ジッターと、あなたの出口 IP・プロバイダを表示します。無料・登録不要。","inLanguage":"ja","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/ja/"},{"@type":"ListItem","position":2,"name":"LINE","item":"https://1ms.dog/ja/line-tw/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.1840758605.css">
+<link rel="stylesheet" href="/assets/app.868e3c6af4.css">
 </head>
 <body>
 <div class="app">
@@ -118,28 +118,13 @@
         <select id="helpSel" aria-labelledby="helpT"></select>
         <button class="icon-btn" type="button" data-hstep="1" aria-label="次へ"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg></button>
       </div>
-      <div class="help-c" id="helpC"><article data-hqb="0"><h3>あなたの回線から LINE はどれくらい速い？</h3><p>比べたいときは、トップページで LINE と他の地域の定番サービスをまとめて測れます：Yahoo奇摩、ETtoday、PTT。</p></article><article data-hqb="1" hidden><h3>出口 IP とは？</h3><p>サイトにアクセスしたとき、相手から見えるアドレスです。自宅では通常プロバイダのものですが、VPN、プロキシ、社内ネットワーク、iCloud プライベートリレーを使うと、通信を中継する側のアドレスになり、別の都市や国にあることもあります。出口によって接続先サーバーが決まるので、速度も出口で決まります。</p></article><article data-hqb="2" hidden><h3>ローカルとプロキシの出口が両方表示されるのはなぜ？</h3><p>ルールで振り分けるプロキシや VPN は、宛先によって経路を変えます。そのため 1 つの IP チェックでは、そのチェックの経路しか見えません。中国本土のサイト、Cloudflare、ip.sb、ipinfo.io、IPv4 専用と IPv6 専用のチェック、WebRTC（UDP）に同時に問い合わせ、ネットワークごとにまとめて、ローカルかプロキシかを表示します。</p></article><article data-hqb="3" hidden><h3>遅延はどう測っていますか？</h3><p>ブラウザが各サービスと本物の HTTPS 接続を開きます。最初のリクエストは接続の確立（DNS、TCP、TLS）用で集計しません。その後同じ接続を再利用して計測し、中央値を表示します。Wi‑Fi、プロバイダ、プロキシを含む、端末からサービスの最寄りサーバーまでの往復時間で、アプリが実際に体感する遅延です。</p></article><article data-hqb="4" hidden><h3>ping と結果が違うのはなぜ？</h3><p>ping は ICMP を使いますが、ブラウザからは送れず、ネットワークによっては通常の通信と扱いが異なります。HTTPS の計測は普段のアプリと同じ経路を通ります。サーバーがリクエストに応答する分、ping より数ミリ秒高くなるのが普通です。</p></article><article data-hqb="5" hidden><h3>犬のスピードの意味は？</h3><p>爆走 ≤ 30 ms：同じ都市。ダッシュ ≤ 80 ms：同じ地域。トコトコ ≤ 150 ms：ほぼ何でも快適。おさんぽ ≤ 300 ms：ゲームや通話で気になる。おひるね &gt; 300 ms：遠いか混雑。戻らず：5 秒以内に接続できず、ここからは利用できません。2 ms 未満なら伝説の 1ms 犬。</p></article><article data-hqb="6" hidden><h3>データはどこかに送られますか？</h3><p>いいえ。すべてのリクエストはブラウザからテスト対象のサービスへ直接送られます。1ms.dog は静的なページを配信するだけで、結果を受け取りません。前回の結果はこのブラウザ内にだけ保存されます。シェア用リンクに含まれるのは都市・ネットワーク・遅延だけで、IP アドレスは含みません。</p></article></div>
+      <div class="help-c" id="helpC"><article data-hqb="0"><h3>あなたの回線から LINE はどれくらい速い？</h3><p>比べたいときは、トップページで LINE と他の地域の定番サービスをまとめて測れます：Yahoo奇摩、ETtoday、PTT。</p></article><article data-hqb="1" hidden><h3>出口 IP とは？</h3><p>サイトにアクセスしたとき、相手から見えるアドレスです。自宅では通常プロバイダのものですが、VPN、プロキシ、社内ネットワーク、iCloud プライベートリレーを使うと、通信を中継する側のアドレスになり、別の都市や国にあることもあります。出口によって接続先サーバーが決まるので、速度も出口で決まります。</p></article><article data-hqb="2" hidden><h3>ローカルとプロキシの出口が両方表示されるのはなぜ？</h3><p>ルールで振り分けるプロキシや VPN は、宛先によって経路を変えます。そのため 1 つの IP チェックでは、そのチェックの経路しか見えません。中国本土のサイト、Cloudflare、ip.sb、ipinfo.io、IPv4 専用と IPv6 専用のチェック、WebRTC（UDP）に同時に問い合わせ、ネットワークごとにまとめて、ローカルかプロキシかを表示します。</p></article><article data-hqb="3" hidden><h3>遅延はどう測っていますか？</h3><p>ブラウザが各サービスと本物の HTTPS 接続を開きます。最初のリクエストは接続の確立（DNS、TCP、TLS）用で集計しません。その後同じ接続を再利用して計測し、中央値を表示します。Wi‑Fi、プロバイダ、プロキシを含む、端末からサービスの最寄りサーバーまでの往復時間で、アプリが実際に体感する遅延です。</p></article><article data-hqb="4" hidden><h3>ping と結果が違うのはなぜ？</h3><p>ping は ICMP を使いますが、ブラウザからは送れず、ネットワークによっては通常の通信と扱いが異なります。HTTPS の計測は普段のアプリと同じ経路を通ります。サーバーがリクエストに応答する分、ping より数ミリ秒高くなるのが普通です。</p></article><article data-hqb="5" hidden><h3>犬のスピードの意味は？</h3><p>爆走 ≤ 30 ms：同じ都市。ダッシュ ≤ 80 ms：同じ地域。トコトコ ≤ 150 ms：ほぼ何でも快適。おさんぽ ≤ 300 ms：ゲームや通話で気になる。おひるね &gt; 300 ms：遠いか混雑。戻らず：5 秒以内に接続できず、ここからは利用できません。2 ms 未満なら伝説の 1ms 犬。</p></article><article data-hqb="6" hidden><h3>データはどこかに送られますか？</h3><p>いいえ。すべてのリクエストはブラウザからテスト対象のサービスへ直接送られます。1ms.dog は静的なページを配信するだけで、結果を受け取りません。前回の結果はこのブラウザ内にだけ保存されます。シェア用リンクには結果そのものが入っています。国と遅延のほか、チェックしたときだけ都市とネットワークが入り、IP アドレスは入りません。開かれたとき、サーバーはリンクのプレビューを作るためだけにそれを読みます。</p></article></div>
     </div>
   </div>
 </div>
 
-<div class="scrim" id="shareDlg" hidden>
-  <div class="dialog share" role="dialog" aria-modal="true" aria-labelledby="shareT">
-    <div class="dlg-h"><h2 id="shareT" data-i="share_h">結果をシェア</h2>
-      <button class="icon-btn" data-close type="button" aria-label="閉じる"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
-    <div class="share-b">
-      <img id="shareImg" alt="" width="1200" height="1000">
-      <div class="share-link"><input id="shareUrl" readonly aria-label="リンク"><button class="btn pri" id="copyLink" type="button" data-i="copy_link">リンクをコピー</button></div>
-      <div class="share-acts">
-        <button class="btn" id="copyImg" type="button" data-i="copy_img">画像をコピー</button>
-        <button class="btn" id="dlImg" type="button" data-i="dl_img">画像を保存</button>
-        <button class="btn" id="nativeShare" type="button" data-i="more_share" hidden>ほかの方法でシェア</button>
-      </div>
-    </div>
-  </div>
-</div>
 <script type="application/json" id="data">{"lang":"ja","paths":{"en":"/line-tw/","zh-CN":"/zh-cn/line-tw/","zh-TW":"/zh-tw/line-tw/","ja":"/ja/line-tw/","ko":"/ko/line-tw/","es":"/es/line-tw/","fr":"/fr/line-tw/","de":"/de/line-tw/","pt":"/pt/line-tw/","ru":"/ru/line-tw/"},"pack":"jp","spot":"line-tw","set":null}</script>
-<script src="/assets/l.ja.00a70dff3c.js" defer></script>
-<script src="/assets/app.3276c38d7d.js" defer></script>
+<script src="/assets/l.ja.a16ddb775f.js" defer></script>
+<script src="/assets/app.2e67ec5f26.js" defer></script>
 </body>
 </html>

@@ -3,14 +3,14 @@
 //   index.html, <lang>/index.html                 home page per language
 //   <id>/, <lang>/<id>/                           a landing page per searched-for service (land: true)
 //   assets/app.<hash>.js, assets/app.<hash>.css   app code and styles, shared and cached by every page
-//   assets/qr.<hash>.js                           QR encoder, loaded only when someone shares a result
+//   assets/share/                                 the shared share dialog, copied verbatim from 1ms-shell (not built)
 //   sitemap.xml, robots.txt, llms.txt, _headers   SEO and security headers (CSP)
 // Usage: node scripts/build.mjs          write the files
 //        node scripts/build.mjs --check  exit 1 if anything is out of date, or the app code does not parse (CI)
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
-import { build as bundle, transform } from "esbuild";
+import { transform } from "esbuild";
 import { fillIn } from "../src/lib.mjs";
 import KO from "../src/i18n/ko.mjs";
 import { CATS, SERVICES, PACKS, PACK_OF, SCALE, ZONES, USES, SUBS, TG_DC_OF, UNLOCK, pos } from "../src/services.mjs";
@@ -23,7 +23,7 @@ export const LANGS = [["en", "", "en_US", "na"], ["zh-CN", "zh-cn", "zh_CN", "cn
   ["ru", "ru", "ru_RU", "ru"]];
 // Runs before first paint: apply the saved theme. On the English root, send visitors to their language's page
 // (a saved choice first, then the browser languages); crawlers and English readers stay.
-const PREPAINT = `(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en")location.replace(P[l]+location.hash)})();`;
+const PREPAINT = `(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en"){var r=location.pathname.match(/[/]r[/][^/]+[/]?$/);location.replace(P[l]+(r?r[0].slice(1):"")+location.hash)}})();`;
 
 const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const fill = (s, v) => fillIn(s, v, KO.josa_fin);
@@ -58,11 +58,7 @@ export async function build({ check = false } = {}) {
   const lib = (await readFile(new URL("lib.mjs", src), "utf8")).replace(/^export /gm, "");
   const appSrc = await readFile(new URL("app.js", src), "utf8");
   if (!appSrc.includes("/* @lib */")) throw new Error("src/app.js has no /* @lib */ marker");
-  // the QR encoder for the share card stays out of the app bundle: only a visitor who shares downloads it
-  const qr = (await bundle({ stdin: { contents: 'import q from "qrcode-generator"; self.QR1MS = q;', resolveDir: fileURLToPath(new URL("..", import.meta.url)) },
-    bundle: true, minify: true, format: "iife", target: "es2020", legalComments: "none", write: false })).outputFiles[0].text;
-  const qrName = `qr.${hash(qr)}.js`;
-  const appFull = `const SVC = ${JSON.stringify(svc)}, QR_JS = "/assets/${qrName}";\n` + appSrc.replace("/* @lib */", () => lib);
+  const appFull = `const SVC = ${JSON.stringify(svc)};\n` + appSrc.replace("/* @lib */", () => lib);
   new Function(appFull);                                                // must parse
   // the lanes are colored by speed zone, at the same log-scale positions the page puts the balls
   const pct = ms => (pos(ms) * 100).toFixed(1) + "%", Z = ZONES.map(pct);
@@ -95,7 +91,7 @@ export async function build({ check = false } = {}) {
   const altsOf = sub => langs.filter(([l]) => indexed(l, sub));
   const path = (slug, sub) => "/" + (slug ? slug + "/" : "") + (sub ? sub + "/" : "");
   const RUNTIME_SKIP = new Set(["docs", "egress_link", "seo_title", "seo_desc", "seo_kw", "og_sub", "lede", "lp_title", "lp_desc", "lp_intro", "lp_h1", "lp_kw", "lp_peers", "lp_via", "lp_via_same", "land", "lg_title", "lg_desc", "lg_h1", "lg_kw", "lg_intro", "lg_about", "lg_region", "sm_cats", "sm_regions", "grp_best", "grp_worst", "sitemap_h", "sm_item", "cta_h", "cta_d", "cta_btn", "one_med", "one_cold", "one_jit", "foot",
-    "name", "h1", "lang_label", "faq_h", "pack", "exit_h", "test_mine", "share_h", "copy_link", "copy_img", "dl_img", "more_share"]);
+    "name", "h1", "lang_label", "faq_h", "pack", "exit_h", "test_mine", "r_title", "r_one"]);
   // static text the page already shows, and region names (only the server-rendered picker uses them)
   const runtimeKey = k => !RUNTIME_SKIP.has(k) && !k.startsWith("pk_") && !k.startsWith("a_");
   const pages = [], stringFiles = {};
@@ -278,7 +274,7 @@ export async function build({ check = false } = {}) {
   Content-Type: text/plain; charset=utf-8
 `;
 
-  const files = { ["assets/" + jsName]: app, ["assets/" + cssName]: css, ["assets/" + qrName]: qr, ...stringFiles, "sitemap.xml": sitemap, "robots.txt": robots, "llms.txt": llms, "_headers": headers };
+  const files = { ["assets/" + jsName]: app, ["assets/" + cssName]: css, ...stringFiles, "sitemap.xml": sitemap, "robots.txt": robots, "llms.txt": llms, "_headers": headers };
   for (const p of pages) files[p.file] = p.html;
 
   const stale = [];

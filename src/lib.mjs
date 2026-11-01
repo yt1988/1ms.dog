@@ -70,16 +70,21 @@ export function diagnose(local, global) {
 export const useStatus = (sg, good, ok) => sg.ok < sg.n / 2 ? "blocked" : sg.md <= good ? "great" : sg.md <= ok ? "ok" : "slow";
 
 /* ---------- share links ---------- */
-// The link holds no IP address: per exit only country, city, network and local/proxy; per service its median.
-// #r=1|<unix time base36>|<pack>|<exits>|<results>   exits: cc~city~org~asn~p|l joined by ","; results: id:ms×10 base36, "x" = lost
-const enc = v => encodeURIComponent(String(v ?? "")).replace(/[~,|:]/g, c => "%" + c.charCodeAt(0).toString(16).toUpperCase());
+// The link holds no IP address: per exit only country, city, network and local/proxy (city and network only when the
+// visitor ticks the share box); per service its median.
+// The result is the last path segment, /<lang>/[<page>/]r/<code>, so the Worker can read it for the preview title:
+//   2.<unix time base36>.<pack>.<exits>.<results>
+// exits: cc~city~org~asn~p|l joined by ","; results: id:ms×10 base36 joined by ",", "x" = lost. Every value is
+// percent-encoded, dots and the characters chat apps end a link at included, so the code stays one plain path segment.
+// Links before it put the result after #, and still open: #r=1|<time>|<pack>|<exits>|<results>, same fields.
+const enc = v => encodeURIComponent(String(v ?? "")).replace(/[.~!'()*]/g, c => "%" + c.charCodeAt(0).toString(16).toUpperCase());
 export function encodeShare({ ts, pack, groups, res }) {
   const ex = groups.map(g => [g.cc, g.city, g.org, g.asn || "", g.proxy ? "p" : "l"].map(enc).join("~")).join(",");
   const rs = Object.entries(res).map(([id, m]) => id + ":" + (m == null ? "x" : Math.round(m * 10).toString(36))).join(",");
-  return "#r=1|" + Math.floor(ts / 1000).toString(36) + "|" + pack + "|" + ex + "|" + rs;
+  return ["2", Math.floor(ts / 1000).toString(36), pack, ex, rs].join(".");
 }
-export function parseShare(h, packs) {
-  const m = /^#r=1\|([0-9a-z]+)\|(\w+)\|([^|]*)\|(.*)$/.exec(h || "");
+export function parseShare(code, packs) {
+  const m = /^2\.([0-9a-z]+)\.(\w+)\.([^.]*)\.([^.]*)$/.exec(code || "") || /^#r=1\|([0-9a-z]+)\|(\w+)\|([^|]*)\|(.*)$/.exec(code || "");
   if (!m || !packs[m[2]]) return null;
   const dec = v => { try { return decodeURIComponent(v); } catch (e) { return ""; } };
   const groups = m[3] ? m[3].split(",").map(x => {
