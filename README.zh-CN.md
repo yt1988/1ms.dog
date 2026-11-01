@@ -26,8 +26,8 @@
 站点是纯静态的，`public/` 已经提交在仓库里，不改代码就不需要构建。
 
 ```bash
-git clone https://github.com/yt1988/1ms-index
-cd 1ms-index
+git clone https://github.com/yt1988/1ms.dog
+cd 1ms.dog
 npx wrangler login
 npx wrangler deploy        # 纯静态资源 Worker：没有脚本，免费且不计请求数
 ```

@@ -26,8 +26,8 @@ Each test URL has to be **answered by the service's edge**. Otherwise the number
 The site is static: `public/` is committed, so you don't need to build anything unless you change the code.
 
 ```bash
-git clone https://github.com/yt1988/1ms-index
-cd 1ms-index
+git clone https://github.com/yt1988/1ms.dog
+cd 1ms.dog
 npx wrangler login
 npx wrangler deploy        # a static-assets Worker: no script, free and unmetered
 ```
