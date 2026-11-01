@@ -28,7 +28,7 @@ export default {
   share: "分享", copied: "已复制",
   sub_telegram: "Telegram 数据中心", tg_dc_t: "Telegram 按手机号所属地区，把账号放在 5 个数据中心之一。这里测的是 {dc}（{city}），你所在地区的账号大多在这里。点进 Telegram 页面可以测全部 5 个。",
   pop_t: "响应的边缘节点：{pop}", pop_s: "节点 {pop}",
-  egress_link: "查看每个网站看到的 IP →",
+  egress_link: "查看每个网站看到的 IP",
   a_pet: "摸摸小狗", a_dog: "1ms.dog 柴犬", a_field: "各服务延迟", a_nav: "全部测速页面", a_close: "关闭", a_prev: "上一个", a_next: "下一个", a_link: "链接",
   qr_hint: "扫码查看完整结果",
   share_text: "我的狗狗从{where}出发，叼回了 {ok}/{n} 个服务，中位延迟 {ms} ms（{tier}）。你的狗狗有多快？",
@@ -80,7 +80,7 @@ export default {
 
   ipqs_t: "查这个 IP 的质量",
 
-  asn_t: "查询这个 AS", l_v6: "IPv6 完整测试 →", l_v6_none: "没检测到 IPv6，测一下 →", l_who: "网站还能看到你哪些信息 →", l_speed: "测下载和上传速度 →", l_ai: "{s} 看到的是哪个 IP →",
+  asn_t: "查询这个 AS", l_v6: "IPv6 完整测试", l_v6_none: "没检测到 IPv6，测一下", l_who: "网站还能看到你哪些信息", l_speed: "测下载和上传速度", l_ai: "{s} 看到的是哪个 IP",
 
   faq_h: "原理与常见问题",
   docs: [

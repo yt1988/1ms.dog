@@ -28,7 +28,7 @@ export default {
   share: "공유", copied: "복사됨",
   sub_telegram: "Telegram 데이터 센터", tg_dc_t: "Telegram은 전화번호 지역에 따라 계정을 5개 데이터 센터 중 하나에 둡니다. 여기서 측정하는 곳은 {dc}({city})로, 이 지역 계정 대부분이 여기에 있습니다. Telegram 페이지에서 5곳 모두 측정할 수 있습니다.",
   pop_t: "응답한 엣지 노드: {pop}", pop_s: "노드 {pop}",
-  egress_link: "사이트별로 보이는 IP →",
+  egress_link: "사이트별로 보이는 IP",
   a_pet: "강아지 쓰다듬기", a_dog: "1ms.dog 시바견", a_field: "서비스별 지연", a_nav: "전체 측정 페이지", a_close: "닫기", a_prev: "이전", a_next: "다음", a_link: "링크",
   qr_hint: "스캔해서 전체 결과 보기",
   share_text: "우리 강아지가 {where}에서 서비스 {ok}/{n}개의 공을 물어왔어요. 중앙값 {ms} ms({tier}). 당신의 강아지는요?",
@@ -80,7 +80,7 @@ export default {
 
   ipqs_t: "이 IP의 품질 검사",
 
-  asn_t: "이 AS 조회", l_v6: "IPv6 전체 테스트 →", l_v6_none: "IPv6가 없어요: 테스트하기 →", l_who: "사이트가 볼 수 있는 다른 정보 →", l_speed: "다운로드·업로드 속도 측정 →", l_ai: "{s}가 보는 IP →",
+  asn_t: "이 AS 조회", l_v6: "IPv6 전체 테스트", l_v6_none: "IPv6가 없어요: 테스트하기", l_who: "사이트가 볼 수 있는 다른 정보", l_speed: "다운로드·업로드 속도 측정", l_ai: "{s}가 보는 IP",
 
   faq_h: "작동 방식과 자주 묻는 질문",
   docs: [
