@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en")location.replace(P[l]+location.hash)})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ゲームの遅延テスト：Steam、PlayStation、Xbox、Epic Games の応答速度 · 1ms.dog</title>
-<meta name="description" content="ブラウザからゲームの速さを測定：Steam、PlayStation、Xbox、Epic Games。本物の HTTPS 往復で、中央値と最速・最遅のサービス、出口 IP を表示します。無料・登録不要。">
-<meta name="keywords" content="ゲーム 遅延, ゲーム Ping, Steam, PlayStation, Xbox, Epic Games">
+<title>ゲームの遅延テスト：Steam、PlayStation、Xbox、Nintendo の応答速度 · 1ms.dog</title>
+<meta name="description" content="ブラウザからゲームの速さを測定：Steam、PlayStation、Xbox、Nintendo、Epic Games。本物の HTTPS 往復で、中央値と最速・最遅のサービス、出口 IP を表示します。無料・登録不要。">
+<meta name="keywords" content="ゲーム 遅延, ゲーム Ping, Steam, PlayStation, Xbox, Nintendo, Epic Games">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="application-name" content="1ms.dog">
 <meta name="theme-color" content="#f6f6f7" media="(prefers-color-scheme: light)">
@@ -28,8 +28,8 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="1ms.dog">
-<meta property="og:title" content="ゲームの遅延テスト：Steam、PlayStation、Xbox、Epic Games の応答速度 · 1ms.dog">
-<meta property="og:description" content="ブラウザからゲームの速さを測定：Steam、PlayStation、Xbox、Epic Games。本物の HTTPS 往復で、中央値と最速・最遅のサービス、出口 IP を表示します。無料・登録不要。">
+<meta property="og:title" content="ゲームの遅延テスト：Steam、PlayStation、Xbox、Nintendo の応答速度 · 1ms.dog">
+<meta property="og:description" content="ブラウザからゲームの速さを測定：Steam、PlayStation、Xbox、Nintendo、Epic Games。本物の HTTPS 往復で、中央値と最速・最遅のサービス、出口 IP を表示します。無料・登録不要。">
 <meta property="og:url" content="https://1ms.dog/ja/game/">
 <meta property="og:image" content="https://1ms.dog/og/ja.png">
 <meta property="og:image:width" content="1200">
@@ -45,10 +45,10 @@
 <meta property="og:locale:alternate" content="pt_BR">
 <meta property="og:locale:alternate" content="ru_RU">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="ゲームの遅延テスト：Steam、PlayStation、Xbox、Epic Games の応答速度 · 1ms.dog">
-<meta name="twitter:description" content="ブラウザからゲームの速さを測定：Steam、PlayStation、Xbox、Epic Games。本物の HTTPS 往復で、中央値と最速・最遅のサービス、出口 IP を表示します。無料・登録不要。">
+<meta name="twitter:title" content="ゲームの遅延テスト：Steam、PlayStation、Xbox、Nintendo の応答速度 · 1ms.dog">
+<meta name="twitter:description" content="ブラウザからゲームの速さを測定：Steam、PlayStation、Xbox、Nintendo、Epic Games。本物の HTTPS 往復で、中央値と最速・最遅のサービス、出口 IP を表示します。無料・登録不要。">
 <meta name="twitter:image" content="https://1ms.dog/og/ja.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"あなたの回線からゲームはどれくらい速い？","url":"https://1ms.dog/ja/game/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"ブラウザからゲームの速さを測定：Steam、PlayStation、Xbox、Epic Games。本物の HTTPS 往復で、中央値と最速・最遅のサービス、出口 IP を表示します。無料・登録不要。","inLanguage":"ja","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/ja/"},{"@type":"ListItem","position":2,"name":"ゲーム","item":"https://1ms.dog/ja/game/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"あなたの回線からゲームはどれくらい速い？","url":"https://1ms.dog/ja/game/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"ブラウザからゲームの速さを測定：Steam、PlayStation、Xbox、Nintendo、Epic Games。本物の HTTPS 往復で、中央値と最速・最遅のサービス、出口 IP を表示します。無料・登録不要。","inLanguage":"ja","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/ja/"},{"@type":"ListItem","position":2,"name":"ゲーム","item":"https://1ms.dog/ja/game/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/app.f610e96d75.css">
 </head>
@@ -82,7 +82,7 @@
     <section class="hero card">
       <div class="hero-l">
         <h1>あなたの回線からゲームはどれくらい速い？</h1>
-        <p class="intro">ブラウザからゲーム 4 件をまとめて測定：Steam、PlayStation、Xbox、Epic Games。各 5 回、中央値を表示します。</p>
+        <p class="intro">ブラウザからゲーム 5 件をまとめて測定：Steam、PlayStation、Xbox、Nintendo、Epic Games。各 5 回、中央値を表示します。</p>
         <div class="exits" id="exits">
           <div class="ex-h"><span data-i="exit_h">あなたの出口</span><button class="mini" id="eye" type="button" data-i="hide">IP を隠す</button><a class="eg" href="https://egress.1ms.dog/ja/" data-i="egress_link">サイトごとに見える IP →</a><span class="ex-p" id="exProg" aria-live="polite"></span></div>
           <ul id="exList"><li class="ex sk-row"><span class="sk-t" data-i="sniff">出口をクンクン調査中…</span></li></ul>
@@ -118,7 +118,7 @@
     <section class="field card" aria-label="サービスごとの遅延">
       <div class="axis" aria-hidden="true"><span class="c1"><i></i><b>爆走</b>≤ 30 ms</span><span class="c2"><i></i><b>ダッシュ</b>≤ 80 ms</span><span class="c3"><i></i><b>トコトコ</b>≤ 150 ms</span><span class="c4"><i></i><b>おさんぽ</b>≤ 300 ms</span><span class="c5"><i></i><b>おひるね</b>> 300 ms</span><span class="cx"><i></i><b>戻らず</b></span></div>
       <div class="groups" id="groups">
-<div class="grp solo"><h2>ゲーム</h2><ul><li class="row" id="t-steam"><a class="nm" href="/ja/steam/">Steam</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-playstation"><a class="nm" href="/ja/playstation/">PlayStation</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-xbox"><a class="nm" href="/ja/xbox/">Xbox</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-epic"><a class="nm" href="/ja/epic/">Epic Games</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul><div class="scale" aria-hidden="true"><span style="left:33.8%">30</span><span style="left:52.3%">80</span><span style="left:64.2%">150</span><span style="left:77.3%">300 ms</span></div></div>
+<div class="grp solo"><h2>ゲーム</h2><ul><li class="row" id="t-steam"><a class="nm" href="/ja/steam/">Steam</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-playstation"><a class="nm" href="/ja/playstation/">PlayStation</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-xbox"><a class="nm" href="/ja/xbox/">Xbox</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-nintendo"><a class="nm" href="/ja/nintendo/">Nintendo</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li><li class="row" id="t-epic"><a class="nm" href="/ja/epic/">Epic Games</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li></ul><div class="scale" aria-hidden="true"><span style="left:33.8%">30</span><span style="left:52.3%">80</span><span style="left:64.2%">150</span><span style="left:77.3%">300 ms</span></div></div>
       </div>
     </section>
     <a class="cta card" href="/ja/"><span><b data-i="cta_h">ほかのサービスはどう？</b><i data-i="cta_d">トップページでは 40 サービスを一度に測り、どこが遅いかを教えます。</i></span><span class="btn pri" data-i="cta_btn">全サービスを測る</span></a>
@@ -168,6 +168,6 @@
 </div>
 <script type="application/json" id="data">{"lang":"ja","paths":{"en":"/game/","zh-CN":"/zh-cn/game/","zh-TW":"/zh-tw/game/","ja":"/ja/game/","ko":"/ko/game/","es":"/es/game/","fr":"/fr/game/","de":"/de/game/","pt":"/pt/game/","ru":"/ru/game/"},"pack":"jp","spot":null,"set":{"kind":"cat","id":"game","name":"ゲーム"}}</script>
 <script src="/assets/l.ja.e3267cce00.js" defer></script>
-<script src="/assets/app.67de911980.js" defer></script>
+<script src="/assets/app.5fb60e7cef.js" defer></script>
 </body>
 </html>

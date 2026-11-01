@@ -692,7 +692,8 @@
 
   /* ---------- run on open, or wait for a click (the choice is remembered in this browser) ---------- */
   const autoBox = $("#auto");
-  autoBox.checked = store.get(K.auto) !== "0";
+  // home tests 40+ services at once, so it waits for a click unless the visitor turned auto-run on; a service or group page is a few requests and runs unless turned off
+  autoBox.checked = ONE || GRP ? store.get(K.auto) !== "0" : store.get(K.auto) === "1";
   autoBox.onchange = () => store.set(K.auto, autoBox.checked ? "1" : "0");
   // with the switch off, the exit check still runs (a few small requests); the 40-service test waits for "Start"
   function waitForClick() {

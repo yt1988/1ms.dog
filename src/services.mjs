@@ -63,6 +63,7 @@ export const SERVICES = [
   { id: "steam", name: "Steam", cat: "game", url: "https://store.steampowered.com/favicon.ico", c: "#66c0f4" },
   { id: "playstation", name: "PlayStation", cat: "game", url: "https://www.playstation.com/favicon.ico", via: "Akamai", c: "#0070d1" },
   { id: "xbox", name: "Xbox", cat: "game", url: "https://www.xbox.com/favicon.ico", c: "#107c10" },
+  { id: "nintendo", name: "Nintendo", cat: "game", url: "https://www.nintendo.com/favicon.ico", via: "Fastly", c: "#e60012" },
   { id: "epic", name: "Epic Games", cat: "game", url: "https://store.epicgames.com/cdn-cgi/trace", via: "Cloudflare", c: "#8b8b8b" },
 
   // CDN backbones: most sites above sit on one of these
@@ -161,7 +162,7 @@ export const pos = ms => Math.max(0, Math.min(1, Math.log(ms / SCALE.min) / Math
 
 // Everyday uses the verdict reports on: [use, services, smooth up to, fine up to] in ms. Streaming buffers and AI
 // answers take seconds anyway, so they tolerate more; games and calls feel every round trip.
-export const USES = [["game", ["steam", "playstation", "xbox", "epic"], 80, 150], ["call", ["zoom", "whatsapp", "discord", "telegram"], 150, 250],
+export const USES = [["game", ["steam", "playstation", "xbox", "nintendo", "epic"], 80, 150], ["call", ["zoom", "whatsapp", "discord", "telegram"], 150, 250],
   ["stream", ["youtube", "netflix", "twitch", "tiktok", "spotify"], 200, 400], ["ai", ["chatgpt", "claude", "gemini", "copilot", "grok", "deepseek"], 200, 400],
   ["dev", ["github", "npm", "dockerhub", "pypi", "huggingface"], 150, 300]];
 
