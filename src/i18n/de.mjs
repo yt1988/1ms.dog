@@ -77,11 +77,6 @@ export default {
   pk_sea: "Südostasien", pk_eu: "Europa", pk_latam: "Lateinamerika", pk_na: "Nordamerika", pk_me: "Naher Osten",
   d_cold: "Verbindungsaufbau", d_samples: "Messungen", d_jit: "Jitter",
 
-  tools_h: "Mehr von 1ms.dog",
-  tool_m2c: "Latenz aus deinem Browser zu über 360 Cloud-Regionen: AWS, Azure, Google Cloud und mehr.",
-  tool_v2c: "Derselbe Test von deinem Server aus, um zu entscheiden, wo der nächste hinkommt.",
-  tool_ls: "Berechne das Inklusiv-Datenvolumen von AWS Lightsail und was Mehrverbrauch kostet.",
-  tool_ipqs: "Prüfen Sie, wie sauber Ihre IP ist: VPN-, Proxy- und Rechenzentrums-Markierungen aus einem Dutzend Quellen, benotet von A bis F.",
   ipqs_t: "Qualität dieser IP prüfen",
 
   faq_h: "So funktioniert’s",

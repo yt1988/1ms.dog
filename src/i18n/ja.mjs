@@ -77,11 +77,6 @@ export default {
   pk_sea: "東南アジア", pk_eu: "ヨーロッパ", pk_latam: "中南米", pk_na: "北米", pk_me: "中東",
   d_cold: "接続の確立", d_samples: "測定値", d_jit: "ジッター",
 
-  tools_h: "1ms.dog のほかのツール",
-  tool_m2c: "ブラウザから 360 以上のクラウドリージョンへの遅延を測定：AWS、Azure、Google Cloud など。",
-  tool_v2c: "同じテストをあなたのサーバーから実行。次のサーバーをどこに置くか決められます。",
-  tool_ls: "AWS Lightsail の転送量の枠と、超過したときの料金を計算します。",
-  tool_ipqs: "IP がどれだけクリーンか：十数個のソースの VPN・プロキシ・データセンター判定を A〜F で評価します。",
   ipqs_t: "この IP の品質を調べる",
 
   faq_h: "仕組みとよくある質問",

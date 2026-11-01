@@ -79,11 +79,6 @@ export default {
   pk_sea: "Southeast Asia", pk_eu: "Europe", pk_latam: "Latin America", pk_na: "North America", pk_me: "Middle East",
   d_cold: "connection setup", d_samples: "samples", d_jit: "jitter",
 
-  tools_h: "More from 1ms.dog",
-  tool_m2c: "Latency from your browser to 360+ cloud regions: AWS, Azure, Google Cloud, Alibaba and more.",
-  tool_v2c: "The same test run from your server, to pick where the next one goes.",
-  tool_ls: "Work out AWS Lightsail transfer allowances and what going over would cost.",
-  tool_ipqs: "Check how clean your IP is: VPN, proxy and data-center flags from a dozen sources, scored A to F.",
   ipqs_t: "Check this IP’s quality",
 
   faq_h: "How it works",

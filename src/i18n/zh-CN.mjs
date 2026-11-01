@@ -77,11 +77,6 @@ export default {
   pk_sea: "东南亚", pk_eu: "欧洲", pk_latam: "拉丁美洲", pk_na: "北美", pk_me: "中东",
   d_cold: "建连耗时", d_samples: "采样", d_jit: "抖动",
 
-  tools_h: "更多 1ms.dog 工具",
-  tool_m2c: "从你的浏览器测到 360+ 个云区域的延迟：AWS、Azure、Google Cloud、阿里云等。",
-  tool_v2c: "同样的测试，在你的服务器上跑：帮你决定下一台机器放在哪。",
-  tool_ls: "算清 AWS Lightsail 的流量额度，以及超出后要花多少钱。",
-  tool_ipqs: "查你的 IP 有多干净：十几个情报库的 VPN、代理、机房标记，给出 A 到 F 的评分。",
   ipqs_t: "查这个 IP 的质量",
 
   faq_h: "原理与常见问题",
