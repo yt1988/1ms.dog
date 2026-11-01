@@ -13,7 +13,7 @@ import { fileURLToPath } from "node:url";
 import { build as bundle, transform } from "esbuild";
 import { fillIn } from "../src/lib.mjs";
 import KO from "../src/i18n/ko.mjs";
-import { CATS, SERVICES, PACKS, PACK_OF, SCALE, ZONES, USES, SUBS, TG_DC_OF, pos } from "../src/services.mjs";
+import { CATS, SERVICES, PACKS, PACK_OF, SCALE, ZONES, USES, SUBS, TG_DC_OF, UNLOCK, pos } from "../src/services.mjs";
 
 const SITE = (process.env.SITE_URL || "https://1ms.dog").replace(/\/+$/, "");
 const pub = new URL("../public/", import.meta.url), src = new URL("../src/", import.meta.url);
@@ -53,7 +53,7 @@ export async function build({ check = false } = {}) {
   const langs = LANGS.filter(([l]) => I[l]);
   const tpl = await readFile(new URL("page.html", src), "utf8");
 
-  const svc = { list: SERVICES.map(({ via, origin, ...s }) => s), packs: PACKS, packOf: PACK_OF, scale: SCALE, cats: CATS, uses: USES, subs: SUBS, tgDcOf: TG_DC_OF };
+  const svc = { list: SERVICES.map(({ via, origin, ...s }) => s), packs: PACKS, packOf: PACK_OF, scale: SCALE, cats: CATS, uses: USES, subs: SUBS, tgDcOf: TG_DC_OF, unlock: UNLOCK };
   // src/lib.mjs (the pure logic the tests import) goes inside the app's scope, at its /* @lib */ marker
   const lib = (await readFile(new URL("lib.mjs", src), "utf8")).replace(/^export /gm, "");
   const appSrc = await readFile(new URL("app.js", src), "utf8");

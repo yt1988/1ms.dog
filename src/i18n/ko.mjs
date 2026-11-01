@@ -129,6 +129,7 @@ export default {
   one_samples: "{n}회 측정",
   running_one: "{s} 측정 중: {d} / {n}",
   v_one_wait: "측정이 끝나면 여기서 {s}까지 얼마나 빠른지 알려 드려요.",
+  unlock_one: "이 회선에서 {s} 이용 가능 여부",
   vh_one: "{s}: {tier}",
   vh_one_lost: "{s}에 접속할 수 없음",
   v_one_fast: "빠름: {s}에서 지연을 거의 느끼지 못합니다.",

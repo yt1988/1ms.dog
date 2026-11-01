@@ -187,11 +187,12 @@
     const l = [toolHref("ipv6") && ext("ipv6", "", t(v6 ? "l_v6" : "l_v6_none")), toolHref("who") && ext("who", "", t("l_who"))].filter(Boolean);
     const el = $("#exLinks"); el.innerHTML = l.join(""); el.hidden = !l.length;
   }
-  // under the verdict: an AI service's page links to the IP that AI services see (EgressLens checks these), every page
-  // to the speed test
+  // under the verdict: an AI service's page links to the IP that AI services see (EgressLens checks these), a service
+  // the unlock check covers to its page there, every page to the speed test
   const EGRESS_AI = ["chatgpt", "claude", "grok", "copilot"];
   {
     const l = [D.spot && EGRESS_AI.includes(D.spot) && toolHref("egress") && ext("egress", "chatgpt-ip/", t("l_ai", { s: SVC.list.find(s => s.id === D.spot).name })),
+      D.spot && SVC.unlock[D.spot] && toolHref("unlock") && ext("unlock", SVC.unlock[D.spot] + "/", t("unlock_one", { s: SVC.list.find(s => s.id === D.spot).name })),
       toolHref("speed") && ext("speed", "", t("l_speed"))].filter(Boolean);
     const el = $("#vLinks"); el.innerHTML = l.join(""); el.hidden = !l.length;
   }

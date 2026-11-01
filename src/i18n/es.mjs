@@ -129,6 +129,7 @@ export default {
   one_samples: "{n} muestras",
   running_one: "Midiendo {s}: {d} / {n}",
   v_one_wait: "Cuando terminen las muestras, verás qué tan rápido va {s} desde aquí.",
+  unlock_one: "¿{s} funciona en esta conexión?",
   vh_one: "{s}: {tier}",
   vh_one_lost: "{s} no responde",
   v_one_fast: "Rápido: {s} debería sentirse instantáneo.",

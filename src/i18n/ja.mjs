@@ -129,6 +129,7 @@ export default {
   one_samples: "{n} 回測定",
   running_one: "{s} を測定中：{d} / {n}",
   v_one_wait: "測定が終わると、ここから {s} までの速さがわかります。",
+  unlock_one: "この回線で {s} は使える？",
   vh_one: "{s}：{tier}",
   vh_one_lost: "{s} につながりません",
   v_one_fast: "速い：{s} はほぼ遅延を感じません。",
