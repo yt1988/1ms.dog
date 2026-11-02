@@ -226,7 +226,7 @@ const gapText = (ms, lang) => {
 
 /* ---------- the view ---------- */
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
-const here = name => new URL(name, import.meta.url).href;
+const here = name => new URL(`${name}?v=${VERSION}`, import.meta.url).href;   // past old cached copies
 let cssP = null;
 const loadCSS = () => cssP ||= new Promise(res => {
   const l = document.createElement("link"); l.rel = "stylesheet"; l.href = here("compare.css");
