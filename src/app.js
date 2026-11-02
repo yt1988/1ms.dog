@@ -659,6 +659,19 @@
     }).open();
   };
 
+  // "Report a problem" (the shell's dialog, opened from the footer) attaches what the visitor saw, the same way a
+  // share link holds it: country and local/proxy per exit, no address, city or network; each service's samples
+  window.msReport = () => {
+    const s = lastSum, done = allServices().filter(x => R.get(x.id) && R.get(x.id).st !== "run");
+    return {
+      summary: s ? t("share_text", { ok: s.ok, n: s.n, where: whereOf(exitsFor(false)[0]) || "?", ms: s.md != null ? fmt(s.md) : "–", tier: t("tier_" + s.tier) })
+        : $("#vHead").textContent,
+      data: { page: PAGE, lang: LANG, pack, shared: !!(SHARED && sharedOn), link: done.length ? location.origin + PAGE + "r/" + resultCode(false) : null,
+        exits: NET.groups.map(g => ({ cc: g.cc, proxy: g.proxy })),
+        results: Object.fromEntries(done.map(x => { const r = R.get(x.id); return [x.id, { md: median(r.s), cold: r.w == null ? null : Math.round(r.w), s: r.s, pop: r.pop || undefined }]; })) },
+    };
+  };
+
   // The card's middle: the same picture as the page (dog, headline, the three numbers, exits, every ball at its
   // distance), in the page's theme. A group page draws its one group full width, a single service its samples.
   // The dialog draws the frame (logo, QR code, date) around it, between kit.top and kit.bottom.
