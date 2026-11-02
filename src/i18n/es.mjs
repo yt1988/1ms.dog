@@ -33,8 +33,8 @@ export default {
   share_text: "Mi perro trajo {ok}/{n} servicios desde {where}, mediana de {ms} ms ({tier}). ¿Qué tan rápido es el tuyo?",
   r_title: "Mediana {ms} ms ({tier}), respondieron {ok}/{n} servicios", r_one: "{s}: {ms} ms ({tier})",
   e_back: "Respondieron", e_blocked: "Todas las pruebas de latencia fallaron de inmediato. Probablemente un bloqueador de anuncios o una extensión de privacidad las bloquea; permite 1ms.dog y vuelve a intentarlo.",
-  shared_from: "Resultado compartido desde {where} · {date}", test_mine: "Medir mi red",
-  cmp: "Comparar con tu último resultado", cmp_none: "Mide dos veces para comparar", vs_mine: "Comparar con mi red", cmp_h: "Dos resultados lado a lado",
+  test_mine: "Medir mi red",
+  cmp: "Comparar con tu último resultado", cmp_none: "Mide dos veces para comparar", cmp_h: "Dos resultados lado a lado",
 
   seg_local: "Favoritos locales",
   seg_global: "Servicios globales",

@@ -448,6 +448,8 @@
   }
   function setBusy(b) { $("#run span").textContent = t(b ? "stop" : "run"); if ($("#deep")) $("#deep").disabled = b; paintCmpBtn(); }
   let lastSum = null;
+  // the share button next to the verdict works once there is a result to share
+  const paintShare = () => { if ($("#share")) $("#share").disabled = !lastSum; };
   const moodKey = () => lastSum ? "mood_" + lastSum.mood : RUN ? "mood_run" : "mood_sniff";
   // the stats row: local favorites, global services, and the overall median with how many came back
   function paintStats() {
@@ -471,7 +473,7 @@
     // The overall median only describes this sample of services. The verdict, which splits local favorites,
     // global services and failures, decides the headline and what the dog says.
     const all = paintStats(), v = verdict();
-    lastSum = { md: all.md, ok: all.ok, n: all.n, tier: tierOf(all.md)[0], mood: v.mood, v };
+    lastSum = { md: all.md, ok: all.ok, n: all.n, tier: tierOf(all.md)[0], mood: v.mood, v }; paintShare();
     setMood(v.mood); say("mood_" + v.mood);
     hiddenExit();
     renderVerdict(v);
@@ -550,7 +552,7 @@
     if (sg.lost.length && gr !== "blocked") text += " " + t("v_fail", { list: sg.lost.join(t("v_join")) });
     $("#vText").textContent = text;
     const mood = gr === "blocked" ? "lost" : tk;
-    lastSum = { md: sg.md, ok: sg.ok, n: sg.n, tier: tk, mood };
+    lastSum = { md: sg.md, ok: sg.ok, n: sg.n, tier: tk, mood }; paintShare();
     setMood(mood); say("mood_" + mood);
   }
 
@@ -578,13 +580,13 @@
     $("#vHead").textContent = md == null ? t("vh_one_lost", { s: ONE.name }) : t("vh_one", { s: ONE.name, tier: t("tier_" + tk) });
     $("#vText").textContent = t("v_one_" + key, { s: ONE.name });
     const mood = md == null ? "lost" : tk;
-    lastSum = { md, ok: ok.length ? 1 : 0, n: 1, tier: tk, mood };
+    lastSum = { md, ok: ok.length ? 1 : 0, n: 1, tier: tk, mood }; paintShare();
     setMood(mood); say("mood_" + mood);
     $("#prog i").style.width = "0";
   }
 
   /* ---------- controls ---------- */
-  const start = n => { if (ONE) n = ONE_N; if (GRP) n = GRP_N; for (const s of allServices()) { R.delete(s.id); paintRow(s); } lastSum = null; renderVerdict(null); paintStats(); runList(allServices(), n, true); };
+  const start = n => { if (ONE) n = ONE_N; if (GRP) n = GRP_N; for (const s of allServices()) { R.delete(s.id); paintRow(s); } lastSum = null; paintShare(); renderVerdict(null); paintStats(); runList(allServices(), n, true); };
   $("#run").onclick = () => { if (RUN) { RUN.ctl.abort(); return; } leaveShared(); start(3); };
   if ($("#deep")) { $("#deep").title = t("deep_t"); $("#deep").onclick = () => { leaveShared(); start(10); }; }
 
@@ -643,7 +645,6 @@
   const exitsFor = show => show ? NET.groups : NET.groups.map(g => ({ ...g, city: "", org: "", asn: null }));
   const resultCode = show => encodeShare({ ts: SHARED && sharedOn ? SHARED.ts : Date.now(), pack, groups: exitsFor(show),
     res: Object.fromEntries(allServices().filter(s => R.get(s.id) && R.get(s.id).st === "done").map(s => [s.id, median(R.get(s.id).s)])) });
-  if ($("#share")) $("#share").title = t("share");
   if ($("#share")) $("#share").onclick = async () => {
     if (!lastSum) return;
     const { share } = await import("/assets/share/share.js");
@@ -684,17 +685,18 @@
       const groups = (ONE ? (SUBS.length ? [{ name: t("sub_" + ONE.id), items: SUBS }] : []) : GRP ? [{ name: GRP.name, items: GRP.list }] : [{ name: t("cat_local"), items: PACKS[pack] }, ...SVC.cats.map(c => ({ name: t("cat_" + c), items: SVC.list.filter(s => s.cat === c) }))])
         .map(g => ({ name: g.name, items: g.items.filter(s => list.includes(s)) })).filter(g => g.items.length);
       // three columns (one on a group page), filled in order, about equally tall
-      const NC = GRP || ONE ? 1 : 3, RH = 30, GH = 40, total = groups.reduce((a, g) => a + GH + g.items.length * RH, 0), cols = Array.from({ length: NC }, () => []);
+      const NC = GRP || ONE ? 1 : 3, RH = 26, GH = 34, total = groups.reduce((a, g) => a + GH + g.items.length * RH, 0), cols = Array.from({ length: NC }, () => []);
       let ci = 0, hcol = 0;
       for (const g of groups) { const h = GH + g.items.length * RH; if (hcol && hcol + h / 2 > total / NC && ci < NC - 1) { ci++; hcol = 0; } cols[ci].push(g); hcol += h; }
       const oneH = ONE ? 80 : 0, colH = oneH + Math.max(0, ...cols.map(c => c.reduce((a, g) => a + GH + g.items.length * RH, 0)));
       // Same order as the page: headline, what it means, the three numbers, exits, then every ball.
-      // The headline and its detail stay clear of the dog on the right.
+      // The headline and its detail stay clear of the dog on the right. The card is also the link preview, shrunk to
+      // about half into 1200×630, so the headline and the three numbers are drawn big enough to read there.
       const lines = (s0, font, w) => { m.font = font; return wrap(m, s0, w); };
       const head = lastSum.v ? verdictHead(lastSum.v) : $("#vHead").textContent, detail = lastSum.v ? verdictText(lastSum.v) : $("#vText").textContent;
-      const hLines = head ? lines(head, `700 44px ${F}`, W - P * 2 - 250) : [];
-      const dLines = detail ? lines(detail, `400 24px ${F}`, W - P * 2 - 250) : [];
-      const hTop = T + 44, dTop = hTop + (hLines.length - 1) * 54 + 48, sTop = Math.max(dTop + dLines.length * 34 + 10, T + 150), SH = 108;
+      const hLines = head ? lines(head, `700 60px ${F}`, W - P * 2 - 250) : [];
+      const dLines = detail ? lines(detail, `400 28px ${F}`, W - P * 2 - 250) : [];
+      const hTop = T + 58, dTop = hTop + (hLines.length - 1) * 70 + 56, sTop = Math.max(dTop + dLines.length * 40 + 14, T + 170), SH = 144;
       const exits = exitsFor(kit.show).slice(0, 3), eTop = sTop + SH + 46, top = eTop + exits.length * 40 - 18;
       L = { groups, cols, NC, RH, GH, oneH, hLines, dLines, hTop, dTop, sTop, SH, exits, eTop, top };
       return top + colH + 30 + 70;
@@ -704,8 +706,8 @@
       const C = { bg: v("bg"), panel: v("panel"), line: v("line"), fg: v("fg"), muted: v("muted"), c0: v("t0"), c1: v("t1"), c2: v("t2"), c3: v("t3"), c4: v("t4"), c5: v("t5"), cx: v("muted"), gold: v("ink"), warn: v("warn") };
       try { x.drawImage(await img("/assets/shiba-run.svg"), 150, 20, 700, 420, W - P - 220, kit.top, 220, 132); } catch (e) {}
       x.textBaseline = "alphabetic";
-      x.fillStyle = C.fg; x.font = `700 44px ${F}`; hLines.forEach((l, i) => x.fillText(l, P, hTop + i * 54));
-      x.fillStyle = C.muted; x.font = `400 24px ${F}`; dLines.forEach((l, i) => x.fillText(l, P, dTop + i * 34));
+      x.fillStyle = C.fg; x.font = `700 60px ${F}`; hLines.forEach((l, i) => x.fillText(l, P, hTop + i * 70));
+      x.fillStyle = C.muted; x.font = `400 28px ${F}`; dLines.forEach((l, i) => x.fillText(l, P, dTop + i * 40));
       // the three numbers
       const s = lastSum, v0 = s.v, cw3 = (W - P * 2 - 2 * 16) / 3;
       const cells = v0 ? [[t("seg_local"), v0.local, ""], [t("seg_global"), v0.global, ""], [t("med"), { md: s.md }, t("back", { ok: s.ok, n: s.n })]].map(([label, sg, sub]) => {
@@ -718,11 +720,11 @@
       cells.forEach((cl, i) => {
         const cx0 = P + i * (cw3 + 16);
         x.fillStyle = C.panel === C.bg ? C.line + "55" : C.panel; roundRect(x, cx0, sTop, cw3, SH, 14); x.fill();
-        x.fillStyle = C.muted; x.font = `400 20px ${F}`; x.fillText(cl.label, cx0 + 20, sTop + 34);
-        x.fillStyle = C[cl.k]; x.font = `600 46px ${M}`; x.fillText(cl.num, cx0 + 20, sTop + 86);
+        x.fillStyle = C.muted; x.font = `400 24px ${F}`; x.fillText(cl.label, cx0 + 22, sTop + 40);
+        x.fillStyle = C[cl.k]; x.font = `600 70px ${M}`; x.fillText(cl.num, cx0 + 22, sTop + 116);
         const nw = x.measureText(cl.num).width;
-        x.fillStyle = C.muted; x.font = `400 20px ${F}`;
-        x.fillText(clip(x, (cl.ms ? "ms  " : "") + cl.sub, cw3 - 50 - nw), cx0 + 20 + nw + 10, sTop + 86);
+        x.fillStyle = C.muted; x.font = `400 24px ${F}`;
+        x.fillText(clip(x, (cl.ms ? "ms  " : "") + cl.sub, cw3 - 54 - nw), cx0 + 22 + nw + 10, sTop + 116);
       });
       // exits, without IPs
       let y = eTop;
@@ -781,21 +783,18 @@
   function clip(x, s, w) { if (x.measureText(s).width <= w) return s; while (s.length > 1 && x.measureText(s + "…").width > w) s = s.slice(0, -1); return s + "…"; }
 
   /* ---------- a shared result ---------- */
-  // Opening a shared link shows that result and doesn't test until the visitor asks for their own
+  // Opening a shared link shows that result and doesn't test until the visitor asks for their own. The banner above
+  // it is the shared one (/assets/share/share.js: received); the visitor's own test, once done, offers the comparison
+  // of the two in that banner (compare mode below)
   const SHARED = parseShare(RLINK ? RLINK[1] : location.hash, PACKS);
-  function showShared(S) {
+  let RCV = null;
+  async function showShared(S) {
     if (!ONE && !GRP && S.pack !== pack) showPack(S.pack);
     NET.groups = S.groups; NET.done = true; renderExits(); $("#eye").hidden = true;
     for (const s of allServices()) if (s.id in S.res) { R.set(s.id, { w: null, s: S.res[s.id] == null ? [] : [S.res[s.id]], st: "done" }); paintRow(s); }
     summarize(false);
-    $("#sharedTxt").textContent = t("shared_from", { where: whereOf(S.groups[0]) || "?", date: new Date(S.ts).toLocaleString(LANG, { dateStyle: "medium", timeStyle: "short" }) });
-    // "compare with my network": made here, with the banner it sits in (only a shared result has it)
-    if (!$("#vsMine")) {
-      const b = Object.assign(document.createElement("button"), { className: "btn", id: "vsMine", type: "button", textContent: t("vs_mine") });
-      b.onclick = () => { VS = encodeShare(SHARED); leaveShared(); start(3); };
-      $("#testMine").before(b);
-    }
-    $("#shared").hidden = false;
+    const { received } = await import("/assets/share/share.js");
+    RCV = received({ lang: LANG, ts: S.ts, at: $(".hero"), test: () => { VS = encodeShare(SHARED); leaveShared(); start(3); } });
   }
   let sharedOn = false;
   function leaveShared() {
@@ -821,7 +820,7 @@
     if (ONE || GRP || CHECK || sharedOn || !lastSum) return;
     const code = resultCode(true);
     HIST = addHist(HIST, code); store.set(K.hist, JSON.stringify(HIST));
-    if (VS) { const a = VS; VS = null; location.href = cmpLink(a, bareCode(code)); return; }   // "compare with my network"
+    if (VS) { const a = VS; VS = null; if (RCV) RCV.done(cmpLink(a, bareCode(code))); }   // after testing beside a shared result
     paintCmpBtn();
   }
   function paintCmpBtn() {
@@ -912,7 +911,7 @@
   setMood("sniff");
   paintCmpBtn();
   if (CMPS && CMPS[0] && CMPS[1]) showCompare();
-  else if (SHARED && !CHECK) { leaveCompare(); sharedOn = true; showShared(SHARED); }
+  else if (SHARED && !CHECK) { leaveCompare(); sharedOn = true; showShared(SHARED).catch(() => {}); }
   else {
     leaveCompare();                                           // a compare link that doesn't read: the plain page
     const exitP = EXITS = checkExits().catch(() => {});

@@ -33,8 +33,8 @@ export default {
   share_text: "うちの犬は{where}から {ok}/{n} サービスのボールを回収、中央値 {ms} ms（{tier}）。あなたの犬は？",
   r_title: "中央値 {ms} ms（{tier}）、{ok}/{n} のサービスが応答", r_one: "{s}：{ms} ms（{tier}）",
   e_back: "応答", e_blocked: "遅延テストが最初からすべて失敗しました。広告ブロッカーやプライバシー拡張機能が止めている可能性があります。1ms.dog を許可して再度お試しください。",
-  shared_from: "{where}からシェアされた結果 · {date}", test_mine: "自分の回線を測る",
-  cmp: "前回の結果と比較", cmp_none: "2 回測ると比較できます", vs_mine: "自分の回線と比較", cmp_h: "2 つの結果を比較",
+  test_mine: "自分の回線を測る",
+  cmp: "前回の結果と比較", cmp_none: "2 回測ると比較できます", cmp_h: "2 つの結果を比較",
 
   seg_local: "地域の定番",
   seg_global: "世界のサービス",

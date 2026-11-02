@@ -33,8 +33,8 @@ export default {
   share_text: "我的狗狗從{where}出發，叼回了 {ok}/{n} 個服務，中位延遲 {ms} ms（{tier}）。你的狗狗有多快？",
   r_title: "中位延遲 {ms} ms（{tier}），{ok}/{n} 個服務有回應", r_one: "{s}：{ms} ms（{tier}）",
   e_back: "有回應", e_blocked: "延遲測試一開始就全部失敗，很可能被廣告攔截或隱私擴充功能擋下了。請把 1ms.dog 加入白名單後再試。",
-  shared_from: "這是一份來自{where}的測試結果 · {date}", test_mine: "測我自己的網路",
-  cmp: "和上一次的結果比較", cmp_none: "測兩次後可以比較", vs_mine: "和我的網路比", cmp_h: "兩次結果比較",
+  test_mine: "測我自己的網路",
+  cmp: "和上一次的結果比較", cmp_none: "測兩次後可以比較", cmp_h: "兩次結果比較",
 
   seg_local: "在地常用",
   seg_global: "全球服務",
