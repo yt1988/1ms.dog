@@ -175,7 +175,7 @@ a.nm:hover { color: var(--ink); text-decoration: underline; text-underline-offse
    (one row of 30px, three on a narrow box), the column heads (24px) and the gaps between them (14px). */
 html.cmp .shared[hidden] { display: grid !important; }
 html.cmp .shared { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 12px 16px; padding: 14px 14px 14px 18px; }
-html.cmp #sharedTxt, html.cmp #vsMine, html.cmp .hero, html.cmp .field { display: none; }
+html.cmp #sharedTxt, html.cmp #vsMine, html.cmp .hero, html.cmp .cli, html.cmp .field { display: none; }
 html.cmp .cmp-head { display: block; min-width: 0; }
 html.cmp #cmpShare { display: inline-flex; }
 html.cmp .cmpbox { display: block; padding: 18px 22px 20px; container-type: inline-size; }
