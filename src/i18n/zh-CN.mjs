@@ -32,6 +32,7 @@ export default {
   a_pet: "摸摸小狗", a_dog: "1ms.dog 柴犬", a_field: "各服务延迟", a_nav: "全部测速页面", a_close: "关闭", a_prev: "上一个", a_next: "下一个",
   share_text: "我的狗狗从{where}出发，叼回了 {ok}/{n} 个服务，中位延迟 {ms} ms（{tier}）。你的狗狗有多快？",
   r_title: "中位延迟 {ms} ms（{tier}），{ok}/{n} 个服务有响应", r_one: "{s}：{ms} ms（{tier}）",
+  e_back: "有响应",
   shared_from: "这是一份来自{where}的测试结果 · {date}", test_mine: "测我自己的网络",
 
   seg_local: "本地常用",

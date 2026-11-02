@@ -245,6 +245,14 @@ a.nm:hover { color: var(--ink); text-decoration: underline; text-underline-offse
 .row .nm .pop { float: right; margin: 2px 0 0 4px; }
 /* exit checks answered so far ("4/7"), fixed width so nothing beside it slides */
 .ex-p { min-width: 5ch; font: 500 11px var(--f-num); font-variant-numeric: tabular-nums; color: var(--muted); letter-spacing: 0; }
+/* Connection Checkup's frame (?embed=checkup, src/app.js): the exits, the three numbers and the services, compact */
+html.embed .top, html.embed .foot, html.embed .stage, html.embed .hero h1, html.embed .hero .intro, html.embed .sum-acts, html.embed .uses,
+html.embed .links, html.embed .ex-h .eg, html.embed #eye, html.embed .shared { display: none !important; }
+html.embed .app { padding-block: 0; gap: 10px; }
+html.embed main { gap: 10px; }
+html.embed .hero { grid-template-columns: minmax(0, 1fr); grid-template-areas: "l" "sum"; padding: 12px 14px 0; gap: 10px; }
+html.embed .sum { margin: 0 -14px; padding: 10px 14px 12px; grid-template-columns: minmax(0, 1fr); }
+html.embed .field { padding: 10px 14px 4px; }
 /* link to EgressLens beside the exits header: plain text, so the row keeps its height */
 .ex-h > * { flex: none; white-space: nowrap; }
 .ex-h .eg span { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

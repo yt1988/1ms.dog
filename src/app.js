@@ -10,7 +10,20 @@
   const t = (k, v) => v ? fillIn(L[k] ?? k, v, L.josa_fin) : L[k] ?? k;
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
-  const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+  // Connection Checkup (check.1ms.dog; 1ms-shell docs/checkup.md) frames the home page with ?embed=checkup. Only when
+  // the framing page is the one the shell names in <meta name="check">: anything else opens as the normal page.
+  const CHECK = (() => {
+    const m = document.querySelector('meta[name="check"]');
+    if (D.spot || D.set || !m || window.parent === window || new URLSearchParams(location.search).get("embed") !== "checkup") return null;
+    try { const o = new URL(m.content).origin; return new URL(document.referrer).origin === o ? o : null; } catch (e) { return null; }
+  })();
+  const post = msg => { if (CHECK) window.parent.postMessage({ ms: "checkup", v: 1, tool: "home", ...msg }, CHECK); };
+  if (CHECK) {
+    document.documentElement.classList.add("embed");          // layout.css hides all but the exits, numbers and services
+    const b = document.createElement("base"); b.target = "_blank"; document.head.append(b);   // links leave the frame
+  }
+  // embedded, the page changes no preference (the checkup's run isn't the visitor choosing anything)
+  const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { if (!CHECK) try { localStorage.setItem(k, v); } catch (e) {} } };
   const K = { theme: "1ms:theme", lang: "1ms:lang", pack: "1ms:pack", mask: "1ms:mask", auto: "1ms:auto" };
   const country = cc => { try { return new Intl.DisplayNames([LANG], { type: "region" }).of(cc); } catch (e) { return cc; } };
   const flag = cc => /^[A-Z]{2}$/.test(cc || "") ? `<img class="flag" src="/flags/${cc.toLowerCase()}.svg" alt="" width="20" height="15">` : "";
@@ -406,11 +419,13 @@
     if (RUN !== run) return;
     RUN = null; LAST_DONE = true; setBusy(false); progress(null);
     summarize(!ctl.signal.aborted);
+    if (CHECK && full && !ctl.signal.aborted) EXITS.then(checkupResult);
   }
   function progress(run) {
     $("#prog i").style.width = run && !ONE ? (100 * run.d / run.n).toFixed(1) + "%" : "0";
     if (!run || ONE) return;
     $("#vHead").textContent = t("running", { d: run.d, n: run.n });
+    if (run.full) post({ type: "progress", done: run.d, total: run.n, text: $("#vHead").textContent });
     paintStats();                                             // the three numbers move while the balls come back
   }
   function setBusy(b) { $("#run span").textContent = t(b ? "stop" : "run"); if ($("#deep")) $("#deep").disabled = b; }
@@ -743,13 +758,38 @@
     setMood("idle"); say("mood_idle");
   }
 
+  /* ---------- Connection Checkup: the result, for the report (fields and facts: 1ms-shell docs/checkup.md) ---------- */
+  let EXITS = Promise.resolve();
+  const KEY_MS = ["google", "youtube", "netflix", "chatgpt", "claude", "gemini", "github", "telegram", "discord", "steam", "cloudflare"];
+  function checkupResult() {
+    const v = lastSum.v, r1 = x => x == null ? null : Math.round(x * 10) / 10, ms = x => x != null ? fmt(x) + " ms" : "✕";
+    const done = allServices().filter(s => R.get(s.id) && R.get(s.id).st === "done"), med = s => median(R.get(s.id).s);
+    // what didn't answer first, then the everyday uses that are blocked or slow, then the ones that are fine
+    const findings = [...(v.lost.length ? [{ level: "bad", text: t("v_fail", { list: v.lost.slice(0, 4).join(t("v_join")) + (v.lost.length > 4 ? "…" : "") }) }] : []),
+      ...v.uses.filter(u => u.st === "blocked").map(u => ({ level: "bad", text: t("use_" + u.k) + " · " + t("st_" + u.st) })),
+      ...v.uses.filter(u => u.st === "slow").map(u => ({ level: "warn", text: t("use_" + u.k) + " · " + t("st_" + u.st) })),
+      ...v.uses.filter(u => u.st === "great" || u.st === "ok").map(u => ({ level: "ok", text: t("use_" + u.k) + " · " + t("st_" + u.st) }))].slice(0, 4);
+    post({ type: "result", lang: LANG, path: PAGE + "r/" + resultCode(false), grade: null, score: null, headline: verdictHead(v),
+      stats: [{ label: t("seg_local"), value: ms(v.local.md) }, { label: t("seg_global"), value: ms(v.global.md) },
+        { label: t("med"), value: ms(lastSum.md) }, { label: t("e_back"), value: lastSum.ok + "/" + lastSum.n }],
+      findings,
+      facts: { median: r1(lastSum.md), localMedian: r1(v.local.md), globalMedian: r1(v.global.md),
+        unreachable: done.filter(s => med(s) == null).map(s => s.id),
+        ms: Object.fromEntries(KEY_MS.map(id => done.find(s => s.id === id)).filter(Boolean).map(s => [s.id, r1(med(s))])) } });
+  }
+  // the report sizes the frame to the content
+  if (CHECK && window.ResizeObserver) {
+    let last = 0;
+    new ResizeObserver(() => { const h = Math.ceil($(".app").getBoundingClientRect().height); if (h !== last) post({ type: "size", height: last = h }); }).observe($(".app"));
+  }
+
   /* ---------- go ---------- */
   setMood("sniff");
-  if (SHARED) { sharedOn = true; showShared(SHARED); }
+  if (SHARED && !CHECK) { sharedOn = true; showShared(SHARED); }
   else {
-    const exitP = checkExits().catch(() => {});
-    // the exits pick the local pack; give them a moment, then the dog starts fetching either way
-    if (autoBox.checked) Promise.race([exitP, sleep(1500)]).then(() => start(3));
+    const exitP = EXITS = checkExits().catch(() => {});
+    // the exits pick the local pack; give them a moment, then the dog starts fetching either way (the checkup always runs)
+    if (autoBox.checked || CHECK) Promise.race([exitP, sleep(1500)]).then(() => start(3));
     else exitP.then(waitForClick);
   }
 })();

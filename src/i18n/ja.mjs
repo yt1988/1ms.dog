@@ -32,6 +32,7 @@ export default {
   a_pet: "犬をなでる", a_dog: "1ms.dog の柴犬", a_field: "サービスごとの遅延", a_nav: "すべての測定ページ", a_close: "閉じる", a_prev: "前へ", a_next: "次へ",
   share_text: "うちの犬は{where}から {ok}/{n} サービスのボールを回収、中央値 {ms} ms（{tier}）。あなたの犬は？",
   r_title: "中央値 {ms} ms（{tier}）、{ok}/{n} のサービスが応答", r_one: "{s}：{ms} ms（{tier}）",
+  e_back: "応答",
   shared_from: "{where}からシェアされた結果 · {date}", test_mine: "自分の回線を測る",
 
   seg_local: "地域の定番",

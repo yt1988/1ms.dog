@@ -32,6 +32,7 @@ export default {
   a_pet: "Погладить собаку", a_dog: "Сиба-ину 1ms.dog", a_field: "Задержка по сервисам", a_nav: "Все тесты пинга", a_close: "Закрыть", a_prev: "Назад", a_next: "Далее",
   share_text: "Мой пёс принёс мячи от {ok} из {n} сервисов ({where}), медиана {ms} мс ({tier}). А ваш?",
   r_title: "Медиана {ms} мс ({tier}), ответили {ok} из {n} сервисов", r_one: "{s}: {ms} мс ({tier})",
+  e_back: "Ответили",
   shared_from: "Результат из места: {where} · {date}", test_mine: "Проверить мою сеть",
 
   seg_local: "Местные сервисы",

@@ -32,6 +32,7 @@ export default {
   a_pet: "강아지 쓰다듬기", a_dog: "1ms.dog 시바견", a_field: "서비스별 지연", a_nav: "전체 측정 페이지", a_close: "닫기", a_prev: "이전", a_next: "다음",
   share_text: "우리 강아지가 {where}에서 서비스 {ok}/{n}개의 공을 물어왔어요. 중앙값 {ms} ms({tier}). 당신의 강아지는요?",
   r_title: "중앙값 {ms} ms({tier}), 서비스 {ok}/{n}개 응답", r_one: "{s}: {ms} ms({tier})",
+  e_back: "응답",
   shared_from: "{where}에서 공유한 결과 · {date}", test_mine: "내 네트워크 측정",
 
   seg_local: "지역 인기 서비스",

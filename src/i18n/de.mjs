@@ -32,6 +32,7 @@ export default {
   a_pet: "Hund streicheln", a_dog: "1ms.dog-Shiba", a_field: "Latenz je Dienst", a_nav: "Alle Ping-Tests", a_close: "Schließen", a_prev: "Zurück", a_next: "Weiter",
   share_text: "Mein Hund hat von {where} aus {ok}/{n} Dienste apportiert, Median {ms} ms ({tier}). Wie schnell ist deiner?",
   r_title: "Median {ms} ms ({tier}), {ok}/{n} Dienste haben geantwortet", r_one: "{s}: {ms} ms ({tier})",
+  e_back: "Geantwortet",
   shared_from: "Geteiltes Ergebnis aus {where} · {date}", test_mine: "Meine Verbindung testen",
 
   seg_local: "Lokale Favoriten",
