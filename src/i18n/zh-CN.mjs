@@ -32,7 +32,7 @@ export default {
   a_pet: "摸摸小狗", a_dog: "1ms.dog 柴犬", a_field: "各服务延迟", a_nav: "全部测速页面", a_close: "关闭", a_prev: "上一个", a_next: "下一个",
   share_text: "我的狗狗从{where}出发，叼回了 {ok}/{n} 个服务，中位延迟 {ms} ms（{tier}）。你的狗狗有多快？",
   r_title: "中位延迟 {ms} ms（{tier}），{ok}/{n} 个服务有响应", r_one: "{s}：{ms} ms（{tier}）",
-  e_back: "有响应",
+  e_back: "有响应", e_blocked: "延迟测试一开始就全部失败，很可能被广告拦截或隐私扩展拦下了。请把 1ms.dog 加入白名单后再试。",
   shared_from: "这是一份来自{where}的测试结果 · {date}", test_mine: "测我自己的网络",
   cmp: "和上一次的结果对比", cmp_none: "测两次后可以对比", vs_mine: "和我的网络比", cmp_h: "两次结果对比",
 
@@ -82,6 +82,24 @@ export default {
   ipqs_t: "查这个 IP 的质量",
 
   asn_t: "查询这个 AS", l_v6: "IPv6 完整测试", l_v6_none: "没检测到 IPv6，测一下", l_who: "网站还能看到你哪些信息", l_speed: "测下载和上传速度", l_check: "做一次完整体检", l_ai: "{s} 看到的是哪个 IP",
+  // the command-line tool's card and dialog (home page)
+  cli_h: "在服务器上也测一测",
+  cli_sub: "在 VPS、Linux 主机或路由器上运行这条命令，用真实 HTTPS 测同样的服务，给出同样的结论，并打印一个能在这里打开的结果链接。",
+  cli_more: "更多用法",
+  cli_install: "安装并运行（Linux、macOS、路由器）",
+  cli_install_s: "把 httpslatency 装到 /usr/local/bin（或 ~/.local/bin），打开菜单选择要测什么；以后随时输入 httpslatency 再测。",
+  cli_once: "只跑一次，不安装",
+  cli_wget: "没有 curl？用 wget",
+  cli_opts: "常用参数",
+  cli_o_cat: "只测某几组",
+  cli_o_svc: "只测某几个服务，每个多测几次（httpslatency --list 列出全部）",
+  cli_o_v6: "走 IPv6",
+  cli_o_json: "输出 JSON",
+  cli_win: "Windows",
+  cli_win_s: "在 PowerShell 里运行：安装 httpslatency 并打开菜单。也可以直接下载程序：",
+  cli_src: "源码和全部版本",
+  copy: "复制",
+  copied: "已复制",
 
   faq_h: "原理与常见问题",
   docs: [

@@ -32,7 +32,7 @@ export default {
   a_pet: "Caresser le chien", a_dog: "Shiba de 1ms.dog", a_field: "Latence par service", a_nav: "Tous les tests de ping", a_close: "Fermer", a_prev: "Précédent", a_next: "Suivant",
   share_text: "Mon chien a rapporté {ok}/{n} services depuis {where}, médiane {ms} ms ({tier}). Et le vôtre ?",
   r_title: "Médiane {ms} ms ({tier}), {ok}/{n} services ont répondu", r_one: "{s} : {ms} ms ({tier})",
-  e_back: "Ont répondu",
+  e_back: "Ont répondu", e_blocked: "Tous les tests de latence ont échoué d’emblée. Un bloqueur de pubs ou une extension de confidentialité les bloque sans doute ; autorisez 1ms.dog et relancez.",
   shared_from: "Résultat partagé depuis {where} · {date}", test_mine: "Tester ma connexion",
   cmp: "Comparer avec votre dernier résultat", cmp_none: "Testez deux fois pour comparer", vs_mine: "Comparer avec mon réseau", cmp_h: "Deux résultats côte à côte",
 
@@ -82,6 +82,24 @@ export default {
   ipqs_t: "Vérifier la qualité de cette IP",
 
   asn_t: "Consulter cet AS", l_v6: "Test IPv6 complet", l_v6_none: "Pas d’IPv6 détecté : testez", l_who: "Ce que les sites voient d’autre sur vous", l_speed: "Mesurer le débit descendant et montant", l_check: "Faire un bilan complet", l_ai: "L’IP que voit {s}",
+  // the command-line tool's card and dialog (home page)
+  cli_h: "Mesurez aussi depuis un serveur",
+  cli_sub: "Sur un VPS, une machine Linux ou un routeur, cette commande mesure les mêmes services en vrai HTTPS, donne le même verdict et affiche un lien vers le résultat, à ouvrir ici.",
+  cli_more: "Autres usages",
+  cli_install: "Installer et lancer (Linux, macOS, routeurs)",
+  cli_install_s: "Installe httpslatency dans /usr/local/bin (ou ~/.local/bin) et ouvre un menu pour choisir quoi tester ; relancez httpslatency quand vous voulez.",
+  cli_once: "Lancer une fois, sans installer",
+  cli_wget: "Pas de curl ? Avec wget",
+  cli_opts: "Options utiles",
+  cli_o_cat: "Seulement certains groupes",
+  cli_o_svc: "Seulement certains services, avec plus de requêtes (httpslatency --list les liste tous)",
+  cli_o_v6: "En IPv6",
+  cli_o_json: "Tout en JSON",
+  cli_win: "Windows",
+  cli_win_s: "Dans PowerShell : installe httpslatency et ouvre son menu. Ou téléchargez le programme :",
+  cli_src: "Code source et toutes les versions",
+  copy: "Copier",
+  copied: "Copié",
 
   faq_h: "Comment ça marche",
   docs: [

@@ -14,6 +14,7 @@ Where does your internet really exit, and how far is the world from there? [1ms.
 - **Share a result** as an image drawn in your browser, or as a link that carries the result itself. Links hold the country and timings, plus city and network only if you tick the box; never IP addresses.
 - **10 languages**, all pre-rendered, plus landing pages chosen per language for the services people search latency for there (`/chatgpt/`, `/zh-cn/dockerhub/`, `/ru/discord/`…).
 - **Private by design:** every request goes straight from your browser to the service being tested. The site is static files; it never receives your results. A shared link carries its result in the path (`/r/…`), and a small Worker reads it to put the result in the link preview.
+- **The same test from a terminal.** On a VPS, a Linux box or a router, [httpslatency](https://github.com/yt1988/https-latency-test-cli) times the same services over real HTTPS, gives the same verdict, and prints a result link that opens here: `curl -fsSL https://1ms.dog/i | sh`. It reads the list from `/services.json`, which the build writes from `src/services.mjs`; the Worker passes its installers and release files on from GitHub (`/i`, `/i.ps1`, `/v`, `/dl/…`).
 
 ## How latency is measured
 
@@ -29,7 +30,7 @@ The page is static: `public/` is committed, so you don't need to build anything 
 git clone https://github.com/yt1988/1ms.dog
 cd 1ms.dog
 npx wrangler login
-npx wrangler deploy        # static assets (free and unmetered) and src/worker.js, which only runs for /r/ links
+npx wrangler deploy        # static assets (free and unmetered) and src/worker.js, which only runs for /r/ links and the command-line tool's downloads
 ```
 
 `wrangler.toml` turns off `*.workers.dev` and preview URLs. Bind your own domain under **Workers & Pages → 1ms-index → Settings → Domains & Routes**, or set `workers_dev = true` for a quick test. Any static host works too, without the result-link previews (`/r/` links then need a rewrite to their page); `public/_headers` holds the security headers (CSP) in Cloudflare's format.

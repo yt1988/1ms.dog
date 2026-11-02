@@ -5,6 +5,7 @@
 //   assets/app.<hash>.js, assets/app.<hash>.css   app code and styles, shared and cached by every page
 //   assets/share/                                 the shared share dialog, copied verbatim from 1ms-shell (not built)
 //   sitemap.xml, robots.txt, llms.txt, _headers   SEO and security headers (CSP)
+//   services.json                                 the list for the command-line tool (github.com/yt1988/https-latency-test-cli)
 // Usage: node scripts/build.mjs          write the files
 //        node scripts/build.mjs --check  exit 1 if anything is out of date, or the app code does not parse (CI)
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
@@ -41,6 +42,11 @@ async function writeRetry(url, text) {
     catch (e) { if (i >= 4 || !["UNKNOWN", "EBUSY", "EPERM"].includes(e.code)) throw e; await new Promise(r => setTimeout(r, 150 * (i + 1))); }
   }
 }
+
+// The command-line tool (github.com/yt1988/https-latency-test-cli): the install line on the home page's card. Its
+// installers and release files come through this site's Worker (src/worker.js: /i, /i.ps1, /dl/*); the dialog with
+// every way to run it is filled in by src/app.js when it opens (the HTML stays under its size budget).
+const cliCmd = `curl -fsSL ${SITE}/i | sh`;
 
 async function loadI18n() {
   const out = {};
@@ -92,7 +98,7 @@ export async function build({ check = false } = {}) {
   const altsOf = sub => langs.filter(([l]) => indexed(l, sub));
   const path = (slug, sub) => "/" + (slug ? slug + "/" : "") + (sub ? sub + "/" : "");
   const RUNTIME_SKIP = new Set(["docs", "egress_link", "seo_title", "seo_desc", "seo_kw", "og_sub", "lede", "lp_title", "lp_desc", "lp_intro", "lp_h1", "lp_kw", "lp_peers", "lp_via", "lp_via_same", "land", "lg_title", "lg_desc", "lg_h1", "lg_kw", "lg_intro", "lg_about", "lg_region", "sm_cats", "sm_regions", "grp_best", "grp_worst", "sitemap_h", "sm_item", "cta_h", "cta_d", "cta_btn", "one_med", "one_cold", "one_jit", "foot",
-    "name", "h1", "lang_label", "faq_h", "pack", "exit_h", "test_mine", "r_title", "r_one", "vs_mine"]);
+    "name", "h1", "lang_label", "faq_h", "pack", "exit_h", "test_mine", "r_title", "r_one"]);
   // static text the page already shows, and region names (only the server-rendered picker uses them)
   const runtimeKey = k => !RUNTIME_SKIP.has(k) && !k.startsWith("pk_") && !k.startsWith("a_");
   const pages = [], stringFiles = {};
@@ -216,6 +222,7 @@ export async function build({ check = false } = {}) {
         .split("{{homeHref}}").join(path(slug, "")).replace("{{langOpts}}", langOpts)
         // the exit list links to EgressLens (which IP each site sees), in the same language
         .replace("{{h1}}", esc(h1)).replace("{{intro}}", intro).replace("{{uses}}", uses)
+        .replace("{{cliCmd}}", esc(cliCmd))
         .replace("{{axis}}", axis).replace("{{groups}}", groups).replace("{{helpNav}}", helpNav).replace("{{helpC}}", helpC)
         .replace(/\{\{a:(\w+)\}\}/g, (_, k) => esc(T(k))).replace("{{data}}", JSON.stringify(data).replace(/</g, "\\u003c"));
       if (/\{\{\w+\}\}/.test(html)) throw new Error("unfilled placeholder in " + path(slug, sub) + ": " + /\{\{\w+\}\}/.exec(html)[0]);
@@ -240,6 +247,15 @@ export async function build({ check = false } = {}) {
 - Services tested: ${SERVICES.map(s => s.name).join(", ")}
 - Speed grades (median HTTPS round trip): 1ms dog < 2 ms, Zoomies ≤ 30, Sprint ≤ 80, Trot ≤ 150, Stroll ≤ 300, Nap > 300, Not back = no connection in 5 s
 `;
+
+  // The command-line tool measures the same URLs: it reads this list on every run (and keeps a copy built in)
+  const strip = ({ id, name, cat, url, m, raw, origin }) => ({ id, name, cat, url, ...(m && { m }), ...(raw && { raw }), ...(origin && { origin }) });
+  const cliList = JSON.stringify({
+    version: 1, services: SERVICES.map(strip), packs: Object.fromEntries(Object.entries(PACKS).map(([k, v]) => [k, v.map(strip)])),
+    packOf: PACK_OF, langPack: Object.fromEntries(LANGS.map(([l, , , p]) => [l, p])),
+    uses: USES.map(([use, ids, good, ok]) => ({ use, ids, good, ok })),
+    telegram: SUBS.telegram.map(({ dc, city, cc, url }) => ({ dc, city, cc, url })), telegramOf: TG_DC_OF,
+  }, null, 1) + "\n";
 
   // The only inline script is the pre-paint snippet, identical on every page: one hash covers the site.
   // connect-src / img-src allow any https host: the test fetches the services from the browser.
@@ -273,9 +289,12 @@ export async function build({ check = false } = {}) {
 /llms.txt
   Access-Control-Allow-Origin: *
   Content-Type: text/plain; charset=utf-8
+/services.json
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=3600
 `;
 
-  const files = { ["assets/" + jsName]: app, ["assets/" + cssName]: css, ...stringFiles, "sitemap.xml": sitemap, "robots.txt": robots, "llms.txt": llms, "_headers": headers };
+  const files = { ["assets/" + jsName]: app, ["assets/" + cssName]: css, ...stringFiles, "sitemap.xml": sitemap, "robots.txt": robots, "llms.txt": llms, "services.json": cliList, "_headers": headers };
   for (const p of pages) files[p.file] = p.html;
 
   const stale = [];

@@ -32,7 +32,7 @@ export default {
   a_pet: "강아지 쓰다듬기", a_dog: "1ms.dog 시바견", a_field: "서비스별 지연", a_nav: "전체 측정 페이지", a_close: "닫기", a_prev: "이전", a_next: "다음",
   share_text: "우리 강아지가 {where}에서 서비스 {ok}/{n}개의 공을 물어왔어요. 중앙값 {ms} ms({tier}). 당신의 강아지는요?",
   r_title: "중앙값 {ms} ms({tier}), 서비스 {ok}/{n}개 응답", r_one: "{s}: {ms} ms({tier})",
-  e_back: "응답",
+  e_back: "응답", e_blocked: "지연 측정이 처음부터 모두 실패했습니다. 광고 차단이나 개인정보 보호 확장 프로그램이 막고 있을 수 있어요. 1ms.dog를 허용한 뒤 다시 시도하세요.",
   shared_from: "{where}에서 공유한 결과 · {date}", test_mine: "내 네트워크 측정",
   cmp: "지난 결과와 비교", cmp_none: "두 번 측정하면 비교할 수 있어요", vs_mine: "내 네트워크와 비교", cmp_h: "두 결과 비교",
 
@@ -82,6 +82,24 @@ export default {
   ipqs_t: "이 IP의 품질 검사",
 
   asn_t: "이 AS 조회", l_v6: "IPv6 전체 테스트", l_v6_none: "IPv6가 없어요: 테스트하기", l_who: "사이트가 볼 수 있는 다른 정보", l_speed: "다운로드·업로드 속도 측정", l_check: "전체 점검 받기", l_ai: "{s}가 보는 IP",
+  // the command-line tool's card and dialog (home page)
+  cli_h: "서버에서도 측정하기",
+  cli_sub: "VPS, 리눅스 서버, 라우터에서 이 명령을 실행하면 같은 서비스를 실제 HTTPS로 측정해 같은 판정을 내리고, 이 페이지에서 열 수 있는 결과 링크를 출력합니다.",
+  cli_more: "다른 사용법",
+  cli_install: "설치하고 실행 (Linux, macOS, 공유기)",
+  cli_install_s: "httpslatency를 /usr/local/bin(또는 ~/.local/bin)에 설치하고 메뉴에서 테스트할 항목을 고릅니다. 이후 언제든 httpslatency로 다시 테스트하세요.",
+  cli_once: "한 번만 실행, 설치 안 함",
+  cli_wget: "curl이 없으면 wget으로",
+  cli_opts: "자주 쓰는 옵션",
+  cli_o_cat: "일부 그룹만",
+  cli_o_svc: "일부 서비스만, 더 여러 번 (httpslatency --list로 전체 목록)",
+  cli_o_v6: "IPv6로",
+  cli_o_json: "JSON으로 출력",
+  cli_win: "Windows",
+  cli_win_s: "PowerShell에서 실행: httpslatency를 설치하고 메뉴를 엽니다. 프로그램을 직접 내려받을 수도 있습니다:",
+  cli_src: "소스 코드와 전체 빌드",
+  copy: "복사",
+  copied: "복사됨",
 
   faq_h: "작동 방식과 자주 묻는 질문",
   docs: [

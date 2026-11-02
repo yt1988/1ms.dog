@@ -99,7 +99,13 @@
   const getJ = (u, ms = 5000) => fetch(bust(u), { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(ms) }).then(r => r.ok ? r.json() : Promise.reject());
   const firstIp = (list, f) => Promise.any(list.map(([u, k]) => getJ(u).then(j => j[k] && fam(j[k]) === f ? { ip: j[k] } : Promise.reject())));
   // each check → { ip, geo? }, geo = { cc, city, asn, org }
+  // The shell answers /_ms/me on every 1ms.dog host from what Cloudflare knows of this connection (no third party, not
+  // cached; 1ms-shell docs/tool-contract.md), so the direct exit and its network come from there first. Self-hosted
+  // copies get a 404 and rely on the others. The others still run: each is another site, and a proxy that routes by
+  // site shows up as a different exit there, as does the other address family.
   const CHECKS = [
+    ["1ms.dog", () => fetch("/_ms/me", { cache: "no-store", signal: AbortSignal.timeout(3000) }).then(r => r.ok ? r.json() : Promise.reject())
+      .then(j => j.ip ? { ip: j.ip, geo: j.country ? { cc: j.country, city: j.city, asn: j.asn, org: j.org } : null } : Promise.reject())],
     ["ipip.net", () => getJ("https://myip.ipip.net/json").then(j => ({ ip: j.data.ip }))],
     ["Cloudflare", () => getJ("https://speed.cloudflare.com/meta", 6000).then(j => ({ ip: j.clientIp, geo: { cc: j.country, city: j.city, asn: j.asn, org: j.asOrganization } }))],
     ["ip.sb", () => getJ("https://api.ip.sb/geoip").then(j => ({ ip: j.ip, geo: { cc: j.country_code, city: j.city, asn: j.asn, org: j.isp || j.asn_organization } }))],
@@ -417,7 +423,7 @@
     const q = list.slice(), ctl = new AbortController(), run = RUN = { ctl, q, full, n: list.length, d: 0 };
     if (D.spot) q.sort((a, b) => (b.id === D.spot) - (a.id === D.spot));
     if (full) { setMood("run"); say("mood_run"); setBusy(true); }
-    const worker = async () => { while (q.length && !ctl.signal.aborted) { const s = q.shift(); await runOne(s, SUBS.includes(s) ? GRP_N : n, ctl.signal); run.d++; progress(run); } };
+    const worker = async () => { while (q.length && !ctl.signal.aborted) { const s = q.shift(); await runOne(s, SUBS.includes(s) ? GRP_N : n, ctl.signal); run.d++; if (median(R.get(s.id).s) != null) run.ok = true; progress(run); blocked(run); } };
     await Promise.all(Array.from({ length: CONC }, worker));
     if (RUN !== run) return;
     RUN = null; LAST_DONE = true; setBusy(false); progress(null);
@@ -425,11 +431,19 @@
     if (full && !ctl.signal.aborted) saveRun();
     if (CHECK && full && !ctl.signal.aborted) EXITS.then(checkupResult);
   }
+  // Embedded in the checkup: when the first services all fail (an ad blocker stopping every probe, or no network at
+  // all), say so at once instead of running out the timeouts; an error means no result follows (docs/checkup.md)
+  const BLOCKED_AFTER = 10;
+  function blocked(run) {
+    if (!CHECK || !run.full || run.ok || run.d < BLOCKED_AFTER || run.ctl.signal.aborted) return;
+    post({ type: "error", text: t("e_blocked") });
+    run.ctl.abort();
+  }
   function progress(run) {
     $("#prog i").style.width = run && !ONE ? (100 * run.d / run.n).toFixed(1) + "%" : "0";
     if (!run || ONE) return;
     $("#vHead").textContent = t("running", { d: run.d, n: run.n });
-    if (run.full) post({ type: "progress", done: run.d, total: run.n, text: $("#vHead").textContent });
+    if (run.full && !run.ctl.signal.aborted) post({ type: "progress", done: run.d, total: run.n, text: $("#vHead").textContent });
     paintStats();                                             // the three numbers move while the balls come back
   }
   function setBusy(b) { $("#run span").textContent = t(b ? "stop" : "run"); if ($("#deep")) $("#deep").disabled = b; paintCmpBtn(); }
@@ -594,6 +608,30 @@
     $("#helpC").scrollTop = 0;
   }
   $("#helpBtn").onclick = () => { showHelp(helpIdx); openDlg("help"); };
+  // the command-line card (home page): its dialog, filled in on first open with every way to run the tool (the site
+  // comes from the card's install line, so a self-hosted copy hands out its own). Each command line is its own copy
+  // button: a click copies it, and its mark turns to a tick for a moment
+  function cliBody() {
+    const site = /^curl -fsSL (\S+)\/i/.exec($(".cli code").textContent)[1], ext = EXT.replace("<svg ", '<svg class="ext" ');
+    const marks = [...$$(".cli .cmdline svg")].map(x => x.outerHTML).join("");
+    const line = (cmd, note) => `<button class="cmdline" type="button" data-copy title="${esc(t("copy"))}"><code>${esc(cmd)}</code>${marks}</button>` + (note ? `<span class="note">${esc(t(note))}</span>` : "");
+    const sec = (h, body) => `<section class="rblk"><b>${esc(t(h))}</b>${body}</section>`, win = `${site}/dl/latest/httpslatency-windows-amd64.exe`;
+    return sec("cli_install", line(`curl -fsSL ${site}/i | sh`, "cli_install_s")) + sec("cli_once", line(`curl -fsSL ${site}/i | sh -s -- run`)) +
+      sec("cli_wget", line(`wget -qO- ${site}/i | sh`)) +
+      sec("cli_opts", line("httpslatency -c ai,video,game", "cli_o_cat") + line("httpslatency -s chatgpt,github -n 10", "cli_o_svc") +
+        line("httpslatency -6", "cli_o_v6") + line("httpslatency --json > latency.json", "cli_o_json")) +
+      sec("cli_win", line(`irm ${site}/i.ps1 | iex`, "cli_win_s") + `<a class="dl" href="${esc(win)}">httpslatency-windows-amd64.exe ↓</a>`) +
+      `<a class="cli-gh" href="${esc($(".cli-gh").href)}" target="_blank" rel="noopener noreferrer"><svg class="gh-ic" viewBox="0 0 16 16" aria-hidden="true"><use href="#ghMark"/></svg>${esc(t("cli_src"))}${ext}</a>`;
+  }
+  $$("[data-cli]").forEach(b => { b.onclick = () => { if (!$("#cliB").firstChild) $("#cliB").innerHTML = cliBody(); openDlg("cli"); }; });
+  document.addEventListener("click", e => {
+    const b = e.target.closest && e.target.closest("[data-copy]");
+    if (!b || !navigator.clipboard) return;
+    navigator.clipboard.writeText(b.querySelector("code").textContent).then(() => {
+      b.classList.add("done"); b.title = t("copied");
+      setTimeout(() => { b.classList.remove("done"); b.title = t("copy"); }, 1200);
+    }, () => {});
+  });
   $$("#helpNav [data-hq]").forEach(b => { b.onclick = () => showHelp(+b.dataset.hq); });
   $("#helpSel").onchange = e => showHelp(+e.target.value);
   $$("[data-hstep]").forEach(b => { b.onclick = () => showHelp(helpIdx + +b.dataset.hstep); });
@@ -738,6 +776,12 @@
     for (const s of allServices()) if (s.id in S.res) { R.set(s.id, { w: null, s: S.res[s.id] == null ? [] : [S.res[s.id]], st: "done" }); paintRow(s); }
     summarize(false);
     $("#sharedTxt").textContent = t("shared_from", { where: whereOf(S.groups[0]) || "?", date: new Date(S.ts).toLocaleString(LANG, { dateStyle: "medium", timeStyle: "short" }) });
+    // "compare with my network": made here, with the banner it sits in (only a shared result has it)
+    if (!$("#vsMine")) {
+      const b = Object.assign(document.createElement("button"), { className: "btn", id: "vsMine", type: "button", textContent: t("vs_mine") });
+      b.onclick = () => { VS = encodeShare(SHARED); leaveShared(); start(3); };
+      $("#testMine").before(b);
+    }
     $("#shared").hidden = false;
   }
   let sharedOn = false;
@@ -773,8 +817,6 @@
     cmpBtn.title = t(HIST.length < 2 ? "cmp_none" : "cmp");
   }
   if (cmpBtn) cmpBtn.onclick = () => { if (HIST.length >= 2) location.href = cmpLink(bareCode(HIST[1]), bareCode(HIST[0])); };
-  // on someone else's result: test my own network, then show the two side by side
-  $("#vsMine").onclick = () => { VS = encodeShare(SHARED); leaveShared(); start(3); };
 
   const CMPS = CLINK && !CHECK && $("#cmpBox") ? [parseShare(CLINK[1], PACKS), parseShare(CLINK[2], PACKS)] : null;
   let cmpOn = false, CV = null, CS = null;
@@ -792,11 +834,11 @@
     CS = CMPS.map(S => ownOf(HIST, S, PACKS) || S);
     const { compare } = await import("/assets/share/compare.js");
     CV = cmpView(compare);
-    CV.renderHead($("#cmpHead"));                             // in the visitor's time zone, with their own side's city
+    if ($("#cmpHead")) CV.renderHead($("#cmpHead"));          // in the visitor's time zone, with their own side's city
     await CV.render($("#cmpView"));
   }
-  $("#cmpShare").title = t("share");
-  $("#cmpShare").onclick = async () => {
+  // the head and the share button are in the banner only on a compare page: the Worker puts them there (src/worker.js)
+  if ($("#cmpShare")) $("#cmpShare").onclick = async () => {
     if (!CV) return;
     const { share } = await import("/assets/share/share.js");
     const code = (S, show) => encodeShare(show ? S : bare(S));

@@ -92,7 +92,12 @@ export function parseShare(code, packs) {
     return { cc: /^[A-Z]{2}$/.test(cc) ? cc : "", city, org, asn: +asn || null, proxy: k === "p", ips: [], by: [] };
   }) : [];
   const res = {};
-  for (const p of m[4].split(",")) { const [id, v] = p.split(":"); if (/^[\w-]+$/.test(id || "") && v) res[id] = v === "x" ? null : parseInt(v, 36) / 10; }
+  // every entry must be whole: a link cut off inside one is broken, not a shorter result
+  for (const p of m[4] ? m[4].split(",") : []) {
+    const e = /^([\w-]+):([0-9a-z]+|x)$/.exec(p);
+    if (!e) return null;
+    res[e[1]] = e[2] === "x" ? null : parseInt(e[2], 36) / 10;
+  }
   return { ts: parseInt(m[1], 36) * 1000, pack: m[2], groups, res };
 }
 

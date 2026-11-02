@@ -35,14 +35,15 @@ function preview(html, meta, url) {
   for (const k of ['name="description"', 'property="og:description"', 'name="twitter:description"']) set(new RegExp(`(<meta ${k} content=")[^"]*"`), meta.desc);
   set(/(<meta property="og:url" content=")[^"]*"/, url);
   if (meta.cmp) html = html.replace("</head>", '<link rel="stylesheet" href="/assets/share/compare.css"></head>')
-    .replace('<div class="cmp-head" id="cmpHead"></div>', () => '<div class="cmp-head" id="cmpHead">' + meta.cmp.head + "</div>")
+    .replace('<span id="sharedTxt"></span>', m => m + meta.cmp.head)
+    .replace('<button class="btn pri" id="testMine"', m => meta.cmp.share + m)
     .replace('id="cmpBox"', () => `id="cmpBox" style="${meta.cmp.style}"`);
   return html;
 }
 
 createServer(async (req, res) => {
   const urlPath = decodeURIComponent(new URL(req.url, "http://x").pathname);
-  const meta = resultMeta(new URL(req.url, "http://x").pathname);
+  const found = resultMeta(new URL(req.url, "http://x").pathname), meta = found && !found.bad ? found : null;   // unreadable: 404
   let path = meta ? meta.page : urlPath;
   if (path.endsWith("/")) path += "index.html";
   const file = normalize(root + path);

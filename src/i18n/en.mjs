@@ -34,7 +34,7 @@ export default {
   a_pet: "Pet the dog", a_dog: "1ms.dog shiba", a_field: "Latency by service", a_nav: "All ping tests", a_close: "Close", a_prev: "Previous", a_next: "Next",
   share_text: "My dog fetched {ok}/{n} services from {where}, median {ms} ms ({tier}). How fast is yours?",
   r_title: "Median {ms} ms ({tier}), {ok}/{n} services answered", r_one: "{s}: {ms} ms ({tier})",
-  e_back: "Answered",
+  e_back: "Answered", e_blocked: "Every latency test failed right away. An ad blocker or privacy extension is probably blocking them; allow 1ms.dog and run it again.",
   shared_from: "A result shared from {where} · {date}", test_mine: "Test my network",
   cmp: "Compare with your last result", cmp_none: "Test twice to compare", vs_mine: "Compare with my network", cmp_h: "Two results side by side",
 
@@ -84,6 +84,24 @@ export default {
   ipqs_t: "Check this IP’s quality",
 
   asn_t: "Look up this AS", l_v6: "Full IPv6 test", l_v6_none: "No IPv6 found: test it", l_who: "What else sites can see about you", l_speed: "Test download and upload speed", l_check: "Run a full checkup", l_ai: "Which IP {s} sees",
+  // the command-line tool's card and dialog (home page)
+  cli_h: "Test from a server, too",
+  cli_sub: "On a VPS, a Linux box or a router, this command times the same services over real HTTPS, gives the same verdict, and prints a result link back here.",
+  cli_more: "More ways",
+  cli_install: "Install and run (Linux, macOS, routers)",
+  cli_install_s: "Installs httpslatency to /usr/local/bin (or ~/.local/bin) and opens a menu to pick what to test; run httpslatency again any time.",
+  cli_once: "Run once, install nothing",
+  cli_wget: "No curl? With wget",
+  cli_opts: "Handy options",
+  cli_o_cat: "Only some groups",
+  cli_o_svc: "Only some services, more requests each (httpslatency --list shows them all)",
+  cli_o_v6: "Over IPv6",
+  cli_o_json: "Everything as JSON",
+  cli_win: "Windows",
+  cli_win_s: "In PowerShell: installs httpslatency and opens its menu. Or download the program:",
+  cli_src: "Source code and all builds",
+  copy: "Copy",
+  copied: "Copied",
 
   faq_h: "How it works",
   docs: [
