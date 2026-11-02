@@ -779,10 +779,10 @@
   const CMPS = CLINK && !CHECK && $("#cmpBox") ? [parseShare(CLINK[1], PACKS), parseShare(CLINK[2], PACKS)] : null;
   let cmpOn = false, CV = null, CS = null;
   const names = Object.fromEntries([...SVC.list, ...Object.values(PACKS).flat()].map(s => [s.id, s.name]));
-  // the same input the Worker gives it (src/worker.js compareView), plus the lanes' scale
+  // the same input the Worker gives it (src/worker.js compareView)
   const cmpView = compare => {
     const side = S => ({ ts: S.ts, sub: show => exitsText(show ? S.groups : bare(S).groups, country, t) });
-    const d = diffShares(CS[0], CS[1], { names, services: SVC.list, packs: PACKS, cats: SVC.cats, uses: SVC.uses, label: t, scale: pos });
+    const d = diffShares(CS[0], CS[1], { names, services: SVC.list, packs: PACKS, cats: SVC.cats, uses: SVC.uses, label: t });
     return compare({ lang: LANG, a: side(CS[0]), b: side(CS[1]), ...d, words: "speed" });
   };
   async function showCompare() {

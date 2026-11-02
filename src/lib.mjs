@@ -107,16 +107,15 @@ export const bare = S => ({ ...S, groups: S.groups.map(g => ({ ...g, city: "", o
 // The compare view's input (assets/share/compare.js): two results as the home page shows one. Groups in the page's
 // order (local favorites of either side's pack, then each category) with every service either side measured; the
 // three numbers of the page (local, global, overall median, over the services both measured); the everyday uses
-// before and after. B's values take the page's speed colors (t0…t5).
+// before and after. B in the key numbers and uses takes the page's speed colors (t0…t5).
 // TOL is the home page's measured noise: two full runs a minute apart on the same line move about 1.8 % of rows by
 // more than 20 ms and 30 % (docs/compare.md in 1ms-shell; test/fixtures/runs.txt).
 export const TOL = { abs: 20, rel: 0.3 };
 const USE_RANK = { blocked: 0, slow: 1, ok: 2, great: 3 }, USE_TIER = ["muted", "t5", "t3", "t1"];
 export const tierVar = v => v == null ? "muted" : "t" + tierOf(v)[1].slice(1);
-// o: { names: id → name, services, packs, cats, uses (src/services.mjs), label: key → text in the page's language,
-// scale (optional) }
+// o: { names: id → name, services, packs, cats, uses (src/services.mjs), label: key → text in the page's language }
 export function diffShares(A, B, o) {
-  const L = o.label, ms = { unit: "ms", better: "lower", fmt, tol: TOL, tier: tierVar, ...(o.scale ? { scale: o.scale } : {}) };
+  const L = o.label, ms = { unit: "ms", better: "lower", fmt, tol: TOL, tier: tierVar };
   const row = id => ({ id, name: o.names[id] || id, a: A.res[id], b: B.res[id], ...ms });
   const has = id => id in A.res || id in B.res, both = ids => ids.filter(id => id in A.res && id in B.res);
   const local = [...new Set([...(o.packs[A.pack] || []), ...(o.packs[B.pack] || [])].map(s => s.id))];

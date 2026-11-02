@@ -1,5 +1,6 @@
 /* Compare mode (compare.js). Colors come from the tool's theme variables (--fg --muted --line --soft, --good / --bad
-   when the tool has them, and the speed colors the tool names per row), so it follows light and dark. Rows, group
+   when the tool has them, and the speed colors the tool names for its key numbers and uses), so it follows light
+   and dark. The rows show the change only: green or red, as a bar from the middle; unchanged rows stay grey. Rows, group
    titles and the gaps between groups have fixed heights (compare.js SIZE), so a tool can reserve the space. */
 .msc,.msc-head{--msc-good:var(--good,#1a8a5a);--msc-bad:var(--bad,#d23a2f);--msc-a:color-mix(in srgb,var(--muted,#888) 75%,transparent)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) :is(.msc,.msc-head){--msc-good:var(--good,#3ecf8e);--msc-bad:var(--bad,#f56565)}}
@@ -18,23 +19,19 @@
 .msc-side>span{overflow:hidden;text-overflow:ellipsis}
 .msc-side>span:not(.msc-sub){flex:none;font-variant-numeric:tabular-nums}
 .msc-sub{color:var(--muted,#666);min-width:0}
-/* the same marks as the lanes: A a grey ring, B a dot in the speed colors */
-.msc-k{flex:none;width:11px;height:11px;border-radius:50%}
-.msc-k.msc-a{border:2px solid var(--msc-a)}
-.msc-k.msc-b{background:var(--fg,#111)}
-/* B's mark in one speed color, by class (no style="", which a strict CSP would block) */
-.msc-tier-t0{background:var(--t0)!important}.msc-tier-t1{background:var(--t1)!important}.msc-tier-t2{background:var(--t2)!important}
-.msc-tier-t3{background:var(--t3)!important}.msc-tier-t4{background:var(--t4)!important}.msc-tier-t5{background:var(--t5)!important}
-.msc-tier-muted{background:var(--muted)!important}
+/* A and B: an outlined badge and a solid one, the same in the banner and the column heads */
+.msc-badge{flex:none;display:inline-grid;place-items:center;width:17px;height:17px;border-radius:4px;font:700 10.5px/1 var(--f-ui,sans-serif);font-style:normal;letter-spacing:0}
+.msc-badge.msc-a{box-shadow:inset 0 0 0 1.5px var(--msc-a);color:var(--muted,#666)}
+.msc-badge.msc-b{background:var(--fg,#111);color:var(--bg,#fff)}
 @container (max-width:480px){
   .msc-h,.msc-d{white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
   .msc-h{min-height:2.7em}.msc-d{min-height:3em}
 }
 
 .msc{container-type:inline-size;display:flex;flex-direction:column;gap:14px;min-width:0}
-/* B's value and dot take the row's speed color (set per element by compare.js as --msc-tier) */
+/* the key numbers' and uses' B in the tool's speed color (set per element by compare.js as --msc-tier) */
 .msc [data-tier]{--msc-tier:var(--fg,#111)}
-.msc-vb{color:var(--msc-tier)}
+.msc-stat .msc-vb{color:var(--msc-tier)}
 .msc-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .msc-stat{display:flex;flex-direction:column;gap:2px;height:84px;background:var(--soft,#8881);border-radius:12px;padding:10px 14px;min-width:0}
 .msc-stat em{font-style:normal;font-size:12px;color:var(--muted,#666);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -57,32 +54,37 @@
 .msc-col{display:flex;flex-direction:column;gap:14px;min-width:0}
 .msc-col+.msc-col>.msc-hd{display:none}
 .msc-g h3{height:30px;display:flex;align-items:flex-end;padding-bottom:5px;font-size:11.5px;font-weight:600;color:var(--muted,#666);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--line,#8884)}
-.msc-r{display:grid;grid-template-columns:minmax(64px,130px) 48px minmax(30px,1fr) 48px 112px;align-items:center;gap:0 10px;height:34px;border-bottom:1px solid color-mix(in srgb,var(--line,#8884) 50%,transparent);font-size:13px}
-.msc-hd{height:24px;margin-bottom:-14px;border-bottom:0;font-size:11px;font-weight:600;color:var(--muted,#666);text-transform:uppercase;letter-spacing:.05em}
-.msc-hd b{font:inherit;text-align:right}
+/* a row: name · A · B · the change as a bar · the change in numbers */
+.msc-r{display:grid;grid-template-columns:minmax(64px,140px) 44px 44px minmax(48px,1fr) 116px;align-items:center;gap:0 10px;height:34px;border-bottom:1px solid color-mix(in srgb,var(--line,#8884) 50%,transparent);font-size:13px}
+.msc-hd{height:24px;margin-bottom:-14px;border-bottom:0;font-size:11px;font-weight:600;color:var(--muted,#666);letter-spacing:.03em}
+.msc-hd b{font:inherit;display:flex;justify-content:flex-end}
+.msc-bar-h{display:flex;justify-content:space-between;gap:6px;font-weight:500;white-space:nowrap;overflow:hidden}
+.msc-bar-h em{font-style:normal;overflow:hidden;text-overflow:ellipsis}
+.msc-bar-h s{text-decoration:none;font-weight:700}.msc-bar-h s.msc-up{color:var(--msc-good)}.msc-bar-h s.msc-dn{color:var(--msc-bad)}
 .msc-n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .msc-r>b{font:500 13px var(--f-num,ui-monospace,monospace);text-align:right;white-space:nowrap}
 .msc-r>.msc-va{color:var(--muted,#666);font-weight:400}
-.msc-c{text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:500 12.5px var(--f-num,ui-monospace,monospace)}
+.msc-c{text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:600 12.5px var(--f-num,ui-monospace,monospace)}
 .msc-c small{font:400 11.5px var(--f-ui,sans-serif);margin-left:6px;opacity:.85}
-.msc-hd .msc-c{font:inherit}
+.msc-hd .msc-c{font:inherit;text-transform:uppercase}
 .msc-up .msc-c{color:var(--msc-good)}.msc-dn .msc-c{color:var(--msc-bad)}
 .msc-st-gone .msc-c{font:400 12px var(--f-ui,sans-serif);color:var(--muted,#666)}
-/* unchanged rows stay quiet; changed ones carry the color */
-.msc-r.msc-eq .msc-n{color:color-mix(in srgb,var(--fg,#111) 78%,transparent)}
-.msc-l{position:relative;height:16px}
-.msc-l::before{content:"";position:absolute;left:0;right:0;top:7px;height:2px;border-radius:2px;background:color-mix(in srgb,var(--line,#8884) 80%,transparent)}
-.msc-l i{position:absolute;border-radius:50%}
-.msc-l .msc-seg{top:6px;height:4px;border-radius:2px;opacity:.75}
-.msc-up .msc-seg{background:var(--msc-good)}.msc-dn .msc-seg{background:var(--msc-bad)}
-.msc-l .msc-pa{top:1px;width:14px;height:14px;margin-left:-7px;border:2px solid var(--msc-a)}
-.msc-l .msc-pb{top:3px;width:10px;height:10px;margin-left:-5px;background:var(--msc-tier)}
+/* unchanged rows recede; the changed ones are the only ones in full color */
+.msc-r.msc-eq .msc-n,.msc-r.msc-eq>.msc-vb{color:var(--muted,#666)}
+.msc-r:not(.msc-eq) .msc-n{font-weight:600}
+/* the bar: a line down the middle; left of it faster (green), right of it slower (red), longer the more times */
+.msc-bar{position:relative;height:14px}
+.msc-bar::before{content:"";position:absolute;left:50%;top:-10px;bottom:-11px;width:1px;background:color-mix(in srgb,var(--line,#8884) 90%,transparent)}
+.msc-bar i{position:absolute;top:2px;height:10px;border-radius:3px}
+.msc-up .msc-bar i{right:50%;background:var(--msc-good)}
+.msc-dn .msc-bar i{left:50%;background:var(--msc-bad)}
 @container (min-width:720px){
   .msc-cols{grid-template-columns:repeat(2,minmax(0,1fr))}.msc-col+.msc-col>.msc-hd{display:grid}
 }
 @container (max-width:480px){
   .msc-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.msc-stat:nth-child(3){grid-column:1/-1}.msc-stat{padding:10px 12px}.msc-stat b{font-size:18px}.msc-stat b .msc-ar{margin:0 3px}.msc-stat b small{margin-left:3px}
   .msc-uses{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .msc-r{grid-template-columns:minmax(56px,1fr) 40px minmax(24px,.8fr) 40px 64px;gap:0 7px;font-size:12.5px}
+  .msc-r{grid-template-columns:minmax(56px,1fr) 36px 36px minmax(40px,.9fr) 64px;gap:0 7px;font-size:12.5px}
+  .msc-bar-h span{display:none}
   .msc-c small{display:none}
 }
