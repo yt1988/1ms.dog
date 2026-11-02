@@ -607,11 +607,12 @@
   }
   $("#helpBtn").onclick = () => { showHelp(helpIdx); openDlg("help"); };
   // the command-line card (home page): its dialog, filled in on first open with every way to run the tool (the site
-  // comes from the card's install line, so a self-hosted copy hands out its own), and any copy button copies the
-  // command next to it
+  // comes from the card's install line, so a self-hosted copy hands out its own). Each command line is its own copy
+  // button: a click copies it, and its mark turns to a tick for a moment
   function cliBody() {
     const site = /^curl -fsSL (\S+)\/i/.exec($(".cli code").textContent)[1], ext = EXT.replace("<svg ", '<svg class="ext" ');
-    const line = (cmd, note) => `<div class="cmdline"><code>${esc(cmd)}</code><button class="btn sm" type="button" data-copy>${esc(t("copy"))}</button></div>` + (note ? `<span class="note">${esc(t(note))}</span>` : "");
+    const marks = [...$$(".cli .cmdline svg")].map(x => x.outerHTML).join("");
+    const line = (cmd, note) => `<button class="cmdline" type="button" data-copy title="${esc(t("copy"))}"><code>${esc(cmd)}</code>${marks}</button>` + (note ? `<span class="note">${esc(t(note))}</span>` : "");
     const sec = (h, body) => `<section class="rblk"><b>${esc(t(h))}</b>${body}</section>`, win = `${site}/dl/latest/httpslatency-windows-amd64.exe`;
     return sec("cli_install", line(`curl -fsSL ${site}/i | sh`, "cli_install_s")) + sec("cli_once", line(`curl -fsSL ${site}/i | sh -s -- run`)) +
       sec("cli_wget", line(`wget -qO- ${site}/i | sh`)) +
@@ -624,8 +625,9 @@
   document.addEventListener("click", e => {
     const b = e.target.closest && e.target.closest("[data-copy]");
     if (!b || !navigator.clipboard) return;
-    navigator.clipboard.writeText(b.parentNode.querySelector("code").textContent).then(() => {
-      b.textContent = t("copied"); setTimeout(() => { b.textContent = t("copy"); }, 1200);
+    navigator.clipboard.writeText(b.querySelector("code").textContent).then(() => {
+      b.classList.add("done"); b.title = t("copied");
+      setTimeout(() => { b.classList.remove("done"); b.title = t("copy"); }, 1200);
     }, () => {});
   });
   $$("#helpNav [data-hq]").forEach(b => { b.onclick = () => showHelp(+b.dataset.hq); });
