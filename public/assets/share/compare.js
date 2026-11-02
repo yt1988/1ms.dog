@@ -258,7 +258,9 @@ export function compare(o) {
 
   // the head as HTML: pure, so a Worker can put it in the page before it is sent (no layout shift when it is drawn)
   function headHTML(show = true) {
-    const side = (k, [label, sub]) => `<span class="msc-side"><i class="msc-k msc-${k}" aria-hidden="true"></i><b>${k.toUpperCase()}</b><span>${esc(label)}</span>${sub ? `<span class="msc-sub">${esc(sub)}</span>` : ""}</span>`;
+    // B's mark: one solid color, the speed color of B's last key number (the overall one), as its dots use
+    const bt = stats.length && tierOf(stats[stats.length - 1]), cls = k => k === "b" && /^(t\d|muted)$/.test(bt || "") ? " msc-tier-" + bt : "";
+    const side = (k, [label, sub]) => `<span class="msc-side"><i class="msc-k msc-${k}${cls(k)}" aria-hidden="true"></i><b>${k.toUpperCase()}</b><span>${esc(label)}</span>${sub ? `<span class="msc-sub">${esc(sub)}</span>` : ""}</span>`;
     const [sa, sb] = sides(show);
     return `<div class="msc-head" lang="${lang}"><p class="msc-h msc-${v.mood}" title="${esc(v.head)}">${esc(v.head)}</p><p class="msc-d" title="${esc(v.detail)}">${esc(v.detail)}</p>` +
       `<div class="msc-sides">${side("a", sa)}${side("b", sb)}</div></div>`;
@@ -319,7 +321,7 @@ export function compare(o) {
       const y = sTop + i * 34, cx = P + 9;
       x.beginPath(); x.arc(cx, y - 8, i ? 7 : 8, 0, Math.PI * 2);
       if (!i) { x.strokeStyle = C.muted; x.lineWidth = 2.5; x.stroke(); }
-      else { const g = x.createLinearGradient(cx - 7, 0, cx + 7, 0); g.addColorStop(0, cv("t1") || C.up); g.addColorStop(.5, cv("t3") || C.muted); g.addColorStop(1, cv("t5") || C.dn); x.fillStyle = g; x.fill(); }
+      else { x.fillStyle = stats.length ? tierC(stats[stats.length - 1]) : C.fg; x.fill(); }
       x.fillStyle = C.fg; x.font = `700 21px ${F}`; x.fillText(i ? "B" : "A", P + 28, y);
       x.font = `600 21px ${F}`; x.fillText(label, P + 56, y);
       x.fillStyle = C.muted; x.font = `400 21px ${F}`; x.fillText(clip(x, sub, W - P * 2 - 80 - x.measureText(label).width), P + 56 + x.measureText(label).width + 16, y);

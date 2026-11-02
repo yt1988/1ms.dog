@@ -21,7 +21,11 @@
 /* the same marks as the lanes: A a grey ring, B a dot in the speed colors */
 .msc-k{flex:none;width:11px;height:11px;border-radius:50%}
 .msc-k.msc-a{border:2px solid var(--msc-a)}
-.msc-k.msc-b{background:linear-gradient(90deg,var(--t1,#1a8a5a),var(--t3,#8a6700),var(--t5,#d23a2f))}
+.msc-k.msc-b{background:var(--fg,#111)}
+/* B's mark in one speed color, by class (no style="", which a strict CSP would block) */
+.msc-tier-t0{background:var(--t0)!important}.msc-tier-t1{background:var(--t1)!important}.msc-tier-t2{background:var(--t2)!important}
+.msc-tier-t3{background:var(--t3)!important}.msc-tier-t4{background:var(--t4)!important}.msc-tier-t5{background:var(--t5)!important}
+.msc-tier-muted{background:var(--muted)!important}
 @container (max-width:480px){
   .msc-h,.msc-d{white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
   .msc-h{min-height:2.7em}.msc-d{min-height:3em}
