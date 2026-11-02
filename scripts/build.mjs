@@ -21,9 +21,11 @@ const pub = new URL("../public/", import.meta.url), src = new URL("../src/", imp
 export const LANGS = [["en", "", "en_US", "na"], ["zh-CN", "zh-cn", "zh_CN", "cn"], ["zh-TW", "zh-tw", "zh_TW", "tw"], ["ja", "ja", "ja_JP", "jp"],
   ["ko", "ko", "ko_KR", "kr"], ["es", "es", "es_ES", "latam"], ["fr", "fr", "fr_FR", "eu"], ["de", "de", "de_DE", "eu"], ["pt", "pt", "pt_BR", "latam"],
   ["ru", "ru", "ru_RU", "ru"]];
-// Runs before first paint: apply the saved theme. On the English root, send visitors to their language's page
-// (a saved choice first, then the browser languages); crawlers and English readers stay.
-const PREPAINT = `(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en"){var r=location.pathname.match(/[/]r[/][^/]+[/]?$/);location.replace(P[l]+(r?r[0].slice(1):"")+location.hash)}})();`;
+// Runs before first paint: apply the saved theme. A compare link (/c/<a>/<b>) shows the compare view instead of the
+// test: the class swaps them, and the number of rows (services both sides measured) reserves the view's height, so
+// nothing moves when it is drawn. On the English root, send visitors to their language's page (a saved choice first,
+// then the browser languages); crawlers and English readers stay.
+const PREPAINT = `(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);var c=location.pathname.match(/[/]c[/]([^/]+)[/]([^/]+)[/]?$/);if(c){var k={},n=0;(c[1].split(".")[4]||"").split(",").forEach(function(p){k[p.split(":")[0]]=1});(c[2].split(".")[4]||"").split(",").forEach(function(p){p=p.split(":")[0];if(p&&k[p]===1){k[p]=2;n++}});d.classList.add("cmp");d.style.setProperty("--cmp-n",n);d.style.setProperty("--cmp-k",Math.ceil(n/2))}if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en"){var r=location.pathname.match(/[/](r[/][^/]+|c[/][^/]+[/][^/]+)[/]?$/);location.replace(P[l]+(r?r[0].slice(1):"")+location.hash)}})();`;
 
 const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const fill = (s, v) => fillIn(s, v, KO.josa_fin);
@@ -91,7 +93,7 @@ export async function build({ check = false } = {}) {
   const altsOf = sub => langs.filter(([l]) => indexed(l, sub));
   const path = (slug, sub) => "/" + (slug ? slug + "/" : "") + (sub ? sub + "/" : "");
   const RUNTIME_SKIP = new Set(["docs", "egress_link", "seo_title", "seo_desc", "seo_kw", "og_sub", "lede", "lp_title", "lp_desc", "lp_intro", "lp_h1", "lp_kw", "lp_peers", "lp_via", "lp_via_same", "land", "lg_title", "lg_desc", "lg_h1", "lg_kw", "lg_intro", "lg_about", "lg_region", "sm_cats", "sm_regions", "grp_best", "grp_worst", "sitemap_h", "sm_item", "cta_h", "cta_d", "cta_btn", "one_med", "one_cold", "one_jit", "foot",
-    "name", "h1", "lang_label", "faq_h", "pack", "exit_h", "test_mine", "r_title", "r_one"]);
+    "name", "h1", "lang_label", "faq_h", "pack", "exit_h", "test_mine", "r_title", "r_one", "vs_mine"]);
   // static text the page already shows, and region names (only the server-rendered picker uses them)
   const runtimeKey = k => !RUNTIME_SKIP.has(k) && !k.startsWith("pk_") && !k.startsWith("a_");
   const pages = [], stringFiles = {};

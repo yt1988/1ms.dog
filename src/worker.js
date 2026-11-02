@@ -1,7 +1,11 @@
 // The Worker in front of public/. A request for a file there never reaches it (static assets are free and unmetered);
 // it sees only what no file answers. A shared result, /<lang>/[<page>/]r/<code> (src/lib.mjs), is that page with
-// the result in its title and description, so a chat app's link preview shows it. Anything else: the plain 404.
-import { parseShare, median, tierOf, fmt, fillIn } from "./lib.mjs";
+// the result in its title and description, so a chat app's link preview shows it. Two results compared,
+// /<lang>/c/<a>/<b>, are the home page with what changed as the title ("ChatGPT 300→44 ms, GitHub 5× faster"), in the
+// words of the shared compare mode the page itself uses (public/assets/share/compare.js, copied from 1ms-shell); an
+// unreadable one is a 404. Anything else: the plain 404.
+import { parseShare, median, tierOf, fmt, fillIn, diffShares } from "./lib.mjs";
+import { headline, tallyText } from "../public/assets/share/compare.js";
 import { SERVICES, PACKS } from "./services.mjs";
 import en from "./i18n/en.mjs";
 import zhCN from "./i18n/zh-CN.mjs";
@@ -22,6 +26,7 @@ const ONE = Object.fromEntries([...SERVICES, ...Object.values(PACKS).flat()].map
 // { page: the page it shows the result on, title, desc }
 export function resultMeta(path) {
   const parts = path.split("/").filter(Boolean);
+  if (parts.length >= 3 && parts[parts.length - 3] === "c") return compareMeta(parts);
   if (parts.length < 2 || parts[parts.length - 2] !== "r") return null;
   const code = parts.pop(); parts.pop();
   const lang = DIR[parts[0]] ? DIR[parts.shift()] : "en";
@@ -42,6 +47,17 @@ export function resultMeta(path) {
   const title = (spot ? t("r_one", { s: ONE[spot], ms, tier }) : t("r_title", { ms, tier, ok: ok.length, n: vals.length })) + " · 1ms.dog";
   const desc = t("share_text", { ok: spot ? (md != null ? 1 : 0) : ok.length, n: spot ? 1 : vals.length, where: where || "?", ms, tier });
   return { page, title, desc };
+}
+
+// /<lang>/c/<a>/<b>: on the home page only; null (a 404) unless both sides read
+function compareMeta(parts) {
+  const b = parts.pop(), a = parts.pop(); parts.pop();
+  const lang = DIR[parts[0]] ? DIR[parts.shift()] : "en";
+  const A = parseShare(a, PACKS), B = parseShare(b, PACKS);
+  if (parts.length || !A || !B) return null;
+  const L = I[lang], { rows, stats } = diffShares(A, B, ONE), [med] = stats, ms = v => v != null ? fmt(v) : "✕";
+  return { page: "/" + (lang === "en" ? "" : lang.toLowerCase() + "/"), title: headline(rows, lang) + " · 1ms.dog",
+    desc: [tallyText(rows, lang), `${L.med ?? en.med} ${ms(med.a)}→${ms(med.b)} ms`].filter(Boolean).join(" · ") };
 }
 
 export default {

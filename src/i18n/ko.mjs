@@ -34,6 +34,7 @@ export default {
   r_title: "중앙값 {ms} ms({tier}), 서비스 {ok}/{n}개 응답", r_one: "{s}: {ms} ms({tier})",
   e_back: "응답",
   shared_from: "{where}에서 공유한 결과 · {date}", test_mine: "내 네트워크 측정",
+  cmp: "지난 결과와 비교", cmp_none: "두 번 측정하면 비교할 수 있어요", vs_mine: "내 네트워크와 비교", cmp_h: "두 결과 비교",
 
   seg_local: "지역 인기 서비스",
   seg_global: "글로벌 서비스",

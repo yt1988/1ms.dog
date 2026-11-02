@@ -34,6 +34,7 @@ export default {
   r_title: "中位延迟 {ms} ms（{tier}），{ok}/{n} 个服务有响应", r_one: "{s}：{ms} ms（{tier}）",
   e_back: "有响应",
   shared_from: "这是一份来自{where}的测试结果 · {date}", test_mine: "测我自己的网络",
+  cmp: "和上一次的结果对比", cmp_none: "测两次后可以对比", vs_mine: "和我的网络比", cmp_h: "两次结果对比",
 
   seg_local: "本地常用",
   seg_global: "全球服务",

@@ -2,7 +2,7 @@
 <html lang="ja" data-paths="{&quot;en&quot;:&quot;/dev/&quot;,&quot;zh-CN&quot;:&quot;/zh-cn/dev/&quot;,&quot;zh-TW&quot;:&quot;/zh-tw/dev/&quot;,&quot;ja&quot;:&quot;/ja/dev/&quot;,&quot;ko&quot;:&quot;/ko/dev/&quot;,&quot;es&quot;:&quot;/es/dev/&quot;,&quot;fr&quot;:&quot;/fr/dev/&quot;,&quot;de&quot;:&quot;/de/dev/&quot;,&quot;pt&quot;:&quot;/pt/dev/&quot;,&quot;ru&quot;:&quot;/ru/dev/&quot;}">
 <head>
 <meta charset="utf-8">
-<script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en"){var r=location.pathname.match(/[/]r[/][^/]+[/]?$/);location.replace(P[l]+(r?r[0].slice(1):"")+location.hash)}})();</script>
+<script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);var c=location.pathname.match(/[/]c[/]([^/]+)[/]([^/]+)[/]?$/);if(c){var k={},n=0;(c[1].split(".")[4]||"").split(",").forEach(function(p){k[p.split(":")[0]]=1});(c[2].split(".")[4]||"").split(",").forEach(function(p){p=p.split(":")[0];if(p&&k[p]===1){k[p]=2;n++}});d.classList.add("cmp");d.style.setProperty("--cmp-n",n);d.style.setProperty("--cmp-k",Math.ceil(n/2))}if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en"){var r=location.pathname.match(/[/](r[/][^/]+|c[/][^/]+[/][^/]+)[/]?$/);location.replace(P[l]+(r?r[0].slice(1):"")+location.hash)}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>開発ツールの遅延テスト：GitHub、npm、Docker Hub、PyPI の応答速度 · 1ms.dog</title>
 <meta name="description" content="ブラウザから開発ツールの速さを測定：GitHub、npm、Docker Hub、PyPI、Hugging Face。本物の HTTPS 往復で、中央値と最速・最遅のサービス、出口 IP を表示します。無料・登録不要。">
@@ -50,7 +50,7 @@
 <meta name="twitter:image" content="https://1ms.dog/og/ja.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"あなたの回線から開発ツールはどれくらい速い？","url":"https://1ms.dog/ja/dev/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"ブラウザから開発ツールの速さを測定：GitHub、npm、Docker Hub、PyPI、Hugging Face。本物の HTTPS 往復で、中央値と最速・最遅のサービス、出口 IP を表示します。無料・登録不要。","inLanguage":"ja","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/ja/"},{"@type":"ListItem","position":2,"name":"開発ツール","item":"https://1ms.dog/ja/dev/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.2efb79c5d8.css">
+<link rel="stylesheet" href="/assets/app.25d12f46a4.css">
 </head>
 <body>
 <div class="app">
@@ -77,7 +77,8 @@
   </header>
 
   <main>
-    <div class="shared" id="shared" hidden><span id="sharedTxt"></span><button class="btn pri" id="testMine" type="button" data-i="test_mine">自分の回線を測る</button></div>
+    <div class="shared" id="shared" hidden><span id="sharedTxt"></span><span class="cmp-txt" data-i="cmp_h">2 つの結果を比較</span>
+      <span class="shared-b"><button class="btn" id="vsMine" type="button" data-i="vs_mine">自分の回線と比較</button><button class="btn icon" id="cmpShare" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr" data-i="share">シェア</span></button><button class="btn pri" id="testMine" type="button" data-i="test_mine">自分の回線を測る</button></span></div>
 
     <section class="hero card">
       <div class="hero-l">
@@ -148,7 +149,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"ja","paths":{"en":"/dev/","zh-CN":"/zh-cn/dev/","zh-TW":"/zh-tw/dev/","ja":"/ja/dev/","ko":"/ko/dev/","es":"/es/dev/","fr":"/fr/dev/","de":"/de/dev/","pt":"/pt/dev/","ru":"/ru/dev/"},"pack":"jp","spot":null,"set":{"kind":"cat","id":"dev","name":"開発ツール"}}</script>
-<script src="/assets/l.ja.809c09b794.js" defer></script>
-<script src="/assets/app.a82158f66e.js" defer></script>
+<script src="/assets/l.ja.cfeb41351b.js" defer></script>
+<script src="/assets/app.68c182bc68.js" defer></script>
 </body>
 </html>

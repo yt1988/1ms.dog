@@ -1,0 +1,63 @@
+/* Compare mode (compare.js). Colors come from the tool's theme variables (--fg --muted --line --soft, and --good / --bad
+   when the tool has them), so it follows light and dark. Rows have one fixed height, so a tool can reserve the space. */
+.msc{--msc-good:var(--good,#1a8a5a);--msc-bad:var(--bad,#d23a2f);container-type:inline-size;display:flex;flex-direction:column;gap:14px;min-width:0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .msc{--msc-good:var(--good,#3ecf8e);--msc-bad:var(--bad,#f56565)}}
+:root[data-theme="dark"] .msc{--msc-good:var(--good,#3ecf8e);--msc-bad:var(--bad,#f56565)}
+.msc *{box-sizing:border-box}
+.msc p{margin:0}
+.msc-top{display:flex;flex-direction:column;gap:2px}
+.msc-h{font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-.01em;min-height:1.3em}
+.msc-h.msc-better{color:var(--msc-good)}.msc-h.msc-worse{color:var(--msc-bad)}
+.msc-d{font-size:13.5px;color:var(--muted,#666);min-height:1.5em}
+.msc-sides{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:13px}
+.msc-side{display:inline-flex;align-items:center;gap:7px;min-width:0;max-width:100%}
+.msc-side>span{white-space:nowrap}
+.msc-sub{color:var(--muted,#666);overflow:hidden;text-overflow:ellipsis}
+.msc-k{flex:none;width:11px;height:11px;border-radius:50%}
+.msc-k.msc-a{border:2px solid var(--muted,#888)}
+.msc-k.msc-b{background:var(--fg,#111)}
+.msc-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.msc-stat{display:flex;flex-direction:column;gap:2px;background:var(--soft,#8881);border-radius:12px;padding:10px 14px 12px;min-width:0}
+.msc-stat em{font-style:normal;font-size:12px;color:var(--muted,#666)}
+.msc-stat b{font:600 24px/1.15 var(--f-num,ui-monospace,monospace);letter-spacing:-.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msc-stat b small{font:400 13px var(--f-ui,sans-serif);color:var(--muted,#666);margin-left:5px;letter-spacing:0}
+.msc-stat b .msc-ar{margin:0 5px}
+.msc-stat i{font-style:normal;font-size:12.5px;color:var(--muted,#666);min-height:1.5em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msc-stat.msc-better i,.msc-stat.msc-back i{color:var(--msc-good)}.msc-stat.msc-worse i,.msc-stat.msc-lost i{color:var(--msc-bad)}
+/* rows: name · A · lane · B · change; one column, two once the box is wide (biggest change at the top of the first) */
+.msc-hds{display:grid;grid-template-columns:minmax(0,1fr);column-gap:32px;margin-bottom:-10px}
+.msc-hds .msc-hd+.msc-hd{display:none}
+.msc-t{display:grid;grid-template-columns:minmax(0,1fr);column-gap:32px}
+.msc-r{display:grid;grid-template-columns:minmax(64px,130px) 48px minmax(30px,1fr) 48px 112px;align-items:center;gap:0 10px;height:34px;border-bottom:1px solid color-mix(in srgb,var(--line,#8884) 60%,transparent);font-size:13px}
+.msc-r.msc-nolane{grid-template-columns:minmax(64px,130px) 48px 48px 112px}
+.msc-hd{height:24px;border-bottom-color:var(--line,#8884);font-size:11px;font-weight:600;color:var(--muted,#666);text-transform:uppercase;letter-spacing:.05em}
+.msc-hd b{font:inherit}
+.msc-n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msc-r>b{font:500 13px var(--f-num,ui-monospace,monospace);text-align:right;white-space:nowrap}
+.msc-r>b:nth-of-type(1){color:var(--muted,#666)}
+.msc-c{text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:500 12.5px var(--f-num,ui-monospace,monospace);color:var(--muted,#666)}
+.msc-c small{font:400 11.5px var(--f-ui,sans-serif);margin-left:6px;opacity:.85}
+.msc-hd .msc-c{font:inherit}
+.msc-better .msc-c,.msc-better>b:nth-of-type(2),.msc-back .msc-c,.msc-back>b:nth-of-type(2){color:var(--msc-good)}
+.msc-worse .msc-c,.msc-worse>b:nth-of-type(2),.msc-lost .msc-c,.msc-lost>b:nth-of-type(2){color:var(--msc-bad)}
+.msc-hd>b:nth-of-type(2){color:inherit}
+.msc-l{position:relative;height:14px}
+.msc-l::before{content:"";position:absolute;left:0;right:0;top:6px;height:2px;border-radius:2px;background:var(--line,#8884)}
+.msc-l i{position:absolute;top:2px;width:10px;height:10px;margin-left:-5px;border-radius:50%}
+.msc-l .msc-seg{top:5px;height:4px;margin-left:0;border-radius:2px;opacity:.55;background:var(--muted,#888)}
+.msc-l .msc-pa{background:var(--panel,var(--bg,#fff));border:2px solid var(--muted,#888)}
+.msc-l .msc-pb{background:var(--fg,#111)}
+.msc-better .msc-seg,.msc-better .msc-pb,.msc-back .msc-pb{background:var(--msc-good)}
+.msc-worse .msc-seg,.msc-worse .msc-pb,.msc-lost .msc-pb{background:var(--msc-bad)}
+@container (min-width:760px){
+  .msc-hds{grid-template-columns:repeat(2,minmax(0,1fr))}.msc-hds .msc-hd+.msc-hd{display:grid}
+  .msc-t{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(var(--k,1),auto);grid-auto-flow:column}
+}
+@container (max-width:480px){
+  /* the headline gets two lines and the sides one each, so the view is as tall whatever they say */
+  .msc-h{min-height:2.6em}.msc-sides{flex-direction:column}
+  .msc-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.msc-stat b{font-size:20px}
+  .msc-r{grid-template-columns:minmax(56px,1fr) 40px minmax(24px,.8fr) 40px 64px;gap:0 7px;font-size:12.5px}
+  .msc-r.msc-nolane{grid-template-columns:minmax(56px,1fr) 40px 40px 64px}
+  .msc-c small{display:none}
+}

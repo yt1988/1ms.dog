@@ -112,3 +112,35 @@ test("Korean particles follow how the name is read", async () => {
   assert.equal(fillIn("{list}은(는) 보통", { list: "A, B" }, fin), "A, B은(는) 보통");
   assert.equal(fillIn("{s} 延迟", { s: "Steam" }, fin), "Steam 延迟");
 });
+
+test("compare mode: every service either side measured is a row; the median is over the ones both measured", async () => {
+  const { diffShares, bare, CMP_RE } = await import("../src/lib.mjs");
+  const A = { ts: 1, pack: "cn", groups: [{ cc: "CN", city: "Beijing", org: "China Unicom", asn: 4808, proxy: false }], res: { baidu: 20, chatgpt: 300, claude: null } };
+  const B = { ts: 2, pack: "na", groups: [], res: { chatgpt: 44.1, claude: 50, google: 12 } };
+  const { rows, stats } = diffShares(A, B, { chatgpt: "ChatGPT" }, { med: "M", back: "OK" });
+  assert.deepEqual(rows.map(r => [r.id, r.name, r.a, r.b]), [["baidu", "baidu", 20, undefined], ["chatgpt", "ChatGPT", 300, 44.1], ["claude", "claude", null, 50], ["google", "google", undefined, 12]]);
+  assert.equal(rows[1].unit, "ms"); assert.equal(rows[1].better, "lower");
+  assert.deepEqual([stats[0].name, stats[0].a, stats[0].b], ["M", 300, 47.05]);
+  assert.deepEqual(stats[1].text, ["1/2", "2/2"]);
+  // the link leaves out city and network unless the visitor ticks the share box
+  assert.deepEqual(bare(A).groups[0], { cc: "CN", city: "", org: "", asn: null, proxy: false });
+  assert.equal(A.groups[0].city, "Beijing", "the original is untouched");
+  const m = CMP_RE.exec("/zh-cn/c/2.a.cn.x.y/2.b.na.x.z/");
+  assert.deepEqual([m[1], m[2]], ["2.a.cn.x.y", "2.b.na.x.z"]);
+});
+
+test("this browser's own results: newest first, no duplicates, only well-formed codes", async () => {
+  const { parseHist, addHist, ownOf } = await import("../src/lib.mjs");
+  const c1 = encodeShare({ ts: 1793433600000, pack: "cn", groups: [{ cc: "CN", city: "Beijing", org: "China Unicom", asn: 4808, proxy: false }], res: { baidu: 21.3 } });
+  const c2 = encodeShare({ ts: 1793437200000, pack: "cn", groups: [], res: { baidu: 30 } });
+  assert.deepEqual(parseHist(JSON.stringify([c2, c1, 5, "#r=1|x", "nonsense"])), [c2, c1]);
+  assert.deepEqual(parseHist("{"), []);
+  assert.deepEqual(parseHist(null), []);
+  assert.deepEqual(addHist([c1], c2), [c2, c1]);
+  assert.deepEqual(addHist([c2, c1], c1), [c1, c2]);
+  assert.equal(addHist(Array.from({ length: 10 }, (_, i) => "2.x" + i), c1).length, 10);
+  // a link's side that is this visitor's own result is found again by time and numbers, city and network included
+  const shared = parseShare(encodeShare({ ...parseShare(c1, PACKS), groups: [{ cc: "CN", city: "", org: "", asn: null, proxy: false }] }), PACKS);
+  assert.equal(ownOf([c2, c1], shared, PACKS).groups[0].city, "Beijing");
+  assert.equal(ownOf([c2], shared, PACKS), null);
+});

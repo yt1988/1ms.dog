@@ -164,6 +164,18 @@ a.nm:hover { color: var(--ink); text-decoration: underline; text-underline-offse
 /* a shared result: banner above the hero */
 .shared { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 10px 12px 10px 16px; border-radius: var(--r);
   background: color-mix(in srgb, var(--ink) 12%, var(--panel)); border: 1px solid color-mix(in srgb, var(--ink) 35%, transparent); font-size: 13.5px; }
+.shared-b { display: flex; gap: 8px; margin-left: auto; }
+.cmp-txt, #cmpShare, .cmpbox { display: none; }
+
+/* compare mode (/c/<a>/<b>): the shared compare view (/assets/share/compare.js) instead of the test. The pre-paint
+   script sets .cmp and the row count, so the banner and the view's space are there from the first paint. */
+html.cmp .shared[hidden] { display: flex !important; }
+html.cmp #sharedTxt, html.cmp #vsMine, html.cmp .hero, html.cmp .field { display: none; }
+html.cmp .cmp-txt { display: inline; font-weight: 600; }
+html.cmp #cmpShare { display: inline-flex; }
+/* rows are 34px; above them the headline, the two sides, the key numbers and the column heads */
+html.cmp .cmpbox { display: block; padding: 18px 22px 20px; min-height: calc(var(--cmp-n, 8) * 34px + 314px); }
+@media (min-width: 820px) { html.cmp .cmpbox { min-height: calc(var(--cmp-k, 4) * 34px + 268px); } }
 
 /* dialogs (as in Me2Cloud) */
 .scrim { position: fixed; inset: 0; z-index: 40; background: #0006; display: flex; align-items: center; justify-content: center; padding: 16px; }

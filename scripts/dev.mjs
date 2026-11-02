@@ -1,10 +1,13 @@
 #!/usr/bin/env node
-// Local preview of ./public with the same headers as production (public/_headers, including the CSP).
+// Local preview of ./public with the same headers as production (public/_headers, including the CSP). Shared result
+// and compare links (/r/…, /c/…/…) get the page with the preview title the Worker gives them (src/worker.js), so
+// they open here too; the Worker's HTMLRewriter is stood in for by a few replacements.
 // Usage: node scripts/dev.mjs [port]
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
+import { resultMeta } from "../src/worker.js";
 
 const root = fileURLToPath(new URL("../public/", import.meta.url));
 const port = +process.argv[2] || 8787;
@@ -23,14 +26,27 @@ async function rules() {
   return out;
 }
 
+const escAttr = v => String(v).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+function preview(html, meta, url) {
+  const set = (re, v) => { if (v) html = html.replace(re, (m, a) => a + escAttr(v) + '"'); };
+  set(/(<meta name="robots" content=")[^"]*"/, "noindex, follow");
+  if (meta.title) html = html.replace(/<title>[^<]*<\/title>/,"<title>" + escAttr(meta.title) + "</title>");
+  for (const k of ['property="og:title"', 'name="twitter:title"']) set(new RegExp(`(<meta ${k} content=")[^"]*"`), meta.title);
+  for (const k of ['name="description"', 'property="og:description"', 'name="twitter:description"']) set(new RegExp(`(<meta ${k} content=")[^"]*"`), meta.desc);
+  set(/(<meta property="og:url" content=")[^"]*"/, url);
+  return html;
+}
+
 createServer(async (req, res) => {
   const urlPath = decodeURIComponent(new URL(req.url, "http://x").pathname);
-  let path = urlPath;
+  const meta = resultMeta(new URL(req.url, "http://x").pathname);
+  let path = meta ? meta.page : urlPath;
   if (path.endsWith("/")) path += "index.html";
   const file = normalize(root + path);
   if (!file.startsWith(normalize(root))) { res.writeHead(403).end(); return; }
   try {
-    const body = await readFile(file);
+    let body = await readFile(file);
+    if (meta) body = preview(body.toString("utf8"), meta, `http://localhost:${port}${new URL(req.url, "http://x").pathname}`);
     const headers = { "Content-Type": TYPES[extname(file)] || "application/octet-stream", "Cache-Control": "no-cache" };
     for (const r of await rules()) if (r.re.test(urlPath)) Object.assign(headers, r.h);
     headers["Cache-Control"] = "no-cache";

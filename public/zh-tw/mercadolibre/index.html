@@ -2,7 +2,7 @@
 <html lang="zh-TW" data-paths="{&quot;en&quot;:&quot;/mercadolibre/&quot;,&quot;zh-CN&quot;:&quot;/zh-cn/mercadolibre/&quot;,&quot;zh-TW&quot;:&quot;/zh-tw/mercadolibre/&quot;,&quot;ja&quot;:&quot;/ja/mercadolibre/&quot;,&quot;ko&quot;:&quot;/ko/mercadolibre/&quot;,&quot;es&quot;:&quot;/es/mercadolibre/&quot;,&quot;fr&quot;:&quot;/fr/mercadolibre/&quot;,&quot;de&quot;:&quot;/de/mercadolibre/&quot;,&quot;pt&quot;:&quot;/pt/mercadolibre/&quot;,&quot;ru&quot;:&quot;/ru/mercadolibre/&quot;}">
 <head>
 <meta charset="utf-8">
-<script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en"){var r=location.pathname.match(/[/]r[/][^/]+[/]?$/);location.replace(P[l]+(r?r[0].slice(1):"")+location.hash)}})();</script>
+<script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);var c=location.pathname.match(/[/]c[/]([^/]+)[/]([^/]+)[/]?$/);if(c){var k={},n=0;(c[1].split(".")[4]||"").split(",").forEach(function(p){k[p.split(":")[0]]=1});(c[2].split(".")[4]||"").split(",").forEach(function(p){p=p.split(":")[0];if(p&&k[p]===1){k[p]=2;n++}});d.classList.add("cmp");d.style.setProperty("--cmp-n",n);d.style.setProperty("--cmp-k",Math.ceil(n/2))}if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en"){var r=location.pathname.match(/[/](r[/][^/]+|c[/][^/]+[/][^/]+)[/]?$/);location.replace(P[l]+(r?r[0].slice(1):"")+location.hash)}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mercado Libre 延遲測試：Mercado Libre 很慢、連不上？線上檢測 · 1ms.dog</title>
 <meta name="description" content="在瀏覽器裡測試 Mercado Libre 的真實延遲：10 次到 Mercado Libre 的 HTTPS 往返，給出中位數、首次連線耗時和抖動，以及你的出口 IP 和電信業者。免費，免註冊。">
@@ -31,7 +31,7 @@
 <meta name="twitter:image" content="https://1ms.dog/og/zh-tw.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"從你的網路連 Mercado Libre 有多快？","url":"https://1ms.dog/zh-tw/mercadolibre/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在瀏覽器裡測試 Mercado Libre 的真實延遲：10 次到 Mercado Libre 的 HTTPS 往返，給出中位數、首次連線耗時和抖動，以及你的出口 IP 和電信業者。免費，免註冊。","inLanguage":"zh-TW","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/zh-tw/"},{"@type":"ListItem","position":2,"name":"Mercado Libre","item":"https://1ms.dog/zh-tw/mercadolibre/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.2efb79c5d8.css">
+<link rel="stylesheet" href="/assets/app.25d12f46a4.css">
 </head>
 <body>
 <div class="app">
@@ -58,7 +58,8 @@
   </header>
 
   <main>
-    <div class="shared" id="shared" hidden><span id="sharedTxt"></span><button class="btn pri" id="testMine" type="button" data-i="test_mine">測我自己的網路</button></div>
+    <div class="shared" id="shared" hidden><span id="sharedTxt"></span><span class="cmp-txt" data-i="cmp_h">兩次結果比較</span>
+      <span class="shared-b"><button class="btn" id="vsMine" type="button" data-i="vs_mine">和我的網路比</button><button class="btn icon" id="cmpShare" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr" data-i="share">分享</span></button><button class="btn pri" id="testMine" type="button" data-i="test_mine">測我自己的網路</button></span></div>
 
     <section class="hero card">
       <div class="hero-l">
@@ -124,7 +125,7 @@
 </div>
 
 <script type="application/json" id="data">{"lang":"zh-TW","paths":{"en":"/mercadolibre/","zh-CN":"/zh-cn/mercadolibre/","zh-TW":"/zh-tw/mercadolibre/","ja":"/ja/mercadolibre/","ko":"/ko/mercadolibre/","es":"/es/mercadolibre/","fr":"/fr/mercadolibre/","de":"/de/mercadolibre/","pt":"/pt/mercadolibre/","ru":"/ru/mercadolibre/"},"pack":"tw","spot":"mercadolibre","set":null}</script>
-<script src="/assets/l.zh-tw.3898d86bdc.js" defer></script>
-<script src="/assets/app.a82158f66e.js" defer></script>
+<script src="/assets/l.zh-tw.a02077777b.js" defer></script>
+<script src="/assets/app.68c182bc68.js" defer></script>
 </body>
 </html>

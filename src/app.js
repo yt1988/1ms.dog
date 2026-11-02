@@ -4,8 +4,9 @@
   "use strict";
   const $ = s => document.querySelector(s);
   const D = JSON.parse($("#data").textContent);
-  // a shared result opens at <page>r/<code> (src/lib.mjs); the page itself is the path before it
-  const RLINK = /\/r\/([^/]+)\/?$/.exec(location.pathname), PAGE = RLINK ? location.pathname.slice(0, RLINK.index + 1) : location.pathname.replace(/\/?$/, "/");
+  // a shared result opens at <page>r/<code>, two compared at <page>c/<a>/<b> (src/lib.mjs); the page itself is the path before it
+  const RLINK = /\/r\/([^/]+)\/?$/.exec(location.pathname), CLINK = /\/c\/([^/]+)\/([^/]+)\/?$/.exec(location.pathname), XLINK = RLINK || CLINK;
+  const PAGE = XLINK ? location.pathname.slice(0, XLINK.index + 1) : location.pathname.replace(/\/?$/, "/");
   const L = window.L1MS || {}, LANG = D.lang;                  // strings: /assets/l.<lang>.<hash>.js, loaded first
   const t = (k, v) => v ? fillIn(L[k] ?? k, v, L.josa_fin) : L[k] ?? k;
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
@@ -24,7 +25,7 @@
   }
   // embedded, the page changes no preference (the checkup's run isn't the visitor choosing anything)
   const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { if (!CHECK) try { localStorage.setItem(k, v); } catch (e) {} } };
-  const K = { theme: "1ms:theme", lang: "1ms:lang", pack: "1ms:pack", mask: "1ms:mask", auto: "1ms:auto" };
+  const K = { theme: "1ms:theme", lang: "1ms:lang", pack: "1ms:pack", mask: "1ms:mask", auto: "1ms:auto", hist: "1ms:hist" };
   const country = cc => { try { return new Intl.DisplayNames([LANG], { type: "region" }).of(cc); } catch (e) { return cc; } };
   const flag = cc => /^[A-Z]{2}$/.test(cc || "") ? `<img class="flag" src="/flags/${cc.toLowerCase()}.svg" alt="" width="20" height="15">` : "";
   /* @lib */
@@ -38,7 +39,7 @@
   };
   applyTheme(TH.includes(store.get(K.theme)) ? store.get(K.theme) : "system");
   thBtn.onclick = () => { const n = TH[(TH.indexOf(thBtn.dataset.th) + 1) % 3]; store.set(K.theme, n); applyTheme(n); };
-  $("#lang").onchange = e => { const l = e.target.value; store.set(K.lang, l); location.href = D.paths[l] + (RLINK ? "r/" + RLINK[1] : location.hash); };
+  $("#lang").onchange = e => { const l = e.target.value; store.set(K.lang, l); location.href = D.paths[l] + (RLINK ? "r/" + RLINK[1] : CLINK ? "c/" + CLINK[1] + "/" + CLINK[2] : location.hash); };
 
   /* ---------- speed zones (tiers and helpers: src/lib.mjs) ---------- */
   const pos = ms => posOf(ms, SVC.scale);
@@ -421,6 +422,7 @@
     if (RUN !== run) return;
     RUN = null; LAST_DONE = true; setBusy(false); progress(null);
     summarize(!ctl.signal.aborted);
+    if (full && !ctl.signal.aborted) saveRun();
     if (CHECK && full && !ctl.signal.aborted) EXITS.then(checkupResult);
   }
   function progress(run) {
@@ -430,7 +432,7 @@
     if (run.full) post({ type: "progress", done: run.d, total: run.n, text: $("#vHead").textContent });
     paintStats();                                             // the three numbers move while the balls come back
   }
-  function setBusy(b) { $("#run span").textContent = t(b ? "stop" : "run"); if ($("#deep")) $("#deep").disabled = b; }
+  function setBusy(b) { $("#run span").textContent = t(b ? "stop" : "run"); if ($("#deep")) $("#deep").disabled = b; paintCmpBtn(); }
   let lastSum = null;
   const moodKey = () => lastSum ? "mood_" + lastSum.mood : RUN ? "mood_run" : "mood_sniff";
   // the stats row: local favorites, global services, and the overall median with how many came back
@@ -746,7 +748,74 @@
     NET.groups = []; NET.seen = []; NET.geo = {}; NET.done = false; NET.hidden = null; renderExits();
     checkExits().catch(() => {});
   }
-  $("#testMine").onclick = () => { leaveShared(); start(3); };
+  $("#testMine").onclick = () => { leaveCompare(); leaveShared(); start(3); };
+
+  /* ---------- compare mode: two results side by side (/c/<a>/<b>) ---------- */
+  // The view, each row's change and the headline are the shared compare mode (/assets/share/compare.js, from
+  // 1ms-shell; the Worker writes the preview title with the same words); this page gives it the rows (src/lib.mjs:
+  // diffShares). The second result comes from this browser's own earlier run, or from testing right after opening
+  // someone else's result. Links carry what the share box allows (city and network only when ticked).
+  let HIST = ONE || GRP ? [] : parseHist(store.get(K.hist)), VS = null;
+  const cmpBtn = $("#cmpBtn");
+  const bareCode = c => { const S = parseShare(c, PACKS); return S ? encodeShare(bare(S)) : c; };
+  const cmpLink = (a, b) => PAGE + "c/" + a + "/" + b;
+  // each finished home run is kept in this browser (newest first): the newest and the one before it can be compared
+  function saveRun() {
+    if (ONE || GRP || CHECK || sharedOn || !lastSum) return;
+    const code = resultCode(true);
+    HIST = addHist(HIST, code); store.set(K.hist, JSON.stringify(HIST));
+    if (VS) { const a = VS; VS = null; location.href = cmpLink(a, bareCode(code)); return; }   // "compare with my network"
+    paintCmpBtn();
+  }
+  function paintCmpBtn() {
+    if (!cmpBtn) return;
+    cmpBtn.disabled = !!RUN || sharedOn || HIST.length < 2;
+    cmpBtn.title = t(HIST.length < 2 ? "cmp_none" : "cmp");
+  }
+  if (cmpBtn) cmpBtn.onclick = () => { if (HIST.length >= 2) location.href = cmpLink(bareCode(HIST[1]), bareCode(HIST[0])); };
+  // on someone else's result: test my own network, then show the two side by side
+  $("#vsMine").onclick = () => { VS = encodeShare(SHARED); leaveShared(); start(3); };
+
+  const CMPS = CLINK && !CHECK && $("#cmpBox") ? [parseShare(CLINK[1], PACKS), parseShare(CLINK[2], PACKS)] : null;
+  let cmpOn = false, CV = null, CS = null;
+  const names = Object.fromEntries([...SVC.list, ...Object.values(PACKS).flat()].map(s => [s.id, s.name]));
+  const when = ts => new Date(ts).toLocaleString(LANG, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+  // a side's exits, as the exit list words them (no IPs: links never have them)
+  const exitsText = groups => groups.slice(0, 2).map(g => [whereOf(g), t(g.proxy ? "k_proxy" : "k_local"), g.org].filter(Boolean).join(" · ")).join(" / ");
+  const cmpView = compare => {
+    const side = S => ({ label: when(S.ts), sub: show => exitsText(show ? S.groups : bare(S).groups) });
+    const d = diffShares(CS[0], CS[1], names, { med: t("med"), back: t("e_back") });
+    return compare({ lang: LANG, a: side(CS[0]), b: side(CS[1]), stats: d.stats, rows: d.rows.map(r => ({ ...r, scale: pos })), words: "speed" });
+  };
+  async function showCompare() {
+    cmpOn = true;
+    // a side that is this visitor's own result has its city and network in this browser: shown here, and the share
+    // box can add them to the link
+    CS = CMPS.map(S => ownOf(HIST, S, PACKS) || S);
+    const { compare } = await import("/assets/share/compare.js");
+    CV = cmpView(compare);
+    await CV.render($("#cmpBox"));
+  }
+  $("#cmpShare").title = t("share");
+  $("#cmpShare").onclick = async () => {
+    if (!CV) return;
+    const { share } = await import("/assets/share/share.js");
+    const code = (S, show) => encodeShare(show ? S : bare(S));
+    share({
+      lang: LANG, name: $("h1").textContent, file: "1ms-dog-compare",
+      show: ["city", "isp"], never: ["ip", "colo"], canShow: CS.some(S => S.groups.some(g => g.city || g.org || g.asn)),
+      link: show => location.origin + cmpLink(code(CS[0], show), code(CS[1], show)),
+      home: location.origin + PAGE, text: () => CV.text, height: CV.height, draw: CV.draw,
+      foot: () => [t("cmp_h")], ts: CS[1].ts,
+    }).open();
+  };
+  // back to the test: the page as it is without a compare link
+  function leaveCompare() {
+    if (!cmpOn && !document.documentElement.classList.contains("cmp")) return;
+    cmpOn = false; document.documentElement.classList.remove("cmp");
+    if (CLINK) history.replaceState(null, "", PAGE + location.search);
+    if (!NET.done && !NET.prog) checkExits().catch(() => {});
+  }
 
   /* ---------- run on open, or wait for a click (the choice is remembered in this browser) ---------- */
   const autoBox = $("#auto");
@@ -787,8 +856,11 @@
 
   /* ---------- go ---------- */
   setMood("sniff");
-  if (SHARED && !CHECK) { sharedOn = true; showShared(SHARED); }
+  paintCmpBtn();
+  if (CMPS && CMPS[0] && CMPS[1]) showCompare();
+  else if (SHARED && !CHECK) { leaveCompare(); sharedOn = true; showShared(SHARED); }
   else {
+    leaveCompare();                                           // a compare link that doesn't read: the plain page
     const exitP = EXITS = checkExits().catch(() => {});
     // the exits pick the local pack; give them a moment, then the dog starts fetching either way (the checkup always runs)
     if (autoBox.checked || CHECK) Promise.race([exitP, sleep(1500)]).then(() => start(3));

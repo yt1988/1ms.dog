@@ -34,6 +34,7 @@ export default {
   r_title: "Mediana {ms} ms ({tier}), {ok}/{n} serviços responderam", r_one: "{s}: {ms} ms ({tier})",
   e_back: "Responderam",
   shared_from: "Resultado compartilhado de {where} · {date}", test_mine: "Testar minha rede",
+  cmp: "Comparar com seu último resultado", cmp_none: "Teste duas vezes para comparar", vs_mine: "Comparar com minha rede", cmp_h: "Dois resultados lado a lado",
 
   seg_local: "Favoritos locais",
   seg_global: "Serviços globais",

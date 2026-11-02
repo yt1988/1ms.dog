@@ -34,6 +34,7 @@ export default {
   r_title: "Médiane {ms} ms ({tier}), {ok}/{n} services ont répondu", r_one: "{s} : {ms} ms ({tier})",
   e_back: "Ont répondu",
   shared_from: "Résultat partagé depuis {where} · {date}", test_mine: "Tester ma connexion",
+  cmp: "Comparer avec votre dernier résultat", cmp_none: "Testez deux fois pour comparer", vs_mine: "Comparer avec mon réseau", cmp_h: "Deux résultats côte à côte",
 
   seg_local: "Favoris locaux",
   seg_global: "Services mondiaux",

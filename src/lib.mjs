@@ -96,6 +96,43 @@ export function parseShare(code, packs) {
   return { ts: parseInt(m[1], 36) * 1000, pack: m[2], groups, res };
 }
 
+/* ---------- compare mode ---------- */
+// Two results side by side: /<lang>/c/<a>/<b>, each a share code as above (a: before, or theirs; b: after, or mine).
+// Each side keeps its own version prefix, so a compare link opens whatever versions parseShare reads.
+// The view, the change per row and the headline are the shared compare mode (/assets/share/compare.js, from 1ms-shell);
+// this page only turns two results into its rows.
+export const CMP_RE = /\/c\/([^/]+)\/([^/]+)\/?$/;
+// a result without what only the share box adds (city, network): what a link carries unless the visitor ticks it
+export const bare = S => ({ ...S, groups: S.groups.map(g => ({ ...g, city: "", org: "", asn: null })) });
+// names: service id → name. Every service either side measured is a row; the median and the count of answers are
+// over the services both measured, so a different local pack doesn't tilt them.
+export function diffShares(A, B, names, labels = { med: "median", back: "answered" }) {
+  const ids = [...new Set([...Object.keys(A.res), ...Object.keys(B.res)])], both = ids.filter(id => id in A.res && id in B.res);
+  const ms = { unit: "ms", better: "lower", fmt, tol: { abs: 10, rel: 0.15 } };
+  const rows = ids.map(id => ({ id, name: names[id] || id, a: A.res[id], b: B.res[id], ...ms }));
+  const ok = S => both.filter(id => S.res[id] != null).length;
+  const stats = [
+    { id: "med", name: labels.med, a: median(both.map(id => A.res[id])), b: median(both.map(id => B.res[id])), ...ms },
+    { id: "back", name: labels.back, a: ok(A), b: ok(B), better: "higher", tol: { abs: 0, rel: 0 }, text: [ok(A) + "/" + both.length, ok(B) + "/" + both.length] },
+  ];
+  return { rows, stats };
+}
+
+// This browser's own results (localStorage, never sent anywhere), newest first, as share codes with city and network:
+// "compare with your last result" and the visitor's own side of a compare link read them.
+export const HIST_MAX = 10;
+export function parseHist(text) {
+  let a;
+  try { a = JSON.parse(text || "[]"); } catch (e) { return []; }
+  return Array.isArray(a) ? a.filter(c => typeof c === "string" && /^2\.[0-9a-z]+\.\w+\.[^.]*\.[^.]*$/.test(c)).slice(0, HIST_MAX) : [];
+}
+export const addHist = (list, code) => [code, ...list.filter(c => c !== code)].slice(0, HIST_MAX);
+// the stored version of a result in a link: same time and same numbers
+export const ownOf = (hist, S, packs) => {
+  for (const c of hist) { const H = parseShare(c, packs); if (H && H.ts === S.ts && JSON.stringify(H.res) === JSON.stringify(S.res)) return H; }
+  return null;
+};
+
 // Fills {name} placeholders. In Korean a particle right after a name goes by how the name ends when read aloud:
 // 은/이/을/과 after a final consonant, 는/가/를/와 after a vowel. Hangul shows it; a Latin or CJK name is in `fin`
 // (the Korean strings' josa_fin) when it is read with a final consonant, e.g. CDN (씨디엔), Steam (스팀).
