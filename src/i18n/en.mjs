@@ -34,7 +34,7 @@ export default {
   a_pet: "Pet the dog", a_dog: "1ms.dog shiba", a_field: "Latency by service", a_nav: "All ping tests", a_close: "Close", a_prev: "Previous", a_next: "Next",
   share_text: "My dog fetched {ok}/{n} services from {where}, median {ms} ms ({tier}). How fast is yours?",
   r_title: "Median {ms} ms ({tier}), {ok}/{n} services answered", r_one: "{s}: {ms} ms ({tier})",
-  e_back: "Answered",
+  e_back: "Answered", e_blocked: "Every latency test failed right away. An ad blocker or privacy extension is probably blocking them; allow 1ms.dog and run it again.",
   shared_from: "A result shared from {where} · {date}", test_mine: "Test my network",
 
   seg_local: "Local favorites",

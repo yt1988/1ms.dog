@@ -98,7 +98,13 @@
   const getJ = (u, ms = 5000) => fetch(bust(u), { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(ms) }).then(r => r.ok ? r.json() : Promise.reject());
   const firstIp = (list, f) => Promise.any(list.map(([u, k]) => getJ(u).then(j => j[k] && fam(j[k]) === f ? { ip: j[k] } : Promise.reject())));
   // each check → { ip, geo? }, geo = { cc, city, asn, org }
+  // The shell answers /_ms/me on every 1ms.dog host from what Cloudflare knows of this connection (no third party, not
+  // cached; 1ms-shell docs/tool-contract.md), so the direct exit and its network come from there first. Self-hosted
+  // copies get a 404 and rely on the others. The others still run: each is another site, and a proxy that routes by
+  // site shows up as a different exit there, as does the other address family.
   const CHECKS = [
+    ["1ms.dog", () => fetch("/_ms/me", { cache: "no-store", signal: AbortSignal.timeout(3000) }).then(r => r.ok ? r.json() : Promise.reject())
+      .then(j => j.ip ? { ip: j.ip, geo: j.country ? { cc: j.country, city: j.city, asn: j.asn, org: j.org } : null } : Promise.reject())],
     ["ipip.net", () => getJ("https://myip.ipip.net/json").then(j => ({ ip: j.data.ip }))],
     ["Cloudflare", () => getJ("https://speed.cloudflare.com/meta", 6000).then(j => ({ ip: j.clientIp, geo: { cc: j.country, city: j.city, asn: j.asn, org: j.asOrganization } }))],
     ["ip.sb", () => getJ("https://api.ip.sb/geoip").then(j => ({ ip: j.ip, geo: { cc: j.country_code, city: j.city, asn: j.asn, org: j.isp || j.asn_organization } }))],
@@ -416,18 +422,26 @@
     const q = list.slice(), ctl = new AbortController(), run = RUN = { ctl, q, full, n: list.length, d: 0 };
     if (D.spot) q.sort((a, b) => (b.id === D.spot) - (a.id === D.spot));
     if (full) { setMood("run"); say("mood_run"); setBusy(true); }
-    const worker = async () => { while (q.length && !ctl.signal.aborted) { const s = q.shift(); await runOne(s, SUBS.includes(s) ? GRP_N : n, ctl.signal); run.d++; progress(run); } };
+    const worker = async () => { while (q.length && !ctl.signal.aborted) { const s = q.shift(); await runOne(s, SUBS.includes(s) ? GRP_N : n, ctl.signal); run.d++; if (median(R.get(s.id).s) != null) run.ok = true; progress(run); blocked(run); } };
     await Promise.all(Array.from({ length: CONC }, worker));
     if (RUN !== run) return;
     RUN = null; LAST_DONE = true; setBusy(false); progress(null);
     summarize(!ctl.signal.aborted);
     if (CHECK && full && !ctl.signal.aborted) EXITS.then(checkupResult);
   }
+  // Embedded in the checkup: when the first services all fail (an ad blocker stopping every probe, or no network at
+  // all), say so at once instead of running out the timeouts; an error means no result follows (docs/checkup.md)
+  const BLOCKED_AFTER = 10;
+  function blocked(run) {
+    if (!CHECK || !run.full || run.ok || run.d < BLOCKED_AFTER || run.ctl.signal.aborted) return;
+    post({ type: "error", text: t("e_blocked") });
+    run.ctl.abort();
+  }
   function progress(run) {
     $("#prog i").style.width = run && !ONE ? (100 * run.d / run.n).toFixed(1) + "%" : "0";
     if (!run || ONE) return;
     $("#vHead").textContent = t("running", { d: run.d, n: run.n });
-    if (run.full) post({ type: "progress", done: run.d, total: run.n, text: $("#vHead").textContent });
+    if (run.full && !run.ctl.signal.aborted) post({ type: "progress", done: run.d, total: run.n, text: $("#vHead").textContent });
     paintStats();                                             // the three numbers move while the balls come back
   }
   function setBusy(b) { $("#run span").textContent = t(b ? "stop" : "run"); if ($("#deep")) $("#deep").disabled = b; }

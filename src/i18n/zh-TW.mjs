@@ -32,7 +32,7 @@ export default {
   a_pet: "摸摸小狗", a_dog: "1ms.dog 柴犬", a_field: "各服務延遲", a_nav: "全部測速頁面", a_close: "關閉", a_prev: "上一個", a_next: "下一個",
   share_text: "我的狗狗從{where}出發，叼回了 {ok}/{n} 個服務，中位延遲 {ms} ms（{tier}）。你的狗狗有多快？",
   r_title: "中位延遲 {ms} ms（{tier}），{ok}/{n} 個服務有回應", r_one: "{s}：{ms} ms（{tier}）",
-  e_back: "有回應",
+  e_back: "有回應", e_blocked: "延遲測試一開始就全部失敗，很可能被廣告攔截或隱私擴充功能擋下了。請把 1ms.dog 加入白名單後再試。",
   shared_from: "這是一份來自{where}的測試結果 · {date}", test_mine: "測我自己的網路",
 
   seg_local: "在地常用",

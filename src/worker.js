@@ -1,6 +1,7 @@
 // The Worker in front of public/. A request for a file there never reaches it (static assets are free and unmetered);
 // it sees only what no file answers. A shared result, /<lang>/[<page>/]r/<code> (src/lib.mjs), is that page with
-// the result in its title and description, so a chat app's link preview shows it. Anything else: the plain 404.
+// the result in its title and description, so a chat app's link preview shows it. A result link whose code can't be
+// read (mangled, cut off, an unknown version), and anything else: the plain 404 (the shell shows its 404 page).
 import { parseShare, median, tierOf, fmt, fillIn } from "./lib.mjs";
 import { SERVICES, PACKS } from "./services.mjs";
 import en from "./i18n/en.mjs";
@@ -19,7 +20,7 @@ const DIR = Object.fromEntries(Object.keys(I).filter(l => l !== "en").map(l => [
 const ONE = Object.fromEntries([...SERVICES, ...Object.values(PACKS).flat()].map(s => [s.id, s.name]));
 
 // What the preview says about a result link, or null when the path isn't one:
-// { page: the page it shows the result on, title, desc }
+// { page: the page it shows the result on, title, desc }, or { bad: true } when the code can't be read
 export function resultMeta(path) {
   const parts = path.split("/").filter(Boolean);
   if (parts.length < 2 || parts[parts.length - 2] !== "r") return null;
@@ -28,7 +29,7 @@ export function resultMeta(path) {
   if (parts.length > 1) return null;
   const page = "/" + (lang === "en" ? "" : lang.toLowerCase() + "/") + (parts[0] ? parts[0] + "/" : "");
   const S = parseShare(code, PACKS);
-  if (!S) return { page, title: null, desc: null };
+  if (!S) return { bad: true };
   const L = I[lang], t = (k, v) => fillIn(L[k] ?? en[k], v, L.josa_fin);
   const vals = Object.values(S.res), ok = vals.filter(v => v != null), spot = parts[0] && ONE[parts[0]] && parts[0] in S.res ? parts[0] : null;
   const md = spot ? S.res[spot] : median(ok), tier = t("tier_" + tierOf(md)[0]), ms = md != null ? fmt(md) : "–";
@@ -47,7 +48,7 @@ export function resultMeta(path) {
 export default {
   async fetch(req, env) {
     const url = new URL(req.url), meta = (req.method === "GET" || req.method === "HEAD") && resultMeta(url.pathname);
-    if (!meta) return env.ASSETS.fetch(req);
+    if (!meta || meta.bad) return env.ASSETS.fetch(req);
     const res = await env.ASSETS.fetch(new Request(new URL(meta.page, url), req));
     if (res.status !== 200) return res;
     // never indexed (canonical still points at the page); the result in the title and description

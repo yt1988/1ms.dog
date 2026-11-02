@@ -32,7 +32,7 @@ export default {
   a_pet: "Fazer carinho no cachorro", a_dog: "Shiba do 1ms.dog", a_field: "Latência por serviço", a_nav: "Todos os testes de ping", a_close: "Fechar", a_prev: "Anterior", a_next: "Próximo",
   share_text: "Meu cachorro buscou {ok}/{n} serviços a partir de {where}, mediana de {ms} ms ({tier}). E o seu?",
   r_title: "Mediana {ms} ms ({tier}), {ok}/{n} serviços responderam", r_one: "{s}: {ms} ms ({tier})",
-  e_back: "Responderam",
+  e_back: "Responderam", e_blocked: "Todos os testes de latência falharam logo de cara. Provavelmente um bloqueador de anúncios ou extensão de privacidade os está bloqueando; libere o 1ms.dog e tente de novo.",
   shared_from: "Resultado compartilhado de {where} · {date}", test_mine: "Testar minha rede",
 
   seg_local: "Favoritos locais",

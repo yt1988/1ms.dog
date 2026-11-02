@@ -19,8 +19,11 @@ test("a result link gets the result as its preview title, on the page it was sha
   assert.equal(resultMeta("/vk/r/" + code).page, "/vk/");              // a two-letter page, not a language
 });
 
-test("other paths are not result links; a bad code still opens the page", () => {
+test("other paths are not result links; a code that can't be read is a 404", () => {
   assert.equal(resultMeta("/zh-cn/chatgpt/"), null);
   assert.equal(resultMeta("/a/b/r/" + code), null);
-  assert.deepEqual(resultMeta("/r/nonsense"), { page: "/", title: null, desc: null });
+  assert.deepEqual(resultMeta("/r/nonsense"), { bad: true });
+  assert.deepEqual(resultMeta("/zh-cn/r/zz"), { bad: true });
+  assert.deepEqual(resultMeta("/zh-cn/r/" + code.slice(0, -4)), { bad: true });    // cut off inside an entry
+  assert.deepEqual(resultMeta("/zh-cn/r/" + code.slice(0, code.lastIndexOf("."))), { bad: true });   // before the results
 });
