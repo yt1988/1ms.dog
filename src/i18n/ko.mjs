@@ -80,7 +80,7 @@ export default {
 
   ipqs_t: "이 IP의 품질 검사",
 
-  asn_t: "이 AS 조회", l_v6: "IPv6 전체 테스트", l_v6_none: "IPv6가 없어요: 테스트하기", l_who: "사이트가 볼 수 있는 다른 정보", l_speed: "다운로드·업로드 속도 측정", l_ai: "{s}가 보는 IP",
+  asn_t: "이 AS 조회", l_v6: "IPv6 전체 테스트", l_v6_none: "IPv6가 없어요: 테스트하기", l_who: "사이트가 볼 수 있는 다른 정보", l_speed: "다운로드·업로드 속도 측정", l_check: "전체 점검 받기", l_ai: "{s}가 보는 IP",
 
   faq_h: "작동 방식과 자주 묻는 질문",
   docs: [

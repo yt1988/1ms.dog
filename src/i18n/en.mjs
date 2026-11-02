@@ -82,7 +82,7 @@ export default {
 
   ipqs_t: "Check this IP’s quality",
 
-  asn_t: "Look up this AS", l_v6: "Full IPv6 test", l_v6_none: "No IPv6 found: test it", l_who: "What else sites can see about you", l_speed: "Test download and upload speed", l_ai: "Which IP {s} sees",
+  asn_t: "Look up this AS", l_v6: "Full IPv6 test", l_v6_none: "No IPv6 found: test it", l_who: "What else sites can see about you", l_speed: "Test download and upload speed", l_check: "Run a full checkup", l_ai: "Which IP {s} sees",
 
   faq_h: "How it works",
   docs: [

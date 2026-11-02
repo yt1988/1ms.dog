@@ -80,7 +80,7 @@ export default {
 
   ipqs_t: "Verificar a qualidade deste IP",
 
-  asn_t: "Consultar este AS", l_v6: "Teste completo de IPv6", l_v6_none: "Nenhum IPv6 encontrado: teste", l_who: "O que mais os sites veem sobre você", l_speed: "Medir velocidade de download e upload", l_ai: "Qual IP o {s} vê",
+  asn_t: "Consultar este AS", l_v6: "Teste completo de IPv6", l_v6_none: "Nenhum IPv6 encontrado: teste", l_who: "O que mais os sites veem sobre você", l_speed: "Medir velocidade de download e upload", l_check: "Fazer um check-up completo", l_ai: "Qual IP o {s} vê",
 
   faq_h: "Como funciona",
   docs: [

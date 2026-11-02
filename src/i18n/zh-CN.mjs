@@ -80,7 +80,7 @@ export default {
 
   ipqs_t: "查这个 IP 的质量",
 
-  asn_t: "查询这个 AS", l_v6: "IPv6 完整测试", l_v6_none: "没检测到 IPv6，测一下", l_who: "网站还能看到你哪些信息", l_speed: "测下载和上传速度", l_ai: "{s} 看到的是哪个 IP",
+  asn_t: "查询这个 AS", l_v6: "IPv6 完整测试", l_v6_none: "没检测到 IPv6，测一下", l_who: "网站还能看到你哪些信息", l_speed: "测下载和上传速度", l_check: "做一次完整体检", l_ai: "{s} 看到的是哪个 IP",
 
   faq_h: "原理与常见问题",
   docs: [

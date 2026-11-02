@@ -80,7 +80,7 @@ export default {
 
   ipqs_t: "查這個 IP 的品質",
 
-  asn_t: "查詢這個 AS", l_v6: "IPv6 完整測試", l_v6_none: "沒偵測到 IPv6，測一下", l_who: "網站還能看到你哪些資訊", l_speed: "測下載和上傳速度", l_ai: "{s} 看到的是哪個 IP",
+  asn_t: "查詢這個 AS", l_v6: "IPv6 完整測試", l_v6_none: "沒偵測到 IPv6，測一下", l_who: "網站還能看到你哪些資訊", l_speed: "測下載和上傳速度", l_check: "做一次完整體檢", l_ai: "{s} 看到的是哪個 IP",
 
   faq_h: "原理與常見問題",
   docs: [
