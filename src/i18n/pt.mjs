@@ -110,7 +110,6 @@ export default {
     ["O que significam as velocidades do cachorro?", "Relâmpago ≤ 30 ms: mesma cidade. Disparada ≤ 80 ms: mesma região. Trote ≤ 150 ms: bom para quase tudo. Passeio ≤ 300 ms: perceptível em jogos e chamadas. Soneca > 300 ms: longe ou congestionado. Não voltou: sem conexão em 5 segundos, o serviço não é acessível daqui. Abaixo de 2 ms você ganha o lendário cão 1ms."],
     ["Meus dados são enviados para algum lugar?", "Não. Cada requisição vai direto do seu navegador ao serviço testado. O 1ms.dog só entrega a página estática e nunca recebe seus resultados. Seu último resultado fica neste navegador. Um link compartilhado leva o próprio resultado: o país e os tempos, e a cidade e a rede só se você marcar a caixa, nunca endereços IP. Quando alguém o abre, o servidor só o lê para mostrar o resultado na prévia do link."],
   ],
-  foot: "Roda inteiramente no seu navegador. Sem conta, sem coleta de resultados.",
 
   th_system: "Tema do sistema", th_light: "Claro", th_dark: "Escuro",
   lang_label: "Idioma",

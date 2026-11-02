@@ -97,7 +97,7 @@ export async function build({ check = false } = {}) {
   // hreflang and sitemap alternates point only at indexed versions (an alternate that is noindex is a search error)
   const altsOf = sub => langs.filter(([l]) => indexed(l, sub));
   const path = (slug, sub) => "/" + (slug ? slug + "/" : "") + (sub ? sub + "/" : "");
-  const RUNTIME_SKIP = new Set(["docs", "egress_link", "seo_title", "seo_desc", "seo_kw", "og_sub", "lede", "lp_title", "lp_desc", "lp_intro", "lp_h1", "lp_kw", "lp_peers", "lp_via", "lp_via_same", "land", "lg_title", "lg_desc", "lg_h1", "lg_kw", "lg_intro", "lg_about", "lg_region", "sm_cats", "sm_regions", "grp_best", "grp_worst", "sitemap_h", "sm_item", "cta_h", "cta_d", "cta_btn", "one_med", "one_cold", "one_jit", "foot",
+  const RUNTIME_SKIP = new Set(["docs", "egress_link", "seo_title", "seo_desc", "seo_kw", "og_sub", "lede", "lp_title", "lp_desc", "lp_intro", "lp_h1", "lp_kw", "lp_peers", "lp_via", "lp_via_same", "land", "lg_title", "lg_desc", "lg_h1", "lg_kw", "lg_intro", "lg_about", "lg_region", "sm_cats", "sm_regions", "grp_best", "grp_worst", "sitemap_h", "sm_item", "cta_h", "cta_d", "cta_btn", "one_med", "one_cold", "one_jit",
     "name", "h1", "lang_label", "faq_h", "pack", "exit_h", "test_mine", "r_title", "r_one"]);
   // static text the page already shows, and region names (only the server-rendered picker uses them)
   const runtimeKey = k => !RUNTIME_SKIP.has(k) && !k.startsWith("pk_") && !k.startsWith("a_");

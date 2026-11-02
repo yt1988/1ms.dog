@@ -112,7 +112,6 @@ export default {
     ["What do the dog speeds mean?", "Zoomies ≤ 30 ms: same city. Sprint ≤ 80 ms: same region. Trot ≤ 150 ms: fine for almost everything. Stroll ≤ 300 ms: noticeable in games and calls. Nap > 300 ms: far away or congested. Not back: no connection within 5 seconds, so the service is unreachable from here. Under 2 ms earns the legendary 1ms dog."],
     ["Is my data sent anywhere?", "No. Every request goes straight from your browser to the service being tested. 1ms.dog only serves the static page and never receives your results. Your last result stays in this browser so the dog can tell you if things changed. A shared link carries the result itself: the country and timings, plus city and network only if you tick the box, never IP addresses. When someone opens it, the server reads it only to put the result in the link preview."],
   ],
-  foot: "Runs entirely in your browser. No account, no tracking of results.",
 
   th_system: "System theme", th_light: "Light", th_dark: "Dark",
   lang_label: "Language",

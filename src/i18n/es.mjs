@@ -110,7 +110,6 @@ export default {
     ["¿Qué significan las velocidades del perro?", "Rayo ≤ 30 ms: misma ciudad. Carrera ≤ 80 ms: misma región. Trote ≤ 150 ms: suficiente para casi todo. Paseo ≤ 300 ms: se nota en juegos y llamadas. Siesta > 300 ms: lejos o congestionado. No volvió: sin conexión en 5 segundos, así que el servicio no es accesible desde aquí. Por debajo de 2 ms ganas el legendario perro 1ms."],
     ["¿Se envían mis datos a algún sitio?", "No. Cada petición va directamente de tu navegador al servicio probado. 1ms.dog solo sirve la página estática y nunca recibe tus resultados. Tu último resultado se guarda en este navegador. Un enlace compartido lleva el resultado: el país y los tiempos, y la ciudad y la red solo si marcas la casilla, nunca direcciones IP. Cuando alguien lo abre, el servidor solo lo lee para mostrar el resultado en la vista previa del enlace."],
   ],
-  foot: "Funciona por completo en tu navegador. Sin cuenta y sin recopilar resultados.",
 
   th_system: "Tema del sistema", th_light: "Claro", th_dark: "Oscuro",
   lang_label: "Idioma",

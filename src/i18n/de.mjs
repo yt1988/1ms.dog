@@ -110,7 +110,6 @@ export default {
     ["Was bedeuten die Hundegeschwindigkeiten?", "Blitz ≤ 30 ms: dieselbe Stadt. Sprint ≤ 80 ms: dieselbe Region. Trab ≤ 150 ms: reicht für fast alles. Spaziergang ≤ 300 ms: spürbar bei Spielen und Anrufen. Nickerchen > 300 ms: weit weg oder überlastet. Nicht zurück: keine Verbindung innerhalb von 5 Sekunden, der Dienst ist von hier nicht erreichbar. Unter 2 ms gibt es den legendären 1ms-Hund."],
     ["Werden meine Daten irgendwohin geschickt?", "Nein. Jede Anfrage geht direkt von deinem Browser zum getesteten Dienst. 1ms.dog liefert nur die statische Seite aus und erhält nie deine Ergebnisse. Dein letztes Ergebnis bleibt in diesem Browser. Ein geteilter Link enthält das Ergebnis selbst: Land und Zeiten, Stadt und Netz nur, wenn du das Häkchen setzt, niemals IP-Adressen. Öffnet ihn jemand, liest der Server ihn nur, um das Ergebnis in die Linkvorschau zu schreiben."],
   ],
-  foot: "Läuft komplett in deinem Browser. Kein Konto, keine Erfassung von Ergebnissen.",
 
   th_system: "Systemeinstellung", th_light: "Hell", th_dark: "Dunkel",
   lang_label: "Sprache",

@@ -110,7 +110,6 @@ export default {
     ["Que signifient les vitesses du chien ?", "Éclair ≤ 30 ms : même ville. Sprint ≤ 80 ms : même région. Trot ≤ 150 ms : suffisant pour presque tout. Balade ≤ 300 ms : sensible en jeu et en appel. Sieste > 300 ms : loin ou encombré. Pas revenu : aucune connexion en 5 secondes, le service est inaccessible d’ici. Sous 2 ms, vous décrochez le légendaire chien 1ms."],
     ["Mes données sont-elles envoyées quelque part ?", "Non. Chaque requête part directement de votre navigateur vers le service testé. 1ms.dog ne sert que la page statique et ne reçoit jamais vos résultats. Votre dernier résultat reste dans ce navigateur. Un lien partagé contient le résultat lui-même : le pays et les temps, plus la ville et le réseau seulement si vous cochez la case, jamais d’adresse IP. Quand quelqu’un l’ouvre, le serveur ne le lit que pour afficher le résultat dans l’aperçu du lien."],
   ],
-  foot: "Tout s’exécute dans votre navigateur. Sans compte, sans collecte des résultats.",
 
   th_system: "Thème du système", th_light: "Clair", th_dark: "Sombre",
   lang_label: "Langue",
