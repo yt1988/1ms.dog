@@ -1,78 +1,122 @@
 // Compare mode every 1ms.dog tool can use: two results of the same tool side by side, each row's change and whether
-// it got better or worse, the one-line summary a chat preview shows, and the share card's middle for the share
-// dialog (share.js). Tools copy it to /assets/share/ with the rest of the folder and load it only on a compare link
-// or when the visitor compares; 1ms-shell's check compares the copies with its own. Change it there, never in a tool.
-// See docs/compare.md.
+// it got better or worse, an overall verdict, the preview title of a compare link, and the share card's middle for the
+// share dialog (share.js). Tools copy it to /assets/share/ with the rest of the folder and load it only on a compare
+// link; 1ms-shell's check compares the copies with its own. Change it there, never in a tool. See docs/compare.md.
 //
-// The tool turns its two results into rows (its `diff(a, b)`); everything else is done here. Rows only one side
-// measured are counted in the summary line, not listed: the view compares what both measured.
+// The tool turns its two results into groups of rows (its `diff(a, b)`); everything else is done here. Rows only one
+// side measured are counted in the verdict, not listed: the view compares what both measured.
 //
 //   const { compare } = await import("/assets/share/compare.js");
 //   const c = compare({
 //     lang: "zh-CN",
-//     a: { label: "10月30日 14:00", sub: show => "日本 · 代理" },   // the two sides: a before (or theirs), b after (or mine)
-//     b: { label: "11月2日 09:12", sub: "美国 · 本地" },             // sub: text, or show => text (the share box)
+//     a: { ts, sub: show => "日本 · 代理" },   // the two sides: a before (or theirs), b after (or mine). ts: when it
+//     b: { ts, sub: "美国 · 本地" },           //   was measured; sub: where from, text or show => text (the share box)
 //     stats: [row, …],          // up to 3 key numbers, shown as cards (optional)
-//     rows: [row, …],           // one per measured thing; shown biggest change first
+//     uses: [row, …],           // what the result means in everyday use, before and after (optional)
+//     groups: [{ name, rows: [row, …] }, …],   // in the tool's own order; changed rows come first in each group
 //     words: "speed",           // "speed": faster/slower (latency, bandwidth); "plain": better/worse
 //   });
-//   await c.render(el);         // the view, into el (loads compare.css first)
-//   share({ …, text: () => c.text, height: c.height, draw: c.draw });   // the same view on the share card
+//   c.renderHead(el);           // verdict, its detail and the two sides (A, B), for the tool's banner (c.headHTML():
+//                               //   the same as a string, for the tool's Worker to put in the page before it is sent)
+//   await c.render(el);         // key numbers, uses and the groups (loads compare.css first)
+//   share({ …, text: () => c.text, height: c.height, draw: c.draw });   // the same, on the share card
 //
-// row: { id, name, a, b, unit: "ms", better: "lower" | "higher", fmt: v => "12.4", tol: { abs: 10, rel: 0.15 },
-//        scale: v => 0…1 (where a value sits on the row's lane; no lane without it), text: [a text, b text] }
-//   a, b: the value on each side; null = measured, no answer (✕); undefined = that side didn't measure it (–).
-//   A change within tol (absolute, or relative to the smaller value) counts as the same.
+// row: { id, name, a, b, unit: "ms", better: "lower" | "higher", fmt: v => "12.4", tol: { abs: 20, rel: 0.3 },
+//        scale: v => 0…1 (where a value sits on the row's lane; no lane without it), text: [a text, b text],
+//        tier: v => "t2" (the CSS variable that colors b's value and dot: the tool's own speed colors) }
+//   a, b: the value on each side; null = measured, no answer (✕); undefined = that side didn't measure it.
+//   A change within tol (absolute ms, or relative to the smaller value) counts as the same. Measure the tool's own
+//   noise for tol: run it several times in a row and see how much the same row moves (docs/compare.md).
 //
-// The pure parts (judge, rank, tally, headline) touch no DOM, so a tool's Worker can import this file to write the
-// preview title of a compare link with the same words the page shows.
+// Every row is one fixed height (SIZE), and the groups go into two columns by `columns()`, so a tool can reserve the
+// view's exact height before it is drawn: its Worker imports this file (it touches no DOM until render) and works it
+// out from the link, and writes the preview title with `verdict()`.
 
-export const VERSION = 1;
+export const VERSION = 2;
 
 const T = {
-  en: { change: "Change", same: "About the same", lost: "No answer", back: "Answers",
+  en: { change: "Change", same: "About the same", lost: "No answer", back: "Answers", both_lost: "No answer either time",
     faster: "{x}× faster", slower: "{x}× slower", better: "better", worse: "worse",
     n_faster: "{n} faster", n_slower: "{n} slower", n_better: "{n} better", n_worse: "{n} worse", n_same: "{n} about the same", n_none: "{n} measured on one side only",
-    all_same: "About the same both times", lost_h: "{s} stopped answering", back_h: "{s} answers again", join: ", " },
-  "zh-CN": { change: "变化", same: "差不多", lost: "连不上了", back: "能连上了",
+    all_same: "About the same both times", lost_h: "{s} stopped answering", back_h: "{s} answers again", join: ", ",
+    dir_faster: "B is faster: {list}", dir_slower: "B is slower: {list}", dir_mixed: "Some faster, some slower: {list}",
+    dir_better: "B is better: {list}", dir_worse: "B is worse: {list}", dir_mixed_p: "Some better, some worse: {list}",
+    same_all: "Almost identical: all {n} within the margin of error", same_most: "Almost identical: {same} of {n} within the margin of error",
+    noise: "{list}: likely a one-off blip.", uses_same: "No everyday use changed.", same_exit: "Same exit · {gap} later" },
+  "zh-CN": { change: "变化", same: "差不多", lost: "连不上了", back: "能连上了", both_lost: "两次都没响应",
     faster: "快 {x} 倍", slower: "慢 {x} 倍", better: "变好", worse: "变差",
     n_faster: "{n} 项变快", n_slower: "{n} 项变慢", n_better: "{n} 项变好", n_worse: "{n} 项变差", n_same: "{n} 项差不多", n_none: "{n} 项只有一边测了",
-    all_same: "两次结果差不多", lost_h: "{s} 连不上了", back_h: "{s} 能连上了", join: "，" },
-  "zh-TW": { change: "變化", same: "差不多", lost: "連不上了", back: "能連上了",
+    all_same: "两次结果差不多", lost_h: "{s} 连不上了", back_h: "{s} 能连上了", join: "，",
+    dir_faster: "B 更快：{list}", dir_slower: "B 更慢：{list}", dir_mixed: "有快有慢：{list}",
+    dir_better: "B 更好：{list}", dir_worse: "B 更差：{list}", dir_mixed_p: "有好有坏：{list}",
+    same_all: "两次几乎一样：{n} 项的差别都在误差内", same_most: "两次几乎一样：{n} 项里 {same} 项差别在误差内",
+    noise: "{list}：多半是偶发波动。", uses_same: "日常用途都没有变化。", same_exit: "同一出口 · 相隔 {gap}" },
+  "zh-TW": { change: "變化", same: "差不多", lost: "連不上了", back: "能連上了", both_lost: "兩次都沒回應",
     faster: "快 {x} 倍", slower: "慢 {x} 倍", better: "變好", worse: "變差",
     n_faster: "{n} 項變快", n_slower: "{n} 項變慢", n_better: "{n} 項變好", n_worse: "{n} 項變差", n_same: "{n} 項差不多", n_none: "{n} 項只有一邊測了",
-    all_same: "兩次結果差不多", lost_h: "{s} 連不上了", back_h: "{s} 能連上了", join: "，" },
-  ja: { change: "変化", same: "ほぼ同じ", lost: "応答なし", back: "応答あり",
+    all_same: "兩次結果差不多", lost_h: "{s} 連不上了", back_h: "{s} 能連上了", join: "，",
+    dir_faster: "B 較快：{list}", dir_slower: "B 較慢：{list}", dir_mixed: "有快有慢：{list}",
+    dir_better: "B 較好：{list}", dir_worse: "B 較差：{list}", dir_mixed_p: "有好有壞：{list}",
+    same_all: "兩次幾乎一樣：{n} 項的差別都在誤差內", same_most: "兩次幾乎一樣：{n} 項裡 {same} 項差別在誤差內",
+    noise: "{list}：多半是偶發波動。", uses_same: "日常用途都沒有變化。", same_exit: "同一出口 · 相隔 {gap}" },
+  ja: { change: "変化", same: "ほぼ同じ", lost: "応答なし", back: "応答あり", both_lost: "2 回とも応答なし",
     faster: "{x} 倍速い", slower: "{x} 倍遅い", better: "改善", worse: "悪化",
     n_faster: "{n} 件速く", n_slower: "{n} 件遅く", n_better: "{n} 件改善", n_worse: "{n} 件悪化", n_same: "{n} 件ほぼ同じ", n_none: "{n} 件は片方のみ",
-    all_same: "2 回ともほぼ同じ", lost_h: "{s} が応答しなくなった", back_h: "{s} が応答するようになった", join: "、" },
-  ko: { change: "변화", same: "비슷함", lost: "응답 없음", back: "응답함",
+    all_same: "2 回ともほぼ同じ", lost_h: "{s} が応答しなくなった", back_h: "{s} が応答するようになった", join: "、",
+    dir_faster: "B のほうが速い：{list}", dir_slower: "B のほうが遅い：{list}", dir_mixed: "速いものも遅いものも：{list}",
+    dir_better: "B のほうが良い：{list}", dir_worse: "B のほうが悪い：{list}", dir_mixed_p: "良いものも悪いものも：{list}",
+    same_all: "ほぼ同じ：{n} 件すべて誤差の範囲内", same_most: "ほぼ同じ：{n} 件中 {same} 件が誤差の範囲内",
+    noise: "{list}：一時的な揺れの可能性が高い。", uses_same: "普段の用途はどれも変わらず。", same_exit: "同じ出口 · {gap}後" },
+  ko: { change: "변화", same: "비슷함", lost: "응답 없음", back: "응답함", both_lost: "두 번 모두 응답 없음",
     faster: "{x}배 빠름", slower: "{x}배 느림", better: "좋아짐", worse: "나빠짐",
     n_faster: "{n}개 빨라짐", n_slower: "{n}개 느려짐", n_better: "{n}개 좋아짐", n_worse: "{n}개 나빠짐", n_same: "{n}개 비슷함", n_none: "{n}개는 한쪽만 측정",
-    all_same: "두 결과가 비슷함", lost_h: "{s} 응답 없음", back_h: "{s} 다시 응답", join: ", " },
-  es: { change: "Cambio", same: "Casi igual", lost: "Sin respuesta", back: "Responde",
+    all_same: "두 결과가 비슷함", lost_h: "{s} 응답 없음", back_h: "{s} 다시 응답", join: ", ",
+    dir_faster: "B가 더 빠름: {list}", dir_slower: "B가 더 느림: {list}", dir_mixed: "빨라진 것도 느려진 것도 있음: {list}",
+    dir_better: "B가 더 좋음: {list}", dir_worse: "B가 더 나쁨: {list}", dir_mixed_p: "좋아진 것도 나빠진 것도 있음: {list}",
+    same_all: "거의 같음: {n}개 모두 오차 범위 안", same_most: "거의 같음: {n}개 중 {same}개가 오차 범위 안",
+    noise: "{list}: 일시적인 흔들림일 가능성이 큽니다.", uses_same: "일상 용도는 모두 그대로입니다.", same_exit: "같은 출구 · {gap} 후" },
+  es: { change: "Cambio", same: "Casi igual", lost: "Sin respuesta", back: "Responde", both_lost: "Sin respuesta las dos veces",
     faster: "{x}× más rápido", slower: "{x}× más lento", better: "mejor", worse: "peor",
     n_faster: "{n} más rápidos", n_slower: "{n} más lentos", n_better: "{n} mejor", n_worse: "{n} peor", n_same: "{n} casi igual", n_none: "{n} solo en un lado",
-    all_same: "Casi igual las dos veces", lost_h: "{s} dejó de responder", back_h: "{s} vuelve a responder", join: ", " },
-  fr: { change: "Écart", same: "Quasi identique", lost: "Plus de réponse", back: "Répond",
+    all_same: "Casi igual las dos veces", lost_h: "{s} dejó de responder", back_h: "{s} vuelve a responder", join: ", ",
+    dir_faster: "B es más rápido: {list}", dir_slower: "B es más lento: {list}", dir_mixed: "Unos más rápidos, otros más lentos: {list}",
+    dir_better: "B es mejor: {list}", dir_worse: "B es peor: {list}", dir_mixed_p: "Unos mejor, otros peor: {list}",
+    same_all: "Casi idéntico: los {n} dentro del margen de error", same_most: "Casi idéntico: {same} de {n} dentro del margen de error",
+    noise: "{list}: probablemente un pico aislado.", uses_same: "Ningún uso diario cambió.", same_exit: "Misma salida · {gap} después" },
+  fr: { change: "Écart", same: "Quasi identique", lost: "Plus de réponse", back: "Répond", both_lost: "Pas de réponse les deux fois",
     faster: "{x}× plus rapide", slower: "{x}× plus lent", better: "mieux", worse: "moins bien",
     n_faster: "{n} plus rapides", n_slower: "{n} plus lents", n_better: "{n} mieux", n_worse: "{n} moins bien", n_same: "{n} quasi identiques", n_none: "{n} d’un seul côté",
-    all_same: "Quasi identique les deux fois", lost_h: "{s} ne répond plus", back_h: "{s} répond de nouveau", join: ", " },
-  de: { change: "Änderung", same: "Etwa gleich", lost: "Keine Antwort", back: "Antwortet",
+    all_same: "Quasi identique les deux fois", lost_h: "{s} ne répond plus", back_h: "{s} répond de nouveau", join: ", ",
+    dir_faster: "B est plus rapide : {list}", dir_slower: "B est plus lent : {list}", dir_mixed: "Certains plus rapides, d’autres plus lents : {list}",
+    dir_better: "B est meilleur : {list}", dir_worse: "B est moins bon : {list}", dir_mixed_p: "Certains mieux, d’autres moins bien : {list}",
+    same_all: "Quasi identique : les {n} dans la marge d’erreur", same_most: "Quasi identique : {same} sur {n} dans la marge d’erreur",
+    noise: "{list} : sans doute un pic passager.", uses_same: "Aucun usage courant n’a changé.", same_exit: "Même sortie · {gap} plus tard" },
+  de: { change: "Änderung", same: "Etwa gleich", lost: "Keine Antwort", back: "Antwortet", both_lost: "Beide Male keine Antwort",
     faster: "{x}× schneller", slower: "{x}× langsamer", better: "besser", worse: "schlechter",
     n_faster: "{n} schneller", n_slower: "{n} langsamer", n_better: "{n} besser", n_worse: "{n} schlechter", n_same: "{n} etwa gleich", n_none: "{n} nur auf einer Seite",
-    all_same: "Beide Male etwa gleich", lost_h: "{s} antwortet nicht mehr", back_h: "{s} antwortet wieder", join: ", " },
-  pt: { change: "Mudança", same: "Quase igual", lost: "Sem resposta", back: "Responde",
+    all_same: "Beide Male etwa gleich", lost_h: "{s} antwortet nicht mehr", back_h: "{s} antwortet wieder", join: ", ",
+    dir_faster: "B ist schneller: {list}", dir_slower: "B ist langsamer: {list}", dir_mixed: "Teils schneller, teils langsamer: {list}",
+    dir_better: "B ist besser: {list}", dir_worse: "B ist schlechter: {list}", dir_mixed_p: "Teils besser, teils schlechter: {list}",
+    same_all: "Fast gleich: alle {n} innerhalb der Messschwankung", same_most: "Fast gleich: {same} von {n} innerhalb der Messschwankung",
+    noise: "{list}: vermutlich ein kurzer Ausreißer.", uses_same: "Keine Alltagsnutzung hat sich geändert.", same_exit: "Gleicher Ausgang · {gap} später" },
+  pt: { change: "Mudança", same: "Quase igual", lost: "Sem resposta", back: "Responde", both_lost: "Sem resposta nas duas vezes",
     faster: "{x}× mais rápido", slower: "{x}× mais lento", better: "melhor", worse: "pior",
     n_faster: "{n} mais rápidos", n_slower: "{n} mais lentos", n_better: "{n} melhor", n_worse: "{n} pior", n_same: "{n} quase iguais", n_none: "{n} só de um lado",
-    all_same: "Quase igual nas duas vezes", lost_h: "{s} parou de responder", back_h: "{s} voltou a responder", join: ", " },
-  ru: { change: "Изменение", same: "Почти так же", lost: "Нет ответа", back: "Отвечает",
+    all_same: "Quase igual nas duas vezes", lost_h: "{s} parou de responder", back_h: "{s} voltou a responder", join: ", ",
+    dir_faster: "B é mais rápido: {list}", dir_slower: "B é mais lento: {list}", dir_mixed: "Uns mais rápidos, outros mais lentos: {list}",
+    dir_better: "B é melhor: {list}", dir_worse: "B é pior: {list}", dir_mixed_p: "Uns melhores, outros piores: {list}",
+    same_all: "Quase idêntico: os {n} dentro da margem de erro", same_most: "Quase idêntico: {same} de {n} dentro da margem de erro",
+    noise: "{list}: provavelmente um pico isolado.", uses_same: "Nenhum uso do dia a dia mudou.", same_exit: "Mesma saída · {gap} depois" },
+  ru: { change: "Изменение", same: "Почти так же", lost: "Нет ответа", back: "Отвечает", both_lost: "Нет ответа оба раза",
     faster: "в {x} {raz} быстрее", slower: "в {x} {raz} медленнее", better: "лучше", worse: "хуже",
     n_faster: "быстрее: {n}", n_slower: "медленнее: {n}", n_better: "лучше: {n}", n_worse: "хуже: {n}", n_same: "почти так же: {n}", n_none: "только с одной стороны: {n}",
-    all_same: "Оба раза почти одинаково", lost_h: "{s} перестал отвечать", back_h: "{s} снова отвечает", join: ", " },
+    all_same: "Оба раза почти одинаково", lost_h: "{s} перестал отвечать", back_h: "{s} снова отвечает", join: ", ",
+    dir_faster: "B быстрее: {list}", dir_slower: "B медленнее: {list}", dir_mixed: "Что-то быстрее, что-то медленнее: {list}",
+    dir_better: "B лучше: {list}", dir_worse: "B хуже: {list}", dir_mixed_p: "Что-то лучше, что-то хуже: {list}",
+    same_all: "Почти одинаково: все {n} в пределах погрешности", same_most: "Почти одинаково: {same} из {n} в пределах погрешности",
+    noise: "{list}: скорее всего, разовый всплеск.", uses_same: "Повседневные сценарии не изменились.", same_exit: "Тот же выход · через {gap}" },
 };
 export const STRINGS = T, LANGS = Object.keys(T);
-
 
 const strings = lang => T[lang] || T.en;
 const fill = (s, v) => s.replace(/\{(\w+)\}/g, (m, k) => k in v ? v[k] : m);
@@ -85,24 +129,27 @@ const raz = x => { const n = Math.round(x * 10) / 10; if (n % 1) return "раз�
 const ratioText = (t, st, x, lang) => fill(t[st === "better" ? "faster" : "slower"], { x: times(x, lang), raz: raz(x) });
 
 // A row's change from a to b → the row plus st: better | worse | same | lost (b doesn't answer, a did) | back (b
-// answers, a didn't) | none (only one side measured it); d = b − a; x = how many times bigger the larger value is;
-// score = how much it changed (lost and back most, then the ratio's log), for the order.
+// answers, a didn't) | gone (neither answered) | none (only one side measured it); d = b − a; x = how many times
+// bigger the larger value is; score = how much it changed (lost and back most, then the ratio's log), for the order.
+export const TOL = { abs: 20, rel: 0.3 };
 export function judge(r) {
-  const { a, b } = r, tol = { abs: 0, rel: 0.1, ...r.tol };
+  const { a, b } = r, tol = { ...TOL, ...r.tol };
   if (a === undefined || b === undefined) return { ...r, st: "none", score: -1 };
-  if (a === null && b === null) return { ...r, st: "same", score: 0 };
+  if (a === null && b === null) return { ...r, st: "gone", score: 0 };
   if (b === null) return { ...r, st: "lost", score: 99 };
   if (a === null) return { ...r, st: "back", score: 99 };
   const d = b - a, hi = Math.max(a, b), lo = Math.min(a, b), x = lo > 0 ? hi / lo : hi > 0 ? 50 : 1;
   if (Math.abs(d) <= tol.abs || x - 1 <= tol.rel) return { ...r, d, x, st: "same", score: 0 };
   return { ...r, d, x, st: (r.better === "higher" ? d > 0 : d < 0) ? "better" : "worse", score: Math.log(Math.min(x, 50)) };
 }
+const changed = r => r.score > 0;
 // every row judged, biggest change first; equal ones keep the tool's order
 export const rank = rows => rows.map((r, i) => [judge(r), i]).sort((p, q) => q[0].score - p[0].score || p[1] - q[1]).map(p => p[0]);
-// how many got better (back included), worse (lost included), stayed the same, or were measured on one side only
+// how many got better (back included), worse (lost included), stayed the same (no answer either time included), or
+// were measured on one side only
 export function tally(rows) {
   const n = { better: 0, worse: 0, same: 0, none: 0 };
-  for (const r of rows.map(judge)) n[r.st === "back" ? "better" : r.st === "lost" ? "worse" : r.st]++;
+  for (const r of rows.map(judge)) n[r.st === "back" ? "better" : r.st === "lost" ? "worse" : r.st === "gone" ? "same" : r.st]++;
   return n;
 }
 export function tallyText(rows, lang, words = "speed") {
@@ -110,21 +157,69 @@ export function tallyText(rows, lang, words = "speed") {
   return [n.better && fill(t[sp ? "n_faster" : "n_better"], { n: n.better }), n.worse && fill(t[sp ? "n_slower" : "n_worse"], { n: n.worse }),
     n.same && fill(t.n_same, { n: n.same }), n.none && fill(t.n_none, { n: n.none })].filter(Boolean).join(" · ");
 }
-// The one line that says what changed, for the page, the share card and the chat preview: the biggest change as
-// "ChatGPT 300→44 ms", the next ones as "GitHub 5× faster" when that is at least double (else the same arrow form).
+// The biggest changes by name: the first as "ChatGPT 300→44 ms", the next ones as "GitHub 5× faster" when that is at
+// least double (else the same arrow form)
 export function headline(rows, lang, n = 2) {
   const t = strings(lang), out = [];
   for (const r of rank(rows)) {
-    if (out.length >= n || r.score <= 0) break;
+    if (out.length >= n || !changed(r)) break;
     const f = r.fmt || fmt0;
     if (r.st === "lost" || r.st === "back") out.push(fill(t[r.st + "_h"], { s: r.name }));
+    else if (r.text) out.push(`${r.name} ${r.text[0]}→${r.text[1]}`);
     else if (out.length && r.unit && r.x >= 2) out.push(r.name + " " + ratioText(t, r.st, r.x, lang));
     else out.push(`${r.name} ${f(r.a)}→${f(r.b)}${r.unit ? " " + r.unit : ""}`);
   }
   return out.length ? out.join(t.join) : t.all_same;
 }
-// better, worse or same overall: what colors the headline
+// better, worse, mixed or same overall: what colors the verdict
 export const tone = rows => { const n = tally(rows); return n.better > n.worse ? "better" : n.worse > n.better ? "worse" : "same"; };
+
+// What the comparison says, overall first: { mood: same | better | worse | mixed, head, detail, title }.
+// "Almost identical" when no everyday use and no key number changed and only a few rows moved past their tolerance
+// (a single run has its blips: with the home page's tolerance about 2 % of rows move between two runs a minute apart,
+// docs/compare.md); those few are named in the detail as likely blips. Otherwise the direction, the counts, the uses
+// that changed and the biggest changes. title: for a chat preview, the verdict and the biggest change by name.
+export function verdict(o, lang) {
+  const t = strings(lang), sp = o.words !== "plain";
+  const rows = (o.groups || []).flatMap(g => g.rows), n = tally(rows), total = n.better + n.worse + n.same;
+  const moved = n.better + n.worse, uses = (o.uses || []).map(judge).filter(changed), stats = (o.stats || []).map(judge).filter(changed);
+  const named = headline(rows, lang), usesText = uses.map(r => `${r.name} ${r.text ? r.text[0] + "→" + r.text[1] : ""}`.trim()).join(t.join);
+  if (!uses.length && !stats.length && moved <= Math.max(2, Math.ceil(total * 0.08))) {
+    const head = moved ? fill(t.same_most, { n: total, same: n.same }) : fill(t.same_all, { n: total });
+    const detail = [moved ? fill(t.noise, { list: named }) : "", o.uses && o.uses.length ? t.uses_same : ""].filter(Boolean).join(/^(zh|ja)/.test(lang) ? "" : " ");
+    return { mood: "same", head, detail, title: head };
+  }
+  // uses count toward the direction too: a use that got better is the change that matters most
+  const up = n.better + uses.filter(r => r.st === "better" || r.st === "back").length, dn = n.worse + uses.filter(r => r.st === "worse" || r.st === "lost").length;
+  const mood = up >= 2 * dn && up ? "better" : dn >= 2 * up && dn ? "worse" : up || dn ? "mixed" : "same";
+  const list = [n.better && fill(t[sp ? "n_faster" : "n_better"], { n: n.better }), n.worse && fill(t[sp ? "n_slower" : "n_worse"], { n: n.worse })].filter(Boolean).join(t.join);
+  const key = { better: sp ? "dir_faster" : "dir_better", worse: sp ? "dir_slower" : "dir_worse", mixed: sp ? "dir_mixed" : "dir_mixed_p" }[mood];
+  const head = key ? fill(t[key], { list }) : t.all_same;
+  return { mood, head, detail: [usesText, moved ? named : ""].filter(Boolean).join(" · "), title: moved ? head + " · " + headline(rows, lang, 1) : head };
+}
+
+/* ---------- layout: fixed heights, so a tool can reserve the space ---------- */
+// px: one row, a group's title, the space between two groups
+export const SIZE = { row: 34, head: 30, gap: 14 };
+// the groups the view lists: rows both sides measured, changed ones first, empty groups left out
+export const shown = groups => groups.map(g => {
+  const rows = g.rows.map((r, i) => [judge(r), i]).filter(([r]) => r.st !== "none");
+  return { ...g, rows: rows.sort((p, q) => q[0].score - p[0].score || p[1] - q[1]).map(p => p[0]) };
+}).filter(g => g.rows.length);
+// The listed groups in one column, and in two (in order, split where the taller column is shortest); one, two: the
+// height of the groups in px for each
+export function columns(groups) {
+  const h = g => SIZE.head + g.rows.length * SIZE.row, col = l => l.reduce((s, g) => s + h(g), 0) + Math.max(0, l.length - 1) * SIZE.gap;
+  let k = groups.length;
+  for (let i = 0, best = Infinity; i <= groups.length; i++) { const m = Math.max(col(groups.slice(0, i)), col(groups.slice(i))); if (m < best) { best = m; k = i; } }
+  return { cols: [groups.slice(0, k), groups.slice(k)], one: col(groups), two: Math.max(col(groups.slice(0, k)), col(groups.slice(k))) };
+}
+// when a side was measured, to the second when the two are less than a minute apart
+const when = (ts, lang, sec) => new Date(ts).toLocaleString(T[lang] ? lang : "en", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", ...(sec ? { second: "2-digit" } : {}) });
+const gapText = (ms, lang) => {
+  const s = Math.abs(ms) / 1000, [v, unit] = s < 90 ? [s, "second"] : s < 5400 ? [s / 60, "minute"] : s < 129600 ? [s / 3600, "hour"] : [s / 86400, "day"];
+  return new Intl.NumberFormat(T[lang] ? lang : "en", { style: "unit", unit, unitDisplay: "short", maximumFractionDigits: 0 }).format(Math.round(v));
+};
 
 /* ---------- the view ---------- */
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
@@ -137,122 +232,147 @@ const loadCSS = () => cssP ||= new Promise(res => {
 const W = 1200;
 const roundRect = (x, a, b, w, h, r) => { x.beginPath(); x.moveTo(a + r, b); x.arcTo(a + w, b, a + w, b + h, r); x.arcTo(a + w, b + h, a, b + h, r); x.arcTo(a, b + h, a, b, r); x.arcTo(a, b, a + w, b, r); x.closePath(); };
 const clip = (x, s, w) => { s = String(s); if (x.measureText(s).width <= w) return s; while (s.length > 1 && x.measureText(s + "…").width > w) s = s.slice(0, -1); return s + "…"; };
-// lines that fit width w: break at spaces, or anywhere in CJK text
-function wrap(x, s, w) {
-  const out = []; let line = "";
-  for (const tok of s.match(/[　-鿿가-힯＀-￯]|[^\s　-鿿가-힯＀-￯]+\s*|\s+/g) || []) {
-    if (line && x.measureText(line + tok).width > w) { out.push(line.trimEnd()); line = tok.trimStart(); } else line += tok;
-  }
-  if (line.trim()) out.push(line.trimEnd());
-  return out;
-}
 
 export function compare(o) {
   const lang = T[o.lang] ? o.lang : "en", t = T[lang], words = o.words === "plain" ? "plain" : "speed";
-  const rows = rank(o.rows || []).filter(r => r.st !== "none"), stats = (o.stats || []).slice(0, 3).map(judge);
-  const head = headline(o.rows || [], lang), sum = tallyText(o.rows || [], lang, words), mood = tone(o.rows || []);
+  const groups = shown(o.groups || []), lay = columns(groups), stats = (o.stats || []).slice(0, 3).map(judge), uses = (o.uses || []).map(judge);
+  const v = verdict(o, lang), A = o.a || {}, B = o.b || {};
   const subOf = (side, show) => typeof side.sub === "function" ? side.sub(show) : side.sub || "";
-  const val = (r, k) => { const v = r[k]; return r.text ? r.text[k === "a" ? 0 : 1] : v === undefined ? "–" : v === null ? "✕" : (r.fmt || fmt0)(v); };
-  // the change column: −256 ms, and how many times when that says more (at least 1.5×)
+  // the two sides: when, and where from; the same exit twice says so once, with the time between them
+  const close = isNum(A.ts) && isNum(B.ts) && Math.abs(B.ts - A.ts) < 120000;
+  const sides = show => {
+    const a = subOf(A, show), b = subOf(B, show), same = a && a === b && isNum(A.ts) && isNum(B.ts);
+    return [[A.label || (isNum(A.ts) ? when(A.ts, lang, close) : ""), a], [B.label || (isNum(B.ts) ? when(B.ts, lang, close) : ""), same ? fill(t.same_exit, { gap: gapText(B.ts - A.ts, lang) }) : b]];
+  };
+  const val = (r, k) => { const v0 = r[k]; return r.text ? r.text[k === "a" ? 0 : 1] : v0 === undefined ? "–" : v0 === null ? "✕" : (r.fmt || fmt0)(v0); };
+  const tierOf = r => r.tier && r.st !== "none" ? r.tier(r.b) : null;
+  // the change column: −256 ms, and how many times when that says more (at least 1.5×); empty when it didn't change
   const change = r => {
     if (r.st === "better" || r.st === "worse") {
       const f = r.fmt || fmt0, d = r.text ? "" : (r.d > 0 ? "+" : "−") + f(Math.abs(r.d)) + (r.unit ? " " + r.unit : "");
       return [d || t[r.st], r.unit && r.x >= 1.5 && words !== "plain" ? ratioText(t, r.st, r.x, lang) : ""];
     }
-    return [t[r.st], ""];
+    return r.st === "lost" || r.st === "back" ? [t[r.st], ""] : r.st === "gone" ? [t.both_lost, ""] : ["", ""];
   };
+  const tone = st => st === "better" || st === "back" ? "up" : st === "worse" || st === "lost" ? "dn" : "eq";
+
+  // the head as HTML: pure, so a Worker can put it in the page before it is sent (no layout shift when it is drawn)
+  function headHTML(show = true) {
+    const side = (k, [label, sub]) => `<span class="msc-side"><i class="msc-k msc-${k}" aria-hidden="true"></i><b>${k.toUpperCase()}</b><span>${esc(label)}</span>${sub ? `<span class="msc-sub">${esc(sub)}</span>` : ""}</span>`;
+    const [sa, sb] = sides(show);
+    return `<div class="msc-head" lang="${lang}"><p class="msc-h msc-${v.mood}" title="${esc(v.head)}">${esc(v.head)}</p><p class="msc-d" title="${esc(v.detail)}">${esc(v.detail)}</p>` +
+      `<div class="msc-sides">${side("a", sa)}${side("b", sb)}</div></div>`;
+  }
+  const renderHead = (el, show = true) => { el.innerHTML = headHTML(show); };
 
   async function render(el) {
     await loadCSS();
-    const side = (k, s) => `<span class="msc-side"><i class="msc-k msc-${k}" aria-hidden="true"></i><b>${k.toUpperCase()}</b><span>${esc(s.label || "")}</span>${subOf(s, true) ? `<span class="msc-sub">${esc(subOf(s, true))}</span>` : ""}</span>`;
     const stat = r => { const [c, x] = change(r);
-      return `<div class="msc-stat msc-${r.st}"><em>${esc(r.name)}</em><b>${esc(val(r, "a"))}<small class="msc-ar">→</small>${esc(val(r, "b"))}${r.unit ? `<small>${esc(r.unit)}</small>` : ""}</b><i>${esc(x || c)}</i></div>`; };
+      return `<div class="msc-stat msc-${tone(r.st)}"><em>${esc(r.name)}</em><b><span class="msc-va">${esc(val(r, "a"))}</span><small class="msc-ar">→</small><span class="msc-vb" data-tier>${esc(val(r, "b"))}</span>${r.unit ? `<small>${esc(r.unit)}</small>` : ""}</b><i>${esc(x || c || t.same)}</i></div>`; };
+    const use = r => `<span class="msc-use msc-${tone(r.st)}"><em>${esc(r.name)}</em>${changed(r) ? `<span class="msc-ua">${esc(val(r, "a"))}</span><small>→</small>` : ""}<b data-tier>${esc(val(r, "b"))}</b></span>`;
     const row = r => { const [c, x] = change(r);
-      return `<div class="msc-r msc-${r.st}" role="row"><span class="msc-n" role="cell" title="${esc(r.name)}">${esc(r.name)}</span><b role="cell">${esc(val(r, "a"))}</b>` +
-        `<span class="msc-l" aria-hidden="true"><i class="msc-seg"></i><i class="msc-pa"></i><i class="msc-pb"></i></span><b role="cell">${esc(val(r, "b"))}</b>` +
+      return `<div class="msc-r msc-${tone(r.st)} msc-st-${r.st}" role="row"><span class="msc-n" role="cell" title="${esc(r.name)}">${esc(r.name)}</span><b class="msc-va" role="cell">${esc(val(r, "a"))}</b>` +
+        `<span class="msc-l" aria-hidden="true"><i class="msc-seg"></i><i class="msc-pa"></i><i class="msc-pb" data-tier></i></span><b class="msc-vb" role="cell" data-tier>${esc(val(r, "b"))}</b>` +
         `<span class="msc-c" role="cell">${esc(c)}${x ? `<small>${esc(x)}</small>` : ""}</span></div>`; };
     const hd = `<div class="msc-r msc-hd" role="row"><span role="columnheader"></span><b role="columnheader">A</b><span></span><b role="columnheader">B</b><span class="msc-c" role="columnheader">${esc(t.change)}</span></div>`;
-    el.innerHTML = `<div class="msc" lang="${lang}"><div class="msc-top"><p class="msc-h msc-${mood}">${esc(head)}</p><p class="msc-d">${esc(sum)}</p></div>` +
-      `<div class="msc-sides">${side("a", o.a || {})}${side("b", o.b || {})}</div>` +
-      (stats.length ? `<div class="msc-stats">${stats.map(stat).join("")}</div>` : "") +
-      `<div class="msc-hds">${hd}${hd}</div><div class="msc-t" role="table">${rows.map(row).join("")}</div></div>`;
-    // the lane: a hollow dot at a, a filled one at b, the line between them in the row's color. Positions are set
-    // here, not as style="" in the markup, which a strict CSP would block.
-    const tb = el.querySelector(".msc-t"); tb.style.setProperty("--k", Math.ceil(rows.length / 2));
-    tb.querySelectorAll(".msc-r").forEach((e, i) => {
-      const r = rows[i], pa = r.scale && isNum(r.a) ? r.scale(r.a) : null, pb = r.scale && isNum(r.b) ? r.scale(r.b) : null;
-      const [seg, a, b] = e.querySelectorAll(".msc-l i");
-      if (pa == null && pb == null) { e.querySelector(".msc-l").remove(); e.classList.add("msc-nolane"); return; }
+    const col = gs => `<div class="msc-col">${hd}${gs.map(g => `<section class="msc-g"><h3>${esc(g.name || "")}</h3><div role="table">${g.rows.map(row).join("")}</div></section>`).join("")}</div>`;
+    el.innerHTML = `<div class="msc" lang="${lang}">` + (stats.length ? `<div class="msc-stats">${stats.map(stat).join("")}</div>` : "") +
+      (uses.length ? `<div class="msc-uses">${uses.map(use).join("")}</div>` : "") + `<div class="msc-cols">${lay.cols.filter(c => c.length).map(col).join("")}</div></div>`;
+    // positions and the speed colors are set here, not as style="" in the markup, which a strict CSP would block
+    const paint = (e, r) => { const k = tierOf(r); if (k) e.querySelectorAll("[data-tier]").forEach(x => x.style.setProperty("--msc-tier", `var(--${k})`)); };
+    el.querySelectorAll(".msc-stat").forEach((e, i) => paint(e, stats[i]));
+    el.querySelectorAll(".msc-use").forEach((e, i) => paint(e, uses[i]));
+    const all = lay.cols.flat().flatMap(g => g.rows);
+    el.querySelectorAll(".msc-g .msc-r").forEach((e, i) => {
+      const r = all[i]; paint(e, r);
+      const pa = r.scale && isNum(r.a) ? r.scale(r.a) : null, pb = r.scale && isNum(r.b) ? r.scale(r.b) : null, [seg, a, b] = e.querySelectorAll(".msc-l i");
       if (pa != null) a.style.left = (pa * 100).toFixed(1) + "%"; else a.remove();
       if (pb != null) b.style.left = (pb * 100).toFixed(1) + "%"; else b.remove();
-      if (pa != null && pb != null) { seg.style.left = (Math.min(pa, pb) * 100).toFixed(1) + "%"; seg.style.width = (Math.abs(pb - pa) * 100).toFixed(1) + "%"; } else seg.remove();
+      if (pa != null && pb != null && changed(r)) { seg.style.left = (Math.min(pa, pb) * 100).toFixed(1) + "%"; seg.style.width = (Math.abs(pb - pa) * 100).toFixed(1) + "%"; } else seg.remove();
     });
   }
 
-  // the share card's middle, laid out once for its height and drawn the same way
+  // the share card's middle: verdict, sides, key numbers, uses and the groups in two columns, laid out once for its
+  // height and drawn the same way
   let L = null;
   function height(m, kit) {
     const { P, top, F } = kit;
-    m.font = `700 40px ${F}`;
-    const hl = wrap(m, head, W - P * 2), hTop = top + 44, dTop = hTop + (hl.length - 1) * 50 + 44, sTop = dTop + 50;
-    const stTop = sTop + 2 * 36 + 8, SH = stats.length ? 104 : 0, NC = rows.length > 8 ? 2 : 1, per = Math.ceil(rows.length / NC), RH = 32;
-    const rTop = stTop + SH + (SH ? 40 : 0);
-    L = { hl, hTop, dTop, sTop, stTop, SH, NC, per, RH, rTop };
-    return rTop + 34 + per * RH + 16 + 70;
+    m.font = `700 36px ${F}`;
+    const hTop = top + 40, dTop = hTop + 40, sTop = dTop + 46, stTop = sTop + 2 * 34 + 8, SH = stats.length ? 100 : 0;
+    const uTop = stTop + SH + (SH ? 22 : 0), UH = uses.length ? 44 : 0, gTop = uTop + UH + (UH ? 18 : 0);
+    const RH = 30, GH = 36, GG = 12, colH = c => c.reduce((s, g) => s + GH + g.rows.length * RH, 0) + Math.max(0, c.length - 1) * GG;
+    L = { hTop, dTop, sTop, stTop, SH, uTop, UH, gTop, RH, GH, GG };
+    return gTop + 30 + Math.max(colH(lay.cols[0]), colH(lay.cols[1])) + 16 + 70;
   }
   async function draw(x, kit) {
-    const { P, F, M, v, dark, show } = kit, { hl, hTop, dTop, sTop, stTop, SH, NC, per, RH, rTop } = L;
-    const C = { fg: v("fg"), muted: v("muted"), line: v("line"), bg: v("bg"), panel: v("panel") || v("bg"),
-      better: v("good") || (dark ? "#3ecf8e" : "#1a8a5a"), worse: v("bad") || (dark ? "#f56565" : "#d23a2f") };
-    C.back = C.better; C.lost = C.worse; C.same = C.muted; C.none = C.muted;
+    const { P, F, M, v: cv, dark, show } = kit, { hTop, dTop, sTop, stTop, SH, uTop, UH, gTop, RH, GH, GG } = L;
+    const C = { fg: cv("fg"), muted: cv("muted"), line: cv("line"), bg: cv("bg"), panel: cv("panel") || cv("bg"),
+      up: cv("good") || (dark ? "#3ecf8e" : "#1a8a5a"), dn: cv("bad") || (dark ? "#f56565" : "#d23a2f") };
+    C.eq = C.muted;
+    const tierC = r => { const k = tierOf(r); return (k && cv(k)) || C.fg; };
+    const mood = { better: C.up, worse: C.dn }[v.mood] || C.fg;
     x.textBaseline = "alphabetic";
-    x.fillStyle = C[mood] === C.muted ? C.fg : C[mood]; x.font = `700 40px ${F}`; hl.forEach((l, i) => x.fillText(l, P, hTop + i * 50));
-    x.fillStyle = C.muted; x.font = `400 24px ${F}`; x.fillText(clip(x, sum, W - P * 2), P, dTop);
-    // the two sides, with the dots the lanes use
-    [["a", o.a || {}], ["b", o.b || {}]].forEach(([k, s], i) => {
-      const y = sTop + i * 36, cx = P + 9;
-      x.beginPath(); x.arc(cx, y - 8, 8, 0, Math.PI * 2);
-      if (k === "a") { x.strokeStyle = C.muted; x.lineWidth = 3; x.stroke(); } else { x.fillStyle = C.fg; x.fill(); }
-      x.fillStyle = C.fg; x.font = `700 22px ${F}`; x.fillText(k.toUpperCase(), P + 28, y);
-      x.font = `600 22px ${F}`; const lb = s.label || ""; x.fillText(lb, P + 56, y);
-      x.fillStyle = C.muted; x.font = `400 22px ${F}`; x.fillText(clip(x, subOf(s, show), W - P * 2 - 80 - x.measureText(lb).width), P + 56 + x.measureText(lb).width + 16, y);
+    x.fillStyle = mood; x.font = `700 36px ${F}`; x.fillText(clip(x, v.head, W - P * 2), P, hTop);
+    x.fillStyle = C.muted; x.font = `400 22px ${F}`; x.fillText(clip(x, v.detail, W - P * 2), P, dTop);
+    // the two sides, with the marks the lanes use: a grey ring for A, a dot in the speed colors for B
+    sides(show).forEach(([label, sub], i) => {
+      const y = sTop + i * 34, cx = P + 9;
+      x.beginPath(); x.arc(cx, y - 8, i ? 7 : 8, 0, Math.PI * 2);
+      if (!i) { x.strokeStyle = C.muted; x.lineWidth = 2.5; x.stroke(); }
+      else { const g = x.createLinearGradient(cx - 7, 0, cx + 7, 0); g.addColorStop(0, cv("t1") || C.up); g.addColorStop(.5, cv("t3") || C.muted); g.addColorStop(1, cv("t5") || C.dn); x.fillStyle = g; x.fill(); }
+      x.fillStyle = C.fg; x.font = `700 21px ${F}`; x.fillText(i ? "B" : "A", P + 28, y);
+      x.font = `600 21px ${F}`; x.fillText(label, P + 56, y);
+      x.fillStyle = C.muted; x.font = `400 21px ${F}`; x.fillText(clip(x, sub, W - P * 2 - 80 - x.measureText(label).width), P + 56 + x.measureText(label).width + 16, y);
     });
     // key numbers
     const cw3 = (W - P * 2 - 2 * 16) / 3;
     stats.forEach((r, i) => {
       const x0 = P + i * (cw3 + 16), [c, xr] = change(r);
       x.fillStyle = C.panel === C.bg ? C.line + "55" : C.panel; roundRect(x, x0, stTop, cw3, SH, 14); x.fill();
-      x.fillStyle = C.muted; x.font = `400 20px ${F}`; x.fillText(clip(x, r.name, cw3 - 40), x0 + 20, stTop + 32);
-      x.font = `600 38px ${M}`; const av = val(r, "a"), bv = val(r, "b");
-      x.fillStyle = C.muted; x.fillText(av, x0 + 20, stTop + 80); let xx = x0 + 20 + x.measureText(av).width + 8;
-      x.font = `400 26px ${F}`; x.fillText("→", xx, stTop + 78); xx += x.measureText("→").width + 8;
-      x.fillStyle = C[r.st]; x.font = `600 38px ${M}`; x.fillText(bv, xx, stTop + 80); xx += x.measureText(bv).width + 8;
-      x.font = `400 18px ${F}`; x.fillStyle = C.muted; x.fillText(clip(x, (r.unit ? r.unit + "  " : "") + (xr || c), x0 + cw3 - 14 - xx), xx, stTop + 80);
+      x.fillStyle = C.muted; x.font = `400 19px ${F}`; x.fillText(clip(x, r.name, cw3 - 40), x0 + 20, stTop + 30);
+      x.font = `600 36px ${M}`; const av = val(r, "a"), bv = val(r, "b");
+      x.fillText(av, x0 + 20, stTop + 74); let xx = x0 + 20 + x.measureText(av).width + 8;
+      x.font = `400 24px ${F}`; x.fillText("→", xx, stTop + 72); xx += x.measureText("→").width + 8;
+      x.fillStyle = tierC(r); x.font = `600 36px ${M}`; x.fillText(bv, xx, stTop + 74); xx += x.measureText(bv).width + 8;
+      x.font = `400 17px ${F}`; x.fillStyle = C[tone(r.st)]; x.fillText(clip(x, (r.unit ? r.unit + "  " : "") + (xr || c || t.same), x0 + cw3 - 14 - xx), xx, stTop + 74);
     });
-    // the rows, in one or two columns, biggest change first
-    const cw = (W - P * 2 - 48 * (NC - 1)) / NC, nameW = NC > 1 ? 128 : 200, valW = 64, chW = NC > 1 ? 112 : 300;
-    for (let ci = 0; ci < NC; ci++) {
-      const x0 = P + ci * (cw + 48), aR = x0 + nameW + valW, l0 = aR + 18, bR = x0 + cw - chW - 8, l1 = bR - valW - 14;
-      x.fillStyle = C.muted; x.font = `600 16px ${F}`;
-      x.textAlign = "right"; x.fillText("A", aR, rTop + 18); x.fillText("B", bR, rTop + 18); x.fillText(t.change.toUpperCase(), x0 + cw, rTop + 18); x.textAlign = "left";
-      rows.slice(ci * per, (ci + 1) * per).forEach((r, i) => {
-        const y = rTop + 34 + i * RH + 20, cy = y - 6, col = C[r.st];
-        x.fillStyle = C.fg; x.font = `400 19px ${F}`; x.fillText(clip(x, r.name, nameW - 10), x0, y);
-        x.font = `500 19px ${M}`; x.textAlign = "right";
-        x.fillStyle = C.muted; x.fillText(val(r, "a"), aR, y);
-        x.fillStyle = r.st === "same" || r.st === "none" ? C.fg : col; x.fillText(val(r, "b"), bR, y);
-        const [c, xr] = change(r);
-        x.font = `500 17px ${r.st === "better" || r.st === "worse" ? M : F}`; x.fillStyle = col;
-        x.fillText(clip(x, NC > 1 || !xr ? c : c + "  ·  " + xr, chW), x0 + cw, y); x.textAlign = "left";
-        if (!r.scale) return;
-        x.fillStyle = C.line; x.fillRect(l0, cy - 1.5, l1 - l0, 3);
-        const at = p => l0 + (l1 - l0) * p, pa = isNum(r.a) ? at(r.scale(r.a)) : null, pb = isNum(r.b) ? at(r.scale(r.b)) : null;
-        if (pa != null && pb != null) { x.fillStyle = col + "aa"; x.fillRect(Math.min(pa, pb), cy - 2, Math.abs(pb - pa), 4); }
-        if (pa != null) { x.beginPath(); x.arc(pa, cy, 6, 0, Math.PI * 2); x.fillStyle = C.bg; x.fill(); x.strokeStyle = C.muted; x.lineWidth = 2.5; x.stroke(); }
-        if (pb != null) { x.beginPath(); x.arc(pb, cy, 7, 0, Math.PI * 2); x.fillStyle = r.st === "same" ? C.fg : col; x.fill(); }
-      });
+    // uses, before → after
+    let ux = P;
+    for (const r of uses) {
+      x.font = `400 19px ${F}`; x.fillStyle = C.muted; x.fillText(r.name, ux, uTop + 26); ux += x.measureText(r.name).width + 8;
+      if (changed(r)) { x.fillText(val(r, "a") + " →", ux, uTop + 26); ux += x.measureText(val(r, "a") + " →").width + 8; }
+      x.font = `600 19px ${F}`; x.fillStyle = tierC(r); x.fillText(val(r, "b"), ux, uTop + 26); ux += x.measureText(val(r, "b")).width + 28;
     }
+    // the groups, in the page's two columns
+    const cw = (W - P * 2 - 48) / 2, nameW = 132, valW = 60, chW = 100;
+    lay.cols.forEach((gs, ci) => {
+      const x0 = P + ci * (cw + 48), aR = x0 + nameW + valW, l0 = aR + 16, bR = x0 + cw - chW - 8, l1 = bR - valW - 12;
+      x.fillStyle = C.muted; x.font = `600 15px ${F}`; x.textAlign = "right";
+      x.fillText("A", aR, gTop + 18); x.fillText("B", bR, gTop + 18); x.fillText(t.change.toUpperCase(), x0 + cw, gTop + 18); x.textAlign = "left";
+      let y0 = gTop + 30;
+      for (const g of gs) {
+        x.fillStyle = C.muted; x.font = `600 15px ${F}`; x.fillText(String(g.name || "").toUpperCase(), x0, y0 + 24); y0 += GH;
+        for (const r of g.rows) {
+          const y = y0 + 20, cy = y - 6, col = C[tone(r.st)], [c, xr] = change(r);
+          x.fillStyle = C.fg; x.font = `400 18px ${F}`; x.fillText(clip(x, r.name, nameW - 10), x0, y);
+          x.font = `500 18px ${M}`; x.textAlign = "right";
+          x.fillStyle = C.muted; x.fillText(val(r, "a"), aR, y);
+          x.fillStyle = tierC(r); x.fillText(val(r, "b"), bR, y);
+          x.font = `500 16px ${r.st === "better" || r.st === "worse" ? M : F}`; x.fillStyle = col;
+          x.fillText(clip(x, c, chW), x0 + cw, y); x.textAlign = "left";
+          if (r.scale) {
+            x.fillStyle = C.line; x.fillRect(l0, cy - 1, l1 - l0, 2);
+            const at = p => l0 + (l1 - l0) * p, pa = isNum(r.a) ? at(r.scale(r.a)) : null, pb = isNum(r.b) ? at(r.scale(r.b)) : null;
+            if (pa != null && pb != null && changed(r)) { x.fillStyle = col + "bb"; x.fillRect(Math.min(pa, pb), cy - 2, Math.abs(pb - pa), 4); }
+            if (pa != null) { x.beginPath(); x.arc(pa, cy, 7, 0, Math.PI * 2); x.strokeStyle = C.muted; x.lineWidth = 2; x.stroke(); }
+            if (pb != null) { x.beginPath(); x.arc(pb, cy, 5, 0, Math.PI * 2); x.fillStyle = tierC(r); x.fill(); }
+          }
+          y0 += RH;
+        }
+        y0 += GG;
+      }
+    });
   }
 
-  return { rows, stats, head, sum, mood, text: head + (sum ? " · " + sum : ""), render, height, draw };
+  return { groups, stats, uses, verdict: v, mood: v.mood, head: v.head, text: v.head + (v.detail ? " · " + v.detail : ""), layout: lay, headHTML, renderHead, render, height, draw };
 }

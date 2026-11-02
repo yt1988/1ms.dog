@@ -113,20 +113,44 @@ test("Korean particles follow how the name is read", async () => {
   assert.equal(fillIn("{s} 延迟", { s: "Steam" }, fin), "Steam 延迟");
 });
 
-test("compare mode: every service either side measured is a row; the median is over the ones both measured", async () => {
-  const { diffShares, bare, CMP_RE } = await import("../src/lib.mjs");
-  const A = { ts: 1, pack: "cn", groups: [{ cc: "CN", city: "Beijing", org: "China Unicom", asn: 4808, proxy: false }], res: { baidu: 20, chatgpt: 300, claude: null } };
-  const B = { ts: 2, pack: "na", groups: [], res: { chatgpt: 44.1, claude: 50, google: 12 } };
-  const { rows, stats } = diffShares(A, B, { chatgpt: "ChatGPT" }, { med: "M", back: "OK" });
-  assert.deepEqual(rows.map(r => [r.id, r.name, r.a, r.b]), [["baidu", "baidu", 20, undefined], ["chatgpt", "ChatGPT", 300, 44.1], ["claude", "claude", null, 50], ["google", "google", undefined, 12]]);
-  assert.equal(rows[1].unit, "ms"); assert.equal(rows[1].better, "lower");
-  assert.deepEqual([stats[0].name, stats[0].a, stats[0].b], ["M", 300, 47.05]);
-  assert.deepEqual(stats[1].text, ["1/2", "2/2"]);
-  // the link leaves out city and network unless the visitor ticks the share box
+test("compare mode: the page's groups, its three numbers and the everyday uses, before and after", async () => {
+  const { diffShares, bare, CMP_RE, TOL } = await import("../src/lib.mjs");
+  const { SERVICES, CATS, USES } = await import("../src/services.mjs");
+  const names = Object.fromEntries([...SERVICES, ...Object.values(PACKS).flat()].map(s => [s.id, s.name]));
+  const A = { ts: 1, pack: "cn", groups: [{ cc: "CN", city: "Beijing", org: "China Unicom", asn: 4808, proxy: false }], res: { baidu: 20, chatgpt: 300, claude: null, youtube: 450, github: 30 } };
+  const B = { ts: 2, pack: "na", groups: [], res: { chatgpt: 44.1, claude: 50, google: 12, youtube: 60, github: 31 } };
+  const d = diffShares(A, B, { names, services: SERVICES, packs: PACKS, cats: CATS, uses: USES, label: k => k });
+  assert.deepEqual(d.groups.map(g => g.id), ["local", ...CATS], "the page's order, local favorites first");
+  assert.ok(d.groups[0].rows.some(r => r.id === "baidu"), "either side's local pack");
+  const ai = d.groups.find(g => g.id === "ai").rows;
+  assert.deepEqual(ai.map(r => [r.id, r.name, r.a, r.b]), [["chatgpt", "ChatGPT", 300, 44.1], ["claude", "Claude", null, 50]]);
+  assert.equal(ai[0].tol, TOL); assert.equal(ai[0].tier(44.1), "t2"); assert.equal(ai[0].tier(null), "muted");
+  assert.deepEqual(d.stats.map(s => [s.name, s.a, s.b]), [["seg_local", null, null], ["seg_global", 300, 47.05], ["med", 300, 47.05]]);
+  // uses: video went from slow to great; dev tools moved 1 ms, so they didn't change whatever their status says
+  const use = id => d.uses.find(u => u.id === id);
+  assert.deepEqual([use("stream").a, use("stream").b, use("stream").text], [1, 3, ["st_slow", "st_great"]]);
+  assert.equal(use("dev").a, use("dev").b);
   assert.deepEqual(bare(A).groups[0], { cc: "CN", city: "", org: "", asn: null, proxy: false });
-  assert.equal(A.groups[0].city, "Beijing", "the original is untouched");
   const m = CMP_RE.exec("/zh-cn/c/2.a.cn.x.y/2.b.na.x.z/");
   assert.deepEqual([m[1], m[2]], ["2.a.cn.x.y", "2.b.na.x.z"]);
+});
+
+test("calibration: ten real runs a minute apart on one line all compare as almost identical", async () => {
+  const { diffShares } = await import("../src/lib.mjs");
+  const { SERVICES, CATS, USES } = await import("../src/services.mjs");
+  const { verdict, judge } = await import("../public/assets/share/compare.js");
+  const { readFile } = await import("node:fs/promises");
+  const runs = (await readFile(new URL("fixtures/runs.txt", import.meta.url), "utf8")).trim().split(/\r?\n/).map(c => parseShare(c, PACKS));
+  assert.equal(runs.length, 10);
+  let pairs = 0, flagged = 0, rows = 0;
+  for (let i = 0; i < runs.length; i++) for (let j = i + 1; j < runs.length; j++) {
+    const d = diffShares(runs[i], runs[j], { names: {}, services: SERVICES, packs: PACKS, cats: CATS, uses: USES, label: k => k });
+    const v = verdict(d, "en"), all = d.groups.flatMap(g => g.rows).map(judge);
+    pairs++; rows += all.length; flagged += all.filter(r => r.score > 0).length;
+    assert.equal(v.mood, "same", `runs ${i} and ${j}: ${v.head} / ${v.detail}`);
+  }
+  assert.equal(pairs, 45);
+  assert.ok(flagged / rows < 0.025, `${(100 * flagged / rows).toFixed(1)} % of rows past the tolerance`);
 });
 
 test("this browser's own results: newest first, no duplicates, only well-formed codes", async () => {

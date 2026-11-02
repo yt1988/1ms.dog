@@ -34,6 +34,9 @@ function preview(html, meta, url) {
   for (const k of ['property="og:title"', 'name="twitter:title"']) set(new RegExp(`(<meta ${k} content=")[^"]*"`), meta.title);
   for (const k of ['name="description"', 'property="og:description"', 'name="twitter:description"']) set(new RegExp(`(<meta ${k} content=")[^"]*"`), meta.desc);
   set(/(<meta property="og:url" content=")[^"]*"/, url);
+  if (meta.cmp) html = html.replace("</head>", '<link rel="stylesheet" href="/assets/share/compare.css"></head>')
+    .replace('<div class="cmp-head" id="cmpHead"></div>', () => '<div class="cmp-head" id="cmpHead">' + meta.cmp.head + "</div>")
+    .replace('id="cmpBox"', () => `id="cmpBox" style="${meta.cmp.style}"`);
   return html;
 }
 

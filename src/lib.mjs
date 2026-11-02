@@ -104,19 +104,43 @@ export function parseShare(code, packs) {
 export const CMP_RE = /\/c\/([^/]+)\/([^/]+)\/?$/;
 // a result without what only the share box adds (city, network): what a link carries unless the visitor ticks it
 export const bare = S => ({ ...S, groups: S.groups.map(g => ({ ...g, city: "", org: "", asn: null })) });
-// names: service id → name. Every service either side measured is a row; the median and the count of answers are
-// over the services both measured, so a different local pack doesn't tilt them.
-export function diffShares(A, B, names, labels = { med: "median", back: "answered" }) {
-  const ids = [...new Set([...Object.keys(A.res), ...Object.keys(B.res)])], both = ids.filter(id => id in A.res && id in B.res);
-  const ms = { unit: "ms", better: "lower", fmt, tol: { abs: 10, rel: 0.15 } };
-  const rows = ids.map(id => ({ id, name: names[id] || id, a: A.res[id], b: B.res[id], ...ms }));
-  const ok = S => both.filter(id => S.res[id] != null).length;
-  const stats = [
-    { id: "med", name: labels.med, a: median(both.map(id => A.res[id])), b: median(both.map(id => B.res[id])), ...ms },
-    { id: "back", name: labels.back, a: ok(A), b: ok(B), better: "higher", tol: { abs: 0, rel: 0 }, text: [ok(A) + "/" + both.length, ok(B) + "/" + both.length] },
-  ];
-  return { rows, stats };
+// The compare view's input (assets/share/compare.js): two results as the home page shows one. Groups in the page's
+// order (local favorites of either side's pack, then each category) with every service either side measured; the
+// three numbers of the page (local, global, overall median, over the services both measured); the everyday uses
+// before and after. B's values take the page's speed colors (t0…t5).
+// TOL is the home page's measured noise: two full runs a minute apart on the same line move about 1.8 % of rows by
+// more than 20 ms and 30 % (docs/compare.md in 1ms-shell; test/fixtures/runs.txt).
+export const TOL = { abs: 20, rel: 0.3 };
+const USE_RANK = { blocked: 0, slow: 1, ok: 2, great: 3 }, USE_TIER = ["muted", "t5", "t3", "t1"];
+export const tierVar = v => v == null ? "muted" : "t" + tierOf(v)[1].slice(1);
+// o: { names: id → name, services, packs, cats, uses (src/services.mjs), label: key → text in the page's language,
+// scale (optional) }
+export function diffShares(A, B, o) {
+  const L = o.label, ms = { unit: "ms", better: "lower", fmt, tol: TOL, tier: tierVar, ...(o.scale ? { scale: o.scale } : {}) };
+  const row = id => ({ id, name: o.names[id] || id, a: A.res[id], b: B.res[id], ...ms });
+  const has = id => id in A.res || id in B.res, both = ids => ids.filter(id => id in A.res && id in B.res);
+  const local = [...new Set([...(o.packs[A.pack] || []), ...(o.packs[B.pack] || [])].map(s => s.id))];
+  const groups = [{ id: "local", name: L("cat_local"), rows: local.filter(has).map(row) },
+    ...o.cats.map(c => ({ id: c, name: L("cat_" + c), rows: o.services.filter(s => s.cat === c && has(s.id)).map(s => row(s.id)) }))];
+  const med = (id, name, ids) => ({ id, name, a: median(both(ids).map(x => A.res[x])), b: median(both(ids).map(x => B.res[x])), ...ms });
+  const stats = [med("local", L("seg_local"), local), med("global", L("seg_global"), o.services.map(s => s.id)),
+    med("all", L("med"), [...new Set([...Object.keys(A.res), ...Object.keys(B.res)])])];
+  // A use counts as changed only when its own median moved past the tolerance too: a median sitting on a threshold
+  // would flip its status between two runs of the same line.
+  const uses = o.uses.map(([k, ids, good, ok]) => {
+    const ids2 = both(ids);
+    if (!ids2.length) return null;
+    const sg = S => segmentOf(ids2.map(id => S.res[id]), ids2), sa = sg(A), sb = sg(B);
+    const st = [useStatus(sa, good, ok), useStatus(sb, good, ok)], ra = USE_RANK[st[0]];
+    let rb = USE_RANK[st[1]];
+    const moved = sa.md == null || sb.md == null || Math.abs(sb.md - sa.md) > TOL.abs && Math.max(sa.md, sb.md) / Math.min(sa.md, sb.md) - 1 > TOL.rel;
+    if (!moved) rb = ra;
+    return { id: k, name: L("use_" + k), a: ra, b: rb, better: "higher", tol: { abs: 0, rel: 0 }, text: [L("st_" + st[0]), L("st_" + st[1])], tier: v => USE_TIER[v] };
+  }).filter(Boolean);
+  return { groups, stats, uses };
 }
+// a side's exits in one line, as the exit list words them (no IPs: links never have them)
+export const exitsText = (groups, country, L) => groups.slice(0, 2).map(g => [[g.city, g.cc && country(g.cc)].filter(Boolean).join(", "), L(g.proxy ? "k_proxy" : "k_local"), g.org].filter(Boolean).join(" · ")).join(" / ");
 
 // This browser's own results (localStorage, never sent anywhere), newest first, as share codes with city and network:
 // "compare with your last result" and the visitor's own side of a compare link read them.

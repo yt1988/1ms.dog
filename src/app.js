@@ -779,13 +779,11 @@
   const CMPS = CLINK && !CHECK && $("#cmpBox") ? [parseShare(CLINK[1], PACKS), parseShare(CLINK[2], PACKS)] : null;
   let cmpOn = false, CV = null, CS = null;
   const names = Object.fromEntries([...SVC.list, ...Object.values(PACKS).flat()].map(s => [s.id, s.name]));
-  const when = ts => new Date(ts).toLocaleString(LANG, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
-  // a side's exits, as the exit list words them (no IPs: links never have them)
-  const exitsText = groups => groups.slice(0, 2).map(g => [whereOf(g), t(g.proxy ? "k_proxy" : "k_local"), g.org].filter(Boolean).join(" · ")).join(" / ");
+  // the same input the Worker gives it (src/worker.js compareView), plus the lanes' scale
   const cmpView = compare => {
-    const side = S => ({ label: when(S.ts), sub: show => exitsText(show ? S.groups : bare(S).groups) });
-    const d = diffShares(CS[0], CS[1], names, { med: t("med"), back: t("e_back") });
-    return compare({ lang: LANG, a: side(CS[0]), b: side(CS[1]), stats: d.stats, rows: d.rows.map(r => ({ ...r, scale: pos })), words: "speed" });
+    const side = S => ({ ts: S.ts, sub: show => exitsText(show ? S.groups : bare(S).groups, country, t) });
+    const d = diffShares(CS[0], CS[1], { names, services: SVC.list, packs: PACKS, cats: SVC.cats, uses: SVC.uses, label: t, scale: pos });
+    return compare({ lang: LANG, a: side(CS[0]), b: side(CS[1]), ...d, words: "speed" });
   };
   async function showCompare() {
     cmpOn = true;
@@ -794,7 +792,8 @@
     CS = CMPS.map(S => ownOf(HIST, S, PACKS) || S);
     const { compare } = await import("/assets/share/compare.js");
     CV = cmpView(compare);
-    await CV.render($("#cmpBox"));
+    CV.renderHead($("#cmpHead"));                             // in the visitor's time zone, with their own side's city
+    await CV.render($("#cmpView"));
   }
   $("#cmpShare").title = t("share");
   $("#cmpShare").onclick = async () => {

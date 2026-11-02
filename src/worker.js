@@ -3,10 +3,11 @@
 // the result in its title and description, so a chat app's link preview shows it. Two results compared,
 // /<lang>/c/<a>/<b>, are the home page with what changed as the title ("ChatGPT 300→44 ms, GitHub 5× faster"), in the
 // words of the shared compare mode the page itself uses (public/assets/share/compare.js, copied from 1ms-shell); an
-// unreadable one is a 404. Anything else: the plain 404.
-import { parseShare, median, tierOf, fmt, fillIn, diffShares } from "./lib.mjs";
-import { headline, tallyText } from "../public/assets/share/compare.js";
-import { SERVICES, PACKS } from "./services.mjs";
+// unreadable one is a 404. Its page also gets, before it is sent, what keeps it from moving while the compare view is
+// drawn: compare.css, the banner's verdict and sides, and the exact height of the groups. Anything else: the plain 404.
+import { parseShare, median, tierOf, fmt, fillIn, diffShares, exitsText } from "./lib.mjs";
+import { compare } from "../public/assets/share/compare.js";
+import { SERVICES, PACKS, CATS, USES } from "./services.mjs";
 import en from "./i18n/en.mjs";
 import zhCN from "./i18n/zh-CN.mjs";
 import zhTW from "./i18n/zh-TW.mjs";
@@ -49,15 +50,23 @@ export function resultMeta(path) {
   return { page, title, desc };
 }
 
-// /<lang>/c/<a>/<b>: on the home page only; null (a 404) unless both sides read
+// /<lang>/c/<a>/<b>: on the home page only; null (a 404) unless both sides read. cmp: the compare view's head as HTML
+// (times in UTC; the page redraws it in the visitor's own time zone) and the CSS variables that reserve its height.
+export function compareView(A, B, lang) {
+  const L = I[lang], label = k => L[k] ?? en[k];
+  const country = cc => { try { return new Intl.DisplayNames([lang], { type: "region" }).of(cc); } catch (e) { return cc; } };
+  const d = diffShares(A, B, { names: ONE, services: SERVICES, packs: PACKS, cats: CATS, uses: USES, label });
+  return compare({ lang, a: { ts: A.ts, sub: exitsText(A.groups, country, label) }, b: { ts: B.ts, sub: exitsText(B.groups, country, label) }, ...d });
+}
 function compareMeta(parts) {
   const b = parts.pop(), a = parts.pop(); parts.pop();
   const lang = DIR[parts[0]] ? DIR[parts.shift()] : "en";
   const A = parseShare(a, PACKS), B = parseShare(b, PACKS);
   if (parts.length || !A || !B) return null;
-  const L = I[lang], { rows, stats } = diffShares(A, B, ONE), [med] = stats, ms = v => v != null ? fmt(v) : "✕";
-  return { page: "/" + (lang === "en" ? "" : lang.toLowerCase() + "/"), title: headline(rows, lang) + " · 1ms.dog",
-    desc: [tallyText(rows, lang), `${L.med ?? en.med} ${ms(med.a)}→${ms(med.b)} ms`].filter(Boolean).join(" · ") };
+  const c = compareView(A, B, lang), v = c.verdict, [, , all] = c.stats, ms = x => x != null ? fmt(x) : "✕";
+  return { page: "/" + (lang === "en" ? "" : lang.toLowerCase() + "/"), title: v.title + " · 1ms.dog",
+    desc: [v.detail, `${all.name} ${ms(all.a)}→${ms(all.b)} ms`].filter(Boolean).join(" · "),
+    cmp: { head: c.headHTML(), style: `--cmp-h1:${c.layout.one}px;--cmp-h2:${c.layout.two}px` } };
 }
 
 export default {
@@ -74,6 +83,9 @@ export default {
       .on('meta[property="og:title"], meta[name="twitter:title"]', set(meta.title))
       .on('meta[name="description"], meta[property="og:description"], meta[name="twitter:description"]', set(meta.desc))
       .on('meta[property="og:url"]', set(url.origin + url.pathname))
+      .on("head", { element(e) { if (meta.cmp) e.append('<link rel="stylesheet" href="/assets/share/compare.css">', { html: true }); } })
+      .on("#cmpHead", { element(e) { if (meta.cmp) e.setInnerContent(meta.cmp.head, { html: true }); } })
+      .on("#cmpBox", { element(e) { if (meta.cmp) e.setAttribute("style", meta.cmp.style); } })
       .transform(res);
     const h = new Headers(out.headers);
     h.delete("etag");
