@@ -610,7 +610,7 @@
   // comes from the card's install line, so a self-hosted copy hands out its own), and any copy button copies the
   // command next to it
   function cliBody() {
-    const site = /^curl -fsSL (\S+)\/i/.exec($(".cli code").textContent)[1], ext = $(".cli-gh .ext").outerHTML;
+    const site = /^curl -fsSL (\S+)\/i/.exec($(".cli code").textContent)[1], ext = EXT.replace("<svg ", '<svg class="ext" ');
     const line = (cmd, note) => `<div class="cmdline"><code>${esc(cmd)}</code><button class="btn sm" type="button" data-copy>${esc(t("copy"))}</button></div>` + (note ? `<span class="note">${esc(t(note))}</span>` : "");
     const sec = (h, body) => `<section class="rblk"><b>${esc(t(h))}</b>${body}</section>`, win = `${site}/dl/latest/httpslatency-windows-amd64.exe`;
     return sec("cli_install", line(`curl -fsSL ${site}/i | sh`, "cli_install_s")) + sec("cli_once", line(`curl -fsSL ${site}/i | sh -s -- run`)) +
