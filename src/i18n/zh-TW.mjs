@@ -81,6 +81,24 @@ export default {
   ipqs_t: "查這個 IP 的品質",
 
   asn_t: "查詢這個 AS", l_v6: "IPv6 完整測試", l_v6_none: "沒偵測到 IPv6，測一下", l_who: "網站還能看到你哪些資訊", l_speed: "測下載和上傳速度", l_check: "做一次完整體檢", l_ai: "{s} 看到的是哪個 IP",
+  // the command-line tool's card and dialog (home page)
+  cli_h: "在伺服器上也測一測",
+  cli_sub: "在 VPS、Linux 主機或路由器上執行這條指令，用真實 HTTPS 測同樣的服務，給出同樣的結論，並印出一個能在這裡開啟的結果連結。",
+  cli_more: "更多用法",
+  cli_install: "安裝並執行（Linux、macOS、路由器）",
+  cli_install_s: "把 httpslatency 裝到 /usr/local/bin（或 ~/.local/bin），開啟選單選擇要測什麼；之後隨時輸入 httpslatency 再測。",
+  cli_once: "只跑一次，不安裝",
+  cli_wget: "沒有 curl？用 wget",
+  cli_opts: "常用參數",
+  cli_o_cat: "只測某幾組",
+  cli_o_svc: "只測某幾個服務，每個多測幾次（httpslatency --list 列出全部）",
+  cli_o_v6: "走 IPv6",
+  cli_o_json: "輸出 JSON",
+  cli_win: "Windows",
+  cli_win_s: "在 PowerShell 裡執行：安裝 httpslatency 並開啟選單。也可以直接下載程式：",
+  cli_src: "原始碼和全部版本",
+  copy: "複製",
+  copied: "已複製",
 
   faq_h: "原理與常見問題",
   docs: [

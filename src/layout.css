@@ -213,6 +213,41 @@ a.nm:hover { color: var(--ink); text-decoration: underline; text-underline-offse
 .slane .trk { position: absolute; left: 0; right: 0; top: 10px; height: 2px; border-radius: 2px; background: var(--bands); opacity: .35; }
 .slane .dots i, .slane .dots b { position: absolute; top: 6px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: currentColor; opacity: .55; }
 .slane .dots b { top: 3px; width: 16px; height: 16px; margin-left: -8px; opacity: 1; box-shadow: 0 0 0 3px var(--panel); }
+/* the command-line tool: what it is on the left, the install line on the right (copy beside it, more and the source
+   under it), and its dialog with every way to run it (as on dns.1ms.dog) */
+.cli { padding: 16px 22px; display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.25fr); gap: 10px 14px; align-items: center; }
+.cli-ic { width: 28px; height: 28px; color: var(--ink); fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.cli-t h2 { font-size: 15px; }
+.cli-t p { color: var(--muted); font-size: 13px; margin-top: 2px; }
+.cli-cmd { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.cli-links { display: flex; justify-content: flex-end; align-items: center; gap: 16px; padding-right: 2px; }
+.lnk { border: 0; background: none; padding: 0; font: inherit; font-size: 12.5px; color: var(--muted); cursor: pointer; }
+.lnk:hover, .lnk:focus-visible { color: var(--ink); }
+.cli-gh { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); text-decoration: none; white-space: nowrap; }
+.cli-gh:hover { color: var(--ink); }
+svg.gh-ic[viewBox] { width: 15px; height: 15px; fill: currentColor; stroke: none; flex: none; }
+.cli-gh svg.ext { width: .95em; height: .95em; flex: none; }
+.gh-link { display: inline-flex; vertical-align: -2px; margin-left: 8px; color: var(--muted); }
+.gh-link:hover { color: var(--fg); }
+.gh-link svg.gh-ic[viewBox] { width: 17px; height: 17px; }
+.cmdline { display: flex; align-items: center; gap: 8px; }
+.cmdline code { flex: 1; min-width: 0; font: 13px var(--f-num); background: var(--soft); border-radius: 6px; padding: 7px 10px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.cli-cmd .cmdline code { white-space: normal; }
+.btn.sm { height: 30px; padding: 0 12px; font-size: 12.5px; flex: none; }
+.dialog.cli-dlg { width: 640px; }
+.dlg-h .note { font-size: 12.5px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
+.dlg-b { padding: 14px 18px 18px; overflow: auto; display: flex; flex-direction: column; gap: 12px; }
+.rblk { display: flex; flex-direction: column; gap: 6px; }
+.rblk > b { font-size: 13px; }
+.rblk .note { font-size: 12.5px; color: var(--muted); line-height: 1.5; margin: -2px 0 4px; }
+.dlg-b .dl { color: var(--ink); font: 13px var(--f-num); text-decoration: none; align-self: flex-start; }
+.dlg-b .dl:hover { text-decoration: underline; }
+.dlg-b > .cli-gh { align-self: flex-start; }
+@media (max-width: 720px) {
+  .cli { padding: 14px 16px; grid-template-columns: auto minmax(0, 1fr); }
+  .cli-cmd { grid-column: 1 / -1; }
+  .cli-cmd .cmdline code { white-space: pre-wrap; }
+}
 /* …and a way back to the full test */
 .cta { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 20px; text-decoration: none; color: inherit; transition: border-color .15s; }
 .cta:hover { border-color: var(--ink); }
@@ -246,7 +281,7 @@ a.nm:hover { color: var(--ink); text-decoration: underline; text-underline-offse
 /* exit checks answered so far ("4/7"), fixed width so nothing beside it slides */
 .ex-p { min-width: 5ch; font: 500 11px var(--f-num); font-variant-numeric: tabular-nums; color: var(--muted); letter-spacing: 0; }
 /* Connection Checkup's frame (?embed=checkup, src/app.js): the exits, the three numbers and the services, compact */
-html.embed .top, html.embed .foot, html.embed .stage, html.embed .hero h1, html.embed .hero .intro, html.embed .sum-acts, html.embed .uses,
+html.embed .top, html.embed .foot, html.embed .cli, html.embed .stage, html.embed .hero h1, html.embed .hero .intro, html.embed .sum-acts, html.embed .uses,
 html.embed .links, html.embed .ex-h .eg, html.embed #eye, html.embed .shared { display: none !important; }
 html.embed .app { padding-block: 0; gap: 10px; }
 html.embed main { gap: 10px; }

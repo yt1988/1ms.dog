@@ -606,6 +606,28 @@
     $("#helpC").scrollTop = 0;
   }
   $("#helpBtn").onclick = () => { showHelp(helpIdx); openDlg("help"); };
+  // the command-line card (home page): its dialog, filled in on first open with every way to run the tool (the site
+  // comes from the card's install line, so a self-hosted copy hands out its own), and any copy button copies the
+  // command next to it
+  function cliBody() {
+    const site = /^curl -fsSL (\S+)\/i/.exec($(".cli code").textContent)[1], ext = $(".cli-gh .ext").outerHTML;
+    const line = (cmd, note) => `<div class="cmdline"><code>${esc(cmd)}</code><button class="btn sm" type="button" data-copy>${esc(t("copy"))}</button></div>` + (note ? `<span class="note">${esc(t(note))}</span>` : "");
+    const sec = (h, body) => `<section class="rblk"><b>${esc(t(h))}</b>${body}</section>`, win = `${site}/dl/latest/httpslatency-windows-amd64.exe`;
+    return sec("cli_install", line(`curl -fsSL ${site}/i | sh`, "cli_install_s")) + sec("cli_once", line(`curl -fsSL ${site}/i | sh -s -- run`)) +
+      sec("cli_wget", line(`wget -qO- ${site}/i | sh`)) +
+      sec("cli_opts", line("httpslatency -c ai,video,game", "cli_o_cat") + line("httpslatency -s chatgpt,github -n 10", "cli_o_svc") +
+        line("httpslatency -6", "cli_o_v6") + line("httpslatency --json > latency.json", "cli_o_json")) +
+      sec("cli_win", line(`irm ${site}/i.ps1 | iex`, "cli_win_s") + `<a class="dl" href="${esc(win)}">httpslatency-windows-amd64.exe ↓</a>`) +
+      `<a class="cli-gh" href="${esc($(".cli-gh").href)}" target="_blank" rel="noopener noreferrer"><svg class="gh-ic" viewBox="0 0 16 16" aria-hidden="true"><use href="#ghMark"/></svg>${esc(t("cli_src"))}${ext}</a>`;
+  }
+  $$("[data-cli]").forEach(b => { b.onclick = () => { if (!$("#cliB").firstChild) $("#cliB").innerHTML = cliBody(); openDlg("cli"); }; });
+  document.addEventListener("click", e => {
+    const b = e.target.closest && e.target.closest("[data-copy]");
+    if (!b || !navigator.clipboard) return;
+    navigator.clipboard.writeText(b.parentNode.querySelector("code").textContent).then(() => {
+      b.textContent = t("copied"); setTimeout(() => { b.textContent = t("copy"); }, 1200);
+    }, () => {});
+  });
   $$("#helpNav [data-hq]").forEach(b => { b.onclick = () => showHelp(+b.dataset.hq); });
   $("#helpSel").onchange = e => showHelp(+e.target.value);
   $$("[data-hstep]").forEach(b => { b.onclick = () => showHelp(helpIdx + +b.dataset.hstep); });

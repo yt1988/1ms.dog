@@ -27,3 +27,25 @@ test("other paths are not result links; a code that can't be read is a 404", () 
   assert.deepEqual(resultMeta("/zh-cn/r/" + code.slice(0, -4)), { bad: true });    // cut off inside an entry
   assert.deepEqual(resultMeta("/zh-cn/r/" + code.slice(0, code.lastIndexOf("."))), { bad: true });   // before the results
 });
+
+test("the command-line tool's installers and release files come from GitHub's latest release", async () => {
+  const { default: worker } = await import("../src/worker.js");
+  const asked = [];
+  globalThis.caches = { default: { match: async () => null, put: async () => {} } };
+  globalThis.fetch = async (u, o = {}) => {
+    asked.push(String(u));
+    if (String(u).endsWith("/releases/latest")) return new Response(null, { status: 302, headers: { location: "https://github.com/yt1988/https-latency-test-cli/releases/tag/v0.1.0" } });
+    return new Response("#!/bin/sh\n", { status: 200 });
+  };
+  const env = { ASSETS: { fetch: async () => new Response("asset", { status: 404 }) } }, ctx = { waitUntil() {} };
+  const get = p => worker.fetch(new Request("https://1ms.dog" + p), env, ctx);
+  assert.equal(await (await get("/v")).text(), "0.1.0\n");
+  const i = await get("/i");
+  assert.equal(await i.text(), "#!/bin/sh\n");
+  assert.ok(asked.includes("https://github.com/yt1988/https-latency-test-cli/releases/download/v0.1.0/install.sh"));
+  const l = await get("/dl/latest/httpslatency-linux-amd64");
+  assert.equal(l.status, 302);
+  assert.equal(l.headers.get("location"), "/dl/v0.1.0/httpslatency-linux-amd64");
+  assert.equal((await get("/dl/v0.1.0/other-file")).status, 404);              // only the tool's own files
+  assert.equal(await (await get("/dl/v0.1.0/other-file")).text(), "asset");
+});

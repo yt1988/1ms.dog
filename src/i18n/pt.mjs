@@ -81,6 +81,24 @@ export default {
   ipqs_t: "Verificar a qualidade deste IP",
 
   asn_t: "Consultar este AS", l_v6: "Teste completo de IPv6", l_v6_none: "Nenhum IPv6 encontrado: teste", l_who: "O que mais os sites veem sobre você", l_speed: "Medir velocidade de download e upload", l_check: "Fazer um check-up completo", l_ai: "Qual IP o {s} vê",
+  // the command-line tool's card and dialog (home page)
+  cli_h: "Meça também a partir de um servidor",
+  cli_sub: "Num VPS, numa máquina Linux ou num roteador, este comando mede os mesmos serviços com HTTPS real, dá o mesmo veredito e mostra um link do resultado que abre aqui.",
+  cli_more: "Outros usos",
+  cli_install: "Instalar e rodar (Linux, macOS, roteadores)",
+  cli_install_s: "Instala o httpslatency em /usr/local/bin (ou ~/.local/bin) e abre um menu para escolher o que testar; rode httpslatency de novo quando quiser.",
+  cli_once: "Rodar uma vez, sem instalar",
+  cli_wget: "Sem curl? Com wget",
+  cli_opts: "Opções úteis",
+  cli_o_cat: "Só alguns grupos",
+  cli_o_svc: "Só alguns serviços, com mais requisições (httpslatency --list mostra todos)",
+  cli_o_v6: "Via IPv6",
+  cli_o_json: "Tudo em JSON",
+  cli_win: "Windows",
+  cli_win_s: "No PowerShell: instala o httpslatency e abre o menu. Ou baixe o programa:",
+  cli_src: "Código-fonte e todas as versões",
+  copy: "Copiar",
+  copied: "Copiado",
 
   faq_h: "Como funciona",
   docs: [

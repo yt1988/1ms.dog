@@ -81,6 +81,24 @@ export default {
   ipqs_t: "この IP の品質を調べる",
 
   asn_t: "この AS を調べる", l_v6: "IPv6 を詳しくテスト", l_v6_none: "IPv6 が見つかりません：テストする", l_who: "サイトから見えるほかの情報", l_speed: "ダウンロード・アップロード速度を測る", l_check: "回線をまとめてチェック", l_ai: "{s} から見える IP",
+  // the command-line tool's card and dialog (home page)
+  cli_h: "サーバーからも測る",
+  cli_sub: "VPS、Linux マシン、ルーターでこのコマンドを実行すると、同じサービスを実際の HTTPS で計測し、同じ判定と、このページで開ける結果リンクを表示します。",
+  cli_more: "ほかの使い方",
+  cli_install: "インストールして実行（Linux、macOS、ルーター）",
+  cli_install_s: "httpslatency を /usr/local/bin（または ~/.local/bin）に入れ、メニューで測る内容を選びます。以後は httpslatency でいつでも再テストできます。",
+  cli_once: "1 回だけ実行（インストールしない）",
+  cli_wget: "curl がなければ wget で",
+  cli_opts: "よく使うオプション",
+  cli_o_cat: "一部のグループだけ",
+  cli_o_svc: "一部のサービスだけ、回数を増やして（httpslatency --list で一覧）",
+  cli_o_v6: "IPv6 で",
+  cli_o_json: "JSON で出力",
+  cli_win: "Windows",
+  cli_win_s: "PowerShell で実行：httpslatency をインストールしてメニューを開きます。プログラムを直接ダウンロードすることもできます：",
+  cli_src: "ソースコードと全ビルド",
+  copy: "コピー",
+  copied: "コピーしました",
 
   faq_h: "仕組みとよくある質問",
   docs: [

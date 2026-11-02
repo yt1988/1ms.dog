@@ -14,6 +14,7 @@
 - **分享结果**：在浏览器里画一张图片，或者生成一条带着结果的链接。链接里有国家和延迟，勾选后才加上城市和运营商，不含 IP 地址。
 - **10 种语言**，全部预渲染。每种语言按当地的搜索习惯单独选落地页（`/chatgpt/`、`/zh-cn/dockerhub/`、`/ru/discord/`……）。
 - **不收集数据**：每个请求都从你的浏览器直接发往被测试的服务。站点只有静态文件，从不接收你的测试结果。分享链接把结果放在路径里（`/r/…`），一个很小的 Worker 读取它，生成链接预览。
+- **命令行也能测同样的内容。** 在 VPS、Linux 主机或路由器上，[httpslatency](https://github.com/yt1988/https-latency-test-cli) 用真实 HTTPS 测同样的服务，给出同样的结论，并打印一个能在这里打开的结果链接：`curl -fsSL https://1ms.dog/i | sh`。它从 `/services.json` 读取清单（构建时由 `src/services.mjs` 生成）；安装脚本和发布文件由 Worker 从 GitHub 转发（`/i`、`/i.ps1`、`/v`、`/dl/…`）。
 
 ## 延迟怎么测
 
@@ -29,7 +30,7 @@
 git clone https://github.com/yt1988/1ms.dog
 cd 1ms.dog
 npx wrangler login
-npx wrangler deploy        # 静态资源（免费且不计请求数）加 src/worker.js，只在打开 /r/ 链接时运行
+npx wrangler deploy        # 静态资源（免费且不计请求数）加 src/worker.js，只在打开 /r/ 链接和下载命令行工具时运行
 ```
 
 `wrangler.toml` 关掉了 `*.workers.dev` 地址和预览地址。在 **Workers 和 Pages → 1ms-index → 设置 → 域和路由** 里绑定你自己的域名；想先试试，可以把 `workers_dev` 改成 `true`。也可以放在任何静态托管上（没有结果链接的预览，`/r/` 链接需要重写到对应页面），安全响应头（CSP）在 `public/_headers` 里，用的是 Cloudflare 的格式。
