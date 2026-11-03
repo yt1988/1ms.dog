@@ -348,4 +348,7 @@ html.embed .field { padding: 10px 14px 4px; }
   .row { height: 32px; }
   .row .nm { display: flex; }
   .mini { min-height: 32px; padding: 0 10px; }
+  .ex-h .eg { display: inline-flex; align-items: center; min-height: 32px; }
+  /* an exit's AS number: a taller tap area that doesn't make the row taller */
+  .ex .where .q { padding: 6px 0; margin: -6px 0; }
 }
