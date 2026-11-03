@@ -76,7 +76,7 @@ export default {
   cat_ai: "IA", cat_web: "Sites do dia a dia", cat_video: "Vídeo e música", cat_social: "Redes e mensagens", cat_dev: "Ferramentas de desenvolvimento",
   cat_game: "Jogos", cat_cdn: "Provedores de CDN", cat_local: "Favoritos locais",
   pack: "Região",
-  pk_cn: "China continental", pk_tw: "Taiwan · Hong Kong", pk_jp: "Japão", pk_kr: "Coreia", pk_ru: "Rússia", pk_in: "Sul da Ásia",
+  pk_cn: "China continental", pk_tw: "Taiwan, China · Hong Kong", pk_jp: "Japão", pk_kr: "Coreia", pk_ru: "Rússia", pk_in: "Sul da Ásia",
   pk_sea: "Sudeste Asiático", pk_eu: "Europa", pk_latam: "América Latina", pk_na: "América do Norte", pk_me: "Oriente Médio",
   d_cold: "abrir a conexão", d_samples: "cada requisição", d_jit: "jitter",
 

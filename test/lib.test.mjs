@@ -1,7 +1,7 @@
 // The page's pure logic: speed levels, the diagnosis, exit grouping and share links.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { median, fmt, tierOf, posOf, netOf, sameNet, groupExits, segmentOf, grade, diagnose, useStatus, encodeShare, parseShare } from "../src/lib.mjs";
+import { median, fmt, tierOf, posOf, netOf, sameNet, groupExits, segmentOf, grade, diagnose, useStatus, encodeShare, parseShare, regionName, flagCode } from "../src/lib.mjs";
 import { PACKS, SCALE } from "../src/services.mjs";
 
 test("median and number format", () => {
@@ -167,4 +167,15 @@ test("this browser's own results: newest first, no duplicates, only well-formed 
   const shared = parseShare(encodeShare({ ...parseShare(c1, PACKS), groups: [{ cc: "CN", city: "", org: "", asn: null, proxy: false }] }), PACKS);
   assert.equal(ownOf([c2, c1], shared, PACKS).groups[0].city, "Beijing");
   assert.equal(ownOf([c2], shared, PACKS), null);
+});
+
+test("TW has a fixed name in every language and the CN flag; other places keep the system name and their own flag", () => {
+  assert.equal(regionName("TW", "zh-CN"), "中国台湾");
+  assert.equal(regionName("TW", "zh-TW"), "中國台灣");
+  assert.equal(regionName("TW", "en"), "Taiwan, China");
+  assert.equal(regionName("TW", "fr"), "Taïwan, Chine");
+  assert.equal(regionName("TW", "xx"), "Taiwan, China");
+  assert.equal(regionName("HK", "en"), new Intl.DisplayNames(["en"], { type: "region" }).of("HK"));
+  assert.equal(flagCode("TW"), "cn");
+  assert.equal(flagCode("HK"), "hk");
 });

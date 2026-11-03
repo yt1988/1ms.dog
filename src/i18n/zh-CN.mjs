@@ -76,7 +76,7 @@ export default {
   cat_ai: "AI", cat_web: "常用网站", cat_video: "视频和音乐", cat_social: "社交和聊天", cat_dev: "开发工具",
   cat_game: "游戏", cat_cdn: "CDN 服务商", cat_local: "本地常用",
   pack: "地区",
-  pk_cn: "中国大陆", pk_tw: "台湾 · 香港", pk_jp: "日本", pk_kr: "韩国", pk_ru: "俄罗斯", pk_in: "南亚",
+  pk_cn: "中国大陆", pk_tw: "中国台湾 · 香港", pk_jp: "日本", pk_kr: "韩国", pk_ru: "俄罗斯", pk_in: "南亚",
   pk_sea: "东南亚", pk_eu: "欧洲", pk_latam: "拉丁美洲", pk_na: "北美", pk_me: "中东",
   d_cold: "建立连接", d_samples: "各次结果", d_jit: "抖动",
 

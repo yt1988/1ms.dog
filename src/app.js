@@ -26,8 +26,8 @@
   // embedded, the page changes no preference (the checkup's run isn't the visitor choosing anything)
   const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { if (!CHECK) try { localStorage.setItem(k, v); } catch (e) {} } };
   const K = { theme: "1ms:theme", lang: "1ms:lang", pack: "1ms:pack", mask: "1ms:mask", auto: "1ms:auto", hist: "1ms:hist" };
-  const country = cc => { try { return new Intl.DisplayNames([LANG], { type: "region" }).of(cc); } catch (e) { return cc; } };
-  const flag = cc => /^[A-Z]{2}$/.test(cc || "") ? `<img class="flag" src="/flags/${cc.toLowerCase()}.svg" alt="" width="20" height="15">` : "";
+  const country = cc => { try { return regionName(cc, LANG); } catch (e) { return cc; } };
+  const flag = cc => /^[A-Z]{2}$/.test(cc || "") ? `<img class="flag" src="/flags/${flagCode(cc)}.svg" alt="" width="20" height="15">` : "";
   /* @lib */
   const bust = u => u + (u.includes("?") ? "&" : "?") + "_1ms=" + Math.random().toString(36).slice(2, 10);
 
@@ -734,7 +734,7 @@
         x.fillStyle = (g.proxy ? C.warn : C.c1) + "30"; roundRect(x, P, y - 22, kw, 30, 7); x.fill();
         x.fillStyle = g.proxy ? C.warn : C.c1; x.fillText(k, P + 10, y);
         let xx = P + kw + 12;
-        if (g.cc) { try { const f = await img(`/flags/${g.cc.toLowerCase()}.svg`); x.drawImage(f, xx, y - 19, 32, 24); xx += 42; } catch (e) {} }
+        if (g.cc) { try { const f = await img(`/flags/${flagCode(g.cc)}.svg`); x.drawImage(f, xx, y - 19, 32, 24); xx += 42; } catch (e) {} }
         x.fillStyle = C.fg; x.font = `600 22px ${F}`; const w = whereOf(g) || "?"; x.fillText(w, xx, y);
         xx += x.measureText(w).width + 14;
         x.fillStyle = C.muted; x.font = `400 20px ${F}`; x.fillText([g.org, g.asn && "AS" + g.asn].filter(Boolean).join(" · "), xx, y);

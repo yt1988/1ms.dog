@@ -15,7 +15,7 @@
 // The installer and the tool try these before GitHub, which is often slow or blocked in mainland China. A result or
 // compare link whose code can't be read (mangled, cut off, an unknown version), and anything else: the plain 404 (the
 // shell shows its 404 page).
-import { parseShare, median, tierOf, fmt, fillIn, diffShares, exitsText } from "./lib.mjs";
+import { parseShare, median, tierOf, fmt, fillIn, diffShares, exitsText, regionName } from "./lib.mjs";
 import { compare } from "../public/assets/share/compare.js";
 import { SERVICES, PACKS, CATS, USES } from "./services.mjs";
 import en from "./i18n/en.mjs";
@@ -52,7 +52,7 @@ export function resultMeta(path) {
   const g = S.groups[0];
   if (g) {
     let cn = g.cc;
-    try { cn = g.cc && new Intl.DisplayNames([lang], { type: "region" }).of(g.cc); } catch (e) {}
+    try { cn = g.cc && regionName(g.cc, lang); } catch (e) {}
     where = [g.city, cn].filter(Boolean).join(", ");
   }
   const title = (spot ? t("r_one", { s: ONE[spot], ms, tier }) : t("r_title", { ms, tier, ok: ok.length, n: vals.length })) + " · 1ms.dog";
@@ -65,7 +65,7 @@ export function resultMeta(path) {
 // (times in UTC; the page redraws it in the visitor's own time zone) and the CSS variables that reserve its height.
 export function compareView(A, B, lang) {
   const L = I[lang], label = k => L[k] ?? en[k];
-  const country = cc => { try { return new Intl.DisplayNames([lang], { type: "region" }).of(cc); } catch (e) { return cc; } };
+  const country = cc => { try { return regionName(cc, lang); } catch (e) { return cc; } };
   const d = diffShares(A, B, { names: ONE, services: SERVICES, packs: PACKS, cats: CATS, uses: USES, label });
   return compare({ lang, a: { ts: A.ts, sub: exitsText(A.groups, country, label) }, b: { ts: B.ts, sub: exitsText(B.groups, country, label) }, ...d });
 }

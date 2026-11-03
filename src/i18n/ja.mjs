@@ -76,7 +76,7 @@ export default {
   cat_ai: "AI", cat_web: "よく使うサイト", cat_video: "動画・音楽", cat_social: "SNS・チャット", cat_dev: "開発ツール",
   cat_game: "ゲーム", cat_cdn: "CDN", cat_local: "地域の定番",
   pack: "地域",
-  pk_cn: "中国本土", pk_tw: "台湾・香港", pk_jp: "日本", pk_kr: "韓国", pk_ru: "ロシア", pk_in: "南アジア",
+  pk_cn: "中国本土", pk_tw: "中国台湾・香港", pk_jp: "日本", pk_kr: "韓国", pk_ru: "ロシア", pk_in: "南アジア",
   pk_sea: "東南アジア", pk_eu: "ヨーロッパ", pk_latam: "中南米", pk_na: "北米", pk_me: "中東",
   d_cold: "接続の確立", d_samples: "各回の値", d_jit: "ジッター（揺らぎ）",
 

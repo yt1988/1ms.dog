@@ -78,7 +78,7 @@ export default {
   cat_ai: "AI", cat_web: "Everyday web", cat_video: "Video & music", cat_social: "Social & chat", cat_dev: "Developer tools",
   cat_game: "Gaming", cat_cdn: "CDN providers", cat_local: "Local favorites",
   pack: "Region",
-  pk_cn: "Mainland China", pk_tw: "Taiwan · Hong Kong", pk_jp: "Japan", pk_kr: "Korea", pk_ru: "Russia", pk_in: "South Asia",
+  pk_cn: "Mainland China", pk_tw: "Taiwan, China · Hong Kong", pk_jp: "Japan", pk_kr: "Korea", pk_ru: "Russia", pk_in: "South Asia",
   pk_sea: "Southeast Asia", pk_eu: "Europe", pk_latam: "Latin America", pk_na: "North America", pk_me: "Middle East",
   d_cold: "connection setup", d_samples: "each request", d_jit: "jitter",
 

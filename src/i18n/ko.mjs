@@ -76,7 +76,7 @@ export default {
   cat_ai: "AI", cat_web: "자주 쓰는 사이트", cat_video: "동영상·음악", cat_social: "SNS·메신저", cat_dev: "개발 도구",
   cat_game: "게임", cat_cdn: "CDN", cat_local: "국내 인기 서비스",
   pack: "지역",
-  pk_cn: "중국 본토", pk_tw: "대만 · 홍콩", pk_jp: "일본", pk_kr: "한국", pk_ru: "러시아", pk_in: "남아시아",
+  pk_cn: "중국 본토", pk_tw: "중국 대만 · 홍콩", pk_jp: "일본", pk_kr: "한국", pk_ru: "러시아", pk_in: "남아시아",
   pk_sea: "동남아시아", pk_eu: "유럽", pk_latam: "중남미", pk_na: "북미", pk_me: "중동",
   d_cold: "연결 준비", d_samples: "회차별 값", d_jit: "지터",
 

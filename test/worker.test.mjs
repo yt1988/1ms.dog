@@ -19,6 +19,12 @@ test("a result link gets the result as its preview title, on the page it was sha
   assert.equal(resultMeta("/vk/r/" + code).page, "/vk/");              // a two-letter page, not a language
 });
 
+test("a result from TW names it by the fixed name in the preview text", () => {
+  const tw = encodeShare({ ts: 1793433600000, pack: "cn", groups: [{ cc: "TW", city: "", org: "", asn: null, proxy: false }], res: { baidu: 21.3 } });
+  assert.match(resultMeta("/zh-cn/r/" + tw).desc, /中国台湾/);
+  assert.match(resultMeta("/r/" + tw).desc, /Taiwan, China/);
+});
+
 test("other paths are not result links; a code that can't be read is a 404", () => {
   assert.equal(resultMeta("/zh-cn/chatgpt/"), null);
   assert.equal(resultMeta("/a/b/r/" + code), null);
