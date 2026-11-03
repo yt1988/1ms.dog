@@ -13,7 +13,7 @@ export default {
   h1: "Where you connect from, and how fast the world answers",
 
   exit_h: "Your exit IP",
-  k_local: "Local", k_proxy: "Proxy", seen_by: "Seen by {list}",
+  k_local: "Direct", k_proxy: "Proxy", seen_by: "Seen by {list}",
   sniff: "Finding your exit IP…",
   hide: "Hide IPs", show: "Show IPs",
   r_tz: "Your device's time zone is {a}, but your exit IP is in {b}. Sites can use this to guess you're on a VPN or proxy.",
@@ -30,7 +30,7 @@ export default {
   lost_n: "{n} didn't come back",
   share: "Share",
   sub_telegram: "Telegram data centers", tg_dc_t: "Telegram keeps each account in one of 5 data centers, based on the phone number's region. This is {dc} ({city}), where most accounts from your region live. Open the Telegram page to test all 5.",
-  pop_t: "Answered by the {pop} edge server", pop_s: "edge {pop}",
+  pop_t: "Answered from the {pop} data center", pop_s: "{pop} data center",
   egress_link: "See which IP each site sees",
   a_pet: "Pet the dog", a_dog: "1ms.dog shiba", a_field: "Latency by service", a_nav: "All ping tests", a_close: "Close", a_prev: "Previous", a_next: "Next",
   share_text: "My dog fetched {ok}/{n} services from {where}, median {ms} ms ({tier}). How fast is yours?",
@@ -107,7 +107,7 @@ export default {
   faq_h: "How it works",
   docs: [
     ["What is an exit IP?", "It's the address websites see when you visit them. At home it usually belongs to your internet provider. On a VPN, proxy, work network or iCloud Private Relay, it belongs to whoever forwards your traffic, and that can be in another city or another country. Services pick which server to send you to based on this address, so it affects your speed too."],
-    ["Why do I see a local exit and a proxy exit?", "Because many proxies and VPNs choose the route by website: some sites go direct, the rest through the proxy. One IP check only sees its own route. So we ask several at once: 1ms.dog itself, a site in mainland China, Cloudflare, ip.sb, ipinfo.io, IPv4-only and IPv6-only checks, and WebRTC (over UDP). We group what they see by network and mark each exit as local or proxy. If services that are usually blocked in your country answer anyway, we tell you there's an exit none of the checks could see."],
+    ["Why do I see a direct exit and a proxy exit?", "Because many proxies and VPNs choose the route by website: some sites go direct, the rest through the proxy. One IP check only sees its own route. So we ask several at once: 1ms.dog itself, a site in mainland China, Cloudflare, ip.sb, ipinfo.io, IPv4-only and IPv6-only checks, and WebRTC (over UDP). We group what they see by network and mark each exit as direct or proxy. If services that are usually blocked in your country answer anyway, we tell you there's an exit none of the checks could see."],
     ["How is latency measured?", "Your browser opens a real HTTPS connection to each service. The first request only sets up the connection (DNS lookup, TCP and TLS handshakes); it's shown separately and not counted. Then the same connection is reused for a few timed requests, and we show the median. So you see one round trip from your device to the service's nearest server, through your Wi-Fi, provider and any proxy: the delay your apps actually feel."],
     ["Why is this different from ping?", "Ping uses ICMP, which browsers can't send, and many networks treat ICMP differently from normal traffic, so a good ping doesn't always mean a fast app. HTTPS timing takes the same path as the apps you use. The numbers are usually a few milliseconds higher than ping, because the server has to answer a request."],
     ["What do the dog speeds mean?", "Zoomies ≤ 30 ms: about the same city. Sprint ≤ 80 ms: same region. Trot ≤ 150 ms: fine for almost everything. Stroll ≤ 300 ms: you'll notice it in games and calls. Nap > 300 ms: far away, or a congested route. Not back: no connection within 5 seconds, so the service can't be reached from here. Under 2 ms unlocks the legendary 1ms dog."],
@@ -159,7 +159,7 @@ export default {
   v_one_far: "Slow, probably a long route or a busy proxy. Test all services to see if the others are slow too.",
   v_one_lost: "No connection within 5 seconds: {s} is blocked or unreachable on this connection. Test all services to see whether the others answer.",
   lp_peers: "To compare, the home page tests {s} together with the other {cat} services: {list}.",
-  lp_via: "{s} is served through {via}'s network, so the round trip ends at {via}'s nearest server, not at {s}'s own data centers.",
-  lp_via_same: "{s} is served through {via}'s network, so the round trip ends at {via}'s nearest server. {list} use the same network: if they're slow too, the problem is your route to {via}, not {s}.",
+  lp_via: "{s} is served through {via}'s network, so the round trip ends at {via}'s nearest data center, not at {s}'s own servers.",
+  lp_via_same: "{s} is served through {via}'s network, so the round trip ends at {via}'s nearest data center. {list} use the same network: if they're slow too, the problem is your route to {via}, not {s}.",
   lp_intro: "Your browser times 10 real HTTPS round trips to {s} through your actual Wi-Fi, internet provider and any VPN or proxy, then shows the median, the first connection time and the jitter.",
 };

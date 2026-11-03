@@ -11,7 +11,7 @@ export default {
   h1: "Desde dónde te conectas y qué tan rápido te responde el mundo",
 
   exit_h: "Tu IP de salida",
-  k_local: "Local", k_proxy: "Proxy", seen_by: "Detectada por {list}",
+  k_local: "Directo", k_proxy: "Proxy", seen_by: "Detectada por {list}",
   sniff: "Buscando tu IP de salida…",
   hide: "Ocultar IP", show: "Mostrar IP",
   r_tz: "La zona horaria de tu dispositivo es {a}, pero tu IP de salida está en {b}. Los sitios pueden deducir de ahí que usas una VPN o un proxy.",
@@ -28,7 +28,7 @@ export default {
   lost_n: "{n} no volvieron",
   share: "Compartir",
   sub_telegram: "Centros de datos de Telegram", tg_dc_t: "Telegram guarda cada cuenta en uno de sus 5 centros de datos, según la región del número de teléfono. Aquí se mide {dc} ({city}), donde están la mayoría de las cuentas de tu región. Para medir los 5, abre la página de Telegram.",
-  pop_t: "Respondió el servidor de {pop}", pop_s: "servidor {pop}",
+  pop_t: "Respondió el centro de datos de {pop}", pop_s: "centro de datos {pop}",
   egress_link: "Mira qué IP ve cada sitio",
   a_pet: "Acariciar al perro", a_dog: "Shiba de 1ms.dog", a_field: "Latencia por servicio", a_nav: "Todas las pruebas de ping", a_close: "Cerrar", a_prev: "Anterior", a_next: "Siguiente",
   share_text: "Mi perro trajo {ok}/{n} servicios desde {where}, con una mediana de {ms} ms ({tier}). ¿Qué tan rápido es el tuyo?",
@@ -105,7 +105,7 @@ export default {
   faq_h: "Cómo funciona",
   docs: [
     ["¿Qué es la IP de salida?", "Es la dirección que ven los sitios web cuando los visitas. En casa suele ser de tu proveedor de internet. Con una VPN, un proxy, la red del trabajo o iCloud Private Relay, pertenece a quien reenvía tu tráfico, que puede estar en otra ciudad o en otro país. También decide a qué servidor te manda cada servicio, y eso influye en tu velocidad."],
-    ["¿Por qué veo una salida local y otra de proxy?", "Porque muchos proxies y VPN eligen el camino según el sitio: algunos sitios van directo y el resto pasa por el proxy. Una sola comprobación de IP solo ve su propio camino. Por eso preguntamos a varias (1ms.dog, un sitio de China continental, Cloudflare, ip.sb, ipinfo.io, solo IPv4, solo IPv6, WebRTC por UDP), agrupamos por red y marcamos cada salida como local o proxy. Si responden servicios que normalmente están bloqueados en tu país, te avisamos de que hay una salida que ninguna comprobación pudo ver."],
+    ["¿Por qué veo una salida directa y otra de proxy?", "Porque muchos proxies y VPN eligen el camino según el sitio: algunos sitios van directo y el resto pasa por el proxy. Una sola comprobación de IP solo ve su propio camino. Por eso preguntamos a varias (1ms.dog, un sitio de China continental, Cloudflare, ip.sb, ipinfo.io, solo IPv4, solo IPv6, WebRTC por UDP), agrupamos por red y marcamos cada salida como directa o por proxy. Si responden servicios que normalmente están bloqueados en tu país, te avisamos de que hay una salida que ninguna comprobación pudo ver."],
     ["¿Cómo se mide la latencia?", "Tu navegador abre una conexión HTTPS real con cada servicio. La primera petición solo prepara la conexión (consulta DNS y saludos TCP y TLS); se muestra aparte y no cuenta. Luego se reutiliza la misma conexión para varias peticiones cronometradas y mostramos la mediana. Es la ida y vuelta de tu dispositivo al servidor más cercano, por tu Wi-Fi, tu proveedor y cualquier proxy: el retraso que de verdad notan tus apps."],
     ["¿Por qué es distinto del ping?", "El ping usa ICMP, que los navegadores no pueden enviar, y muchas redes tratan ICMP de forma distinta al tráfico normal, así que un buen ping no siempre significa una app rápida. La medición HTTPS sigue el mismo camino que las apps que usas. Las cifras suelen salir unos milisegundos más altas que el ping, porque el servidor tiene que responder una petición."],
     ["¿Qué significan las velocidades del perro?", "Rayo ≤ 30 ms: como estar en la misma ciudad. Carrera ≤ 80 ms: misma región. Trote ≤ 150 ms: suficiente para casi todo. Paseo ≤ 300 ms: se nota en juegos y llamadas. Siesta > 300 ms: muy lejos o una ruta congestionada. No volvió: sin conexión en 5 segundos, así que desde aquí no se puede acceder al servicio. Por debajo de 2 ms aparece el legendario perro 1ms."],
@@ -157,7 +157,7 @@ export default {
   v_one_far: "Lento, seguramente por una ruta larga o un proxy saturado. Mide todos los servicios para ver si los demás también van lentos.",
   v_one_lost: "Sin conexión en 5 segundos: {s} está bloqueado o no se puede acceder a él en esta conexión. Mide todos los servicios para ver si los demás responden.",
   lp_peers: "Para comparar, la página principal mide {s} junto con los demás servicios de {cat}: {list}.",
-  lp_via: "{s} se sirve a través de la red de {via}, así que el viaje termina en el servidor de {via} más cercano y no en los centros de datos de {s}.",
-  lp_via_same: "{s} se sirve a través de la red de {via}, así que el viaje termina en el servidor de {via} más cercano. {list} usan la misma red: si también van lentos, el problema es tu ruta hacia {via}, no {s}.",
+  lp_via: "{s} se sirve a través de la red de {via}, así que el viaje termina en el centro de datos de {via} más cercano y no en los servidores de {s}.",
+  lp_via_same: "{s} se sirve a través de la red de {via}, así que el viaje termina en el centro de datos de {via} más cercano. {list} usan la misma red: si también van lentos, el problema es tu ruta hacia {via}, no {s}.",
   lp_intro: "Tu navegador mide 10 viajes HTTPS reales a {s} a través de tu Wi-Fi, tu proveedor y cualquier VPN o proxy que uses, y muestra la mediana, la primera conexión y el jitter.",
 };

@@ -11,7 +11,7 @@ export default {
   h1: "De onde você se conecta e com que rapidez o mundo responde",
 
   exit_h: "Seu IP de saída",
-  k_local: "Local", k_proxy: "Proxy", seen_by: "Detectado por {list}",
+  k_local: "Direto", k_proxy: "Proxy", seen_by: "Detectado por {list}",
   sniff: "Procurando seu IP de saída…",
   hide: "Ocultar IPs", show: "Mostrar IPs",
   r_tz: "O fuso horário do seu aparelho é {a}, mas seu IP de saída está em {b}. Os sites podem usar isso para deduzir que você está usando VPN ou proxy.",
@@ -28,7 +28,7 @@ export default {
   lost_n: "{n} não voltaram",
   share: "Compartilhar",
   sub_telegram: "Data centers do Telegram", tg_dc_t: "O Telegram guarda cada conta em um de seus 5 data centers, conforme a região do número de celular. Aqui é medido o {dc} ({city}), onde está a maioria das contas da sua região. Para testar os 5, abra a página do Telegram.",
-  pop_t: "Quem respondeu foi o servidor de {pop}", pop_s: "servidor {pop}",
+  pop_t: "Quem respondeu foi o data center de {pop}", pop_s: "data center {pop}",
   egress_link: "Veja qual IP cada site enxerga",
   a_pet: "Fazer carinho no cachorro", a_dog: "Shiba do 1ms.dog", a_field: "Latência por serviço", a_nav: "Todos os testes de ping", a_close: "Fechar", a_prev: "Anterior", a_next: "Próximo",
   share_text: "Meu cachorro buscou {ok}/{n} serviços saindo de {where}, mediana de {ms} ms ({tier}). E o seu, é rápido?",
@@ -105,7 +105,7 @@ export default {
   faq_h: "Como funciona",
   docs: [
     ["O que é o IP de saída?", "É o endereço que os sites veem quando você os acessa. Em casa, normalmente é do seu provedor de internet. Com VPN, proxy, rede do trabalho ou Retransmissão Privada do iCloud, ele pertence a quem repassa seu tráfego, que pode estar em outra cidade ou outro país. Ele também decide para qual servidor cada serviço manda você, e isso afeta a velocidade."],
-    ["Por que aparece uma saída local e uma de proxy?", "Porque muitos proxies e VPNs escolhem o caminho conforme o site: alguns sites vão direto e o resto passa pelo proxy. Uma única verificação de IP só enxerga o próprio caminho. Por isso consultamos várias (1ms.dog, um site na China continental, Cloudflare, ip.sb, ipinfo.io, só IPv4, só IPv6, WebRTC via UDP), agrupamos por rede e marcamos cada saída como local ou proxy. Se responderem serviços normalmente bloqueados no seu país, avisamos que há uma saída que nenhuma verificação viu."],
+    ["Por que aparece uma saída direta e uma de proxy?", "Porque muitos proxies e VPNs escolhem o caminho conforme o site: alguns sites vão direto e o resto passa pelo proxy. Uma única verificação de IP só enxerga o próprio caminho. Por isso consultamos várias (1ms.dog, um site na China continental, Cloudflare, ip.sb, ipinfo.io, só IPv4, só IPv6, WebRTC via UDP), agrupamos por rede e marcamos cada saída como direta ou proxy. Se responderem serviços normalmente bloqueados no seu país, avisamos que há uma saída que nenhuma verificação viu."],
     ["Como a latência é medida?", "Seu navegador abre uma conexão HTTPS de verdade com cada serviço. A primeira requisição só prepara a conexão (consulta DNS e handshakes TCP e TLS); ela aparece separada e não entra na conta. Depois, a mesma conexão é reaproveitada para algumas requisições cronometradas, e mostramos a mediana. É a ida e volta do seu aparelho até o servidor mais próximo, pelo seu Wi-Fi, provedor e qualquer proxy: o atraso que seus apps sentem de verdade."],
     ["Por que é diferente do ping?", "O ping usa ICMP, que os navegadores não conseguem enviar, e muitas redes tratam ICMP de um jeito diferente do tráfego normal. Então um ping bom nem sempre significa um app rápido. A medição por HTTPS segue o mesmo caminho dos apps que você usa. Os números costumam ficar alguns milissegundos acima do ping, porque o servidor precisa responder a uma requisição."],
     ["O que significam as velocidades do cachorro?", "Relâmpago ≤ 30 ms: como na mesma cidade. Disparada ≤ 80 ms: mesma região. Trote ≤ 150 ms: dá conta de quase tudo. Passeio ≤ 300 ms: dá para sentir em jogos e chamadas. Soneca > 300 ms: muito longe ou rota congestionada. Não voltou: sem conexão em 5 segundos, então o serviço não está acessível daqui. Abaixo de 2 ms aparece o lendário cão 1ms."],
@@ -157,7 +157,7 @@ export default {
   v_one_far: "Lento, provavelmente por uma rota longa ou um proxy lotado. Teste todos os serviços para ver se os outros também estão lentos.",
   v_one_lost: "Sem conexão em 5 segundos: o {s} está bloqueado ou inacessível nesta conexão. Teste todos os serviços para ver se os outros respondem.",
   lp_peers: "Para comparar, a página inicial testa o {s} junto com os outros serviços de {cat}: {list}.",
-  lp_via: "O {s} é entregue pela rede da {via}, então a ida e volta termina no servidor da {via} mais próximo, e não nos data centers do {s}.",
-  lp_via_same: "O {s} é entregue pela rede da {via}, então a ida e volta termina no servidor da {via} mais próximo. {list} usam a mesma rede: se também estiverem lentos, o problema é a sua rota até a {via}, não o {s}.",
+  lp_via: "O {s} é entregue pela rede da {via}, então a ida e volta termina no data center da {via} mais próximo, e não nos servidores do {s}.",
+  lp_via_same: "O {s} é entregue pela rede da {via}, então a ida e volta termina no data center da {via} mais próximo. {list} usam a mesma rede: se também estiverem lentos, o problema é a sua rota até a {via}, não o {s}.",
   lp_intro: "Seu navegador cronometra 10 idas e voltas HTTPS reais até o {s} passando pelo seu Wi-Fi de verdade, seu provedor e qualquer VPN ou proxy, e mostra a mediana, a primeira conexão e o jitter.",
 };
