@@ -10,7 +10,7 @@ const code = encodeShare({ ts: 1793433600000, pack: "cn",
 test("a result link gets the result as its preview title, on the page it was shared from", () => {
   const home = resultMeta("/zh-cn/r/" + code);
   assert.equal(home.page, "/zh-cn/");
-  assert.match(home.title, /^中位延迟 105 ms（.+），2\/3 个服务有响应 · 1ms\.dog$/);
+  assert.match(home.title, /^中位延迟 105 ms（.+），2\/3 个服务有回应 · 1ms\.dog$/);
   assert.match(home.desc, /中国/);
   const one = resultMeta("/chatgpt/r/" + code);
   assert.equal(one.page, "/chatgpt/");
@@ -59,7 +59,7 @@ test("a compare link gets what changed as its preview title, its banner and its 
   assert.equal(zh.page, "/zh-cn/");
   // the verdict first, then the biggest change; the detail (uses that changed, the biggest changes) in the description
   assert.equal(zh.title, "B 更快：4 项变快 · Google 180→12 ms · 1ms.dog");
-  assert.equal(zh.desc, "AI 工具 可用→流畅，开发工具 可用→流畅 · Google 180→12 ms，YouTube 快 14 倍 · 综合中位数 185→23 ms");
+  assert.equal(zh.desc, "AI 工具 够用→流畅，开发工具 够用→流畅 · Google 180→12 ms，YouTube 快 14 倍 · 整体中位延迟 185→23 ms");
   assert.match(zh.cmp.head, /<p class="msc-h msc-better"[^>]*>B 更快：4 项变快<\/p>/);
   assert.match(zh.cmp.head, /日本 · 代理/);
   // groups: AI (ChatGPT), web (Google), video (YouTube), dev (GitHub); two columns of two

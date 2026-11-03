@@ -5,7 +5,7 @@
 <script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(/[/]c[/][^/]+[/][^/]+[/]?$/.test(location.pathname))d.classList.add("cmp");if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en"){var r=location.pathname.match(/[/](r[/][^/]+|c[/][^/]+[/][^/]+)[/]?$/);location.replace(P[l]+(r?r[0].slice(1):"")+location.hash)}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>百度 Ping Test: Is 百度 Slow or Down From Your Network? · 1ms.dog</title>
-<meta name="description" content="Test 百度 latency from your own browser: 10 real HTTPS round trips to 百度 (median, first connection, jitter), plus your exit IP and ISP. Free, no sign-up.">
+<meta name="description" content="Test 百度 latency from your own browser: 10 real HTTPS round trips to 百度 with the median, first connection time and jitter, plus your exit IP and ISP. Free, no sign-up.">
 <meta name="keywords" content="百度 ping, 百度 latency, 百度 ping test, 百度 slow, is 百度 down, 百度 connection test, 百度 lag">
 <meta name="robots" content="noindex, follow, max-image-preview:large">
 <meta name="application-name" content="1ms.dog">
@@ -19,7 +19,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="1ms.dog">
 <meta property="og:title" content="百度 Ping Test: Is 百度 Slow or Down From Your Network? · 1ms.dog">
-<meta property="og:description" content="Test 百度 latency from your own browser: 10 real HTTPS round trips to 百度 (median, first connection, jitter), plus your exit IP and ISP. Free, no sign-up.">
+<meta property="og:description" content="Test 百度 latency from your own browser: 10 real HTTPS round trips to 百度 with the median, first connection time and jitter, plus your exit IP and ISP. Free, no sign-up.">
 <meta property="og:url" content="https://1ms.dog/baidu/">
 <meta property="og:image" content="https://1ms.dog/og/en.png">
 <meta property="og:image:width" content="1200">
@@ -27,9 +27,9 @@
 <meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="百度 Ping Test: Is 百度 Slow or Down From Your Network? · 1ms.dog">
-<meta name="twitter:description" content="Test 百度 latency from your own browser: 10 real HTTPS round trips to 百度 (median, first connection, jitter), plus your exit IP and ISP. Free, no sign-up.">
+<meta name="twitter:description" content="Test 百度 latency from your own browser: 10 real HTTPS round trips to 百度 with the median, first connection time and jitter, plus your exit IP and ISP. Free, no sign-up.">
 <meta name="twitter:image" content="https://1ms.dog/og/en.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"How fast is 百度 from your network?","url":"https://1ms.dog/baidu/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"Test 百度 latency from your own browser: 10 real HTTPS round trips to 百度 (median, first connection, jitter), plus your exit IP and ISP. Free, no sign-up.","inLanguage":"en","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/"},{"@type":"ListItem","position":2,"name":"百度","item":"https://1ms.dog/baidu/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"How fast is 百度 from your network?","url":"https://1ms.dog/baidu/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"Test 百度 latency from your own browser: 10 real HTTPS round trips to 百度 with the median, first connection time and jitter, plus your exit IP and ISP. Free, no sign-up.","inLanguage":"en","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/"},{"@type":"ListItem","position":2,"name":"百度","item":"https://1ms.dog/baidu/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/app.3c59ed2318.css">
 </head>
@@ -64,10 +64,10 @@
     <section class="hero card">
       <div class="hero-l">
         <h1>How fast is 百度 from your network?</h1>
-        <p class="intro">Your browser times 10 real HTTPS round trips to 百度 through your actual Wi-Fi, ISP and any VPN or proxy, and shows the median, the first connection and the jitter.</p>
+        <p class="intro">Your browser times 10 real HTTPS round trips to 百度 through your actual Wi-Fi, internet provider and any VPN or proxy, then shows the median, the first connection time and the jitter.</p>
         <div class="exits" id="exits">
-          <div class="ex-h"><span data-i="exit_h">Your exit</span><button class="mini" id="eye" type="button" data-i="hide">Hide IPs</button><a class="eg ext" data-tool="egress" target="_blank" rel="noopener" hidden><span data-i="egress_link">Which IP each site sees</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a><span class="ex-p" id="exProg" aria-live="polite"></span></div>
-          <ul id="exList"><li class="ex sk-row"><span class="sk-t" data-i="sniff">Sniffing out your exit…</span></li></ul>
+          <div class="ex-h"><span data-i="exit_h">Your exit IP</span><button class="mini" id="eye" type="button" data-i="hide">Hide IPs</button><a class="eg ext" data-tool="egress" target="_blank" rel="noopener" hidden><span data-i="egress_link">See which IP each site sees</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a><span class="ex-p" id="exProg" aria-live="polite"></span></div>
+          <ul id="exList"><li class="ex sk-row"><span class="sk-t" data-i="sniff">Finding your exit IP…</span></li></ul>
           <p class="ex-note" id="exNote" hidden></p>
           <p class="links" id="exLinks" hidden></p>
         </div>
@@ -81,17 +81,17 @@
         <span class="ground" aria-hidden="true"></span>
       </div>
       <div class="sum" id="sum">
-        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">Sniffing out your exit…</p><p class="v-d" id="vText">When the samples are in, you'll see how fast 百度 is from here.</p><p class="links" id="vLinks" hidden></p></div>
+        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">Finding your exit IP…</p><p class="v-d" id="vText">When the requests are done, you'll see how fast 百度 is from here.</p><p class="links" id="vLinks" hidden></p></div>
         <div class="sum-acts">
           <div class="sum-btns">
             <button class="btn pri" id="run" type="button"><span data-i="start">Start test</span></button>
             <button class="btn" id="share" type="button" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span data-i="share">Share</span></button>
           </div>
-          <label class="auto"><input type="checkbox" id="auto" checked><span class="sw" aria-hidden="true"></span><span data-i="auto_label">Test when the page opens</span></label>
+          <label class="auto"><input type="checkbox" id="auto" checked><span class="sw" aria-hidden="true"></span><span data-i="auto_label">Test as soon as the page opens</span></label>
         </div>
         <div class="prog" id="prog"><i></i></div>
         <div class="stats">
-          <div class="stat" id="stMed"><em data-i="one_med">Latency (median)</em><b>–</b><i></i></div>
+          <div class="stat" id="stMed"><em data-i="one_med">Median latency</em><b>–</b><i></i></div>
           <div class="stat" id="stCold"><em data-i="one_cold">First connection</em><b>–</b><i></i></div>
           <div class="stat" id="stJit"><em data-i="one_jit">Jitter</em><b>–</b><i></i></div>
         </div>
@@ -99,7 +99,7 @@
       </div>
     </section>
 
-    <a class="cta card" href="/"><span><b data-i="cta_h">How fast is everything else?</b><i data-i="cta_d">The home page tests 40 services at once and tells you where it's slow.</i></span><span class="btn pri" data-i="cta_btn">Test all services</span></a>
+    <a class="cta card" href="/"><span><b data-i="cta_h">How fast is everything else?</b><i data-i="cta_d">The home page tests 40 services at once and tells you where the slowdown is.</i></span><span class="btn pri" data-i="cta_btn">Test all services</span></a>
   </main>
 
   <footer class="foot">
@@ -118,14 +118,14 @@
         <select id="helpSel" aria-labelledby="helpT"></select>
         <button class="icon-btn" type="button" data-hstep="1" aria-label="Next"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg></button>
       </div>
-      <div class="help-c" id="helpC"><article data-hqb="0"><h3>How fast is 百度 from your network?</h3><p>To compare, the home page tests 百度 together with the other Local favorites services: 哔哩哔哩, 微信, 抖音.</p></article><article data-hqb="1" hidden><h3>What is an exit IP?</h3><p>It's the address websites see when you visit them. At home it usually belongs to your ISP. With a VPN, proxy, company network or iCloud Private Relay, it belongs to whoever forwards your traffic, and that can be in another city or country. The exit decides which server a service sends you to, so it decides your speed too.</p></article><article data-hqb="2" hidden><h3>Why do I see a local exit and a proxy exit?</h3><p>Rule-based proxies and VPNs pick the route by destination: some sites go direct, the rest through the proxy, so one IP check only sees its own route. We ask several at once (a site in mainland China, Cloudflare, ip.sb, ipinfo.io, IPv4-only and IPv6-only checks, and WebRTC over UDP), group what they see by network, and mark each exit local or proxy. If services that are usually unreachable from your country answer anyway, we point out the exit none of the checks could see.</p></article><article data-hqb="3" hidden><h3>How is latency measured?</h3><p>Your browser opens a real HTTPS connection to each service. The first request only sets up the connection (DNS, TCP, TLS) and isn't counted; then the same connection is reused for timed requests, and we show the median. That is one round trip from your device to the service's nearest server, through your Wi-Fi, ISP and any proxy: the delay your apps actually get.</p></article><article data-hqb="4" hidden><h3>Why is this different from ping?</h3><p>Ping uses ICMP, which browsers can't send, and many networks treat it differently from normal traffic. HTTPS timing follows the same path as the apps you use. Numbers are usually a few milliseconds higher than ping, because the server has to answer the request.</p></article><article data-hqb="5" hidden><h3>What do the dog speeds mean?</h3><p>Zoomies ≤ 30 ms: same city. Sprint ≤ 80 ms: same region. Trot ≤ 150 ms: fine for almost everything. Stroll ≤ 300 ms: noticeable in games and calls. Nap &gt; 300 ms: far away or congested. Not back: no connection within 5 seconds, so the service is unreachable from here. Under 2 ms earns the legendary 1ms dog.</p></article><article data-hqb="6" hidden><h3>Is my data sent anywhere?</h3><p>No. Every request goes straight from your browser to the service being tested. 1ms.dog only serves the static page and never receives your results. Your last result stays in this browser so the dog can tell you if things changed. A shared link carries the result itself: the country and timings, plus city and network only if you tick the box, never IP addresses. When someone opens it, the server reads it only to put the result in the link preview.</p></article></div>
+      <div class="help-c" id="helpC"><article data-hqb="0"><h3>How fast is 百度 from your network?</h3><p>To compare, the home page tests 百度 together with the other Local favorites services: 哔哩哔哩, 微信, 抖音.</p></article><article data-hqb="1" hidden><h3>What is an exit IP?</h3><p>It's the address websites see when you visit them. At home it usually belongs to your internet provider. On a VPN, proxy, work network or iCloud Private Relay, it belongs to whoever forwards your traffic, and that can be in another city or another country. Services pick which server to send you to based on this address, so it affects your speed too.</p></article><article data-hqb="2" hidden><h3>Why do I see a local exit and a proxy exit?</h3><p>Because many proxies and VPNs choose the route by website: some sites go direct, the rest through the proxy. One IP check only sees its own route. So we ask several at once: 1ms.dog itself, a site in mainland China, Cloudflare, ip.sb, ipinfo.io, IPv4-only and IPv6-only checks, and WebRTC (over UDP). We group what they see by network and mark each exit as local or proxy. If services that are usually blocked in your country answer anyway, we tell you there's an exit none of the checks could see.</p></article><article data-hqb="3" hidden><h3>How is latency measured?</h3><p>Your browser opens a real HTTPS connection to each service. The first request only sets up the connection (DNS lookup, TCP and TLS handshakes); it's shown separately and not counted. Then the same connection is reused for a few timed requests, and we show the median. So you see one round trip from your device to the service's nearest server, through your Wi-Fi, provider and any proxy: the delay your apps actually feel.</p></article><article data-hqb="4" hidden><h3>Why is this different from ping?</h3><p>Ping uses ICMP, which browsers can't send, and many networks treat ICMP differently from normal traffic, so a good ping doesn't always mean a fast app. HTTPS timing takes the same path as the apps you use. The numbers are usually a few milliseconds higher than ping, because the server has to answer a request.</p></article><article data-hqb="5" hidden><h3>What do the dog speeds mean?</h3><p>Zoomies ≤ 30 ms: about the same city. Sprint ≤ 80 ms: same region. Trot ≤ 150 ms: fine for almost everything. Stroll ≤ 300 ms: you'll notice it in games and calls. Nap &gt; 300 ms: far away, or a congested route. Not back: no connection within 5 seconds, so the service can't be reached from here. Under 2 ms unlocks the legendary 1ms dog.</p></article><article data-hqb="6" hidden><h3>Is my data sent anywhere?</h3><p>Your results aren't sent to us. Latency requests go straight from your browser to the services being tested. To find your exit IP, your browser asks 1ms.dog and a few public IP lookup services, and they see your IP, because that's how an IP check works. Your last result stays in this browser so the dog can tell you if anything changed. A result leaves your browser only when you share it or report a problem. A shared link carries the country and timings, plus city and network only if you tick the box, and never IP addresses. On 1ms.dog the link is shortened and a picture of the result is stored for the link preview in chat apps.</p></article></div>
     </div>
   </div>
 </div>
 
 
 <script type="application/json" id="data">{"lang":"en","paths":{"en":"/baidu/","zh-CN":"/zh-cn/baidu/","zh-TW":"/zh-tw/baidu/","ja":"/ja/baidu/","ko":"/ko/baidu/","es":"/es/baidu/","fr":"/fr/baidu/","de":"/de/baidu/","pt":"/pt/baidu/","ru":"/ru/baidu/"},"pack":"na","spot":"baidu","set":null}</script>
-<script src="/assets/l.en.1487030fd1.js" defer></script>
+<script src="/assets/l.en.c7ed3b5418.js" defer></script>
 <script src="/assets/app.934a1f5fec.js" defer></script>
 </body>
 </html>

@@ -5,7 +5,7 @@
 <script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(/[/]c[/][^/]+[/][^/]+[/]?$/.test(location.pathname))d.classList.add("cmp");if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en"){var r=location.pathname.match(/[/](r[/][^/]+|c[/][^/]+[/][^/]+)[/]?$/);location.replace(P[l]+(r?r[0].slice(1):"")+location.hash)}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Zalando 延迟测试：Zalando 访问慢、连不上？在线检测 · 1ms.dog</title>
-<meta name="description" content="在浏览器里测试 Zalando 的真实延迟：10 次到 Zalando 的 HTTPS 往返，给出中位数、首次连接耗时和抖动，以及你的出口 IP 和运营商。免费，无需注册。">
+<meta name="description" content="在浏览器里测 Zalando 的真实延迟：连续测 10 次到 Zalando 的 HTTPS 往返，给出中位延迟、首次连接耗时和抖动，同时显示你的出口 IP 和运营商。免费，不用注册。">
 <meta name="keywords" content="Zalando延迟, Zalando测速, Zalando访问慢, Zalando连不上, Zalando ping, Zalando速度测试, Zalando连接测试">
 <meta http-equiv="Cache-Control" content="no-transform">
 <meta http-equiv="Cache-Control" content="no-siteapp">
@@ -22,7 +22,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="1ms.dog">
 <meta property="og:title" content="Zalando 延迟测试：Zalando 访问慢、连不上？在线检测 · 1ms.dog">
-<meta property="og:description" content="在浏览器里测试 Zalando 的真实延迟：10 次到 Zalando 的 HTTPS 往返，给出中位数、首次连接耗时和抖动，以及你的出口 IP 和运营商。免费，无需注册。">
+<meta property="og:description" content="在浏览器里测 Zalando 的真实延迟：连续测 10 次到 Zalando 的 HTTPS 往返，给出中位延迟、首次连接耗时和抖动，同时显示你的出口 IP 和运营商。免费，不用注册。">
 <meta property="og:url" content="https://1ms.dog/zh-cn/zalando/">
 <meta property="og:image" content="https://1ms.dog/og/zh-cn.png">
 <meta property="og:image:width" content="1200">
@@ -30,9 +30,9 @@
 <meta property="og:locale" content="zh_CN">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Zalando 延迟测试：Zalando 访问慢、连不上？在线检测 · 1ms.dog">
-<meta name="twitter:description" content="在浏览器里测试 Zalando 的真实延迟：10 次到 Zalando 的 HTTPS 往返，给出中位数、首次连接耗时和抖动，以及你的出口 IP 和运营商。免费，无需注册。">
+<meta name="twitter:description" content="在浏览器里测 Zalando 的真实延迟：连续测 10 次到 Zalando 的 HTTPS 往返，给出中位延迟、首次连接耗时和抖动，同时显示你的出口 IP 和运营商。免费，不用注册。">
 <meta name="twitter:image" content="https://1ms.dog/og/zh-cn.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"从你的网络访问 Zalando 有多快？","url":"https://1ms.dog/zh-cn/zalando/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在浏览器里测试 Zalando 的真实延迟：10 次到 Zalando 的 HTTPS 往返，给出中位数、首次连接耗时和抖动，以及你的出口 IP 和运营商。免费，无需注册。","inLanguage":"zh-CN","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/zh-cn/"},{"@type":"ListItem","position":2,"name":"Zalando","item":"https://1ms.dog/zh-cn/zalando/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://1ms.dog/#site","name":"1ms.dog","url":"https://1ms.dog/","inLanguage":["en","zh-CN","zh-TW","ja","ko","es","fr","de","pt","ru"]},{"@type":"WebApplication","name":"从你的网络访问 Zalando 有多快？","url":"https://1ms.dog/zh-cn/zalando/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","description":"在浏览器里测 Zalando 的真实延迟：连续测 10 次到 Zalando 的 HTTPS 往返，给出中位延迟、首次连接耗时和抖动，同时显示你的出口 IP 和运营商。免费，不用注册。","inLanguage":"zh-CN","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isPartOf":{"@id":"https://1ms.dog/#site"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"1ms.dog","item":"https://1ms.dog/zh-cn/"},{"@type":"ListItem","position":2,"name":"Zalando","item":"https://1ms.dog/zh-cn/zalando/"}]}]}</script>
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/app.3c59ed2318.css">
 </head>
@@ -48,7 +48,7 @@
         <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M1.5 8h13M8 1.5c2 2 2.8 4 2.8 6.5S10 12.5 8 14.5C6 12.5 5.2 10.5 5.2 8S6 3.5 8 1.5z"/></svg>
         <select id="lang"><option value="en">English</option><option value="zh-CN" selected>简体中文</option><option value="zh-TW">繁體中文</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="es">Español</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="pt">Português</option><option value="ru">Русский</option></select>
       </label>
-      <button class="icon-btn" id="helpBtn" type="button" aria-haspopup="dialog" aria-controls="help"><span class="sr" data-i="faq_h">原理与常见问题</span>
+      <button class="icon-btn" id="helpBtn" type="button" aria-haspopup="dialog" aria-controls="help"><span class="sr" data-i="faq_h">原理和常见问题</span>
         <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M6.3 6.2a1.8 1.8 0 1 1 2.5 1.7c-.5.2-.8.6-.8 1.1v.4M8 11.3v.1"/></svg>
       </button>
       <a class="icon-btn gh" href="https://github.com/yt1988/1ms.dog" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .2a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.7-3.6 3.9.3.3.6.8.6 1.5v2.2c0 .2.1.5.6.4A8 8 0 0 0 8 .2z"/></svg></a>
@@ -62,15 +62,15 @@
 
   <main>
     <div class="shared" id="shared" hidden><span id="sharedTxt"></span>
-      <span class="shared-b"><button class="btn pri" id="testMine" type="button" data-i="test_mine">测我自己的网络</button></span></div>
+      <span class="shared-b"><button class="btn pri" id="testMine" type="button" data-i="test_mine">测测我的网络</button></span></div>
 
     <section class="hero card">
       <div class="hero-l">
         <h1>从你的网络访问 Zalando 有多快？</h1>
-        <p class="intro">你的浏览器经过真实的 Wi‑Fi、运营商以及 VPN 或代理，连续测量 10 次到 Zalando 的 HTTPS 往返时间，给出中位数、首次连接耗时和抖动。</p>
+        <p class="intro">你的浏览器会连续测 10 次到 Zalando 的 HTTPS 往返，路上经过你真实的 Wi‑Fi、运营商，以及 VPN 或代理（如果有），最后给出中位延迟、首次连接耗时和抖动。</p>
         <div class="exits" id="exits">
-          <div class="ex-h"><span data-i="exit_h">你的出口</span><button class="mini" id="eye" type="button" data-i="hide">隐藏 IP</button><a class="eg ext" data-tool="egress" target="_blank" rel="noopener" hidden><span data-i="egress_link">查看每个网站看到的 IP</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a><span class="ex-p" id="exProg" aria-live="polite"></span></div>
-          <ul id="exList"><li class="ex sk-row"><span class="sk-t" data-i="sniff">正在嗅探你的出口…</span></li></ul>
+          <div class="ex-h"><span data-i="exit_h">你的出口 IP</span><button class="mini" id="eye" type="button" data-i="hide">隐藏 IP</button><a class="eg ext" data-tool="egress" target="_blank" rel="noopener" hidden><span data-i="egress_link">看看每个网站看到的是哪个 IP</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg></a><span class="ex-p" id="exProg" aria-live="polite"></span></div>
+          <ul id="exList"><li class="ex sk-row"><span class="sk-t" data-i="sniff">正在查你的出口 IP…</span></li></ul>
           <p class="ex-note" id="exNote" hidden></p>
           <p class="links" id="exLinks" hidden></p>
         </div>
@@ -84,17 +84,17 @@
         <span class="ground" aria-hidden="true"></span>
       </div>
       <div class="sum" id="sum">
-        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">正在嗅探你的出口…</p><p class="v-d" id="vText">采样完成后，告诉你从这里访问 Zalando 有多快。</p><p class="links" id="vLinks" hidden></p></div>
+        <div class="sum-head"><p class="v-h" id="vHead" data-i="sniff">正在查你的出口 IP…</p><p class="v-d" id="vText">测完后告诉你从这里访问 Zalando 有多快。</p><p class="links" id="vLinks" hidden></p></div>
         <div class="sum-acts">
           <div class="sum-btns">
             <button class="btn pri" id="run" type="button"><span data-i="start">开始测试</span></button>
             <button class="btn" id="share" type="button" disabled><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span data-i="share">分享</span></button>
           </div>
-          <label class="auto"><input type="checkbox" id="auto" checked><span class="sw" aria-hidden="true"></span><span data-i="auto_label">打开页面时自动测试</span></label>
+          <label class="auto"><input type="checkbox" id="auto" checked><span class="sw" aria-hidden="true"></span><span data-i="auto_label">打开页面就自动测试</span></label>
         </div>
         <div class="prog" id="prog"><i></i></div>
         <div class="stats">
-          <div class="stat" id="stMed"><em data-i="one_med">延迟中位数</em><b>–</b><i></i></div>
+          <div class="stat" id="stMed"><em data-i="one_med">中位延迟</em><b>–</b><i></i></div>
           <div class="stat" id="stCold"><em data-i="one_cold">首次连接</em><b>–</b><i></i></div>
           <div class="stat" id="stJit"><em data-i="one_jit">抖动</em><b>–</b><i></i></div>
         </div>
@@ -102,33 +102,33 @@
       </div>
     </section>
 
-    <a class="cta card" href="/zh-cn/"><span><b data-i="cta_h">其他服务快不快？</b><i data-i="cta_d">首页一次测 40 个常用服务，还会告诉你慢在哪一侧。</i></span><span class="btn pri" data-i="cta_btn">测全部服务</span></a>
+    <a class="cta card" href="/zh-cn/"><span><b data-i="cta_h">其他服务快不快？</b><i data-i="cta_d">首页一次测 40 个常用服务，还会告诉你慢在哪一边。</i></span><span class="btn pri" data-i="cta_btn">测全部服务</span></a>
   </main>
 
   <footer class="foot">
-    <nav class="sitemap" aria-label="全部测速页面"><b>单个服务测速：</b><a href="/zh-cn/">测全部服务</a><a href="/zh-cn/chatgpt/">ChatGPT 延迟测试</a><a href="/zh-cn/claude/">Claude 延迟测试</a><a href="/zh-cn/gemini/">Gemini 延迟测试</a><a href="/zh-cn/github/">GitHub 延迟测试</a><a href="/zh-cn/dockerhub/">Docker Hub 延迟测试</a><a href="/zh-cn/huggingface/">Hugging Face 延迟测试</a><a href="/zh-cn/npm/">npm 延迟测试</a><a href="/zh-cn/google/">Google 延迟测试</a><a href="/zh-cn/youtube/">YouTube 延迟测试</a><a href="/zh-cn/steam/">Steam 延迟测试</a><a href="/zh-cn/telegram/">Telegram 延迟测试</a><a href="/zh-cn/x/">X 延迟测试</a><a href="/zh-cn/netflix/">Netflix 延迟测试</a><i class="br"></i><b>按类别：</b><a href="/zh-cn/ai/">AI</a><a href="/zh-cn/web/">常用网站</a><a href="/zh-cn/video/">视频与音乐</a><a href="/zh-cn/social/">社交与聊天</a><a href="/zh-cn/dev/">开发工具</a><a href="/zh-cn/game/">游戏</a><a href="/zh-cn/cdn/">CDN 服务商</a><i class="br"></i><b>按地区：</b><a href="/zh-cn/region/cn/">中国大陆</a><a href="/zh-cn/region/tw/">台湾 · 香港</a><a href="/zh-cn/region/jp/">日本</a><a href="/zh-cn/region/kr/">韩国</a><a href="/zh-cn/region/ru/">俄罗斯</a><a href="/zh-cn/region/in/">南亚</a><a href="/zh-cn/region/sea/">东南亚</a><a href="/zh-cn/region/eu/">欧洲</a><a href="/zh-cn/region/latam/">拉丁美洲</a><a href="/zh-cn/region/na/">北美</a><a href="/zh-cn/region/me/">中东</a></nav>
+    <nav class="sitemap" aria-label="全部测速页面"><b>单个服务测速：</b><a href="/zh-cn/">测全部服务</a><a href="/zh-cn/chatgpt/">ChatGPT 延迟测试</a><a href="/zh-cn/claude/">Claude 延迟测试</a><a href="/zh-cn/gemini/">Gemini 延迟测试</a><a href="/zh-cn/github/">GitHub 延迟测试</a><a href="/zh-cn/dockerhub/">Docker Hub 延迟测试</a><a href="/zh-cn/huggingface/">Hugging Face 延迟测试</a><a href="/zh-cn/npm/">npm 延迟测试</a><a href="/zh-cn/google/">Google 延迟测试</a><a href="/zh-cn/youtube/">YouTube 延迟测试</a><a href="/zh-cn/steam/">Steam 延迟测试</a><a href="/zh-cn/telegram/">Telegram 延迟测试</a><a href="/zh-cn/x/">X 延迟测试</a><a href="/zh-cn/netflix/">Netflix 延迟测试</a><i class="br"></i><b>按类别：</b><a href="/zh-cn/ai/">AI</a><a href="/zh-cn/web/">常用网站</a><a href="/zh-cn/video/">视频和音乐</a><a href="/zh-cn/social/">社交和聊天</a><a href="/zh-cn/dev/">开发工具</a><a href="/zh-cn/game/">游戏</a><a href="/zh-cn/cdn/">CDN 服务商</a><i class="br"></i><b>按地区：</b><a href="/zh-cn/region/cn/">中国大陆</a><a href="/zh-cn/region/tw/">台湾 · 香港</a><a href="/zh-cn/region/jp/">日本</a><a href="/zh-cn/region/kr/">韩国</a><a href="/zh-cn/region/ru/">俄罗斯</a><a href="/zh-cn/region/in/">南亚</a><a href="/zh-cn/region/sea/">东南亚</a><a href="/zh-cn/region/eu/">欧洲</a><a href="/zh-cn/region/latam/">拉丁美洲</a><a href="/zh-cn/region/na/">北美</a><a href="/zh-cn/region/me/">中东</a></nav>
   </footer>
 </div>
 
 <div class="scrim" id="help" hidden>
   <div class="dialog help" role="dialog" aria-modal="true" aria-labelledby="helpT">
-    <div class="dlg-h"><h2 id="helpT" data-i="faq_h">原理与常见问题</h2>
+    <div class="dlg-h"><h2 id="helpT" data-i="faq_h">原理和常见问题</h2>
       <button class="icon-btn" data-close type="button" aria-label="关闭"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
     <div class="help-b">
-      <nav class="help-nav" id="helpNav" role="tablist"><button type="button" role="tab" data-hq="0" aria-selected="true">从你的网络访问 Zalando 有多快？</button><button type="button" role="tab" data-hq="1" aria-selected="false">什么是出口 IP？</button><button type="button" role="tab" data-hq="2" aria-selected="false">为什么会同时有本地出口和代理出口？</button><button type="button" role="tab" data-hq="3" aria-selected="false">延迟是怎么测的？</button><button type="button" role="tab" data-hq="4" aria-selected="false">为什么和 ping 的结果不一样？</button><button type="button" role="tab" data-hq="5" aria-selected="false">狗狗的速度等级是什么意思？</button><button type="button" role="tab" data-hq="6" aria-selected="false">我的数据会被发送到哪里吗？</button></nav>
+      <nav class="help-nav" id="helpNav" role="tablist"><button type="button" role="tab" data-hq="0" aria-selected="true">从你的网络访问 Zalando 有多快？</button><button type="button" role="tab" data-hq="1" aria-selected="false">什么是出口 IP？</button><button type="button" role="tab" data-hq="2" aria-selected="false">为什么同时有本地出口和代理出口？</button><button type="button" role="tab" data-hq="3" aria-selected="false">延迟是怎么测的？</button><button type="button" role="tab" data-hq="4" aria-selected="false">为什么和 ping 的结果不一样？</button><button type="button" role="tab" data-hq="5" aria-selected="false">狗狗的速度等级是什么意思？</button><button type="button" role="tab" data-hq="6" aria-selected="false">我的数据会被发到哪里？</button></nav>
       <div class="help-pick">
         <button class="icon-btn" type="button" data-hstep="-1" aria-label="上一个"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 4L6 8l4 4"/></svg></button>
         <select id="helpSel" aria-labelledby="helpT"></select>
         <button class="icon-btn" type="button" data-hstep="1" aria-label="下一个"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg></button>
       </div>
-      <div class="help-c" id="helpC"><article data-hqb="0"><h3>从你的网络访问 Zalando 有多快？</h3><p>想对比的话，首页会把 Zalando 和其他本地常用服务一起测：BBC、Booking.com、Allegro。</p></article><article data-hqb="1" hidden><h3>什么是出口 IP？</h3><p>出口 IP 是你访问网站时，对方看到的地址。在家里一般属于你的宽带运营商；用了 VPN、代理、公司网络或 iCloud 专用代理时，它属于帮你转发流量的那一方，可能在另一个城市甚至另一个国家。出口决定了服务把你分配到哪台服务器，所以也决定了你的速度。</p></article><article data-hqb="2" hidden><h3>为什么会同时有本地出口和代理出口？</h3><p>分流规则的代理和 VPN 会按目标网站选路：国内网站直连，其他网站走代理。所以只问一个检测点，只能看到它那条路。我们同时询问国内站点、Cloudflare、ip.sb、ipinfo.io、仅 IPv4 和仅 IPv6 的检测，以及 WebRTC（UDP），按网络归并后列出每个出口，并标出本地还是代理。如果某些通常连不上的服务却能连上，也会提示你还有一个检测不到的出口。</p></article><article data-hqb="3" hidden><h3>延迟是怎么测的？</h3><p>你的浏览器和每个服务建立一条真实的 HTTPS 连接。第一个请求只用来建立连接（DNS、TCP、TLS），单独显示、不计入；之后复用这条连接发出计时请求，取中位数。这就是从你的设备到该服务最近服务器的一次往返，经过你的 Wi‑Fi、运营商和代理，也就是你的应用实际感受到的延迟。</p></article><article data-hqb="4" hidden><h3>为什么和 ping 的结果不一样？</h3><p>ping 用的是 ICMP，浏览器发不了，而且很多网络对 ICMP 的处理和普通流量不一样。HTTPS 计时和你日常用的应用走同一条路。数字通常会比 ping 高几毫秒，因为服务器需要处理一次请求。</p></article><article data-hqb="5" hidden><h3>狗狗的速度等级是什么意思？</h3><p>闪电狗 ≤ 30 ms：同城。飞奔 ≤ 80 ms：同一地区。小跑 ≤ 150 ms：几乎干什么都够用。散步 ≤ 300 ms：打游戏、视频通话会有感觉。趴窝 &gt; 300 ms：离得远或者线路拥堵。没叼回来：5 秒内连不上，说明从这里无法访问。低于 2 ms 可以解锁传说中的 1ms 神犬。</p></article><article data-hqb="6" hidden><h3>我的数据会被发送到哪里吗？</h3><p>不会。每个请求都从你的浏览器直接发往被测试的服务，1ms.dog 只提供这个静态页面，从不接收你的测试结果。上一次的结果只保存在你的浏览器里，方便狗狗告诉你网络有没有变化。分享链接本身就带着结果：国家和延迟，勾选后才加上城市和运营商，不含 IP 地址。别人打开链接时，服务器只读取它来生成链接预览。</p></article></div>
+      <div class="help-c" id="helpC"><article data-hqb="0"><h3>从你的网络访问 Zalando 有多快？</h3><p>想对比的话，首页会把 Zalando 和其他本地常用服务一起测：BBC、Booking.com、Allegro。</p></article><article data-hqb="1" hidden><h3>什么是出口 IP？</h3><p>出口 IP 就是网站看到的你的地址。在家上网时，它通常属于你的宽带运营商；用了 VPN、代理、公司网络或 iCloud 专用代理，它就属于替你转发流量的那一方，可能在别的城市，甚至别的国家。服务会按出口 IP 把你分到某台服务器，所以它也直接影响你的速度。</p></article><article data-hqb="2" hidden><h3>为什么同时有本地出口和代理出口？</h3><p>因为很多代理和 VPN 会按网站选路：有的网站直连，其他网站走代理。只问一个检测点，就只能看到其中一条路。所以我们同时问好几个：1ms.dog 自己、国内站点、Cloudflare、ip.sb、ipinfo.io、只走 IPv4 和只走 IPv6 的检测，以及 WebRTC（走 UDP）。再把结果按网络归并，列出每个出口，标明是本地还是代理。如果平时从你所在地区连不上的服务却连上了，我们也会提醒你：还有一个出口没被检测到。</p></article><article data-hqb="3" hidden><h3>延迟是怎么测的？</h3><p>你的浏览器会和每个服务建立一条真实的 HTTPS 连接。第一次请求只用来建立连接（查 DNS、TCP 握手、TLS 加密握手），单独显示，不算进结果；之后在这条连接上再发几次请求计时，取中位数。所以你看到的，是从你的设备经过 Wi‑Fi、运营商和代理，到这个服务最近一台服务器的一次往返，也就是你平时用 App 时实际感受到的延迟。</p></article><article data-hqb="4" hidden><h3>为什么和 ping 的结果不一样？</h3><p>ping 用的是 ICMP 协议，浏览器发不了；而且很多网络对 ICMP 的处理和普通流量不同，ping 快不代表用起来快。HTTPS 计时和你平时用的 App 走同一条路。数字通常比 ping 高几毫秒，因为服务器要多处理一次请求。</p></article><article data-hqb="5" hidden><h3>狗狗的速度等级是什么意思？</h3><p>闪电狗 ≤ 30 ms：相当于同城。飞奔 ≤ 80 ms：同一地区。小跑 ≤ 150 ms：几乎干什么都够用。散步 ≤ 300 ms：打游戏、视频通话会觉得慢。趴窝 &gt; 300 ms：离得太远，或者线路拥堵。没叼回来：5 秒内没连上，说明从这里访问不了。低于 2 ms，会解锁传说中的 1ms 神犬。</p></article><article data-hqb="6" hidden><h3>我的数据会被发到哪里？</h3><p>测速结果不会发给我们。延迟测试的请求都由你的浏览器直接发给被测的服务；查出口 IP 时，浏览器会去问 1ms.dog 和几个公开的 IP 检测服务，它们自然会看到你的 IP，这本来就是查 IP 的方式。上次的结果只存在你的浏览器里，用来告诉你网络有没有变化。只有你点了分享或报告问题，结果才会离开浏览器：分享链接里带着国家和延迟，勾选后才加上城市和运营商，从不包含 IP 地址；在 1ms.dog 上，链接会被缩短，并保存一张结果卡片，作为聊天软件里的链接预览。</p></article></div>
     </div>
   </div>
 </div>
 
 
 <script type="application/json" id="data">{"lang":"zh-CN","paths":{"en":"/zalando/","zh-CN":"/zh-cn/zalando/","zh-TW":"/zh-tw/zalando/","ja":"/ja/zalando/","ko":"/ko/zalando/","es":"/es/zalando/","fr":"/fr/zalando/","de":"/de/zalando/","pt":"/pt/zalando/","ru":"/ru/zalando/"},"pack":"cn","spot":"zalando","set":null}</script>
-<script src="/assets/l.zh-cn.06e8b1b7a5.js" defer></script>
+<script src="/assets/l.zh-cn.ba914f6c97.js" defer></script>
 <script src="/assets/app.934a1f5fec.js" defer></script>
 </body>
 </html>
