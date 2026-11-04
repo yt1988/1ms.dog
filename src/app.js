@@ -58,6 +58,8 @@
     const node = document.importNode(svg, true);
     $("#dogImg").replaceWith(node);
     dogSvg = node;
+    const head = node.querySelector("#original-1ms-doge-mascot");
+    if (head) head.insertAdjacentHTML("beforeend", HELMET_SVG);
     durs = [...node.querySelectorAll("animate, animateTransform, animateMotion")].map(a => [a, parseFloat(a.getAttribute("dur")) || 0.76]);
     setMood(stage.dataset.mood);
   }).catch(() => {});
@@ -70,15 +72,99 @@
   }
   const SPEED = { sniff: 0.6, idle: 0.35, run: 1.15, legend: 2.6, zoom: 1.7, sprint: 1.25, trot: 0.85, stroll: 0.5, nap: 0, lost: 0, far: 1, odd: 0.85 };
   function setMood(m) { stage.dataset.mood = m; dogSpeed(SPEED[m] ?? 1); }
-  let pets = 0, petT = 0;
+  // the hard hat (an Easter egg below), drawn in the head's own coordinates so it moves with it
+  const HELMET_SVG = '<g id="helmet"><path d="M1010 330C1010 196 1320 196 1320 330Z" fill="#f6c343" stroke="#2a100a" stroke-width="14" stroke-linejoin="round"/>' +
+    '<path d="M1165 208V326M1090 228 1105 326M1240 228 1225 326" stroke="#d99a1e" stroke-width="12" stroke-linecap="round"/><rect x="975" y="316" width="380" height="30" rx="15" fill="#f6c343" stroke="#2a100a" stroke-width="14"/></g>';
+  // a class on the stage for one animation, restarted if it is already running
+  const act = (c, ms) => { stage.classList.remove(c); void stage.offsetWidth; stage.classList.add(c); clearTimeout(act[c]); act[c] = setTimeout(() => stage.classList.remove(c), ms); };
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // a pet: a hop, a head tilt, a wag or a roll, never the same twice in a row; five quick ones: 1ms mode
+  let pets = 0, petT = 0, petLast = "", held = false;
+  const PETS = { hop: ["pet", 500, "mood_pet"], tilt: ["tilt", 900, "mood_tilt"], wag: ["wag", 1500, "mood_wag"], roll: ["roll", 800, "mood_roll"] };
   $("#dog").onclick = () => {
+    if (held) { held = false; return; }                      // the end of a chin scratch, not a pet
     const now = Date.now(); pets = now - petT < 600 ? pets + 1 : 1; petT = now;
-    stage.classList.remove("pet"); void stage.offsetWidth; stage.classList.add("pet");
-    if (pets >= 5) {                                           // five quick pets: 1ms mode
-      pets = 0; stage.classList.add("turbo"); say("mood_turbo"); dogSpeed(4);
+    if (pets >= 5) {
+      pets = 0; act("pet", 500); stage.classList.add("turbo"); say("mood_turbo"); dogSpeed(4);
       setTimeout(() => { stage.classList.remove("turbo"); setMood(stage.dataset.mood); say(moodKey()); }, 2600);
-    } else if (!RUN) say("mood_pet");
+      return;
+    }
+    // a napping dog doesn't wag (its animation is stopped)
+    const kinds = Object.keys(PETS).filter(k => k !== petLast && !(k === "wag" && !SPEED[stage.dataset.mood]));
+    const k = pets > 1 ? "hop" : kinds[Math.floor(Math.random() * kinds.length)], [c, ms, line] = PETS[k];
+    petLast = k; act(c, ms);
+    if (k === "wag" && dogSvg) {
+      const tail = dogSvg.querySelector("#tail > animateTransform");
+      if (tail) { tail.setAttribute("dur", ".16s"); setTimeout(() => setMood(stage.dataset.mood), ms); }
+    }
+    if (!RUN) { clearTimeout(lineT); say(line); }
   };
+  // a long press is a chin scratch: eyes shut, head up, until let go
+  let holdT = 0;
+  $("#dog").addEventListener("pointerdown", () => { clearTimeout(holdT); holdT = setTimeout(() => { held = true; stage.classList.add("chin"); clearTimeout(lineT); say("mood_chin"); }, 450); });
+  for (const e of ["pointerup", "pointerleave", "pointercancel"])
+    $("#dog").addEventListener(e, () => { clearTimeout(holdT); if (stage.classList.contains("chin")) setTimeout(() => stage.classList.remove("chin"), 300); });
+  $("#dog").addEventListener("contextmenu", e => e.preventDefault());
+  // A ball rolls back to the dog for every service that answers, in its speed zone's color
+  const balls = document.createElement("span"); balls.className = "balls"; balls.setAttribute("aria-hidden", "true"); stage.append(balls);
+  function ballBack(md) {
+    if (calm || md == null || document.hidden || balls.childElementCount > 5) return;
+    const b = document.createElement("i"); b.className = "ball " + tierOf(md)[1];
+    b.onanimationend = () => b.remove(); balls.append(b);
+  }
+  // a line said a moment after the verdict's own (a run or a pet cancels it)
+  let lineT = 0;
+  const later = (k, v, c) => { clearTimeout(lineT); lineT = setTimeout(() => { if (RUN) return; say(k, v); if (c) act(c, 1700); }, 3000); };
+  // after a run: how this run compares with the last one on this browser, else the fastest or slowest service by name
+  function afterLine(prev) {
+    const now = lastSum && lastSum.md;
+    if (prev != null && now != null && Math.abs(now - prev) >= 20) {
+      if (now <= prev * 0.7) return later("mood_faster", { a: fmt(prev), b: fmt(now) }, "happy");
+      if (now >= prev * 1.4) return later("mood_slower", { a: fmt(prev), b: fmt(now) }, "lookback");
+    }
+    const done = allServices().filter(s => R.get(s.id) && R.get(s.id).st === "done").map(s => [s.name, median(R.get(s.id).s)]);
+    if (done.length < 3) return;
+    const lost = done.filter(d => d[1] == null), ok = done.filter(d => d[1] != null).sort((a, b) => a[1] - b[1]);
+    const pick = a => a[Math.floor(Math.random() * a.length)];
+    if (lost.length && Math.random() < 0.5) return later("mood_miss", { s: pick(lost)[0] });
+    const best = ok[0], worst = ok[ok.length - 1];
+    if (!best) return;
+    if (worst[1] >= 200 && (best[1] >= 30 || Math.random() < 0.5)) return later("mood_worst", { s: worst[0], ms: fmt(worst[1]) });
+    later(best[1] < 30 ? "mood_best" : "mood_best2", { s: best[0], ms: fmt(best[1]) });
+  }
+  // Easter eggs, kept in this browser: a hard hat once any service answers within 2 ms, a yawn late at night, a sigh
+  // after more than ten runs in a day
+  const HELMET = "1ms:helmet", RUNS = "1ms:runs";
+  if (store.get(HELMET)) stage.classList.add("helmet");
+  function helmetFor(md) {
+    if (md == null || md > 2 || stage.classList.contains("helmet")) return;
+    store.set(HELMET, "1"); stage.classList.add("helmet"); act("pet", 500); clearTimeout(lineT); say("mood_helmet");
+  }
+  const late = () => { const h = new Date().getHours(); return h >= 0 && h < 5; };
+  function runsToday() {
+    const d = new Date().toDateString();
+    let c = {}; try { c = JSON.parse(store.get(RUNS) || "{}"); } catch (e) {}
+    const n = c.d === d ? c.n + 1 : 1; store.set(RUNS, JSON.stringify({ d, n }));
+    return n;
+  }
+  // The eyes and head follow the mouse; on a touch screen they look where the finger lands, for a moment
+  if (!calm) {
+    let aim = null, raf = 0, lookT = 0;
+    const look = () => {
+      raf = 0;
+      if (!aim) { stage.style.setProperty("--ex", "0px"); stage.style.setProperty("--ey", "0px"); stage.style.setProperty("--look", "0deg"); return; }
+      const r = $("#dog").getBoundingClientRect(), w = Math.min(r.width, r.height * 16 / 9);
+      const hx = r.left + r.width / 2 + w * 0.3, hy = r.top + r.height * 0.4, dx = aim[0] - hx, dy = aim[1] - hy, d = Math.hypot(dx, dy) || 1;
+      const f = Math.min(1, d / 300);
+      stage.style.setProperty("--ex", (dx / d * 14 * f).toFixed(1) + "px");
+      stage.style.setProperty("--ey", (dy / d * 10 * f).toFixed(1) + "px");
+      stage.style.setProperty("--look", (Math.max(-1, Math.min(1, dy / 400)) * 6).toFixed(1) + "deg");
+    };
+    const to = p => { aim = p; if (!raf) raf = requestAnimationFrame(look); };
+    addEventListener("pointermove", e => { if (e.pointerType === "mouse") to([e.clientX, e.clientY]); }, { passive: true });
+    document.documentElement.addEventListener("pointerleave", () => to(null));
+    addEventListener("pointerdown", e => { if (e.pointerType === "mouse") return; to([e.clientX, e.clientY]); clearTimeout(lookT); lookT = setTimeout(() => to(null), 2000); }, { passive: true });
+  }
 
   /* ---------- exits ---------- */
   // A rule-based proxy picks the route by destination, so one IP check only shows the exit for its own host. We ask
@@ -394,10 +480,11 @@
       if (signal.aborted) break;
       r.s.push(v == null ? null : Math.round(v * 10) / 10);
       fails = v == null ? fails + 1 : 0;
-      if (ONE) paintOne();                                    // a single service shows every sample as it lands
+      if (ONE) { paintOne(); ballBack(v); }                   // a single service shows every sample as it lands
     }
     r.st = signal.aborted ? "stop" : "done";
     paintRow(s);                                              // the ball flies out once, when the result is in
+    if (r.st === "done") { const md = median(r.s); if (!ONE) ballBack(md); helmetFor(md); }
   }
   const jitter = a => { let d = 0; for (let i = 1; i < a.length; i++) d += Math.abs(a[i] - a[i - 1]); return d / (a.length - 1); };
   function paintRow(s) {
@@ -422,7 +509,7 @@
     if (RUN) RUN.ctl.abort();
     const q = list.slice(), ctl = new AbortController(), run = RUN = { ctl, q, full, n: list.length, d: 0 };
     if (D.spot) q.sort((a, b) => (b.id === D.spot) - (a.id === D.spot));
-    if (full) { setMood("run"); say("mood_run"); setBusy(true); }
+    if (full) { clearTimeout(lineT); setMood("run"); say(runsToday() > 10 && Math.random() < 0.5 ? "mood_tired" : "mood_run"); setBusy(true); }
     const worker = async () => { while (q.length && !ctl.signal.aborted) { const s = q.shift(); await runOne(s, SUBS.includes(s) ? GRP_N : n, ctl.signal); run.d++; if (median(R.get(s.id).s) != null) run.ok = true; progress(run); blocked(run); } };
     await Promise.all(Array.from({ length: CONC }, worker));
     if (RUN !== run) return;
@@ -475,6 +562,7 @@
     const all = paintStats(), v = verdict();
     lastSum = { md: all.md, ok: all.ok, n: all.n, tier: tierOf(all.md)[0], mood: v.mood, v }; paintShare();
     setMood(v.mood); say("mood_" + v.mood);
+    if (!sharedOn) afterLine(prevMd());
     hiddenExit();
     renderVerdict(v);
   }
@@ -553,7 +641,7 @@
     $("#vText").textContent = text;
     const mood = gr === "blocked" ? "lost" : tk;
     lastSum = { md: sg.md, ok: sg.ok, n: sg.n, tier: tk, mood }; paintShare();
-    setMood(mood); say("mood_" + mood);
+    setMood(mood); say("mood_" + mood); if (!sharedOn) afterLine(null);
   }
 
   /* ---------- a single service ---------- */
@@ -822,6 +910,8 @@
   const bareCode = c => { const S = parseShare(c, PACKS); return S ? encodeShare(bare(S)) : c; };
   const cmpLink = (a, b) => PAGE + "c/" + a + "/" + b;
   // each finished home run is kept in this browser (newest first): the newest and the one before it can be compared
+  // the overall median of this browser's last home run, when it tested the same services (the dog reacts to the change)
+  const prevMd = () => { if (ONE || GRP || !HIST.length) return null; const S = parseShare(HIST[0], PACKS); return S && S.pack === pack ? segmentOf(Object.values(S.res), []).md : null; };
   function saveRun() {
     if (ONE || GRP || CHECK || sharedOn || !lastSum) return;
     const code = resultCode(true);
@@ -885,7 +975,8 @@
   function waitForClick() {
     if (RUN || lastSum) return;
     $("#vHead").textContent = t("vh_manual"); $("#vText").textContent = ONE ? t("v_one_wait", { s: ONE.name }) : GRP ? t("v_grp_wait", { g: GRP.name }) : t("v_manual");
-    setMood("idle"); say("mood_idle");
+    setMood("idle");
+    if (late()) { say("mood_late"); act("chin", 1800); } else say("mood_idle");
   }
 
   /* ---------- Connection Checkup: the result, for the report (fields and facts: 1ms-shell docs/checkup.md) ---------- */

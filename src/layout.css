@@ -356,3 +356,29 @@ html.embed .field { padding: 10px 14px 4px; }
   /* an exit's AS number: a taller tap area that doesn't make the row taller */
   .ex .where .q { padding: 6px 0; margin: -6px 0; }
 }
+
+/* the dog's games (src/app.js): balls coming back, pets, reactions to the last run, the eyes following the pointer */
+.balls { position: absolute; top: 26px; bottom: 6px; left: 50%; aspect-ratio: 16 / 9; transform: translateX(-50%); pointer-events: none; z-index: 1; }
+.ball { position: absolute; left: 104%; bottom: 0; width: max(6px, 5.5%); aspect-ratio: 1; border-radius: 50%; background: var(--muted); box-shadow: inset -2px -2px 0 rgba(0,0,0,.18);
+  animation: fetch-ball 1.1s cubic-bezier(.3, .6, .4, 1) forwards; }
+.ball.c0 { background: var(--t0); } .ball.c1 { background: var(--t1); } .ball.c2 { background: var(--t2); }
+.ball.c3 { background: var(--t3); } .ball.c4 { background: var(--t4); } .ball.c5 { background: var(--t5); }
+@keyframes fetch-ball { 0% { opacity: 0; transform: rotate(0); } 12% { opacity: 1; } 70% { left: 86%; bottom: 0; transform: rotate(-540deg); }
+  100% { left: 80%; bottom: 36%; opacity: 0; transform: rotate(-600deg) scale(.5); } }
+#original-1ms-doge-mascot { transform-box: fill-box; transform-origin: 45% 75%; transform: rotate(calc(var(--look, 0deg) + var(--tilt, 0deg))); transition: transform .3s ease-out; }
+#left-eye-ink, #left-eye-highlight, #right-eye-ink, #right-eye-highlight { transform: translate(var(--ex, 0px), var(--ey, 0px)); transition: transform .15s ease-out; }
+#helmet { display: none; }
+.stage.helmet #helmet { display: inline; }
+.stage.tilt { --tilt: 14deg; }
+.stage.roll .dog { animation: roll .8s ease-in-out; }
+@keyframes roll { 0% { transform: none; } 45% { transform: translateY(-14px) rotate(-200deg); } 100% { transform: rotate(-360deg); } }
+.stage.happy .dog { animation: happy .85s ease-in-out 2; }
+@keyframes happy { 25% { transform: translateY(-12px) scaleX(-1); } 50% { transform: none; } 75% { transform: translateY(-12px) scaleX(-1); } }
+.stage.lookback .dog { animation: lookback 1.7s ease-in-out; }
+@keyframes lookback { 15%, 80% { transform: scaleX(-1) rotate(-3deg); } }
+/* a chin scratch or a yawn: eyes shut, head up */
+.stage.chin { --tilt: -10deg; }
+.stage.chin #left-eye-white, .stage.chin #left-eye-ink, .stage.chin #left-eye-highlight, .stage.chin #lefteye-source-shading,
+.stage.chin #right-eye-white, .stage.chin #right-eye-ink, .stage.chin #right-eye-highlight, .stage.chin #righteye-source-shading { transform-box: fill-box; transform-origin: 50% 70%; transform: scaleY(.12); }
+.dog { -webkit-touch-callout: none; user-select: none; }
+@media (prefers-reduced-motion: reduce) { .balls { display: none; } .stage.roll .dog, .stage.happy .dog, .stage.lookback .dog { animation: none; } #original-1ms-doge-mascot { transition: none; } }
