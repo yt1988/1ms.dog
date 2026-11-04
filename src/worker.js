@@ -15,7 +15,7 @@
 // The installer and the tool try these before GitHub, which is often slow or blocked in mainland China. A result or
 // compare link whose code can't be read (mangled, cut off, an unknown version), and anything else: the plain 404 (the
 // shell shows its 404 page).
-import { parseShare, median, tierOf, fmt, fillIn, diffShares, exitsText, regionName } from "./lib.mjs";
+import { parseShare, median, tierOf, fmt, fillIn, diffShares, exitsText, regionName, pluralKey } from "./lib.mjs";
 import { compare } from "../public/assets/share/compare.js";
 import { SERVICES, PACKS, CATS, USES } from "./services.mjs";
 import en from "./i18n/en.mjs";
@@ -45,7 +45,7 @@ export function resultMeta(path) {
   const page = "/" + (lang === "en" ? "" : lang.toLowerCase() + "/") + (parts[0] ? parts[0] + "/" : "");
   const S = parseShare(code, PACKS);
   if (!S) return { bad: true };
-  const L = I[lang], t = (k, v) => fillIn(L[k] ?? en[k], v, L.josa_fin);
+  const L = I[lang], t = (k, v) => fillIn(L[k] ?? en[k], v, L.josa_fin), tn = (k, n, v) => t(pluralKey(L, k, n, lang), v);
   const vals = Object.values(S.res), ok = vals.filter(v => v != null), spot = parts[0] && ONE[parts[0]] && parts[0] in S.res ? parts[0] : null;
   const md = spot ? S.res[spot] : median(ok), tier = t("tier_" + tierOf(md)[0]), ms = md != null ? fmt(md) : "–";
   let where = "";
@@ -55,8 +55,8 @@ export function resultMeta(path) {
     try { cn = g.cc && regionName(g.cc, lang); } catch (e) {}
     where = [g.city, cn].filter(Boolean).join(", ");
   }
-  const title = (spot ? t("r_one", { s: ONE[spot], ms, tier }) : t("r_title", { ms, tier, ok: ok.length, n: vals.length })) + " · 1ms.dog";
-  const desc = t("share_text", { ok: spot ? (md != null ? 1 : 0) : ok.length, n: spot ? 1 : vals.length, where: where || "?", ms, tier });
+  const title = (spot ? t("r_one", { s: ONE[spot], ms, tier }) : tn("r_title", vals.length, { ms, tier, ok: ok.length, n: vals.length })) + " · 1ms.dog";
+  const desc = tn("share_text", spot ? 1 : vals.length, { ok: spot ? (md != null ? 1 : 0) : ok.length, n: spot ? 1 : vals.length, where: where || "?", ms, tier });
   return { page, title, desc };
 }
 

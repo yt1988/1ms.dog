@@ -25,6 +25,13 @@ test("a result from TW names it by the fixed name in the preview text", () => {
   assert.match(resultMeta("/r/" + tw).desc, /Taiwan, China/);
 });
 
+test("counted lines take the language's plural form: one service on a service page, the plural elsewhere", () => {
+  assert.ok(resultMeta("/chatgpt/r/" + code).desc.includes("fetched 1/1 service from"));
+  assert.ok(resultMeta("/r/" + code).title.includes("2/3 services answered"));
+  assert.ok(resultMeta("/fr/chatgpt/r/" + code).desc.includes("1/1 service depuis"));
+  assert.ok(resultMeta("/ja/chatgpt/r/" + code).desc.includes("1/1 サービス"));
+});
+
 test("other paths are not result links; a code that can't be read is a 404", () => {
   assert.equal(resultMeta("/zh-cn/chatgpt/"), null);
   assert.equal(resultMeta("/a/b/r/" + code), null);

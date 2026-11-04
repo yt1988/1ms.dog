@@ -12,7 +12,7 @@ import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { transform } from "esbuild";
-import { fillIn } from "../src/lib.mjs";
+import { fillIn, isPlural } from "../src/lib.mjs";
 import KO from "../src/i18n/ko.mjs";
 import { CATS, SERVICES, PACKS, PACK_OF, SCALE, ZONES, USES, SUBS, TG_DC_OF, UNLOCK, pos } from "../src/services.mjs";
 
@@ -98,7 +98,7 @@ export async function build({ check = false } = {}) {
   const altsOf = sub => langs.filter(([l]) => indexed(l, sub));
   const path = (slug, sub) => "/" + (slug ? slug + "/" : "") + (sub ? sub + "/" : "");
   const RUNTIME_SKIP = new Set(["docs", "egress_link", "seo_title", "seo_desc", "seo_kw", "og_sub", "lede", "lp_title", "lp_desc", "lp_intro", "lp_h1", "lp_kw", "lp_peers", "lp_via", "lp_via_same", "land", "lg_title", "lg_desc", "lg_h1", "lg_kw", "lg_intro", "lg_about", "lg_region", "sm_cats", "sm_regions", "grp_best", "grp_worst", "sitemap_h", "sm_item", "cta_h", "cta_d", "cta_btn", "one_med", "one_cold", "one_jit",
-    "name", "h1", "lang_label", "faq_h", "pack", "exit_h", "test_mine", "r_title", "r_one"]);
+    "name", "h1", "lang_label", "faq_h", "pack", "exit_h", "test_mine", "r_title_one", "r_title_other", "r_one"]);
   // static text the page already shows, and region names (only the server-rendered picker uses them)
   const runtimeKey = k => !RUNTIME_SKIP.has(k) && !k.startsWith("pk_") && !k.startsWith("a_");
   const pages = [], stringFiles = {};
@@ -106,7 +106,9 @@ export async function build({ check = false } = {}) {
     const d = I[lang], T = k => d[k] ?? en[k] ?? k;
     // The strings the browser code needs live in a small per-language script under /assets/ (cached for a year,
     // served without passing through the site's HTML rewriting), not inline in every page.
-    const strings = Object.fromEntries(Object.keys(en).filter(runtimeKey).map(k => [k, T(k)]));
+    // a plural form only where the language has it (otherwise the page falls back to key_other, not to English)
+    const keys = [...Object.keys(en).filter(k => !isPlural(k, en) || k in d), ...Object.keys(d).filter(k => isPlural(k, en) && !(k in en))];
+    const strings = Object.fromEntries(keys.filter(runtimeKey).map(k => [k, T(k)]));
     const sjs = `window.L1MS=${JSON.stringify(strings).replace(/</g, "\\u003c")};\n`;
     const sName = `l.${lang.toLowerCase()}.${hash(sjs)}.js`;
     stringFiles["assets/" + sName] = sjs;

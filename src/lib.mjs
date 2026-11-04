@@ -169,6 +169,12 @@ export const ownOf = (hist, S, packs) => {
 // 은/이/을/과 after a final consonant, 는/가/를/와 after a vowel. Hangul shows it; a Latin or CJK name is in `fin`
 // (the Korean strings' josa_fin) when it is read with a final consonant, e.g. CDN (씨디엔), Steam (스팀).
 const JOSA = [["은", "는"], ["이", "가"], ["을", "를"], ["과", "와"]];
+// Counted lines: key_one, key_few… beside key_other, picked by the language's plural rules; a form the language
+// doesn't have falls back to key_other (Chinese, Japanese and Korean only have key_other). L: that language's own texts.
+export const PLURAL_RE = /_(zero|one|two|few|many)$/;
+// a plural form, not a key that merely ends in "_one" (running_one is the single-service page): it has a key_other
+export const isPlural = (k, en) => PLURAL_RE.test(k) && k.replace(PLURAL_RE, "_other") in en;
+export const pluralKey = (L, k, n, lang) => { const f = k + "_" + new Intl.PluralRules(lang).select(n); return f in L ? f : k + "_other"; };
 export function fillIn(s, v, fin = []) {
   for (const k in v) {
     const val = String(v[k]);

@@ -9,6 +9,7 @@
   const PAGE = XLINK ? location.pathname.slice(0, XLINK.index + 1) : location.pathname.replace(/\/?$/, "/");
   const L = window.L1MS || {}, LANG = D.lang;                  // strings: /assets/l.<lang>.<hash>.js, loaded first
   const t = (k, v) => v ? fillIn(L[k] ?? k, v, L.josa_fin) : L[k] ?? k;
+  const tn = (k, n, v) => t(pluralKey(L, k, n, LANG), v);   // a counted line, in the right plural form
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   // Connection Checkup (check.1ms.dog; 1ms-shell docs/checkup.md) frames the home page with ?embed=checkup. Only when
@@ -551,7 +552,7 @@
     for (const [el, tk, sg] of [cell("#stLocal", segment(PACKS[pack] || [])), cell("#stGlobal", segment(SVC.list))])
       el.querySelector("i").textContent = sg.md != null ? t("tier_" + tk) : sg.n ? t("tier_lost") : "";
     const [el, , all] = cell("#stAll", segment(allServices()));
-    el.querySelector("i").textContent = all.n ? t("back", { ok: all.ok, n: all.n }) : "";
+    el.querySelector("i").textContent = all.n ? tn("back", all.ok, { ok: all.ok, n: all.n }) : "";
     return all;
   }
   function summarize() {
@@ -628,7 +629,7 @@
       b.innerHTML = v != null ? `${fmt(v)}<small>ms</small>` : sg.n ? "✕" : "–"; b.className = v != null ? c : "cx";
       $(id + " i").textContent = sub;
     };
-    cell("#stMed", sg.md, sg.n ? t("back", { ok: sg.ok, n: sg.n }) : "");
+    cell("#stMed", sg.md, sg.n ? tn("back", sg.ok, { ok: sg.ok, n: sg.n }) : "");
     cell("#stBest", meds.length ? meds[0][1] : null, meds.length ? meds[0][0].name : "");
     cell("#stWorst", meds.length > 1 ? meds[meds.length - 1][1] : null, meds.length > 1 ? meds[meds.length - 1][0].name : "");
     return sg;
@@ -654,7 +655,7 @@
     };
     cell("#stMed", md, (md != null ? t("tier_" + tk) : r.st === "done" ? t("tier_lost") : "") + (r.pop ? " · " + t("pop_s", { pop: r.pop }) : ""), cls);
     cell("#stCold", r.w, r.w != null ? "DNS + TCP + TLS" : "");
-    cell("#stJit", ok.length > 1 ? jitter(ok) : null, ok.length ? t("one_samples", { n: ok.length }) : "", "", "±");
+    cell("#stJit", ok.length > 1 ? jitter(ok) : null, ok.length ? tn("one_samples", ok.length, { n: ok.length }) : "", "", "±");
     // every sample is a ball on the lane, the median a bigger one
     const at = v => (pos(v) * 100).toFixed(1) + "%";
     $("#dots").innerHTML = ok.map(v => `<i class="${tierOf(v)[1]}" style="left:${at(v)}"></i>`).join("") + (md != null ? `<b class="${cls}" style="left:${at(md)}"></b>` : "");
@@ -743,7 +744,7 @@
       show: ["city", "isp"], never: ["ip", "colo"], canShow: NET.groups.some(g => g.city || g.org || g.asn),
       link: show => location.origin + PAGE + "r/" + resultCode(show),
       home: location.origin + PAGE,
-      text: show => t("share_text", { ok: s.ok, n: s.n, where: whereOf(exitsFor(show)[0]) || "?", ms: s.md != null ? fmt(s.md) : "–", tier: t("tier_" + s.tier) }),
+      text: show => tn("share_text", s.n, { ok: s.ok, n: s.n, where: whereOf(exitsFor(show)[0]) || "?", ms: s.md != null ? fmt(s.md) : "–", tier: t("tier_" + s.tier) }),
       height: card.height, draw: card.draw,
       ts: SHARED && sharedOn ? SHARED.ts : Date.now(),
     }).open();
@@ -754,7 +755,7 @@
   window.msReport = () => {
     const s = lastSum, done = allServices().filter(x => R.get(x.id) && R.get(x.id).st !== "run");
     return {
-      summary: s ? t("share_text", { ok: s.ok, n: s.n, where: whereOf(exitsFor(false)[0]) || "?", ms: s.md != null ? fmt(s.md) : "–", tier: t("tier_" + s.tier) })
+      summary: s ? tn("share_text", s.n, { ok: s.ok, n: s.n, where: whereOf(exitsFor(false)[0]) || "?", ms: s.md != null ? fmt(s.md) : "–", tier: t("tier_" + s.tier) })
         : $("#vHead").textContent,
       data: { page: PAGE, lang: LANG, pack, shared: !!(SHARED && sharedOn), link: done.length ? location.origin + PAGE + "r/" + resultCode(false) : null,
         exits: NET.groups.map(g => ({ cc: g.cc, proxy: g.proxy })),
@@ -799,7 +800,7 @@
       x.fillStyle = C.muted; x.font = `400 28px ${F}`; dLines.forEach((l, i) => x.fillText(l, P, dTop + i * 40));
       // the three numbers
       const s = lastSum, v0 = s.v, cw3 = (W - P * 2 - 2 * 16) / 3;
-      const cells = v0 ? [[t("seg_local"), v0.local, ""], [t("seg_global"), v0.global, ""], [t("med"), { md: s.md }, t("back", { ok: s.ok, n: s.n })]].map(([label, sg, sub]) => {
+      const cells = v0 ? [[t("seg_local"), v0.local, ""], [t("seg_global"), v0.global, ""], [t("med"), { md: s.md }, tn("back", s.ok, { ok: s.ok, n: s.n })]].map(([label, sg, sub]) => {
         const md = sg ? sg.md : null, [tk, k] = tierOf(md);
         return { label, num: md != null ? fmt(md) : "✕", ms: md != null, k, sub: sub || (md != null ? t("tier_" + tk) : t("tier_lost")) };
       }) : [...document.querySelectorAll("#sum .stat")].map(el => {          // group and service pages: their stats as shown
