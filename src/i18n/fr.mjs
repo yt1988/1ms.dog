@@ -86,6 +86,10 @@ export default {
   mood_helmet: "Succès débloqué : chien de datacenter ! Casque sur la tête.",
   mood_late: "Un test à cette heure-ci ? Je commence à avoir sommeil…",
   mood_tired: "Beaucoup de balles aujourd’hui. Je suis un peu fatigué…",
+  mood_belly: "Des grattouilles sur le ventre ! Là, juste là !",
+  mood_dizzy: "Ça… tourne…",
+  mood_flop: "J’ai couru trop vite. Je fume… il faut que je m’allonge.",
+  mood_sniffp: "Snif snif… ça sent quoi, ta main ?",
 
   cat_ai: "IA", cat_web: "Sites du quotidien", cat_video: "Vidéo et musique", cat_social: "Réseaux et messageries", cat_dev: "Outils de développement",
   cat_game: "Jeux", cat_cdn: "Fournisseurs CDN", cat_local: "Favoris locaux",

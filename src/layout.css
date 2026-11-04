@@ -68,7 +68,7 @@ a.ext svg { width: .95em; height: .95em; flex: none; }
 @keyframes zz { 0%, 100% { transform: translateY(0); opacity: .9; } 50% { transform: translateY(-6px); opacity: .5; } }
 .stage[data-mood="nap"] .ground, .stage[data-mood="lost"] .ground { animation-play-state: paused; }
 .stage[data-mood="nap"] .dog, .stage[data-mood="lost"] .dog { transform: translateY(8px) rotate(4deg); transition: transform .6s; }
-.stage.pet .dog { animation: hop .5s ease-out; }
+.stage:not(.rigged).pet .dog { animation: hop .5s ease-out; }   /* the plain picture, when the drawing could not be rigged */
 @keyframes hop { 30% { transform: translateY(-16px) rotate(-6deg); } 60% { transform: translateY(2px); } }
 .stage.turbo .dog { animation: shake .08s linear infinite; }
 .stage.turbo::before { content: ""; position: absolute; inset: 50px 35% 30px 0; background: repeating-linear-gradient(0deg, transparent 0 9px, var(--gold) 9px 11px);
@@ -357,28 +357,148 @@ html.embed .field { padding: 10px 14px 4px; }
   .ex .where .q { padding: 6px 0; margin: -6px 0; }
 }
 
-/* the dog's games (src/app.js): balls coming back, pets, reactions to the last run, the eyes following the pointer */
-.balls { position: absolute; top: 26px; bottom: 6px; left: 50%; aspect-ratio: 16 / 9; transform: translateX(-50%); pointer-events: none; z-index: 1; }
+
+/* the dog's rig (src/app.js): each part moves on its own around its joint. Every move squashes before it jumps,
+   stretches in the air, squashes again on landing and overshoots back; the head and ears follow a beat late, and the
+   shadow shrinks while the dog is off the ground */
+.balls, .fx { position: absolute; top: 26px; bottom: 6px; left: 50%; aspect-ratio: 16 / 9; transform: translateX(-50%); pointer-events: none; z-index: 1; }
+@media (max-width: 720px) { .balls, .fx { top: 30px; bottom: 2px; } }
+.fx { z-index: 3; container-type: size; }   /* marks sized by the drawing (cqw), on a phone as on a desktop */
+.rig-body, .rig-flip, .rig-head, .rig-tail, .rig-shadow, .ear { transform-box: view-box; }
+#original-1ms-doge-mascot { transform-box: view-box; transform-origin: 1183px 732px; transform: rotate(calc(var(--look, 0deg) + var(--tilt, 0deg))); transition: transform .35s cubic-bezier(.3, 1.5, .5, 1); }
+#left-eye-ink, #left-eye-highlight, #right-eye-ink, #right-eye-highlight { transform: translate(var(--ex, 0px), var(--ey, 0px)); transition: transform .15s ease-out; }
+
+/* balls coming back to the mouth; the dog snaps each one up */
 .ball { position: absolute; left: 104%; bottom: 0; width: max(6px, 5.5%); aspect-ratio: 1; border-radius: 50%; background: var(--muted); box-shadow: inset -2px -2px 0 rgba(0,0,0,.18);
   animation: fetch-ball 1.1s cubic-bezier(.3, .6, .4, 1) forwards; }
 .ball.c0 { background: var(--t0); } .ball.c1 { background: var(--t1); } .ball.c2 { background: var(--t2); }
 .ball.c3 { background: var(--t3); } .ball.c4 { background: var(--t4); } .ball.c5 { background: var(--t5); }
-@keyframes fetch-ball { 0% { opacity: 0; transform: rotate(0); } 12% { opacity: 1; } 70% { left: 86%; bottom: 0; transform: rotate(-540deg); }
-  100% { left: 80%; bottom: 36%; opacity: 0; transform: rotate(-600deg) scale(.5); } }
-#original-1ms-doge-mascot { transform-box: fill-box; transform-origin: 45% 75%; transform: rotate(calc(var(--look, 0deg) + var(--tilt, 0deg))); transition: transform .3s ease-out; }
-#left-eye-ink, #left-eye-highlight, #right-eye-ink, #right-eye-highlight { transform: translate(var(--ex, 0px), var(--ey, 0px)); transition: transform .15s ease-out; }
+@keyframes fetch-ball { 0% { opacity: 0; transform: rotate(0); } 12% { opacity: 1; } 55% { left: 88%; bottom: 0; transform: rotate(-480deg); }
+  75% { left: 84%; bottom: 14%; } 100% { left: 82%; bottom: 34%; opacity: 0; transform: rotate(-600deg) scale(.5); } }
+.stage.chomp .rig-head { animation: chomp .3s ease-out; }
+@keyframes chomp { 40% { transform: rotate(-8deg) translateY(8px); } 70% { transform: rotate(2deg); } }
+
+/* ears: they flap a beat behind the gallop, flop when the dog is down, fold back when it is happy */
+.ear { transition: transform .3s cubic-bezier(.3, 1.6, .5, 1); }
+.ear-far { animation: ear-far var(--spd) ease-in-out infinite alternate; }
+.ear-near { animation: ear-near var(--spd) ease-in-out infinite alternate; }
+@keyframes ear-far { from { rotate: -2deg; } to { rotate: -9deg; } }
+@keyframes ear-near { from { rotate: 3deg; } to { rotate: -6deg; } }
+.stage[data-mood="nap"] .ear, .stage[data-mood="lost"] .ear, .stage.sad .ear, .stage.flop .ear { animation: none; }
+.stage[data-mood="nap"] .ear-far, .stage[data-mood="lost"] .ear-far, .stage.sad .ear-far, .stage.flop .ear-far { transform: rotate(-30deg); }
+.stage[data-mood="nap"] .ear-near, .stage[data-mood="lost"] .ear-near, .stage.sad .ear-near, .stage.flop .ear-near { transform: rotate(34deg); }
+.stage.chin .ear-far, .stage.wag .ear-far, .stage.belly .ear-far, .stage.happy .ear-far, .stage.turbo .ear-far { transform: rotate(-16deg); }
+.stage.chin .ear-near, .stage.wag .ear-near, .stage.belly .ear-near, .stage.happy .ear-near, .stage.turbo .ear-near { transform: rotate(-20deg); }
+.stage.tilt .ear-near { transform: rotate(30deg); }
+.stage.tilt .ear-far { transform: rotate(6deg); }
+.stage.pet .ear { animation: ear-flap .7s ease-out; }
+@keyframes ear-flap { 30% { rotate: 14deg; } 55% { rotate: -16deg; } 80% { rotate: 6deg; } }
+
+/* the face's other looks, drawn over the head */
+.f-blush, .f-happy, .f-stars, .f-dizzy, .f-tongue, .f-sweat { display: none; }
+.stage.pet .f-blush, .stage.chin .f-blush, .stage.wag .f-blush, .stage.belly .f-blush, .stage[data-mood="zoom"] .f-blush { display: inline; }
+.stage.chin .f-happy, .stage.wag .f-happy, .stage.belly .f-happy { display: inline; }
+.stage.happy .f-stars, .stage[data-mood="legend"] .f-stars { display: inline; }
+.stage.dizzy .f-dizzy, .stage.flop .f-dizzy { display: inline; }
+.stage[data-mood="stroll"] .f-tongue, .stage.belly .f-tongue, .stage.wag .f-tongue, .stage.happy .f-tongue { display: inline; }
+.stage[data-mood="lost"] .f-sweat, .stage.sad .f-sweat, .stage.flop .f-sweat { display: inline; }
+:is(.stage.chin, .stage.wag, .stage.belly, .stage.happy, .stage.dizzy, .stage.flop, .stage[data-mood="legend"]) :is(#left-eye-white, #left-eye-ink, #left-eye-highlight, #lefteye-source-shading, #right-eye-white, #right-eye-ink, #right-eye-highlight, #righteye-source-shading) { opacity: 0; }
+.f-tongue { transform-box: fill-box; transform-origin: 50% 0; animation: pant .35s ease-in-out infinite alternate; }
+@keyframes pant { to { transform: scaleY(1.18); } }
+.f-sweat { transform-box: fill-box; animation: sweat 1.2s ease-in infinite; }
+@keyframes sweat { 0% { transform: translateY(-10px); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(40px); opacity: 0; } }
+.f-stars { transform-box: fill-box; transform-origin: center; animation: twinkle .5s ease-in-out infinite alternate; }
+@keyframes twinkle { to { transform: scale(1.15) rotate(12deg); } }
 #helmet { display: none; }
 .stage.helmet #helmet { display: inline; }
-.stage.tilt { --tilt: 14deg; }
-.stage.roll .dog { animation: roll .8s ease-in-out; }
-@keyframes roll { 0% { transform: none; } 45% { transform: translateY(-14px) rotate(-200deg); } 100% { transform: rotate(-360deg); } }
-.stage.happy .dog { animation: happy .85s ease-in-out 2; }
-@keyframes happy { 25% { transform: translateY(-12px) scaleX(-1); } 50% { transform: none; } 75% { transform: translateY(-12px) scaleX(-1); } }
-.stage.lookback .dog { animation: lookback 1.7s ease-in-out; }
-@keyframes lookback { 15%, 80% { transform: scaleX(-1) rotate(-3deg); } }
-/* a chin scratch or a yawn: eyes shut, head up */
+/* a yawn: eyes squeezed shut, head back */
+.stage.yawn { --tilt: -12deg; }
 .stage.chin { --tilt: -10deg; }
-.stage.chin #left-eye-white, .stage.chin #left-eye-ink, .stage.chin #left-eye-highlight, .stage.chin #lefteye-source-shading,
-.stage.chin #right-eye-white, .stage.chin #right-eye-ink, .stage.chin #right-eye-highlight, .stage.chin #righteye-source-shading { transform-box: fill-box; transform-origin: 50% 70%; transform: scaleY(.12); }
+.stage.yawn :is(#left-eye-white, #left-eye-ink, #left-eye-highlight, #lefteye-source-shading, #right-eye-white, #right-eye-ink, #right-eye-highlight, #righteye-source-shading) { transform-box: fill-box; transform-origin: 50% 70%; transform: scaleY(.12); }
+
+/* a pet: crouch, jump, land, wobble */
+.stage.pet .rig-body { animation: hop-b .7s cubic-bezier(.3, 0, .3, 1); }
+.stage.pet .rig-shadow { animation: air-s .7s cubic-bezier(.3, 0, .3, 1); }
+.stage.pet .rig-head { animation: lag .7s ease-out; }
+@keyframes hop-b { 15% { transform: scale(1.14, .84); } 35% { transform: translateY(-80px) scale(.9, 1.14); } 55% { transform: translateY(-90px); }
+  74% { transform: scale(1.16, .82); } 88% { transform: scale(.96, 1.05); } 100% { transform: none; } }
+@keyframes air-s { 35%, 55% { transform: scale(.55); opacity: .45; } 74% { transform: scale(1.15, 1); } }
+@keyframes lag { 15% { transform: rotate(5deg); } 40% { transform: rotate(-7deg); } 74% { transform: rotate(6deg); } 90% { transform: rotate(-2deg); } }
+/* a head tilt */
+.stage.tilt { --tilt: 16deg; }
+.stage.tilt .rig-body { animation: tilt-b 1s ease-out; }
+@keyframes tilt-b { 12% { transform: scale(1.04, .96); } 30% { transform: scale(.98, 1.03); } }
+/* a wag: the tail a blur, the rear end wiggling with it */
+.stage.wag .rig-tail, .stage.chin .rig-tail, .stage.belly .rig-tail { animation: wag .14s ease-in-out infinite alternate; }
+.stage.wag .rig-body, .stage.chin .rig-body { animation: wiggle .28s ease-in-out infinite alternate; }
+@keyframes wag { from { transform: rotate(-20deg); } to { transform: rotate(24deg); } }
+@keyframes wiggle { from { transform: rotate(-2.5deg) scale(1.02, .98); } to { transform: rotate(2.5deg) scale(.98, 1.02); } }
+/* a roll: crouch, a full turn in the air with the legs going, a squashed landing, then dizzy */
+.stage.roll .rig-body { animation: roll-b 1s cubic-bezier(.3, 0, .3, 1); }
+.stage.roll .rig-flip { animation: roll-f 1s cubic-bezier(.45, 0, .3, 1); }
+.stage.roll .rig-shadow { animation: roll-s 1s ease-in-out; }
+@keyframes roll-b { 12% { transform: scale(1.14, .84); } 30% { transform: translateY(-80px) scale(.94, 1.08); } 72% { transform: translateY(-60px); }
+  88% { transform: scale(1.18, .8); } 96% { transform: scale(.97, 1.04); } 100% { transform: none; } }
+@keyframes roll-f { 0%, 15% { transform: none; } 85%, 100% { transform: rotate(-360deg); } }
+@keyframes roll-s { 30%, 72% { transform: scale(.5); opacity: .4; } }
+.stage.dizzy .rig-body { animation: dizzy-b .8s ease-in-out 2; }
+.stage.dizzy .rig-head { animation: dizzy-h .8s ease-in-out 2; }
+@keyframes dizzy-b { 25% { transform: rotate(-4deg); } 75% { transform: rotate(4deg); } }
+@keyframes dizzy-h { 25% { transform: rotate(7deg); } 75% { transform: rotate(-7deg); } }
+/* belly up: the dog flips over onto its back (the flip passes through edge-on, like a turn), legs paddling, head
+   still upright on its neck, then flips back */
+.stage.belly .rig-body { animation: belly-b 2.6s ease-in-out; }
+.stage.belly .rig-flip { animation: belly-f 2.6s cubic-bezier(.4, 0, .3, 1); }
+.stage.belly .rig-head { animation: belly-h 2.6s cubic-bezier(.4, 0, .3, 1); }
+.stage.belly .rig-shadow { animation: belly-s 2.6s ease-in-out; }
+@keyframes belly-b { 8% { transform: scale(1.12, .86); } 22% { transform: translateY(-70px); } 34% { transform: scale(1.14, .86); } 42% { transform: none; }
+  50%, 66% { transform: rotate(-3deg); } 58%, 74% { transform: rotate(3deg); } 84% { transform: scale(1.1, .88); } 92% { transform: translateY(-40px); } 100% { transform: none; } }
+@keyframes belly-f { 0%, 12% { transform: none; } 32%, 84% { transform: translateY(-40px) scaleY(-1); } 100% { transform: none; } }
+@keyframes belly-h { 0%, 12% { transform: none; } 32%, 84% { transform: scaleY(-1) rotate(-8deg); } 100% { transform: none; } }
+@keyframes belly-s { 22% { transform: scale(.6); opacity: .5; } 34%, 84% { transform: scale(1.25, 1); } }
+/* faster than last time: two hops, turning round in the air and back (a turn is a squeeze through edge-on) */
+.stage.happy .rig-body { animation: happy-b 1.7s cubic-bezier(.3, 0, .3, 1); }
+.stage.happy .rig-shadow { animation: happy-s 1.7s ease-in-out; }
+@keyframes happy-b { 8% { transform: scale(1.1, .88); } 25% { transform: translateY(-80px) scale(-1, 1.06); } 42% { transform: scale(-1.14, .86); }
+  50% { transform: scale(-1.08, .9); } 67% { transform: translateY(-80px) scale(1, 1.06); } 84% { transform: scale(1.14, .86); } 100% { transform: none; } }
+@keyframes happy-s { 25%, 67% { transform: scale(.55); opacity: .45; } }
+/* slower than last time: head down, ears flat, a bead of sweat */
+.stage.sad .rig-head { animation: sad-h 2s ease-in-out; }
+.stage.sad .rig-body { animation: sad-b 2s ease-in-out; }
+@keyframes sad-h { 15% { transform: rotate(-6deg); } 30%, 85% { transform: rotate(10deg) translateY(16px); } }
+@keyframes sad-b { 30%, 85% { transform: scale(1.03, .95); } }
+/* 1ms mode overheats: flattened like a pancake, then it peels itself up */
+.stage.flop .rig-body { animation: flop-b 1.9s cubic-bezier(.3, 0, .3, 1); }
+@keyframes flop-b { 12% { transform: scale(1.4, .5); } 70% { transform: scale(1.32, .58); } 84% { transform: scale(.92, 1.1); } 93% { transform: scale(1.04, .97); } 100% { transform: none; } }
+/* the mouse near the nose: the head leans over and sniffs */
+.stage.sniffing .rig-head { animation: sniff-h 1.4s ease-in-out; }
+@keyframes sniff-h { 15%, 35%, 55%, 75% { transform: translate(14px, 4px); } 25%, 45%, 65% { transform: translate(14px, 9px) rotate(2deg); } }
+.stage.turbo .rig-head { transform: rotate(-4deg); }
+
+/* comic marks: positions in the drawing's box (the head is up and to the right, the feet along the bottom) */
+.fx i { position: absolute; font-style: normal; font-weight: 800; line-height: 1; font-size: clamp(10px, 9cqw, 24px); }
+.fx-heart { left: calc(80% + var(--i) * 5%); top: 12%; color: #ff5d7a; animation: heart 1.1s ease-out calc(var(--i) * .15s) both; }
+@keyframes heart { 0% { transform: translateY(0) scale(.3); opacity: 0; } 25% { transform: translateY(-30%) scale(1.15); opacity: 1; }
+  100% { transform: translate(calc(var(--r) * 60%), -220%) scale(.8); opacity: 0; } }
+.fx-q, .fx-bang { left: 76%; top: -12%; color: var(--fg); font-size: clamp(13px, 14cqw, 34px); animation: mark 1s cubic-bezier(.3, 1.6, .5, 1) both; }
+.fx-bang { color: #ff5d4a; }
+@keyframes mark { 0% { transform: scale(0) rotate(-20deg); } 35% { transform: scale(1.2) rotate(8deg); } 55%, 85% { transform: scale(1) rotate(0); opacity: 1; } 100% { opacity: 0; } }
+.fx-stars { left: 82%; top: 4%; color: #f5b82e; animation: orbit 1.6s linear both; animation-delay: calc(var(--i) * -0.53s); }
+@keyframes orbit { 0% { transform: rotate(0deg) translateX(160%) rotate(0deg) scaleY(.9); opacity: 0; } 10%, 90% { opacity: 1; }
+  100% { transform: rotate(720deg) translateX(160%) rotate(-720deg); opacity: 0; } }
+.fx-dust { left: calc(36% + var(--i) * 12%); bottom: -4%; width: 9%; aspect-ratio: 1; border-radius: 50%; background: var(--line); animation: dust .6s ease-out both; }
+@keyframes dust { 0% { transform: scale(.3); opacity: .9; } 100% { transform: translate(calc(var(--r) * 120%), -40%) scale(1.5); opacity: 0; } }
+.fx-smoke { left: calc(42% + var(--i) * 9%); top: 30%; width: 11%; aspect-ratio: 1; border-radius: 50%; background: var(--muted); opacity: .5; animation: smoke 1.4s ease-out calc(var(--i) * .12s) both; }
+@keyframes smoke { 0% { transform: scale(.3); opacity: .6; } 100% { transform: translate(calc(var(--r) * 60%), -260%) scale(1.8); opacity: 0; } }
+.fx-sniff { left: 99%; top: calc(46% + var(--i) * 8%); color: var(--muted); animation: sniff-m .5s ease-out calc(var(--i) * .25s) both; }
+@keyframes sniff-m { 0% { transform: translateX(0); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateX(-120%); opacity: 0; } }
+
 .dog { -webkit-touch-callout: none; user-select: none; }
-@media (prefers-reduced-motion: reduce) { .balls { display: none; } .stage.roll .dog, .stage.happy .dog, .stage.lookback .dog { animation: none; } #original-1ms-doge-mascot { transition: none; } }
+/* the plain picture, when the drawing could not be rigged */
+.stage:not(.rigged).roll .dog { animation: roll .8s ease-in-out; }
+@keyframes roll { 45% { transform: translateY(-14px) rotate(-200deg); } 100% { transform: rotate(-360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .balls, .fx { display: none; }
+  .rig-body, .rig-flip, .rig-head, .rig-tail, .rig-shadow, .ear, .f-tongue, .f-sweat, .f-stars, .stage .dog { animation: none !important; }
+  #original-1ms-doge-mascot, .ear { transition: none; }
+}

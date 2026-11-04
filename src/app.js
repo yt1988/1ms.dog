@@ -59,9 +59,8 @@
     const node = document.importNode(svg, true);
     $("#dogImg").replaceWith(node);
     dogSvg = node;
-    const head = node.querySelector("#original-1ms-doge-mascot");
-    if (head) head.insertAdjacentHTML("beforeend", HELMET_SVG);
-    durs = [...node.querySelectorAll("animate, animateTransform, animateMotion")].map(a => [a, parseFloat(a.getAttribute("dur")) || 0.76]);
+    try { rig(node); stage.classList.add("rigged"); } catch (e) {}
+    durs =[...node.querySelectorAll("animate, animateTransform, animateMotion")].map(a => [a, parseFloat(a.getAttribute("dur")) || 0.76]);
     setMood(stage.dataset.mood);
   }).catch(() => {});
   function dogSpeed(f) {                                     // 1 = the drawing's own gallop
@@ -73,55 +72,116 @@
   }
   const SPEED = { sniff: 0.6, idle: 0.35, run: 1.15, legend: 2.6, zoom: 1.7, sprint: 1.25, trot: 0.85, stroll: 0.5, nap: 0, lost: 0, far: 1, odd: 0.85 };
   function setMood(m) { stage.dataset.mood = m; dogSpeed(SPEED[m] ?? 1); }
-  // the hard hat (an Easter egg below), drawn in the head's own coordinates so it moves with it
+  // The rig: wrappers around the drawing's parts so each moves on its own and turns around its own joint (the body
+  // squashes and stretches over its feet, flips over its middle, the head lags behind on its neck, the tail wags at
+  // its root, the shadow shrinks when the dog is in the air), the two ears cut out of the head along their outline so
+  // they can flop, and extra expressions drawn in the head's own coordinates. Every move is a class on the stage
+  // (src/layout.css, "the dog's rig"). Points are in the drawing's units.
+  const EAR_FAR = [[928, 350], [932, 290], [955, 240], [995, 215], [1040, 222], [1080, 255], [1108, 300], [1112, 342]];
+  const EAR_NEAR = [[1192, 300], [1200, 262], [1222, 240], [1250, 240], [1280, 262], [1305, 300], [1320, 340], [1250, 338], [1195, 318]];
+  const pts = (p, k = 1) => { const cx = p.reduce((a, q) => a + q[0], 0) / p.length, cy = p.reduce((a, q) => a + q[1], 0) / p.length; return p.map(([x, y]) => `${(cx + (x - cx) * k).toFixed(0)},${(cy + (y - cy) * k).toFixed(0)}`).join(" "); };
+  const star = (cx, cy, r) => "M" + Array.from({ length: 10 }, (_, i) => { const a = Math.PI / 5 * i - Math.PI / 2, d = i % 2 ? r * 0.45 : r; return `${(cx + d * Math.cos(a)).toFixed(0)} ${(cy + d * Math.sin(a)).toFixed(0)}`; }).join("L") + "Z";
+  const spiral = (cx, cy, r) => "M" + Array.from({ length: 40 }, (_, i) => { const a = i * 0.45, d = r * i / 40; return `${(cx + d * Math.cos(a)).toFixed(0)} ${(cy + d * Math.sin(a)).toFixed(0)}`; }).join("L");
+  const EYES = [[1185, 440, 50], [1338, 482, 30]];             // the eyes' centers and sizes, for the drawn-over ones
+  const FACE_SVG = '<g class="f-blush" fill="#ff6f86" opacity=".5"><ellipse cx="1150" cy="552" rx="42" ry="21"/><ellipse cx="1394" cy="562" rx="24" ry="15"/></g>' +
+    '<g class="f-happy" fill="none" stroke="#2a100a" stroke-width="16" stroke-linecap="round">' + EYES.map(([x, y, r]) => `<path d="M${x - r} ${y + r * 0.35}Q${x} ${y - r * 0.9} ${x + r} ${y + r * 0.35}"/>`).join("") + "</g>" +
+    '<g class="f-stars" fill="#ffd84a" stroke="#2a100a" stroke-width="8" stroke-linejoin="round">' + EYES.map(([x, y, r]) => `<path d="${star(x, y, r * 1.05)}"/>`).join("") + "</g>" +
+    '<g class="f-dizzy" fill="none" stroke="#2a100a" stroke-width="9" stroke-linecap="round">' + EYES.map(([x, y, r]) => `<path d="${spiral(x, y, r)}"/>`).join("") + "</g>" +
+    '<g class="f-tongue"><path d="M1246 590C1244 646 1302 654 1304 592Z" fill="#ff7a8a" stroke="#2a100a" stroke-width="10" stroke-linejoin="round"/><path d="M1275 598V628" stroke="#d94d63" stroke-width="7" stroke-linecap="round"/></g>' +
+    '<g class="f-sweat"><path d="M1118 318C1100 352 1094 370 1110 382S1138 372 1130 352Z" fill="#9bd9ff" stroke="#2a100a" stroke-width="7"/></g>';
+  // the hard hat (an Easter egg below)
   const HELMET_SVG = '<g id="helmet"><path d="M1010 330C1010 196 1320 196 1320 330Z" fill="#f6c343" stroke="#2a100a" stroke-width="14" stroke-linejoin="round"/>' +
     '<path d="M1165 208V326M1090 228 1105 326M1240 228 1225 326" stroke="#d99a1e" stroke-width="12" stroke-linecap="round"/><rect x="975" y="316" width="380" height="30" rx="15" fill="#f6c343" stroke="#2a100a" stroke-width="14"/></g>';
-  // a class on the stage for one animation, restarted if it is already running
+  function rig(svg) {
+    const NS = "http://www.w3.org/2000/svg", q = s => svg.querySelector(s);
+    // a part turning around (x, y) in its own units (with transform-box: view-box an origin in px is a point in the
+    // part's own coordinates, so it stays put while the part's contents move)
+    const pivot = (g, x, y) => { g.style.transformOrigin = `${x}px ${y}px`; return g; };
+    const wrap = (el, cls, x, y) => { const g = document.createElementNS(NS, "g"); g.setAttribute("class", cls); el.before(g); g.append(el); return pivot(g, x, y); };
+    const head = q("#original-1ms-doge-mascot");
+    (q("defs") || svg).insertAdjacentHTML("beforeend", '<mask id="ears-out" maskUnits="userSpaceOnUse" x="-3000" y="-3000" width="8000" height="8000">' +
+      `<rect x="-3000" y="-3000" width="8000" height="8000" fill="#fff"/><polygon points="${pts(EAR_FAR)}"/><polygon points="${pts(EAR_NEAR)}"/></mask>` +
+      `<clipPath id="ear-far-cut"><polygon points="${pts(EAR_FAR, 1.04)}"/></clipPath><clipPath id="ear-near-cut"><polygon points="${pts(EAR_NEAR, 1.04)}"/></clipPath>`);
+    // the head without its ears, then each ear drawn again from the same head through its own outline
+    const art = document.createElementNS(NS, "g"), holed = document.createElementNS(NS, "g");
+    art.id = "head-art"; art.append(...head.childNodes); holed.setAttribute("mask", "url(#ears-out)"); holed.append(art); head.append(holed);
+    head.insertAdjacentHTML("beforeend", '<g class="ear ear-far"><use href="#head-art" clip-path="url(#ear-far-cut)"/></g><g class="ear ear-near"><use href="#head-art" clip-path="url(#ear-near-cut)"/></g>' + FACE_SVG + HELMET_SVG);
+    pivot(head.querySelector(".ear-far"), 1020, 346); pivot(head.querySelector(".ear-near"), 1256, 336);
+    wrap(q("#tail"), "rig-tail", 0, 0);
+    wrap(q("#head-group"), "rig-head", 673, 300);
+    wrap(wrap(q("#dog-runner"), "rig-flip", 500, 340), "rig-body", 500, 446);
+    const shadow = q("#scene > g"); if (shadow) wrap(shadow, "rig-shadow", 480, 468);
+  }
+  // a class on the stage for one move, restarted if it is already running
   const act = (c, ms) => { stage.classList.remove(c); void stage.offsetWidth; stage.classList.add(c); clearTimeout(act[c]); act[c] = setTimeout(() => stage.classList.remove(c), ms); };
   const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  // a pet: a hop, a head tilt, a wag or a roll, never the same twice in a row; five quick ones: 1ms mode
+  const soon = (f, ms) => setTimeout(f, ms);
+  // Comic marks around the dog (hearts, ?, !, dizzy stars, dust, smoke, sniffs), laid over the drawing's box
+  const fxBox = document.createElement("span"); fxBox.className = "fx"; fxBox.setAttribute("aria-hidden", "true"); stage.append(fxBox);
+  const MARK = { heart: "♥", q: "?", bang: "!", stars: "★", sniff: "~", dust: "", smoke: "" };
+  function fx(kind, n = 1) {
+    if (calm || document.hidden) return;
+    for (let i = 0; i < n; i++) {
+      const m = document.createElement("i"); m.className = "fx-" + kind; m.textContent = MARK[kind];
+      m.style.setProperty("--i", i); m.style.setProperty("--n", n); m.style.setProperty("--r", (Math.random() * 2 - 1).toFixed(2));
+      m.onanimationend = () => m.remove(); fxBox.append(m);
+    }
+  }
+  const speedBack = () => setMood(stage.dataset.mood);       // the gallop back to the mood's own speed
+  // a pet: a hop, a head tilt, a wag, a roll or belly up, never the same twice in a row; five quick ones: 1ms mode
   let pets = 0, petT = 0, petLast = "", held = false;
-  const PETS = { hop: ["pet", 500, "mood_pet"], tilt: ["tilt", 900, "mood_tilt"], wag: ["wag", 1500, "mood_wag"], roll: ["roll", 800, "mood_roll"] };
+  const PETS = {
+    hop: ["pet", 700, "mood_pet", () => soon(() => fx("dust", 3), 520)],
+    tilt: ["tilt", 1000, "mood_tilt", () => fx("q")],
+    wag: ["wag", 1500, "mood_wag", () => fx("heart", 2)],
+    roll: ["roll", 1000, "mood_roll", () => {
+      dogSpeed(3); soon(() => fx("dust", 3), 880);
+      soon(() => { speedBack(); act("dizzy", 1600); fx("stars", 3); if (!RUN) say("mood_dizzy"); }, 1000);
+    }],
+    belly: ["belly", 2600, "mood_belly", () => { dogSpeed(1.6); soon(() => fx("dust", 3), 420); soon(() => fx("heart", 3), 1000); soon(() => { fx("dust", 2); speedBack(); }, 2350); }],
+  };
   $("#dog").onclick = () => {
     if (held) { held = false; return; }                      // the end of a chin scratch, not a pet
     const now = Date.now(); pets = now - petT < 600 ? pets + 1 : 1; petT = now;
-    if (pets >= 5) {
-      pets = 0; act("pet", 500); stage.classList.add("turbo"); say("mood_turbo"); dogSpeed(4);
-      setTimeout(() => { stage.classList.remove("turbo"); setMood(stage.dataset.mood); say(moodKey()); }, 2600);
+    if (pets >= 5) {                                           // 1ms mode: a shaking sprint, then it overheats and flops
+      pets = 0; act("pet", 700); stage.classList.add("turbo"); say("mood_turbo"); dogSpeed(4);
+      soon(() => { stage.classList.remove("turbo"); speedBack(); act("flop", 1900); fx("smoke", 4); fx("dust", 3); say("mood_flop"); }, 2600);
+      soon(() => say(moodKey()), 4600);
       return;
     }
-    // a napping dog doesn't wag (its animation is stopped)
-    const kinds = Object.keys(PETS).filter(k => k !== petLast && !(k === "wag" && !SPEED[stage.dataset.mood]));
-    const k = pets > 1 ? "hop" : kinds[Math.floor(Math.random() * kinds.length)], [c, ms, line] = PETS[k];
-    petLast = k; act(c, ms);
-    if (k === "wag" && dogSvg) {
-      const tail = dogSvg.querySelector("#tail > animateTransform");
-      if (tail) { tail.setAttribute("dur", ".16s"); setTimeout(() => setMood(stage.dataset.mood), ms); }
-    }
+    const kinds = Object.keys(PETS).filter(k => k !== petLast);
+    const k = pets > 1 ? "hop" : kinds[Math.floor(Math.random() * kinds.length)], [c, ms, line, more] = PETS[k];
+    petLast = k; act(c, ms); more();
     if (!RUN) { clearTimeout(lineT); say(line); }
   };
-  // a long press is a chin scratch: eyes shut, head up, until let go
-  let holdT = 0;
-  $("#dog").addEventListener("pointerdown", () => { clearTimeout(holdT); holdT = setTimeout(() => { held = true; stage.classList.add("chin"); clearTimeout(lineT); say("mood_chin"); }, 450); });
-  for (const e of ["pointerup", "pointerleave", "pointercancel"])
-    $("#dog").addEventListener(e, () => { clearTimeout(holdT); if (stage.classList.contains("chin")) setTimeout(() => stage.classList.remove("chin"), 300); });
+  // a long press is a chin scratch: eyes happy, cheeks pink, tail going, hearts, until let go
+  let holdT = 0, heartT = 0;
+  const unhold = () => { clearTimeout(holdT); clearInterval(heartT); if (stage.classList.contains("chin")) soon(() => stage.classList.remove("chin"), 300); };
+  $("#dog").addEventListener("pointerdown", () => {
+    clearTimeout(holdT);
+    holdT = setTimeout(() => { held = true; stage.classList.add("chin"); clearTimeout(lineT); say("mood_chin"); fx("heart"); heartT = setInterval(() => fx("heart"), 600); }, 450);
+  });
+  for (const e of ["pointerup", "pointerleave", "pointercancel"]) $("#dog").addEventListener(e, unhold);
   $("#dog").addEventListener("contextmenu", e => e.preventDefault());
-  // A ball rolls back to the dog for every service that answers, in its speed zone's color
+  // A ball rolls back to the dog for every service that answers, in its speed zone's color, and the dog snaps it up
   const balls = document.createElement("span"); balls.className = "balls"; balls.setAttribute("aria-hidden", "true"); stage.append(balls);
   function ballBack(md) {
     if (calm || md == null || document.hidden || balls.childElementCount > 5) return;
     const b = document.createElement("i"); b.className = "ball " + tierOf(md)[1];
-    b.onanimationend = () => b.remove(); balls.append(b);
+    b.onanimationend = () => { b.remove(); if (!/\b(roll|belly|flop)\b/.test(stage.className)) act("chomp", 300); };
+    balls.append(b);
   }
+  // the reactions to a run compared with the last one
+  const REACT = { happy: () => { act("happy", 1700); fx("heart", 3); soon(() => fx("dust", 2), 700); }, sad: () => { act("sad", 2000); fx("bang"); } };
   // a line said a moment after the verdict's own (a run or a pet cancels it)
   let lineT = 0;
-  const later = (k, v, c) => { clearTimeout(lineT); lineT = setTimeout(() => { if (RUN) return; say(k, v); if (c) act(c, 1700); }, 3000); };
+  const later = (k, v, c) => { clearTimeout(lineT); lineT = setTimeout(() => { if (RUN) return; say(k, v); if (c) REACT[c](); }, 3000); };
   // after a run: how this run compares with the last one on this browser, else the fastest or slowest service by name
   function afterLine(prev) {
     const now = lastSum && lastSum.md;
     if (prev != null && now != null && Math.abs(now - prev) >= 20) {
       if (now <= prev * 0.7) return later("mood_faster", { a: fmt(prev), b: fmt(now) }, "happy");
-      if (now >= prev * 1.4) return later("mood_slower", { a: fmt(prev), b: fmt(now) }, "lookback");
+      if (now >= prev * 1.4) return later("mood_slower", { a: fmt(prev), b: fmt(now) }, "sad");
     }
     const done = allServices().filter(s => R.get(s.id) && R.get(s.id).st === "done").map(s => [s.name, median(R.get(s.id).s)]);
     if (done.length < 3) return;
@@ -162,7 +222,19 @@
       stage.style.setProperty("--look", (Math.max(-1, Math.min(1, dy / 400)) * 6).toFixed(1) + "deg");
     };
     const to = p => { aim = p; if (!raf) raf = requestAnimationFrame(look); };
-    addEventListener("pointermove", e => { if (e.pointerType === "mouse") to([e.clientX, e.clientY]); }, { passive: true });
+    // the mouse resting near the nose for a moment: the dog leans over and sniffs it
+    let sniffT = 0, sniffSaid = 0;
+    const near = p => { const r = $("#dog").getBoundingClientRect(), w = Math.min(r.width, r.height * 16 / 9); return p && Math.hypot(p[0] - (r.left + r.width / 2 + w * 0.47), p[1] - (r.top + r.height * 0.55)) < Math.max(40, w * 0.35); };
+    const sniffCheck = p => {
+      if (!near(p)) { clearTimeout(sniffT); sniffT = 0; return; }
+      if (sniffT) return;
+      sniffT = setTimeout(() => {
+        if (/(roll|belly|flop|chin)/.test(stage.className)) return;
+        act("sniffing", 1400); fx("sniff", 3);
+        if (!RUN && Date.now() - sniffSaid > 30000) { sniffSaid = Date.now(); clearTimeout(lineT); say("mood_sniffp"); }
+      }, 900);
+    };
+    addEventListener("pointermove", e => { if (e.pointerType === "mouse") { to([e.clientX, e.clientY]); sniffCheck([e.clientX, e.clientY]); } }, { passive: true });
     document.documentElement.addEventListener("pointerleave", () => to(null));
     addEventListener("pointerdown", e => { if (e.pointerType === "mouse") return; to([e.clientX, e.clientY]); clearTimeout(lookT); lookT = setTimeout(() => to(null), 2000); }, { passive: true });
   }
@@ -977,7 +1049,7 @@
     if (RUN || lastSum) return;
     $("#vHead").textContent = t("vh_manual"); $("#vText").textContent = ONE ? t("v_one_wait", { s: ONE.name }) : GRP ? t("v_grp_wait", { g: GRP.name }) : t("v_manual");
     setMood("idle");
-    if (late()) { say("mood_late"); act("chin", 1800); } else say("mood_idle");
+    if (late()) { say("mood_late"); act("yawn", 1800); } else say("mood_idle");
   }
 
   /* ---------- Connection Checkup: the result, for the report (fields and facts: 1ms-shell docs/checkup.md) ---------- */

@@ -85,6 +85,10 @@ export default {
   mood_helmet: "Erfolg freigeschaltet: Rechenzentrumshund! Helm auf.",
   mood_late: "So spät noch testen? Ich werd langsam müde …",
   mood_tired: "Heute so viele Bälle. Ich bin ein bisschen müde …",
+  mood_belly: "Bauch kraulen! Genau da, genau da!",
+  mood_dizzy: "Mir… ist schwindlig …",
+  mood_flop: "Zu schnell gerannt. Ich qualme … muss mich hinlegen.",
+  mood_sniffp: "Schnupper, schnupper … wonach riecht deine Hand?",
 
   cat_ai: "KI", cat_web: "Alltagsseiten", cat_video: "Video & Musik", cat_social: "Social Media & Messenger", cat_dev: "Entwicklertools",
   cat_game: "Gaming", cat_cdn: "CDN-Anbieter", cat_local: "Lokale Favoriten",

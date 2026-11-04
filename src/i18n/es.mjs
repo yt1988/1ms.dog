@@ -85,6 +85,10 @@ export default {
   mood_helmet: "Logro desbloqueado: perro de centro de datos. ¡Casco puesto!",
   mood_late: "¿Probando a estas horas? Me está dando sueño…",
   mood_tired: "Hoy traje muchas pelotas. Estoy un poco cansado…",
+  mood_belly: "¡Rascadas de panza! ¡Ahí, ahí!",
+  mood_dizzy: "Qué… mareo…",
+  mood_flop: "Corrí demasiado rápido. Echo humo… necesito tumbarme.",
+  mood_sniffp: "Snif, snif… ¿a qué huele tu mano?",
 
   cat_ai: "IA", cat_web: "Sitios de cada día", cat_video: "Video y música", cat_social: "Redes y mensajería", cat_dev: "Herramientas para desarrolladores",
   cat_game: "Juegos", cat_cdn: "Proveedores CDN", cat_local: "Favoritos locales",

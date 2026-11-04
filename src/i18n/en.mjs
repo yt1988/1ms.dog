@@ -87,6 +87,10 @@ export default {
   mood_helmet: "Achievement unlocked: data center dog! Helmet on.",
   mood_late: "Testing this late? I'm getting sleepy…",
   mood_tired: "So many balls today. I'm a bit tired…",
+  mood_belly: "Belly rubs! Right there, right there!",
+  mood_dizzy: "So… dizzy…",
+  mood_flop: "Ran too fast. I'm smoking… need a lie-down.",
+  mood_sniffp: "Sniff sniff… what's that smell on your hand?",
 
   cat_ai: "AI", cat_web: "Everyday web", cat_video: "Video & music", cat_social: "Social & chat", cat_dev: "Developer tools",
   cat_game: "Gaming", cat_cdn: "CDN providers", cat_local: "Local favorites",

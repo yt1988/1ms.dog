@@ -85,6 +85,10 @@ export default {
   mood_helmet: "実績解除：データセンター犬！ヘルメットをかぶったよ。",
   mood_late: "こんな時間にテスト？もう眠いよ…",
   mood_tired: "今日はボールをたくさん取ってきた。ちょっと疲れた…",
+  mood_belly: "おなかなでて！そこそこ！",
+  mood_dizzy: "め、目が回る…",
+  mood_flop: "速すぎて煙が出た…ちょっと伏せさせて。",
+  mood_sniffp: "くんくん…その手、なんのにおい？",
 
   cat_ai: "AI", cat_web: "よく使うサイト", cat_video: "動画・音楽", cat_social: "SNS・チャット", cat_dev: "開発ツール",
   cat_game: "ゲーム", cat_cdn: "CDN", cat_local: "地域の定番",

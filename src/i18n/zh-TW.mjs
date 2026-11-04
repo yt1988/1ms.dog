@@ -85,6 +85,10 @@ export default {
   mood_helmet: "解鎖成就：機房狗！安全帽我戴上囉。",
   mood_late: "這麼晚還在測網路？我都想睡了…",
   mood_tired: "今天丟了好多球，有點累了…",
+  mood_belly: "摸摸肚子！就是這裡，就是這裡！",
+  mood_dizzy: "轉…轉暈了…",
+  mood_flop: "跑太快，冒煙了…讓我趴一下。",
+  mood_sniffp: "嗅嗅…你手上是什麼味道？",
 
   cat_ai: "AI", cat_web: "常用網站", cat_video: "影音串流", cat_social: "社群與聊天", cat_dev: "開發工具",
   cat_game: "遊戲", cat_cdn: "CDN 服務商", cat_local: "在地常用",

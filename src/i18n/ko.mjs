@@ -85,6 +85,10 @@ export default {
   mood_helmet: "업적 달성: 데이터센터 강아지! 헬멧 썼어요.",
   mood_late: "이렇게 늦게 테스트해요? 저 졸려요…",
   mood_tired: "오늘 공을 엄청 많이 물어 왔어요. 좀 피곤해요…",
+  mood_belly: "배 만져 주세요! 거기, 거기!",
+  mood_dizzy: "어, 어지러워요…",
+  mood_flop: "너무 빨리 달려서 연기 나요… 좀 엎드릴게요.",
+  mood_sniffp: "킁킁… 손에서 무슨 냄새가 나요?",
 
   cat_ai: "AI", cat_web: "자주 쓰는 사이트", cat_video: "동영상·음악", cat_social: "SNS·메신저", cat_dev: "개발 도구",
   cat_game: "게임", cat_cdn: "CDN", cat_local: "국내 인기 서비스",

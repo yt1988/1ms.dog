@@ -85,6 +85,10 @@ export default {
   mood_helmet: "Conquista desbloqueada: cão de data center! Capacete na cabeça.",
   mood_late: "Testando a essa hora? Já estou com sono…",
   mood_tired: "Busquei muitas bolinhas hoje. Estou meio cansado…",
+  mood_belly: "Carinho na barriga! Aí, bem aí!",
+  mood_dizzy: "Que… tontura…",
+  mood_flop: "Corri rápido demais. Tô soltando fumaça… preciso deitar.",
+  mood_sniffp: "Fungada, fungada… que cheiro é esse na sua mão?",
 
   cat_ai: "IA", cat_web: "Sites do dia a dia", cat_video: "Vídeo e música", cat_social: "Redes e mensagens", cat_dev: "Ferramentas de desenvolvimento",
   cat_game: "Jogos", cat_cdn: "Provedores de CDN", cat_local: "Favoritos locais",

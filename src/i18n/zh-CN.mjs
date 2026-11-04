@@ -85,6 +85,10 @@ export default {
   mood_helmet: "解锁成就：机房狗！头盔我戴上啦。",
   mood_late: "这么晚还在测网？我都困了…",
   mood_tired: "今天扔了好多球啦，有点累…",
+  mood_belly: "摸摸肚子！就这儿，就这儿！",
+  mood_dizzy: "转…转晕了…",
+  mood_flop: "跑太快，冒烟了…让我趴会儿。",
+  mood_sniffp: "嗅嗅…你手上什么味道？",
 
   cat_ai: "AI", cat_web: "常用网站", cat_video: "视频和音乐", cat_social: "社交和聊天", cat_dev: "开发工具",
   cat_game: "游戏", cat_cdn: "CDN 服务商", cat_local: "本地常用",
