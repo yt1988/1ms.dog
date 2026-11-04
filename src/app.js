@@ -647,10 +647,11 @@
     res: Object.fromEntries(allServices().filter(s => R.get(s.id) && R.get(s.id).st === "done").map(s => [s.id, median(R.get(s.id).s)])) });
   if ($("#share")) $("#share").onclick = async () => {
     if (!lastSum) return;
-    const { share } = await import("/assets/share/share.js?v=6");
+    const { share } = await import("/assets/share/share.js?v=7");
     const s = lastSum, card = cardLayout();
     share({
-      lang: LANG, name: $("h1").textContent, file: "1ms-dog",
+      // the header names what was tested (a group or one service); the home page's name is 1ms.dog, already the host there
+      lang: LANG, name: ONE ? ONE.name : GRP ? GRP.name : "", file: "1ms-dog",
       show: ["city", "isp"], never: ["ip", "colo"], canShow: NET.groups.some(g => g.city || g.org || g.asn),
       link: show => location.origin + PAGE + "r/" + resultCode(show),
       home: location.origin + PAGE,
@@ -702,7 +703,7 @@
       return top + colH + 30 + 70;
     };
     const draw = async (x, kit) => {
-      const { W, P, F, M, v } = kit, { cols, NC, RH, GH, oneH, hLines, dLines, hTop, dTop, sTop, SH, exits, eTop, top } = L;
+      const { W, P, F, M, v, clip, fit } = kit, { cols, NC, RH, GH, oneH, hLines, dLines, hTop, dTop, sTop, SH, exits, eTop, top } = L;
       const C = { bg: v("bg"), panel: v("panel"), line: v("line"), fg: v("fg"), muted: v("muted"), c0: v("t0"), c1: v("t1"), c2: v("t2"), c3: v("t3"), c4: v("t4"), c5: v("t5"), cx: v("muted"), gold: v("ink"), warn: v("warn") };
       try { x.drawImage(await img("/assets/shiba-run.svg"), 150, 20, 700, 420, W - P - 220, kit.top, 220, 132); } catch (e) {}
       x.textBaseline = "alphabetic";
@@ -723,8 +724,11 @@
         x.fillStyle = C.muted; x.font = `400 24px ${F}`; x.fillText(cl.label, cx0 + 22, sTop + 40);
         x.fillStyle = C[cl.k]; x.font = `600 70px ${M}`; x.fillText(cl.num, cx0 + 22, sTop + 116);
         const nw = x.measureText(cl.num).width;
-        x.fillStyle = C.muted; x.font = `400 24px ${F}`;
-        x.fillText(clip(x, (cl.ms ? "ms  " : "") + cl.sub, cw3 - 54 - nw), cx0 + 22 + nw + 10, sTop + 116);
+        // the line after the number: a smaller font first, then two lines, never "…" (kit.fit)
+        const sub = (cl.ms ? "ms  " : "") + cl.sub, sw = cw3 - 54 - nw;
+        x.fillStyle = C.muted; fit(x, sub, sw, 24, 16, 400);
+        if (x.measureText(sub).width <= sw) x.fillText(sub, cx0 + 22 + nw + 10, sTop + 116);
+        else wrap(x, sub, sw).slice(0, 2).forEach((l, j, a) => x.fillText(l, cx0 + 22 + nw + 10, sTop + 116 - (a.length - 1 - j) * 20));
       });
       // exits, without IPs
       let y = eTop;
@@ -735,21 +739,24 @@
         x.fillStyle = g.proxy ? C.warn : C.c1; x.fillText(k, P + 10, y);
         let xx = P + kw + 12;
         if (g.cc) { try { const f = await img(`/flags/${flagCode(g.cc)}.svg`); x.drawImage(f, xx, y - 19, 32, 24); xx += 42; } catch (e) {} }
-        x.fillStyle = C.fg; x.font = `600 22px ${F}`; const w = whereOf(g) || "?"; x.fillText(w, xx, y);
+        // the place in full (smaller if it must be), then the network: by its number alone if the name doesn't fit
+        const w = whereOf(g) || "?"; x.fillStyle = C.fg; fit(x, w, W - P - xx, 22, 16, 600); x.fillText(w, xx, y);
         xx += x.measureText(w).width + 14;
-        x.fillStyle = C.muted; x.font = `400 20px ${F}`; x.fillText([g.org, g.asn && "AS" + g.asn].filter(Boolean).join(" · "), xx, y);
+        const net = [g.org, g.asn && "AS" + g.asn].filter(Boolean).join(" · "), room = W - P - xx;
+        x.fillStyle = C.muted; x.font = `400 20px ${F}`;
+        if (x.measureText(net).width <= room) x.fillText(net, xx, y); else if (g.asn) x.fillText(clip(x, "AS" + g.asn, room), xx, y);
         y += 40;
       }
       // the field: a single service's samples on one lane, the median the big ball
       if (ONE) {
         const r = R.get(ONE.id), ok = r ? r.s.filter(v => v != null) : [], md = median(ok), [, k] = tierOf(md), l0 = P + 200, l1 = W - P - 90, cy = top + 40;
-        x.fillStyle = C.fg; x.font = `600 22px ${F}`; x.fillText(clip(x, ONE.name, 180), P, cy + 8);
+        x.fillStyle = C.fg; fit(x, ONE.name, 188, 22, 16, 600); x.fillText(clip(x, ONE.name, 188), P, cy + 8);
         x.fillStyle = C.line; x.fillRect(l0, cy - 2, l1 - l0, 4);
         for (const v of ok) { x.beginPath(); x.arc(l0 + (l1 - l0) * pos(v), cy, 7, 0, Math.PI * 2); x.fillStyle = C[tierOf(v)[1]] + "88"; x.fill(); }
         if (md != null) { x.beginPath(); x.arc(l0 + (l1 - l0) * pos(md), cy, 12, 0, Math.PI * 2); x.fillStyle = C[k]; x.fill(); }
         x.fillStyle = md == null ? C.muted : C[k]; x.font = `600 24px ${M}`; x.textAlign = "right"; x.fillText(md == null ? "✕" : fmt(md), W - P, cy + 8); x.textAlign = "left";
       }
-      const cw = (W - P * 2 - 40 * (NC - 1)) / NC, laneX = NC === 1 ? 200 : 128, msW = 60;
+      const cw = (W - P * 2 - 40 * (NC - 1)) / NC, laneX = NC === 1 ? 200 : 136, msW = 60;
       cols.forEach((col, i) => {
         let yy = top + oneH + 20; const x0 = P + i * (cw + 40);
         for (const g of col) {
@@ -780,7 +787,6 @@
     if (line.trim()) out.push(line.trimEnd());
     return out;
   }
-  function clip(x, s, w) { if (x.measureText(s).width <= w) return s; while (s.length > 1 && x.measureText(s + "…").width > w) s = s.slice(0, -1); return s + "…"; }
 
   /* ---------- a shared result ---------- */
   // Opening a shared link shows that result and doesn't test until the visitor asks for their own. The banner above
@@ -793,7 +799,7 @@
     NET.groups = S.groups; NET.done = true; renderExits(); $("#eye").hidden = true;
     for (const s of allServices()) if (s.id in S.res) { R.set(s.id, { w: null, s: S.res[s.id] == null ? [] : [S.res[s.id]], st: "done" }); paintRow(s); }
     summarize(false);
-    const { received } = await import("/assets/share/share.js?v=6");
+    const { received } = await import("/assets/share/share.js?v=7");
     RCV = received({ lang: LANG, ts: S.ts, at: $(".hero"), test: () => { VS = encodeShare(SHARED); leaveShared(); start(3); } });
   }
   let sharedOn = false;
@@ -844,7 +850,7 @@
     // a side that is this visitor's own result has its city and network in this browser: shown here, and the share
     // box can add them to the link
     CS = CMPS.map(S => ownOf(HIST, S, PACKS) || S);
-    const { compare } = await import("/assets/share/compare.js?v=6");
+    const { compare } = await import("/assets/share/compare.js?v=7");
     CV = cmpView(compare);
     if ($("#cmpHead")) CV.renderHead($("#cmpHead"));          // in the visitor's time zone, with their own side's city
     await CV.render($("#cmpView"));
@@ -852,7 +858,7 @@
   // the head and the share button are in the banner only on a compare page: the Worker puts them there (src/worker.js)
   if ($("#cmpShare")) $("#cmpShare").onclick = async () => {
     if (!CV) return;
-    const { share } = await import("/assets/share/share.js?v=6");
+    const { share } = await import("/assets/share/share.js?v=7");
     const code = (S, show) => encodeShare(show ? S : bare(S));
     share({
       lang: LANG, name: $("h1").textContent, file: "1ms-dog-compare",
