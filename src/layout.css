@@ -67,7 +67,7 @@ a.ext svg { width: .95em; height: .95em; flex: none; }
 .stage[data-mood="nap"] .zzz, .stage[data-mood="lost"] .zzz { opacity: 1; animation: zz 2.4s ease-in-out infinite; }
 @keyframes zz { 0%, 100% { transform: translateY(0); opacity: .9; } 50% { transform: translateY(-6px); opacity: .5; } }
 .stage[data-mood="nap"] .ground, .stage[data-mood="lost"] .ground { animation-play-state: paused; }
-.stage[data-mood="nap"] .dog, .stage[data-mood="lost"] .dog { filter: saturate(.7); transform: translateY(8px) rotate(4deg); transition: transform .6s, filter .6s; }
+.stage[data-mood="nap"] .dog, .stage[data-mood="lost"] .dog { transform: translateY(8px) rotate(4deg); transition: transform .6s; }
 .stage.pet .dog { animation: hop .5s ease-out; }
 @keyframes hop { 30% { transform: translateY(-16px) rotate(-6deg); } 60% { transform: translateY(2px); } }
 .stage.turbo .dog { animation: shake .08s linear infinite; }
