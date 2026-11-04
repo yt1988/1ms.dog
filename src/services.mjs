@@ -67,7 +67,7 @@ export const SERVICES = [
   { id: "steam", name: "Steam", cat: "game", url: "https://store.steampowered.com/favicon.ico", c: "#66c0f4" },
   { id: "playstation", name: "PlayStation", cat: "game", url: "https://www.playstation.com/favicon.ico", via: "Akamai", c: "#0070d1" },
   { id: "xbox", name: "Xbox", cat: "game", url: "https://www.xbox.com/favicon.ico", c: "#107c10" },
-  { id: "nintendo", name: "Nintendo", cat: "game", url: "https://www.nintendo.com/favicon.ico", via: "Fastly", c: "#e60012" },
+  { id: "nintendo", name: "Nintendo", cat: "game", url: "https://www.nintendo.com/favicon.ico", raw: true, via: "Fastly", c: "#e60012" },
   { id: "epic", name: "Epic Games", cat: "game", url: "https://store.epicgames.com/cdn-cgi/trace", via: "Cloudflare", c: "#8b8b8b" },
 
   // CDN backbones: most sites above sit on one of these
@@ -148,7 +148,7 @@ export const PACKS = {
   ],
   me: [
     { id: "talabat", name: "talabat", cat: "local", url: "https://www.talabat.com/cdn-cgi/trace", c: "#ff5a00" },
-    { id: "careem", name: "Careem", cat: "local", url: "https://www.careem.com/favicon.ico", c: "#00e784" },
+    { id: "careem", name: "Careem", cat: "local", url: "https://www.careem.com/cdn-cgi/trace", pop: "trace", via: "Cloudflare", c: "#00e784" },
     { id: "aljazeera", name: "Al Jazeera", cat: "local", url: "https://www.aljazeera.com/favicon_aje.ico", c: "#fa9000" },
     { id: "trendyol", name: "Trendyol", cat: "local", url: "https://www.trendyol.com/cdn-cgi/trace", c: "#f27a1a" },
   ],
