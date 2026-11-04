@@ -433,7 +433,30 @@
   const GRP = D.set ? { ...D.set, list: D.set.kind === "cat" ? SVC.list.filter(s => s.cat === D.set.id) : PACKS[D.set.id] } : null, GRP_N = 5;
   const SUBS = ONE && SVC.subs[ONE.id] || [];                  // a service page's parts: Telegram's data centers
   const allServices = () => ONE ? [ONE, ...SUBS] : GRP ? GRP.list : [...(PACKS[pack] || []), ...SVC.list];
-  function showPack(p) { pack = p; $("#localRows").innerHTML = PACKS[p].map(rowHtml).join(""); $("#pack").value = p; }
+  function showPack(p) { pack = p; $("#localRows").innerHTML = PACKS[p].map(rowHtml).join(""); $("#pack").value = p; markBase(); }
+  // The Tokyo baseline: 1ms.dog's server in Tokyo measures every service every 10 minutes (/baseline.json, from the
+  // Worker). Each lane gets a thin mark where that server's 24-hour median sits: a fixed point to compare the ball
+  // with. Far right of the mark means the delay is on the visitor's route; slow from Tokyo too means the service.
+  let BASE = null;
+  function markBase() {
+    if (!BASE) return;
+    for (const li of document.querySelectorAll(".row[id^='t-']")) {
+      const b = BASE[li.id.slice(2)], trk = li.querySelector(".trk");
+      if (!b || !trk) continue;
+      const ms = b.med24 ?? (b.last && !b.last.err ? b.last.ms : null);
+      let k = trk.querySelector(".tk");
+      if (!k) { k = document.createElement("i"); k.className = "tk"; trk.prepend(k); }
+      k.classList.toggle("down", ms == null);
+      k.style.left = (ms == null ? 100 : pos(ms) * 100).toFixed(1) + "%";
+      trk.title = ms == null ? t("tko_down") : t("tko_tip", { ms: fmt(ms), up: b.up24 ?? "–" });
+    }
+    // its legend, made here rather than sent in every page's HTML: it links to the status page
+    if (!$("#tkoLeg") && $(".axis")) $(".axis").insertAdjacentHTML("beforeend", `<a class="tko" id="tkoLeg" href="${$(".brand").getAttribute("href")}status/"><i></i><b>${esc(t("tko_leg"))}</b></a>`);
+  }
+  if ($(".field")) fetch("/baseline.json").then(r => r.ok ? r.json() : null).then(j => {
+    if (!j || !j.services || !Object.keys(j.services).length || Date.now() - Date.parse(j.at) > 864e5) return;   // a day old: none
+    BASE = j.services; markBase();
+  }).catch(() => {});
   if (!ONE && !GRP) { const saved = store.get(K.pack); if (saved && PACKS[saved] && saved !== pack) showPack(saved); }
   function pickPack(cc) { const p = PACK_OF[cc]; if (!ONE && !GRP && !store.get(K.pack) && p && p !== pack) setPack(p, false); }
   function setPack(p, user) {
@@ -589,7 +612,37 @@
     RUN = null; LAST_DONE = true; setBusy(false); progress(null);
     summarize(!ctl.signal.aborted);
     if (full && !ctl.signal.aborted) saveRun();
+    if (full && !ctl.signal.aborted && !ONE && !GRP && !CHECK) tokyoTrip();
     if (CHECK && full && !ctl.signal.aborted) EXITS.then(checkupResult);
+  }
+  // After a full run (so it never shares the line with the services' timing): a few tiny messages to 1ms.dog's server
+  // in Tokyo over a WebSocket (it greets, then echoes each text frame), one at a time, the first not counted. A round
+  // trip to one fixed place, for comparing routes; nothing is logged there. Silent when it can't connect.
+  const ECHO = "wss://echo.1ms.dog:8443/ws", TRIPS = 15;
+  function tokyoTrip() {
+    if (!window.WebSocket || !$("#exNote")) return;
+    let el = $("#exTyo");
+    if (!el) { el = document.createElement("p"); el.className = "ex-note tyo"; el.id = "exTyo"; el.hidden = true; $("#exNote").after(el); }
+    let ws, rtt = [], sent = 0, at = 0;
+    const end = () => { clearTimeout(stop); try { ws.close(); } catch (e) {} };
+    const stop = setTimeout(end, 10000);
+    const next = () => { if (sent > TRIPS) return show(); at = performance.now(); ws.send("p" + sent++); };
+    const show = () => {
+      end();
+      const r = rtt.slice(1);
+      if (r.length < 5) return;
+      const md = median(r), jit = r.slice(1).reduce((a, v, i) => a + Math.abs(v - r[i]), 0) / (r.length - 1);
+      el.textContent = t("tyo_line", { ms: fmt(md), jit: fmt(jit) }); el.hidden = false;
+    };
+    try { ws = new WebSocket(ECHO); } catch (e) { return; }
+    ws.onmessage = e => {
+      if (typeof e.data !== "string") return;
+      if (e.data[0] === "{") return next();                   // the greeting
+      if (e.data !== "p" + (sent - 1)) return;
+      rtt.push(performance.now() - at);
+      setTimeout(next, 100);
+    };
+    ws.onerror = end;
   }
   // Embedded in the checkup: when the first services all fail (an ad blocker stopping every probe, or no network at
   // all), say so at once instead of running out the timeouts; an error means no result follows (docs/checkup.md)

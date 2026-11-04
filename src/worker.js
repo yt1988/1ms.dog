@@ -12,6 +12,10 @@
 //   /v                    the tool's latest version, "0.1.0", asked of GitHub and kept for 10 minutes
 //   /dl/<tag>/<file>      a file of that release, fetched from GitHub once and then kept (a tag's files never change);
 //                         <tag> may be "latest", which redirects to the current tag
+//   /baseline.json        the Tokyo baseline: 1ms.dog's server in Tokyo measures every service every 10 minutes
+//                         (httpslatency baseline) and publishes summary.json; kept here for a minute, and the last
+//                         good copy for a week, so the page and the status page still have numbers when that server
+//                         is down. The page's lane marks, /status/ and `httpslatency status` / --compare read it.
 // The installer and the tool try these before GitHub, which is often slow or blocked in mainland China. A result or
 // compare link whose code can't be read (mangled, cut off, an unknown version), and anything else: the plain 404 (the
 // shell shows its 404 page).
@@ -98,6 +102,7 @@ export default {
       if (INSTALLER[url.pathname]) return release(`v${v}`, INSTALLER[url.pathname], req, ctx);
       return new Response(v + "\n", { headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=300" } });
     }
+    if (get && url.pathname === "/baseline.json") return baseline(req, ctx);
     const dl = get && /^\/dl\/(latest|v\d+\.\d+\.\d+)\/([^/]+)$/.exec(url.pathname);
     if (dl && FILE.test(dl[2])) {
       if (dl[1] !== "latest") return release(dl[1], dl[2], req, ctx);
@@ -128,6 +133,30 @@ export default {
     return new Response(out.body, { status: 200, headers: h });
   },
 };
+
+const BASELINE = "https://data.1ms.dog:2083/index/summary.json";
+const JSON_HEAD = { "content-type": "application/json; charset=utf-8", "cache-control": "public, max-age=60", "access-control-allow-origin": "*" };
+async function baseline(req, ctx) {
+  const cache = caches.default, fresh = new Request(new URL("/__baseline", req.url)), keep = new Request(new URL("/__baseline-keep", req.url));
+  let body = null;
+  const hit = await cache.match(fresh);
+  if (hit) body = await hit.text();
+  else {
+    try {
+      const up = await fetch(BASELINE, { signal: AbortSignal.timeout(4000), cf: { cacheTtl: 0 } });
+      if (up.ok) { const t = await up.text(); if (JSON.parse(t).v === 1) body = t; }
+    } catch (e) {}
+    if (body) {
+      ctx.waitUntil(cache.put(fresh, new Response(body, { headers: { "cache-control": "public, max-age=60" } })));
+      ctx.waitUntil(cache.put(keep, new Response(body, { headers: { "cache-control": "public, max-age=604800" } })));
+    } else {
+      const old = await cache.match(keep);                    // the server is down: the last good copy (its "at" says how old)
+      if (old) body = await old.text();
+    }
+  }
+  if (!body) return new Response('{"v":1,"services":{}}', { status: 503, headers: { ...JSON_HEAD, "cache-control": "no-store" } });
+  return new Response(req.method === "HEAD" ? null : body, { headers: JSON_HEAD });
+}
 
 // the newest release's version, from the redirect GitHub gives for /releases/latest
 async function latest(url, ctx) {

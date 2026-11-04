@@ -10,7 +10,9 @@ const pub = new URL("../public/", import.meta.url);
 const page = p => readFile(new URL(p + "index.html", pub), "utf8");
 // every page the sitemap lists, as a path relative to the site root
 const sitemap = await readFile(new URL("sitemap.xml", pub), "utf8");
-const pages = [...sitemap.matchAll(/<loc>https:\/\/1ms\.dog\/([^<]*)<\/loc>/g)].map(m => m[1]);
+const locs = [...sitemap.matchAll(/<loc>https:\/\/1ms\.dog\/([^<]*)<\/loc>/g)].map(m => m[1]);
+const isStatus = p => /(^|\/)status\/$/.test(p);
+const pages = locs.filter(p => !isStatus(p)), statusPages = locs.filter(isStatus);
 const altsOf = p => [...sitemap.split("<url>").find(u => u.includes(`<loc>https://1ms.dog/${p}</loc>`)).matchAll(/hreflang="([^"]+)"/g)].map(m => m[1]);
 
 test("every language has every string", async () => {
@@ -91,4 +93,22 @@ test("every service and pack is in the page and the local packs cover their coun
   assert.equal(new Set(Object.values(PACKS).map(p => p.length)).size, 1, "every local pack has the same length");
   const ids = [...SERVICES, ...Object.values(PACKS).flat()].map(s => s.id);
   assert.equal(new Set(ids).size, ids.length, "service ids are unique");
+});
+
+test("the status page: one per language, every service listed, its script and data, linked from every page's footer", async () => {
+  assert.equal(statusPages.length, LANGS.length);
+  const all = [...SERVICES, ...Object.values(PACKS).flat()].map(s => s.id).filter((x, i, a) => a.indexOf(x) === i);
+  for (const p of statusPages) {
+    const h = await page(p);
+    for (const id of all) assert.ok(h.includes(`data-id="${id}"`), p + ": lists " + id);
+    assert.match(h, /<script src="\/assets\/status\.[0-9a-f]+\.js" defer><\/script>/, p + ": its script");
+    const st = JSON.parse(/<script type="application\/json" id="st">([^<]*)<\/script>/.exec(h)[1]);
+    assert.ok(st.L.ss_outrow && st.scale, p + ": strings and scale for the script");
+    assert.equal((h.match(/hreflang=/g) || []).length >= LANGS.length + 1, true, p + ": alternates");
+    assert.equal((h.match(/<h1>/g) || []).length, 1, p + " one h1");
+  }
+  const home = await page("");
+  assert.ok(/<nav class="sitemap"[^>]*>[\s\S]*?href="\/status\/"/.test(home), "home footer links the status page");
+  const csp = await readFile(new URL("../public/_headers", import.meta.url), "utf8");
+  assert.match(csp, /connect-src 'self' https: wss:\/\/echo\.1ms\.dog:8443/, "the CSP lets the page reach the echo server");
 });

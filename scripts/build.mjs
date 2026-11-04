@@ -93,14 +93,14 @@ export async function build({ check = false } = {}) {
   const ALL = [...SERVICES, ...Object.values(PACKS).flat()].filter((x, i, a) => a.findIndex(y => y.id === x.id) === i);
   const packOfService = id => Object.keys(PACKS).find(p => PACKS[p].some(x => x.id === id));
   const has = (l, sub) => !sub || GROUP_SUBS.includes(sub) || ALL.some(x => x.id === sub);
-  const indexed = (l, sub) => !sub || GROUP_SUBS.includes(sub) || landOf(l).includes(sub);
+  const indexed = (l, sub) => !sub || sub === "status" || GROUP_SUBS.includes(sub) || landOf(l).includes(sub);
   // hreflang and sitemap alternates point only at indexed versions (an alternate that is noindex is a search error)
-  const altsOf = sub => langs.filter(([l]) => indexed(l, sub));
+  const altsOf = sub => langs.filter(([l]) => sub === "status" || indexed(l, sub));
   const path = (slug, sub) => "/" + (slug ? slug + "/" : "") + (sub ? sub + "/" : "");
   const RUNTIME_SKIP = new Set(["docs", "egress_link", "seo_title", "seo_desc", "seo_kw", "og_sub", "lede", "lp_title", "lp_desc", "lp_intro", "lp_h1", "lp_kw", "lp_peers", "lp_via", "lp_via_same", "land", "lg_title", "lg_desc", "lg_h1", "lg_kw", "lg_intro", "lg_about", "lg_region", "sm_cats", "sm_regions", "grp_best", "grp_worst", "sitemap_h", "sm_item", "cta_h", "cta_d", "cta_btn", "one_med", "one_cold", "one_jit",
     "name", "h1", "lang_label", "faq_h", "pack", "exit_h", "test_mine", "r_title_one", "r_title_other", "r_one"]);
   // static text the page already shows, and region names (only the server-rendered picker uses them)
-  const runtimeKey = k => !RUNTIME_SKIP.has(k) && !k.startsWith("pk_") && !k.startsWith("a_");
+  const runtimeKey = k => !RUNTIME_SKIP.has(k) && !k.startsWith("pk_") && !k.startsWith("a_") && !k.startsWith("ss_");
   const pages = [], stringFiles = {};
   for (const [lang, slug, locale, defPack] of langs) {
     const d = I[lang], T = k => d[k] ?? en[k] ?? k;
@@ -207,6 +207,7 @@ export async function build({ check = false } = {}) {
       const data = { lang, paths, pack: defPack, spot: s ? s.id : null, set: g ? { kind: g.kind, id: g.id, name: gn } : null };
       // footer sitemap: this language's home and every single-service page, with anchor texts people search for
       const sitemapNav = `<b>${esc(T("sitemap_h"))}</b><a href="${path(slug, "")}"${sub ? "" : ' aria-current="page"'}>${esc(T("cta_btn"))}</a>` +
+        `<a href="${path(slug, "status")}">${esc(T("ss_link"))}</a>` +
         landOf(lang).map(id => { const x = SERVICES.find(v => v.id === id);
           return `<a href="${path(slug, id)}"${id === sub ? ' aria-current="page"' : ""}>${esc(fill(T("sm_item"), { s: x.name }))}</a>`; }).join("") +
         `<i class="br"></i><b>${esc(T("sm_cats"))}</b>` + CATS.map(c => `<a href="${path(slug, c)}"${c === sub ? ' aria-current="page"' : ""}>${esc(T("cat_" + c))}</a>`).join("") +
@@ -232,6 +233,79 @@ export async function build({ check = false } = {}) {
     }
   }
 
+  // The status page, per language (/status/, /<lang>/status/): every service as measured from 1ms.dog's server in Tokyo,
+  // filled in the browser from /baseline.json by src/status.js. The table is in the HTML (crawlers and no-JS readers see
+  // what is listed); the numbers change every 10 minutes, so they never are.
+  const stLib = lib, stSrc = await readFile(new URL("status.js", src), "utf8");
+  const stJs = (await transform(stSrc.replace("/* @lib */", () => stLib), { loader: "js", minify: true, target: "es2020", legalComments: "none" })).code;
+  const stName = `status.${hash(stJs)}.js`;
+  stringFiles["assets/" + stName] = stJs;
+  const stGroups = [...CATS.map(c => ["cat_" + c, SERVICES.filter(x => x.cat === c)]), ...Object.keys(PACKS).map(p => ["pk_" + p, PACKS[p], p])];
+  for (const [lang, slug, locale] of langs) {
+    const d = I[lang], T = k => d[k] ?? en[k] ?? k;
+    const url = SITE + path(slug, "status"), n = ALL.length;
+    const title = fill(T("ss_title"), { n }), desc = fill(T("ss_desc"), { n });
+    const alts = langs.map(([l, sl]) => `<link rel="alternate" hreflang="${l}" href="${SITE + path(sl, "status")}">`).join("\n") + `\n<link rel="alternate" hreflang="x-default" href="${SITE + path("", "status")}">`;
+    const og = `${SITE}/og/${lang.toLowerCase()}.png`;
+    const head = [`<title>${esc(title)}</title>`, `<meta name="description" content="${esc(desc)}">`, `<meta name="robots" content="index, follow, max-image-preview:large">`,
+      `<meta name="theme-color" content="#f6f6f7" media="(prefers-color-scheme: light)">`, `<meta name="theme-color" content="#1c1c1c" media="(prefers-color-scheme: dark)">`,
+      `<link rel="canonical" href="${url}">`, alts,
+      `<link rel="icon" href="/favicon.ico" sizes="any">`, `<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">`, `<link rel="apple-touch-icon" href="/apple-touch-icon.png">`,
+      `<meta property="og:type" content="website">`, `<meta property="og:site_name" content="1ms.dog">`, `<meta property="og:title" content="${esc(title)}">`,
+      `<meta property="og:description" content="${esc(desc)}">`, `<meta property="og:url" content="${url}">`, `<meta property="og:image" content="${og}">`,
+      `<meta property="og:locale" content="${locale}">`, `<meta name="twitter:card" content="summary_large_image">`].join("\n");
+    // a local pack's name is the region's; its services' own pages exist in every language
+    const rows = stGroups.map(([k, list]) => `<tbody><tr class="gh"><th colspan="5" scope="colgroup">${esc(k.startsWith("pk_") ? fill(T("lg_region"), { r: T(k) }) : T(k))}</th></tr>` +
+      list.map(x => `<tr data-id="${x.id}"><th scope="row"><a href="${path(slug, x.id)}">${esc(x.name)}</a></th><td class="now cx">–</td><td class="sp"></td><td class="u24 cx">–</td><td class="u7 cx">–</td></tr>`).join("") + "</tbody>").join("\n");
+    const st = { lang, scale: SCALE, L: Object.fromEntries(["ss_updated", "ss_stale", "ss_err", "ss_down", "ss_none", "ss_outrow", "josa_fin"].map(k => [k, T(k)])) };
+    const langNav = langs.map(([l, sl]) => `<a href="${path(sl, "status")}"${l === lang ? ' aria-current="page"' : ""} hreflang="${l}" lang="${l}">${esc(I[l].name)}</a>`).join("");
+    const html = `<!doctype html>
+<html lang="${lang}">
+<head>
+<meta charset="utf-8">
+<script>${PREPAINT}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+${head}
+<link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/${cssName}">
+</head>
+<body>
+<div class="app status">
+  <header class="top">
+    <a class="brand" href="${path(slug, "")}" aria-label="1ms.dog">
+      <img class="logo-light" src="/assets/logo-light.svg" width="90" height="36" alt="1ms">
+      <img class="logo-dark" src="/assets/logo-dark.svg" width="90" height="36" alt="1ms">
+    </a>
+  </header>
+  <main>
+    <section class="card st-hero">
+      <h1>${esc(T("ss_h1"))}</h1>
+      <p class="intro">${esc(T("ss_intro"))}</p>
+      <div class="st-acts"><p class="st-meta" id="stMeta" aria-live="polite">…</p><a class="btn pri" href="${path(slug, "")}">${esc(T("ss_mine"))}</a></div>
+    </section>
+    <section class="card st-list">
+      <table id="stTable">
+        <thead><tr><th scope="col">${esc(T("ss_svc"))}</th><th scope="col" class="now">${esc(T("ss_now"))}</th><th scope="col" class="sp">${esc(T("ss_24h"))}</th><th scope="col" class="u24" title="${esc(T("ss_upt"))}"><span class="lg">${esc(T("ss_upt"))} </span>${esc(T("ss_up24"))}</th><th scope="col" class="u7">${esc(T("ss_up7"))}</th></tr></thead>
+${rows}
+      </table>
+    </section>
+    <section class="card st-outs">
+      <h2>${esc(T("ss_out"))}</h2>
+      <ul id="stOut"><li class="none">…</li></ul>
+    </section>
+  </main>
+  <footer class="foot">
+    <nav class="sitemap" aria-label="${esc(T("lang_label"))}"><b>${esc(T("lang_label"))}</b>${langNav}</nav>
+  </footer>
+</div>
+<script type="application/json" id="st">${JSON.stringify(st).replace(/</g, "\\u003c")}</script>
+<script src="/assets/${stName}" defer></script>
+</body>
+</html>
+`;
+    pages.push({ file: (slug ? slug + "/" : "") + "status/index.html", url, lang, sub: "status", html, idx: true, status: true });
+  }
+
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n` +
     pages.filter(p => p.idx).map(p => `  <url>\n    <loc>${p.url}</loc>\n    <priority>${!p.sub ? "1.0" : groupOf(p.sub) ? "0.8" : "0.7"}</priority>\n` +
       altsOf(p.sub).map(([l, s]) => `    <xhtml:link rel="alternate" hreflang="${l}" href="${SITE + path(s, p.sub)}"/>`).join("\n") +
@@ -246,6 +320,7 @@ export async function build({ check = false } = {}) {
 - Home: ${SITE}/ (also ${langs.slice(1).map(([, s]) => "/" + s + "/").join(", ")})
 - Service pages: ${landOf("en").map(id => `${SITE}/${id}/`).join(", ")}
 - Group pages: ${GROUP_SUBS.map(g => `${SITE}/${g}/`).join(", ")}
+- Service status from Tokyo (latency and uptime of every service, measured every 10 minutes by 1ms.dog's server in Tokyo): ${SITE}/status/ (data: ${SITE}/baseline.json)
 - Services tested: ${SERVICES.map(s => s.name).join(", ")}
 - Speed grades (median HTTPS round trip): 1ms dog < 2 ms, Zoomies ≤ 30, Sprint ≤ 80, Trot ≤ 150, Stroll ≤ 300, Nap > 300, Not back = no connection in 5 s
 `;
@@ -263,7 +338,7 @@ export async function build({ check = false } = {}) {
   // connect-src / img-src allow any https host: the test fetches the services from the browser.
   // style-src needs 'unsafe-inline' for the tile colors (style="--c") and the inlined shiba's own <style>.
   const csp = ["default-src 'self'", `script-src 'self' 'sha256-${sha(PREPAINT)}'`, "style-src 'self' 'unsafe-inline'",
-    "font-src 'self'", "img-src 'self' data: blob: https:", "connect-src 'self' https:", "manifest-src 'self'",
+    "font-src 'self'", "img-src 'self' data: blob: https:", "connect-src 'self' https: wss://echo.1ms.dog:8443", "manifest-src 'self'",
     "object-src 'none'", "base-uri 'none'", "form-action 'none'", "frame-ancestors 'none'"].join("; ");
   const headers = `# Generated by scripts/build.mjs
 /*

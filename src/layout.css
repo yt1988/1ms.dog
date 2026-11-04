@@ -33,6 +33,7 @@
 .sk-t { animation: blink 1.2s ease-in-out infinite; }
 @keyframes blink { 50% { opacity: .45; } }
 .ex-note { font-size: 12.5px; color: var(--warn); margin: 6px 0 0; }
+.ex-note.tyo { color: var(--muted); }
 /* one short line per link to another 1ms.dog tool, beside the result it goes deeper on */
 .links { display: flex; flex-wrap: wrap; gap: 2px 16px; margin: 6px 0 0; font-size: 12.5px; }
 .links a { color: var(--ink); text-decoration: none; }
@@ -133,6 +134,13 @@ button.use:hover, button.use[aria-pressed="true"] { background: var(--soft); col
 .axis span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
 .axis i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 .axis b { font-weight: 600; color: var(--fg); }
+/* the Tokyo baseline: its legend links to the status page; its mark is a thin line on each lane */
+.axis .tko { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; color: var(--muted); text-decoration: none; }
+.axis .tko[hidden] { display: none; }
+.axis .tko i, .row .tk { width: 2px; height: 12px; border-radius: 1px; background: var(--fg); opacity: .4; }
+.axis .tko:hover b { text-decoration: underline; }
+.row .tk { position: absolute; top: 1px; margin-left: -1px; pointer-events: none; }
+.row .tk.down { opacity: .15; }
 .groups { columns: 3 250px; column-gap: 26px; }
 .grp { break-inside: avoid; margin-bottom: 10px; }
 .grp h2 { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin: 0 0 2px; display: flex; align-items: center; gap: 6px; height: 28px; }
@@ -503,4 +511,37 @@ html.embed .field { padding: 10px 14px 4px; }
   .balls, .fx { display: none; }
   .rig-body, .rig-flip, .rig-head, .rig-tail, .rig-shadow, .ear, .f-tongue, .f-sweat, .f-stars, .stage .dog { animation: none !important; }
   #original-1ms-doge-mascot, .ear { transition: none; }
+}
+
+/* the status page (/status/): the Tokyo baseline as a table */
+.status main { display: flex; flex-direction: column; gap: 16px; }
+.st-hero h1 { margin: 0 0 8px; }
+.st-hero .intro { margin: 0; color: var(--muted); max-width: 70ch; }
+.st-acts { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-top: 14px; }
+.st-meta { margin: 0; font-size: 13px; color: var(--muted); }
+.st-meta.warn { color: var(--warn); }
+.st-list { padding: 8px 0; overflow-x: auto; }
+#stTable { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+#stTable th, #stTable td { padding: 6px 12px; text-align: right; white-space: nowrap; }
+#stTable th:first-child { text-align: left; font-weight: 500; }
+#stTable th:first-child a { text-decoration: none; }
+#stTable th:first-child a:hover { text-decoration: underline; }
+#stTable thead th { font-size: 12px; font-weight: 600; color: var(--muted); border-bottom: 1px solid var(--line); }
+#stTable .gh th { text-align: left; font-size: 12px; font-weight: 600; color: var(--muted); padding-top: 14px; }
+#stTable tbody tr[data-id] { border-top: 1px solid color-mix(in srgb, var(--line) 50%, transparent); }
+#stTable .now { font-weight: 600; }
+#stTable .now small { font-size: 11px; font-weight: 500; margin-left: 2px; color: var(--muted); }
+#stTable td.sp { width: 112px; padding-block: 2px; }
+#stTable .sp svg { display: block; margin-left: auto; overflow: visible; }
+#stTable .sp path { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; opacity: .55; }
+#stTable .sp circle { fill: currentColor; }
+.st-outs h2 { margin: 0 0 8px; font-size: 15px; }
+.st-outs ul { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.7; }
+.st-outs li.none { list-style: none; margin-left: -18px; color: var(--muted); }
+@media (max-width: 560px) {
+  #stTable th, #stTable td { padding: 6px 8px; }
+  #stTable .u7 { display: none; }
+  #stTable thead .lg, #stTable .now small { display: none; }
+  #stTable td.sp { width: 72px; }
+  #stTable .sp svg { width: 64px; }
 }

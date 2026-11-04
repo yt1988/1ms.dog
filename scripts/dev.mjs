@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Local preview of ./public with the same headers as production (public/_headers, including the CSP). Shared result
 // and compare links (/r/…, /c/…/…) get the page with the preview title the Worker gives them (src/worker.js), so
-// they open here too; the Worker's HTMLRewriter is stood in for by a few replacements.
+// they open here too; the Worker's HTMLRewriter is stood in for by a few replacements. /baseline.json: .baseline.json
+// when there is one, else the live copy.
 // Usage: node scripts/dev.mjs [port]
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
@@ -43,6 +44,14 @@ function preview(html, meta, url) {
 
 createServer(async (req, res) => {
   const urlPath = decodeURIComponent(new URL(req.url, "http://x").pathname);
+  // the Tokyo baseline the Worker serves (src/worker.js): a local file when there is one (httpslatency baseline --out
+  // writes summary.json; copy it to .baseline.json), otherwise the live one
+  if (urlPath === "/baseline.json") {
+    const local = await readFile(new URL("../.baseline.json", import.meta.url)).catch(() => null);
+    const body = local || await fetch("https://1ms.dog/baseline.json").then(r => r.ok ? r.text() : null).catch(() => null);
+    res.writeHead(body ? 200 : 503, { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-cache" }).end(body || '{"v":1,"services":{}}');
+    return;
+  }
   const found = resultMeta(new URL(req.url, "http://x").pathname), meta = found && !found.bad ? found : null;   // unreadable: 404
   let path = meta ? meta.page : urlPath;
   if (path.endsWith("/")) path += "index.html";
