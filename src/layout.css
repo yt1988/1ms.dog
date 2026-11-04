@@ -135,7 +135,7 @@ button.use:hover, button.use[aria-pressed="true"] { background: var(--soft); col
 .axis i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 .axis b { font-weight: 600; color: var(--fg); }
 /* the Tokyo baseline: its legend links to the status page; its mark is a thin line on each lane */
-.axis .tko { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; color: var(--muted); text-decoration: none; }
+.axis .tko { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; color: var(--muted); text-decoration: none; min-height: 24px; }
 .axis .tko[hidden] { display: none; }
 .axis .tko i, .row .tk { width: 2px; height: 12px; border-radius: 1px; background: var(--fg); opacity: .4; }
 .axis .tko:hover b { text-decoration: underline; }
