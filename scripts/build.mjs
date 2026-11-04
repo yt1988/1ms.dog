@@ -235,7 +235,7 @@ export async function build({ check = false } = {}) {
 
   // The status page, per language (/status/, /<lang>/status/): every service as measured from 1ms.dog's server in Tokyo,
   // filled in the browser from /baseline.json by src/status.js. The table is in the HTML (crawlers and no-JS readers see
-  // what is listed); the numbers change every 10 minutes, so they never are.
+  // what is listed); the numbers change every hour, so they never are.
   const stLib = lib, stSrc = await readFile(new URL("status.js", src), "utf8");
   const stJs = (await transform(stSrc.replace("/* @lib */", () => stLib), { loader: "js", minify: true, target: "es2020", legalComments: "none" })).code;
   const stName = `status.${hash(stJs)}.js`;
@@ -329,7 +329,7 @@ ${common(stHelp)}
 - Home: ${SITE}/ (also ${langs.slice(1).map(([, s]) => "/" + s + "/").join(", ")})
 - Service pages: ${landOf("en").map(id => `${SITE}/${id}/`).join(", ")}
 - Group pages: ${GROUP_SUBS.map(g => `${SITE}/${g}/`).join(", ")}
-- Service status from Tokyo (latency and uptime of every service, measured every 10 minutes by 1ms.dog's server in Tokyo): ${SITE}/status/ (data: ${SITE}/baseline.json)
+- Service status from Tokyo (latency and uptime of every service, measured every hour by 1ms.dog's server in Tokyo): ${SITE}/status/ (data: ${SITE}/baseline.json)
 - Services tested: ${SERVICES.map(s => s.name).join(", ")}
 - Speed grades (median HTTPS round trip): 1ms dog < 2 ms, Zoomies ≤ 30, Sprint ≤ 80, Trot ≤ 150, Stroll ≤ 300, Nap > 300, Not back = no connection in 5 s
 `;

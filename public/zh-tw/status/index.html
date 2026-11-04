@@ -5,7 +5,7 @@
 <script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(/[/]c[/][^/]+[/][^/]+[/]?$/.test(location.pathname))d.classList.add("cmp");if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en"){var r=location.pathname.match(/[/](r[/][^/]+|c[/][^/]+[/][^/]+)[/]?$/);location.replace(P[l]+(r?r[0].slice(1):"")+location.hash)}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>服務狀態（東京視角）：84 個服務的延遲和可用率 · 1ms.dog</title>
-<meta name="description" content="1ms.dog 的東京伺服器每 10 分鐘測一次到全球 84 個服務的 HTTPS 往返延遲：最新延遲、24 小時走勢，以及 24 小時和 7 天的可用率。">
+<meta name="description" content="1ms.dog 的東京伺服器每小時測一次到全球 84 個服務的 HTTPS 往返延遲：最新延遲、24 小時走勢，以及 24 小時和 7 天的可用率。">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="#f6f6f7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#1c1c1c" media="(prefers-color-scheme: dark)">
@@ -27,13 +27,13 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="1ms.dog">
 <meta property="og:title" content="服務狀態（東京視角）：84 個服務的延遲和可用率 · 1ms.dog">
-<meta property="og:description" content="1ms.dog 的東京伺服器每 10 分鐘測一次到全球 84 個服務的 HTTPS 往返延遲：最新延遲、24 小時走勢，以及 24 小時和 7 天的可用率。">
+<meta property="og:description" content="1ms.dog 的東京伺服器每小時測一次到全球 84 個服務的 HTTPS 往返延遲：最新延遲、24 小時走勢，以及 24 小時和 7 天的可用率。">
 <meta property="og:url" content="https://1ms.dog/zh-tw/status/">
 <meta property="og:image" content="https://1ms.dog/og/zh-tw.png">
 <meta property="og:locale" content="zh_TW">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.bc1152c152.css">
+<link rel="stylesheet" href="/assets/app.0dc458a26c.css">
 </head>
 <body>
 <div class="app status">
@@ -61,7 +61,7 @@
   <main>
     <section class="card st-hero">
       <h1>服務狀態（東京視角）</h1>
-      <p class="intro">1ms.dog 的東京伺服器每 10 分鐘測一次到全球 84 個服務的 HTTPS 往返延遲：最新延遲、24 小時走勢，以及 24 小時和 7 天的可用率。</p>
+      <p class="intro">1ms.dog 的東京伺服器每小時測一次到全球 84 個服務的 HTTPS 往返延遲：最新延遲、24 小時走勢，以及 24 小時和 7 天的可用率。</p>
       <div class="st-acts"><p class="st-meta" id="stMeta" aria-live="polite">…</p><a class="btn pri" href="/zh-tw/">用你自己的網路測一次</a></div>
     </section>
     <section class="card st-list">
@@ -105,7 +105,7 @@
         <select id="helpSel" aria-labelledby="helpT"></select>
         <button class="icon-btn" type="button" data-hstep="1" aria-label="下一個"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg></button>
       </div>
-      <div class="help-c" id="helpC"><article data-hqb="0"><h3>服務狀態（東京視角）</h3><p>我們在東京的伺服器每 10 分鐘測一遍每個服務，方法和你的瀏覽器一樣：先發一個請求建立連線，再在同一條連線上計時幾次。這裡是那台伺服器的數字，不是你的：和你自己的測試對比，就能看出一個服務慢，是大家都慢，還是只有你的線路慢。首頁每條軌道上的細線，就是這台伺服器測到的 24 小時中位數。</p></article><article data-hqb="1" hidden><h3>什麼是出口 IP？</h3><p>出口 IP 就是網站看到的你的位址。在家上網時，它通常屬於你的電信業者；如果用了 VPN、代理、公司網路或 iCloud 私密轉送，它就屬於幫你轉送流量的那一方，可能在別的城市，甚至別的國家。服務會依出口 IP 把你分配到某台伺服器，所以它也直接影響你的速度。</p></article><article data-hqb="2" hidden><h3>為什麼同時有直連出口和代理出口？</h3><p>因為很多代理和 VPN 會分流（依網站選路：有些網站直連，其他網站走代理）。只問一個檢測點，就只看得到其中一條路。所以我們同時問好幾個：1ms.dog 自己、中國大陸的網站、Cloudflare、ip.sb、ipinfo.io、只走 IPv4 和只走 IPv6 的檢測，以及 WebRTC（走 UDP）。再把結果依網路歸併，列出每個出口，標明是直連還是代理。如果平常從你所在地區連不上的服務卻連上了，我們也會提醒你：還有一個出口沒被檢測到。</p></article><article data-hqb="3" hidden><h3>延遲是怎麼測的？</h3><p>你的瀏覽器會和每個服務建立一條真實的 HTTPS 連線。第一次請求只用來建立連線（查詢 DNS、TCP 交握、TLS 加密交握），會分開顯示，不算進結果；接著在同一條連線上再送幾次請求計時，取中位數。所以你看到的，是從你的裝置經過 Wi‑Fi、電信業者和代理，到這個服務最近一台伺服器的一次往返，也就是你平常用 App 時實際感受到的延遲。</p></article><article data-hqb="4" hidden><h3>為什麼和 ping 的結果不一樣？</h3><p>ping 用的是 ICMP 協定，瀏覽器送不出去；而且很多網路處理 ICMP 的方式和一般流量不同，ping 快不代表用起來快。HTTPS 計時和你平常用的 App 走同一條路。數字通常會比 ping 高幾毫秒，因為伺服器要多處理一次請求。</p></article><article data-hqb="5" hidden><h3>狗狗的速度等級是什麼意思？</h3><p>閃電狗 ≤ 30 ms：差不多在同一個城市。飛奔 ≤ 80 ms：同一個地區。小跑 ≤ 150 ms：幾乎做什麼都夠用。散步 ≤ 300 ms：玩遊戲、視訊通話會覺得慢。趴著睡 &gt; 300 ms：距離太遠，或線路壅塞。沒叼回來：5 秒內沒連上，代表從這裡無法使用。低於 2 ms，會解鎖傳說中的 1ms 神犬。</p></article><article data-hqb="6" hidden><h3>我的資料會被傳到哪裡？</h3><p>測速結果不會傳給我們。延遲測試的請求都由你的瀏覽器直接送到被測的服務；查出口 IP 時，瀏覽器會詢問 1ms.dog 和幾個公開的 IP 查詢服務，它們當然會看到你的 IP，這本來就是查 IP 的方式。上次的結果只存在你的瀏覽器裡，用來告訴你網路有沒有變化。只有在你按下分享或回報問題時，結果才會離開瀏覽器：分享連結裡帶著國家和延遲，勾選後才加上城市和電信業者，從不包含 IP 位址；在 1ms.dog 上，連結會被縮短，並儲存一張結果卡片，當作聊天軟體裡的連結預覽。完整測試結束後，你的瀏覽器還會和 1ms.dog 在東京的伺服器互傳幾則很小的訊息，測一下到那裡的往返時間；那台伺服器不記錄日誌。</p></article></div>
+      <div class="help-c" id="helpC"><article data-hqb="0"><h3>服務狀態（東京視角）</h3><p>我們在東京的伺服器每小時測一遍每個服務，方法和你的瀏覽器一樣：先發一個請求建立連線，再在同一條連線上計時幾次。這裡是那台伺服器的數字，不是你的：和你自己的測試對比，就能看出一個服務慢，是大家都慢，還是只有你的線路慢。首頁每條軌道上的細線，就是這台伺服器測到的 24 小時中位數。</p></article><article data-hqb="1" hidden><h3>什麼是出口 IP？</h3><p>出口 IP 就是網站看到的你的位址。在家上網時，它通常屬於你的電信業者；如果用了 VPN、代理、公司網路或 iCloud 私密轉送，它就屬於幫你轉送流量的那一方，可能在別的城市，甚至別的國家。服務會依出口 IP 把你分配到某台伺服器，所以它也直接影響你的速度。</p></article><article data-hqb="2" hidden><h3>為什麼同時有直連出口和代理出口？</h3><p>因為很多代理和 VPN 會分流（依網站選路：有些網站直連，其他網站走代理）。只問一個檢測點，就只看得到其中一條路。所以我們同時問好幾個：1ms.dog 自己、中國大陸的網站、Cloudflare、ip.sb、ipinfo.io、只走 IPv4 和只走 IPv6 的檢測，以及 WebRTC（走 UDP）。再把結果依網路歸併，列出每個出口，標明是直連還是代理。如果平常從你所在地區連不上的服務卻連上了，我們也會提醒你：還有一個出口沒被檢測到。</p></article><article data-hqb="3" hidden><h3>延遲是怎麼測的？</h3><p>你的瀏覽器會和每個服務建立一條真實的 HTTPS 連線。第一次請求只用來建立連線（查詢 DNS、TCP 交握、TLS 加密交握），會分開顯示，不算進結果；接著在同一條連線上再送幾次請求計時，取中位數。所以你看到的，是從你的裝置經過 Wi‑Fi、電信業者和代理，到這個服務最近一台伺服器的一次往返，也就是你平常用 App 時實際感受到的延遲。</p></article><article data-hqb="4" hidden><h3>為什麼和 ping 的結果不一樣？</h3><p>ping 用的是 ICMP 協定，瀏覽器送不出去；而且很多網路處理 ICMP 的方式和一般流量不同，ping 快不代表用起來快。HTTPS 計時和你平常用的 App 走同一條路。數字通常會比 ping 高幾毫秒，因為伺服器要多處理一次請求。</p></article><article data-hqb="5" hidden><h3>狗狗的速度等級是什麼意思？</h3><p>閃電狗 ≤ 30 ms：差不多在同一個城市。飛奔 ≤ 80 ms：同一個地區。小跑 ≤ 150 ms：幾乎做什麼都夠用。散步 ≤ 300 ms：玩遊戲、視訊通話會覺得慢。趴著睡 &gt; 300 ms：距離太遠，或線路壅塞。沒叼回來：5 秒內沒連上，代表從這裡無法使用。低於 2 ms，會解鎖傳說中的 1ms 神犬。</p></article><article data-hqb="6" hidden><h3>我的資料會被傳到哪裡？</h3><p>測速結果不會傳給我們。延遲測試的請求都由你的瀏覽器直接送到被測的服務；查出口 IP 時，瀏覽器會詢問 1ms.dog 和幾個公開的 IP 查詢服務，它們當然會看到你的 IP，這本來就是查 IP 的方式。上次的結果只存在你的瀏覽器裡，用來告訴你網路有沒有變化。只有在你按下分享或回報問題時，結果才會離開瀏覽器：分享連結裡帶著國家和延遲，勾選後才加上城市和電信業者，從不包含 IP 位址；在 1ms.dog 上，連結會被縮短，並儲存一張結果卡片，當作聊天軟體裡的連結預覽。完整測試結束後，你的瀏覽器還會和 1ms.dog 在東京的伺服器互傳幾則很小的訊息，測一下到那裡的往返時間；那台伺服器不記錄日誌。</p></article></div>
     </div>
   </div>
 </div>

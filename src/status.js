@@ -1,5 +1,5 @@
 // The status page (/status/, /<lang>/status/): fills the table the build wrote with the Tokyo baseline from
-// /baseline.json (the Worker's copy of what 1ms.dog's server in Tokyo measures every 10 minutes). The page's own
+// /baseline.json (the Worker's copy of what 1ms.dog's server in Tokyo measures every hour). The page's own
 // strings, language and scale are in its #st JSON; the build inlines src/lib.mjs at the marker.
 (() => {
   /* @lib */

@@ -520,7 +520,8 @@ html.embed .field { padding: 10px 14px 4px; }
 .status main { display: flex; flex-direction: column; gap: 16px; }
 .st-hero, .st-outs { padding: 20px 22px; }
 .st-hero h1 { margin: 0 0 8px; }
-.st-hero .intro { margin: 0; color: var(--muted); max-width: 70ch; }
+.st-hero .intro { margin: 0; color: var(--muted); }
+.st-acts .btn { text-decoration: none; }
 .st-acts { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-top: 14px; }
 .st-meta { margin: 0; font-size: 13px; color: var(--muted); }
 .st-meta.warn { color: var(--warn); }

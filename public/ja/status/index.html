@@ -5,7 +5,7 @@
 <script>(function(){var d=document.documentElement,th=null,s=null;try{th=localStorage.getItem("1ms:theme");s=localStorage.getItem("1ms:lang")}catch(e){}if(th==="light"||th==="dark")d.setAttribute("data-theme",th);if(/[/]c[/][^/]+[/][^/]+[/]?$/.test(location.pathname))d.classList.add("cmp");if(!d.hasAttribute("data-root"))return;var P=JSON.parse(d.getAttribute("data-paths")||"{}"),l=null;try{var q=new URLSearchParams(location.search).get("lang");if(P[q])l=q}catch(e){}if(!l&&P[s])l=s;for(var ls=navigator.languages||[navigator.language||"en"],i=0;!l&&!s&&i<ls.length;i++){var x=String(ls[i]).toLowerCase(),b=x.split("-")[0];l=b==="zh"?(/tw|hk|mo|hant/.test(x)?"zh-TW":"zh-CN"):P[b]?b:null}if(l&&l!=="en"){var r=location.pathname.match(/[/](r[/][^/]+|c[/][^/]+[/][^/]+)[/]?$/);location.replace(P[l]+(r?r[0].slice(1):"")+location.hash)}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>東京から見たサービス状況：84 サービスの遅延と稼働率 · 1ms.dog</title>
-<meta name="description" content="1ms.dog の東京サーバーが 10 分ごとに世界の 84 サービスへの HTTPS 往復時間を計測。最新の遅延、24 時間の推移、24 時間と 7 日間の稼働率がわかります。">
+<meta name="description" content="1ms.dog の東京サーバーが 1 時間ごとに世界の 84 サービスへの HTTPS 往復時間を計測。最新の遅延、24 時間の推移、24 時間と 7 日間の稼働率がわかります。">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="#f6f6f7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#1c1c1c" media="(prefers-color-scheme: dark)">
@@ -27,13 +27,13 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="1ms.dog">
 <meta property="og:title" content="東京から見たサービス状況：84 サービスの遅延と稼働率 · 1ms.dog">
-<meta property="og:description" content="1ms.dog の東京サーバーが 10 分ごとに世界の 84 サービスへの HTTPS 往復時間を計測。最新の遅延、24 時間の推移、24 時間と 7 日間の稼働率がわかります。">
+<meta property="og:description" content="1ms.dog の東京サーバーが 1 時間ごとに世界の 84 サービスへの HTTPS 往復時間を計測。最新の遅延、24 時間の推移、24 時間と 7 日間の稼働率がわかります。">
 <meta property="og:url" content="https://1ms.dog/ja/status/">
 <meta property="og:image" content="https://1ms.dog/og/ja.png">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/app.bc1152c152.css">
+<link rel="stylesheet" href="/assets/app.0dc458a26c.css">
 </head>
 <body>
 <div class="app status">
@@ -61,7 +61,7 @@
   <main>
     <section class="card st-hero">
       <h1>東京から見たサービス状況</h1>
-      <p class="intro">1ms.dog の東京サーバーが 10 分ごとに世界の 84 サービスへの HTTPS 往復時間を計測。最新の遅延、24 時間の推移、24 時間と 7 日間の稼働率がわかります。</p>
+      <p class="intro">1ms.dog の東京サーバーが 1 時間ごとに世界の 84 サービスへの HTTPS 往復時間を計測。最新の遅延、24 時間の推移、24 時間と 7 日間の稼働率がわかります。</p>
       <div class="st-acts"><p class="st-meta" id="stMeta" aria-live="polite">…</p><a class="btn pri" href="/ja/">自分の回線でテストする</a></div>
     </section>
     <section class="card st-list">
@@ -105,7 +105,7 @@
         <select id="helpSel" aria-labelledby="helpT"></select>
         <button class="icon-btn" type="button" data-hstep="1" aria-label="次へ"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg></button>
       </div>
-      <div class="help-c" id="helpC"><article data-hqb="0"><h3>東京から見たサービス状況</h3><p>東京のサーバーが 10 分ごとに、ブラウザと同じ方法で各サービスを計測しています。最初のリクエストで接続し、同じ接続で数回計測します。これはそのサーバーの数値で、あなたの数値ではありません。自分のテストと比べれば、遅いのがみんななのか、あなたの経路だけなのかがわかります。トップページの各レーンにある細い線は、このサーバーの 24 時間の中央値です。</p></article><article data-hqb="1" hidden><h3>出口 IP とは？</h3><p>サイトにアクセスしたとき、相手から見えるあなたのアドレスです。自宅なら通常は契約しているプロバイダのものです。VPN、プロキシ、会社のネットワーク、iCloud プライベートリレーを使うと、通信を中継する側のアドレスになり、別の都市や別の国にあることもあります。サービスはこのアドレスを見てつなぐサーバーを決めるので、速度にも影響します。</p></article><article data-hqb="2" hidden><h3>直接接続とプロキシの出口が両方出るのはなぜ？</h3><p>多くのプロキシや VPN がスプリットトンネル（分流）で、サイトによって経路を変えるからです。一部のサイトは直接つなぎ、それ以外はプロキシを通します。そのため 1 つの IP チェックでは、そのチェックが通った経路しか見えません。そこで 1ms.dog 自身、中国本土のサイト、Cloudflare、ip.sb、ipinfo.io、IPv4 専用と IPv6 専用のチェック、WebRTC（UDP）に同時に問い合わせ、ネットワークごとにまとめて、出口ごとに直接接続かプロキシかを表示します。ふだんあなたの国からつながらないサービスが応答した場合は、どのチェックにも見えていない出口があることもお知らせします。</p></article><article data-hqb="3" hidden><h3>遅延はどう測っていますか？</h3><p>ブラウザが各サービスと実際の HTTPS 接続を開きます。最初のリクエストは接続の準備（DNS の問い合わせ、TCP と TLS のハンドシェイク）にだけ使い、別に表示して集計には入れません。そのあと同じ接続で何回か測り、中央値を表示します。つまり、端末から Wi‑Fi、プロバイダ、プロキシを通って、サービスの最寄りサーバーまでを往復する時間です。アプリを使うときに実際に感じる遅延と同じです。</p></article><article data-hqb="4" hidden><h3>ping と結果が違うのはなぜ？</h3><p>ping は ICMP という仕組みを使いますが、ブラウザからは送れません。また多くのネットワークは ICMP を通常の通信とは別に扱うので、ping が速くてもアプリが速いとは限りません。HTTPS での計測は、ふだん使うアプリと同じ経路を通ります。サーバーがリクエストに答える分、ping より数ミリ秒高く出るのが普通です。</p></article><article data-hqb="5" hidden><h3>犬のスピードの意味は？</h3><p>爆走 ≤ 30 ms：同じ都市くらい。ダッシュ ≤ 80 ms：同じ地域。トコトコ ≤ 150 ms：ほとんど何でも快適。おさんぽ ≤ 300 ms：ゲームや通話で遅れを感じます。おひるね &gt; 300 ms：遠いか、経路が混雑しています。戻らず：5 秒以内につながらず、ここからは使えません。2 ms 未満なら伝説の 1ms 犬が出てきます。</p></article><article data-hqb="6" hidden><h3>データはどこかに送られますか？</h3><p>測定結果が私たちに送られることはありません。遅延テストのリクエストは、ブラウザから測定先のサービスへ直接届きます。出口 IP を調べるときは、ブラウザが 1ms.dog といくつかの公開 IP チェックサービスに問い合わせるので、そこにはあなたの IP が見えます。IP を調べる以上、これは避けられません。前回の結果はこのブラウザの中にだけ保存し、回線の変化を知らせるのに使います。結果がブラウザの外に出るのは、シェアしたときと問題を報告したときだけです。シェア用リンクに入るのは国と遅延で、チェックを入れたときだけ都市とネットワークが加わります。IP アドレスは入りません。1ms.dog では、リンクを短くし、チャットアプリのリンクプレビュー用に結果の画像を保存します。フルテストの後、ブラウザは東京にある 1ms.dog のサーバーとごく小さなメッセージを数回やり取りして、そこまでの往復時間を測ります。このサーバーはログを残しません。</p></article></div>
+      <div class="help-c" id="helpC"><article data-hqb="0"><h3>東京から見たサービス状況</h3><p>東京のサーバーが 1 時間ごとに、ブラウザと同じ方法で各サービスを計測しています。最初のリクエストで接続し、同じ接続で数回計測します。これはそのサーバーの数値で、あなたの数値ではありません。自分のテストと比べれば、遅いのがみんななのか、あなたの経路だけなのかがわかります。トップページの各レーンにある細い線は、このサーバーの 24 時間の中央値です。</p></article><article data-hqb="1" hidden><h3>出口 IP とは？</h3><p>サイトにアクセスしたとき、相手から見えるあなたのアドレスです。自宅なら通常は契約しているプロバイダのものです。VPN、プロキシ、会社のネットワーク、iCloud プライベートリレーを使うと、通信を中継する側のアドレスになり、別の都市や別の国にあることもあります。サービスはこのアドレスを見てつなぐサーバーを決めるので、速度にも影響します。</p></article><article data-hqb="2" hidden><h3>直接接続とプロキシの出口が両方出るのはなぜ？</h3><p>多くのプロキシや VPN がスプリットトンネル（分流）で、サイトによって経路を変えるからです。一部のサイトは直接つなぎ、それ以外はプロキシを通します。そのため 1 つの IP チェックでは、そのチェックが通った経路しか見えません。そこで 1ms.dog 自身、中国本土のサイト、Cloudflare、ip.sb、ipinfo.io、IPv4 専用と IPv6 専用のチェック、WebRTC（UDP）に同時に問い合わせ、ネットワークごとにまとめて、出口ごとに直接接続かプロキシかを表示します。ふだんあなたの国からつながらないサービスが応答した場合は、どのチェックにも見えていない出口があることもお知らせします。</p></article><article data-hqb="3" hidden><h3>遅延はどう測っていますか？</h3><p>ブラウザが各サービスと実際の HTTPS 接続を開きます。最初のリクエストは接続の準備（DNS の問い合わせ、TCP と TLS のハンドシェイク）にだけ使い、別に表示して集計には入れません。そのあと同じ接続で何回か測り、中央値を表示します。つまり、端末から Wi‑Fi、プロバイダ、プロキシを通って、サービスの最寄りサーバーまでを往復する時間です。アプリを使うときに実際に感じる遅延と同じです。</p></article><article data-hqb="4" hidden><h3>ping と結果が違うのはなぜ？</h3><p>ping は ICMP という仕組みを使いますが、ブラウザからは送れません。また多くのネットワークは ICMP を通常の通信とは別に扱うので、ping が速くてもアプリが速いとは限りません。HTTPS での計測は、ふだん使うアプリと同じ経路を通ります。サーバーがリクエストに答える分、ping より数ミリ秒高く出るのが普通です。</p></article><article data-hqb="5" hidden><h3>犬のスピードの意味は？</h3><p>爆走 ≤ 30 ms：同じ都市くらい。ダッシュ ≤ 80 ms：同じ地域。トコトコ ≤ 150 ms：ほとんど何でも快適。おさんぽ ≤ 300 ms：ゲームや通話で遅れを感じます。おひるね &gt; 300 ms：遠いか、経路が混雑しています。戻らず：5 秒以内につながらず、ここからは使えません。2 ms 未満なら伝説の 1ms 犬が出てきます。</p></article><article data-hqb="6" hidden><h3>データはどこかに送られますか？</h3><p>測定結果が私たちに送られることはありません。遅延テストのリクエストは、ブラウザから測定先のサービスへ直接届きます。出口 IP を調べるときは、ブラウザが 1ms.dog といくつかの公開 IP チェックサービスに問い合わせるので、そこにはあなたの IP が見えます。IP を調べる以上、これは避けられません。前回の結果はこのブラウザの中にだけ保存し、回線の変化を知らせるのに使います。結果がブラウザの外に出るのは、シェアしたときと問題を報告したときだけです。シェア用リンクに入るのは国と遅延で、チェックを入れたときだけ都市とネットワークが加わります。IP アドレスは入りません。1ms.dog では、リンクを短くし、チャットアプリのリンクプレビュー用に結果の画像を保存します。フルテストの後、ブラウザは東京にある 1ms.dog のサーバーとごく小さなメッセージを数回やり取りして、そこまでの往復時間を測ります。このサーバーはログを残しません。</p></article></div>
     </div>
   </div>
 </div>

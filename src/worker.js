@@ -12,7 +12,7 @@
 //   /v                    the tool's latest version, "0.1.0", asked of GitHub and kept for 10 minutes
 //   /dl/<tag>/<file>      a file of that release, fetched from GitHub once and then kept (a tag's files never change);
 //                         <tag> may be "latest", which redirects to the current tag
-//   /baseline.json        the Tokyo baseline: 1ms.dog's server in Tokyo measures every service every 10 minutes
+//   /baseline.json        the Tokyo baseline: 1ms.dog's server in Tokyo measures every service every hour
 //                         (httpslatency baseline) and publishes summary.json; kept here for a minute, and the last
 //                         good copy for a week, so the page and the status page still have numbers when that server
 //                         is down. The page's lane marks, /status/ and `httpslatency status` / --compare read it.

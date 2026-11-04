@@ -434,7 +434,7 @@
   const SUBS = ONE && SVC.subs[ONE.id] || [];                  // a service page's parts: Telegram's data centers
   const allServices = () => ONE ? [ONE, ...SUBS] : GRP ? GRP.list : [...(PACKS[pack] || []), ...SVC.list];
   function showPack(p) { pack = p; $("#localRows").innerHTML = PACKS[p].map(rowHtml).join(""); $("#pack").value = p; markBase(); }
-  // The Tokyo baseline: 1ms.dog's server in Tokyo measures every service every 10 minutes (/baseline.json, from the
+  // The Tokyo baseline: 1ms.dog's server in Tokyo measures every service every hour (/baseline.json, from the
   // Worker). Each lane gets a thin mark where that server's 24-hour median sits: a fixed point to compare the ball
   // with. Far right of the mark means the delay is on the visitor's route; slow from Tokyo too means the service.
   let BASE = null;
