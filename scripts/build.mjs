@@ -396,7 +396,7 @@ ${rows}
     if (check) stale.push(f + " (old)"); else await rm(new URL(f, pub));
   }
   // old bundles
-  const old = (await readdir(new URL("assets/", pub))).filter(f => /^(app|qr|l\.[a-z-]+)\.[0-9a-f]+\.(js|css)$/.test(f) && !files["assets/" + f]);
+  const old = (await readdir(new URL("assets/", pub))).filter(f => /^(app|qr|status|l\.[a-z-]+)\.[0-9a-f]+\.(js|css)$/.test(f) && !files["assets/" + f]);
   if (check && old.length) stale.push(...old.map(f => f + " (old)"));
   else for (const f of old) await rm(new URL("assets/" + f, pub));
   return { stale, pages: pages.length, sizes: { html: Math.max(...pages.map(p => p.html.length)), js: app.length, css: css.length } };
