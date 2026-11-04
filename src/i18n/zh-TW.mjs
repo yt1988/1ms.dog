@@ -179,7 +179,7 @@ export default {
   lp_intro: "你的瀏覽器會連續測 10 次到 {s} 的 HTTPS 往返，路上經過你真實的 Wi‑Fi、電信業者，以及 VPN 或代理（如果有），最後給出中位延遲、首次連線時間和抖動。",
 
   // the Tokyo baseline (lane marks, the round trip to Tokyo, /status/)
-  tko_leg: "東京伺服器",
+  tko_leg: "這些服務真的正常嗎？",
   tko_tip: "從我們的東京伺服器測：{ms} ms（24 小時中位數），{up}% 的檢測有回應",
   tko_down: "從我們的東京伺服器測：目前沒有回應",
   tyo_line: "到我們東京伺服器的往返：{ms} ms · 抖動 {jit} ms",

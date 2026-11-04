@@ -180,7 +180,7 @@ export default {
   lp_intro: "Votre navigateur chronomètre 10 vrais allers-retours HTTPS vers {s} en passant par votre Wi-Fi, votre fournisseur d’accès et un éventuel VPN ou proxy, puis affiche la médiane, la première connexion et la gigue.",
 
   // the Tokyo baseline (lane marks, the round trip to Tokyo, /status/)
-  tko_leg: "Serveur de Tokyo",
+  tko_leg: "Ces services marchent-ils vraiment ?",
   tko_tip: "Depuis notre serveur de Tokyo : {ms} ms (médiane sur 24 heures), a répondu à {up} % des tests",
   tko_down: "Depuis notre serveur de Tokyo : aucune réponse pour l’instant",
   tyo_line: "Jusqu’à notre serveur de Tokyo : {ms} ms aller-retour · gigue {jit} ms",

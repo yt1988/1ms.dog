@@ -515,6 +515,7 @@ html.embed .field { padding: 10px 14px 4px; }
 
 /* the status page (/status/): the Tokyo baseline as a table */
 .status main { display: flex; flex-direction: column; gap: 16px; }
+.st-hero, .st-outs { padding: 20px 22px; }
 .st-hero h1 { margin: 0 0 8px; }
 .st-hero .intro { margin: 0; color: var(--muted); max-width: 70ch; }
 .st-acts { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-top: 14px; }
@@ -524,7 +525,9 @@ html.embed .field { padding: 10px 14px 4px; }
 #stTable { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
 #stTable th, #stTable td { padding: 6px 12px; text-align: right; white-space: nowrap; }
 #stTable th:first-child { text-align: left; font-weight: 500; }
-#stTable th:first-child a { text-decoration: none; }
+#stTable th:first-child a { display: inline-flex; align-items: center; gap: 8px; min-height: 24px; text-decoration: none; }
+#stTable tr[data-id] th:first-child { padding-left: 34px; }
+#stTable th:first-child a img, #stTable th:first-child a i { width: 16px; height: 16px; flex: none; border-radius: 3px; }
 #stTable th:first-child a:hover { text-decoration: underline; }
 #stTable thead th { font-size: 12px; font-weight: 600; color: var(--muted); border-bottom: 1px solid var(--line); }
 #stTable .gh th { text-align: left; font-size: 12px; font-weight: 600; color: var(--muted); padding-top: 14px; }
@@ -535,13 +538,17 @@ html.embed .field { padding: 10px 14px 4px; }
 #stTable .sp svg { display: block; margin-left: auto; overflow: visible; }
 #stTable .sp path { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; opacity: .55; }
 #stTable .sp circle { fill: currentColor; }
+#stTable .sp .bl { stroke: var(--line); stroke-width: 1; stroke-dasharray: 2 3; }
 .st-outs h2 { margin: 0 0 8px; font-size: 15px; }
 .st-outs ul { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.7; }
 .st-outs li.none { list-style: none; margin-left: -18px; color: var(--muted); }
 @media (max-width: 560px) {
-  #stTable th, #stTable td { padding: 6px 8px; }
+  .st-hero, .st-outs { padding: 16px; }
+  #stTable th, #stTable td { padding: 6px; }
+  #stTable tr[data-id] th:first-child { padding-left: 16px; }
   #stTable .u7 { display: none; }
   #stTable thead .lg, #stTable .now small { display: none; }
-  #stTable td.sp { width: 72px; }
-  #stTable .sp svg { width: 64px; }
+  #stTable thead th, #stTable tr[data-id] th:first-child { white-space: normal; }
+  #stTable td.sp { width: 56px; }
+  #stTable .sp svg { width: 48px; }
 }

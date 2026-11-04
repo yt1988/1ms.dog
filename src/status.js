@@ -5,6 +5,38 @@
   /* @lib */
   const $ = s => document.querySelector(s), ST = JSON.parse($("#st").textContent);
   const t = (k, v) => v ? fillIn(ST.L[k] ?? k, v, ST.L.josa_fin) : ST.L[k] ?? k;
+  const $$ = s => [...document.querySelectorAll(s)];
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+  // the header, as on the home page (src/app.js): theme and language synced across the 1ms.dog tools, the help dialog
+  const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+  const thBtn = $("#theme"), TH = ["system", "light", "dark"];
+  const applyTheme = th => {
+    if (th === "light" || th === "dark") document.documentElement.setAttribute("data-theme", th); else document.documentElement.removeAttribute("data-theme");
+    thBtn.dataset.th = th; thBtn.title = t("th_" + th); thBtn.setAttribute("aria-label", t("th_" + th));
+  };
+  applyTheme(TH.includes(store.get("1ms:theme")) ? store.get("1ms:theme") : "system");
+  thBtn.onclick = () => { const n = TH[(TH.indexOf(thBtn.dataset.th) + 1) % 3]; store.set("1ms:theme", n); applyTheme(n); };
+  $("#lang").onchange = e => { const l = e.target.value; store.set("1ms:lang", l); location.href = ST.paths[l]; };
+  const closeDlg = () => { $("#help").hidden = true; document.documentElement.style.overflow = ""; };
+  $$("[data-close]").forEach(b => { b.onclick = closeDlg; });
+  $("#help").addEventListener("click", e => { if (e.target === $("#help")) closeDlg(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeDlg(); });
+  let helpIdx = 0;
+  const helpN = $$("#helpNav [data-hq]").length;
+  $("#helpSel").innerHTML = $$("#helpNav [data-hq]").map((b, i) => `<option value="${i}">${i + 1} / ${helpN} · ${esc(b.textContent)}</option>`).join("");
+  function showHelp(i) {
+    helpIdx = Math.max(0, Math.min(helpN - 1, i));
+    $$("#helpNav [data-hq]").forEach(b => b.setAttribute("aria-selected", +b.dataset.hq === helpIdx));
+    $$("#helpC [data-hqb]").forEach(a => { a.hidden = +a.dataset.hqb !== helpIdx; });
+    $("#helpSel").value = helpIdx;
+    $$("[data-hstep]").forEach(b => { b.disabled = helpIdx + +b.dataset.hstep < 0 || helpIdx + +b.dataset.hstep >= helpN; });
+    $("#helpC").scrollTop = 0;
+  }
+  $("#helpBtn").onclick = () => { showHelp(helpIdx); $("#help").hidden = false; document.documentElement.style.overflow = "hidden"; $("#help [data-close]").focus(); };
+  $$("#helpNav [data-hq]").forEach(b => { b.onclick = () => showHelp(+b.dataset.hq); });
+  $("#helpSel").onchange = e => showHelp(+e.target.value);
+  $$("[data-hstep]").forEach(b => { b.onclick = () => showHelp(helpIdx + +b.dataset.hstep); });
   const when = s => new Intl.DateTimeFormat(ST.lang, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }).format(new Date(s));
   const clock = s => new Intl.DateTimeFormat(ST.lang, { hour: "2-digit", minute: "2-digit" }).format(new Date(s));
   // an outage: one time when it was one check, the end as a time of day when it ended the same day
@@ -19,9 +51,9 @@
     let d = "", pen = false;
     for (const p of pts) { if (!p) { pen = false; continue; } d += (pen ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1); pen = true; }
     const last = [...pts].reverse().find(Boolean);
-    return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true"><path d="${d}"/>${last ? `<circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="2"/>` : ""}</svg>`;
+    // a faint dotted base under it, so the column reads as a chart before a day of hours has filled it
+    return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true"><line class="bl" x1="0" y1="${H - 1}" x2="${W}" y2="${H - 1}"/><path d="${d}"/>${last ? `<circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="2"/>` : ""}</svg>`;
   }
-  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
   fetch("/baseline.json").then(r => r.json()).then(j => {
     const S = j.services || {};

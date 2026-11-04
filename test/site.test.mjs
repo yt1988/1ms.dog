@@ -106,6 +106,11 @@ test("the status page: one per language, every service listed, its script and da
     assert.ok(st.L.ss_outrow && st.scale, p + ": strings and scale for the script");
     assert.equal((h.match(/hreflang=/g) || []).length >= LANGS.length + 1, true, p + ": alternates");
     assert.equal((h.match(/<h1>/g) || []).length, 1, p + " one h1");
+    // the site's header (language, help, GitHub, theme, in that order) and its help dialog, as on every page
+    assert.match(h, /<select id="lang">[\s\S]*?id="helpBtn"[\s\S]*?github\.com\/yt1988\/1ms\.dog[\s\S]*?id="theme"/, p + ": header controls");
+    assert.ok(h.includes('id="help" hidden') && h.includes('data-hq="1"'), p + ": help dialog");
+    assert.ok(h.length < 40 * 1024, p + " is " + h.length + " bytes");
+    assert.match(h, /<img src="\/assets\/svc\/chatgpt\.png" width="16" height="16" alt="" loading="lazy">/, p + ": service icons");
   }
   const home = await page("");
   assert.ok(/<nav class="sitemap"[^>]*>[\s\S]*?href="\/status\/"/.test(home), "home footer links the status page");

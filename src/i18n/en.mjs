@@ -181,7 +181,7 @@ export default {
   lp_intro: "Your browser times 10 real HTTPS round trips to {s} through your actual Wi-Fi, internet provider and any VPN or proxy, then shows the median, the first connection time and the jitter.",
 
   // the Tokyo baseline (lane marks, the round trip to Tokyo, /status/)
-  tko_leg: "Tokyo server",
+  tko_leg: "Are these services really up?",
   tko_tip: "From our Tokyo server: {ms} ms (24-hour median), answered {up}% of checks",
   tko_down: "From our Tokyo server: not answering right now",
   tyo_line: "To our Tokyo server: {ms} ms round trip · jitter {jit} ms",

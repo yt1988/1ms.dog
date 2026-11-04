@@ -181,7 +181,7 @@ export default {
   josa_fin: ["CDN", "Copilot", "Grok", "Google", "Apple", "Amazon", "Zoom", "TikTok", "Instagram", "Facebook", "WhatsApp", "Telegram", "Reddit", "npm", "Steam", "PlayStation", "Google Cloud CDN", "微信", "抖音", "LINE", "Yahoo! JAPAN", "楽天", "Coupang", "Daum", "Paytm", "Amazon.in", "Grab", "Booking.com", "ESPN", "Target", "Careem", "Trendyol"],
 
   // the Tokyo baseline (lane marks, the round trip to Tokyo, /status/)
-  tko_leg: "도쿄 서버",
+  tko_leg: "이 서비스들, 정말 정상일까요?",
   tko_tip: "저희 도쿄 서버에서: {ms} ms(24시간 중앙값), 점검의 {up}%에서 응답",
   tko_down: "저희 도쿄 서버에서: 지금 응답 없음",
   tyo_line: "저희 도쿄 서버까지 왕복: {ms} ms · 지터 {jit} ms",

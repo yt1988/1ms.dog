@@ -240,6 +240,11 @@ export async function build({ check = false } = {}) {
   const stJs = (await transform(stSrc.replace("/* @lib */", () => stLib), { loader: "js", minify: true, target: "es2020", legalComments: "none" })).code;
   const stName = `status.${hash(stJs)}.js`;
   stringFiles["assets/" + stName] = stJs;
+  // the header and the help dialog are the home page's own (src/page.html), so the controls sit where they do on every page
+  // each service's icon, downloaded once by scripts/icons.mjs into public/assets/svc/ (none: the space stays empty)
+  const ICONS = JSON.parse(await readFile(new URL("icons.json", src), "utf8"));
+  const stIcon = id => ICONS[id] ? `<img src="/assets/svc/${ICONS[id]}" width="16" height="16" alt="" loading="lazy">` : `<i></i>`;
+  const stHeader = /<header class="top">[\s\S]*?<\/header>/.exec(tpl)[0], stHelp = /<div class="scrim" id="help" hidden>[\s\S]*?\n<\/div>\n/.exec(tpl)[0];
   const stGroups = [...CATS.map(c => ["cat_" + c, SERVICES.filter(x => x.cat === c)]), ...Object.keys(PACKS).map(p => ["pk_" + p, PACKS[p], p])];
   for (const [lang, slug, locale] of langs) {
     const d = I[lang], T = k => d[k] ?? en[k] ?? k;
@@ -256,9 +261,18 @@ export async function build({ check = false } = {}) {
       `<meta property="og:locale" content="${locale}">`, `<meta name="twitter:card" content="summary_large_image">`].join("\n");
     // a local pack's name is the region's; its services' own pages exist in every language
     const rows = stGroups.map(([k, list]) => `<tbody><tr class="gh"><th colspan="5" scope="colgroup">${esc(k.startsWith("pk_") ? fill(T("lg_region"), { r: T(k) }) : T(k))}</th></tr>` +
-      list.map(x => `<tr data-id="${x.id}"><th scope="row"><a href="${path(slug, x.id)}">${esc(x.name)}</a></th><td class="now cx">–</td><td class="sp"></td><td class="u24 cx">–</td><td class="u7 cx">–</td></tr>`).join("") + "</tbody>").join("\n");
+      list.map(x => `<tr data-id="${x.id}"><th scope="row"><a href="${path(slug, x.id)}">${stIcon(x.id)}${esc(x.name)}</a></th><td class="now cx">–</td><td class="sp"></td><td class="u24 cx">–</td><td class="u7 cx">–</td></tr>`).join("") + "</tbody>").join("\n");
     const st = { lang, scale: SCALE, L: Object.fromEntries(["ss_updated", "ss_stale", "ss_err", "ss_down", "ss_none", "ss_outrow", "josa_fin"].map(k => [k, T(k)])) };
-    const langNav = langs.map(([l, sl]) => `<a href="${path(sl, "status")}"${l === lang ? ' aria-current="page"' : ""} hreflang="${l}" lang="${l}">${esc(I[l].name)}</a>`).join("");
+    // help: what this page is first, then the home page's answers
+    const qa = [[T("ss_h1"), esc(T("ss_intro"))], ...(d.docs || en.docs).map(([q, a]) => [q, esc(a)])];
+    const helpNav = qa.map(([q], i) => `<button type="button" role="tab" data-hq="${i}" aria-selected="${i === 0}">${esc(q)}</button>`).join("");
+    const helpC = qa.map(([q, a], i) => `<article data-hqb="${i}"${i ? " hidden" : ""}><h3>${esc(q)}</h3><p>${a}</p></article>`).join("");
+    const langOpts = langs.map(([l]) => `<option value="${l}"${l === lang ? " selected" : ""}>${esc(I[l].name)}</option>`).join("");
+    const common = x => x.replace(/(<(\w+)\b[^>]*\sdata-i="(\w+)"[^>]*>)([^<]*)(<\/\2>)/g, (m, open, tag, k, inner, close) => open + esc(T(k)) + close)
+      .split("{{homeHref}}").join(path(slug, "")).replace("{{langOpts}}", langOpts).replace("{{helpNav}}", helpNav).replace("{{helpC}}", helpC)
+      .replace(/\{\{a:(\w+)\}\}/g, (_, k) => esc(T(k)));
+    st.paths = Object.fromEntries(langs.map(([l, sl]) => [l, path(sl, "status")]));
+    Object.assign(st.L, Object.fromEntries(["th_system", "th_light", "th_dark"].map(k => [k, T(k)])));
     const html = `<!doctype html>
 <html lang="${lang}">
 <head>
@@ -271,16 +285,11 @@ ${head}
 </head>
 <body>
 <div class="app status">
-  <header class="top">
-    <a class="brand" href="${path(slug, "")}" aria-label="1ms.dog">
-      <img class="logo-light" src="/assets/logo-light.svg" width="90" height="36" alt="1ms">
-      <img class="logo-dark" src="/assets/logo-dark.svg" width="90" height="36" alt="1ms">
-    </a>
-  </header>
+  ${common(stHeader)}
   <main>
     <section class="card st-hero">
       <h1>${esc(T("ss_h1"))}</h1>
-      <p class="intro">${esc(T("ss_intro"))}</p>
+      <p class="intro">${esc(desc)}</p>
       <div class="st-acts"><p class="st-meta" id="stMeta" aria-live="polite">…</p><a class="btn pri" href="${path(slug, "")}">${esc(T("ss_mine"))}</a></div>
     </section>
     <section class="card st-list">
@@ -294,15 +303,15 @@ ${rows}
       <ul id="stOut"><li class="none">…</li></ul>
     </section>
   </main>
-  <footer class="foot">
-    <nav class="sitemap" aria-label="${esc(T("lang_label"))}"><b>${esc(T("lang_label"))}</b>${langNav}</nav>
-  </footer>
 </div>
+
+${common(stHelp)}
 <script type="application/json" id="st">${JSON.stringify(st).replace(/</g, "\\u003c")}</script>
 <script src="/assets/${stName}" defer></script>
 </body>
 </html>
 `;
+    if (/\{\{[\w:]+\}\}/.test(html)) throw new Error("unfilled placeholder in the status page: " + /\{\{[\w:]+\}\}/.exec(html)[0]);
     pages.push({ file: (slug ? slug + "/" : "") + "status/index.html", url, lang, sub: "status", html, idx: true, status: true });
   }
 

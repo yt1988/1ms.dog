@@ -179,7 +179,7 @@ export default {
   lp_intro: "ブラウザが、実際に使っている Wi‑Fi、プロバイダ、（使っていれば）VPN やプロキシを通して {s} への HTTPS 往復を 10 回測り、中央値・初回接続・ジッターを表示します。",
 
   // the Tokyo baseline (lane marks, the round trip to Tokyo, /status/)
-  tko_leg: "東京サーバー",
+  tko_leg: "これらのサービス、本当に動いてる？",
   tko_tip: "当サイトの東京サーバーから：{ms} ms（24 時間の中央値）、チェックの {up}% で応答",
   tko_down: "当サイトの東京サーバーから：現在応答なし",
   tyo_line: "当サイトの東京サーバーまで：往復 {ms} ms · ジッター {jit} ms",

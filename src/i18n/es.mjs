@@ -179,7 +179,7 @@ export default {
   lp_intro: "Tu navegador mide 10 viajes HTTPS reales a {s} a través de tu Wi-Fi, tu proveedor y cualquier VPN o proxy que uses, y muestra la mediana, la primera conexión y el jitter.",
 
   // the Tokyo baseline (lane marks, the round trip to Tokyo, /status/)
-  tko_leg: "Servidor de Tokio",
+  tko_leg: "¿Funcionan de verdad estos servicios?",
   tko_tip: "Desde nuestro servidor en Tokio: {ms} ms (mediana de 24 horas), respondió al {up} % de las pruebas",
   tko_down: "Desde nuestro servidor en Tokio: no responde ahora mismo",
   tyo_line: "A nuestro servidor en Tokio: {ms} ms ida y vuelta · jitter {jit} ms",
