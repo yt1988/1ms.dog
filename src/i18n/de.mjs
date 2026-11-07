@@ -202,4 +202,6 @@ export default {
   ss_none: "Keine Ausfälle in den letzten 7 Tagen.",
   ss_outrow: "{s}: {from} – {to} ({err})",
   ss_mine: "Mit deiner eigenen Verbindung testen",
+  // the route link after a slow service's time (Route Trace)
+  rt_go: "Route zu {s} ansehen",
 };

@@ -459,6 +459,7 @@
   if ($(".field")) fetch("/baseline.json").then(r => r.ok ? r.json() : null).then(j => {
     if (!j || !j.services || !Object.keys(j.services).length || Date.now() - Date.parse(j.at) > 864e5) return;   // a day old: none
     BASE = j.services; markBase();
+    allServices().forEach(paintRow);                          // rows already back: their route link follows the baseline
   }).catch(() => {});
   if (!ONE && !GRP) { const saved = store.get(K.pack); if (saved && PACKS[saved] && saved !== pack) showPack(saved); }
   function pickPack(cc) { const p = PACK_OF[cc]; if (!ONE && !GRP && !store.get(K.pack) && p && p !== pack) setPack(p, false); }
@@ -586,6 +587,17 @@
     if (r.st === "done") { const md = median(r.s); if (!ONE) ballBack(md); helmetFor(md); }
   }
   const jitter = a => { let d = 0; for (let i = 1; i < a.length; i++) d += Math.abs(a[i] - a[i - 1]); return d / (a.length - 1); };
+  // A service's route is worth a look when it didn't answer, or it is past a trot (150 ms) and well behind what the
+  // Tokyo server measures for it (over twice that and 50 ms more, as `httpslatency --compare` marks it): slow here,
+  // not slow everywhere. Without the baseline, past a trot is enough.
+  const SLOW_MS = 150;
+  const slowRoute = (id, md) => {
+    if (md == null) return true;
+    if (md <= SLOW_MS) return false;
+    const b = BASE && BASE[id], tk = b ? b.med24 ?? (b.last && !b.last.err ? b.last.ms : null) : null;
+    return tk == null || (md > tk * 2 && md - tk > 50);
+  };
+  const RT_ICON = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="3.5" cy="12.5" r="1.5"/><circle cx="12.5" cy="3.5" r="1.5"/><path d="M5 12.5h4.5a2.5 2.5 0 0 0 0-5h-3a2.5 2.5 0 0 1 0-5H11"/></svg>';
   function paintRow(s) {
     const el = document.getElementById("t-" + s.id); if (!el) return;
     const r = R.get(s.id), hot = D.spot === s.id ? " hot" : "";
@@ -598,6 +610,9 @@
     const p = md == null ? 100 : pos(md) * 100;
     b.style.transform = `translateX(${p}%)`; tail.style.transform = md == null ? "" : `scaleX(${p / 100})`;
     ms.textContent = md == null ? "✕" : fmt(md);
+    // slow or not back: a link to trace the route to that same host (Route Trace fills it in; the visitor starts it)
+    const th = slowRoute(s.id, md) && toolHref("trace", "?t=" + encodeURIComponent(new URL(s.url).hostname));
+    if (th) ms.insertAdjacentHTML("beforeend", `<a class="rt" href="${esc(th)}" target="_blank" rel="noopener" title="${esc(t("rt_go", { s: s.name }))}" aria-label="${esc(t("rt_go", { s: s.name }))}">${RT_ICON}</a>`);
     const ok = r.s.filter(x => x != null);
     el.title = [s.name + " · " + t("tier_" + tk), r.w != null ? `${t("d_cold")} ${fmt(r.w)} ms` : "",
       ok.length ? `${t("d_samples")}: ${ok.map(fmt).join(" · ")} ms` : "", ok.length > 1 ? `${t("d_jit")} ±${fmt(jitter(ok))} ms` : ""].filter(Boolean).join("\n");

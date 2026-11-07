@@ -202,4 +202,6 @@ export default {
   ss_none: "過去 7 天沒有故障。",
   ss_outrow: "{s}：{from} – {to}（{err}）",
   ss_mine: "用你自己的網路測一次",
+  // the route link after a slow service's time (Route Trace)
+  rt_go: "看 {s} 的路由",
 };

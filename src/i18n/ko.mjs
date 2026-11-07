@@ -204,4 +204,6 @@ export default {
   ss_none: "최근 7일 동안 장애가 없었습니다.",
   ss_outrow: "{s}: {from} – {to} ({err})",
   ss_mine: "내 연결로 테스트하기",
+  // the route link after a slow service's time (Route Trace)
+  rt_go: "{s}까지의 경로 보기",
 };

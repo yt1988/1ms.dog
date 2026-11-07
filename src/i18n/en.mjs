@@ -204,4 +204,6 @@ export default {
   ss_none: "No outages in the last 7 days.",
   ss_outrow: "{s}: {from} – {to} ({err})",
   ss_mine: "Test from your own connection",
+  // the route link after a slow service's time (Route Trace)
+  rt_go: "Trace the route to {s}",
 };

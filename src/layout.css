@@ -556,3 +556,8 @@ html.embed .field { padding: 10px 14px 4px; }
   #stTable td.sp { width: 56px; }
   #stTable .sp svg { width: 48px; }
 }
+
+/* a slow service's route: a small link after its number, to Route Trace with that host filled in */
+.row .rt { display: inline-flex; vertical-align: -2px; margin-left: 4px; color: var(--ink); }
+.row .rt svg { width: 13px; height: 13px; }
+.row .rt:hover, .row .rt:focus-visible { color: var(--fg); }

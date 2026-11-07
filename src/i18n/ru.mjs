@@ -202,4 +202,6 @@ export default {
   ss_none: "За последние 7 дней сбоев не было.",
   ss_outrow: "{s}: {from} – {to} ({err})",
   ss_mine: "Проверить своё подключение",
+  // the route link after a slow service's time (Route Trace)
+  rt_go: "Посмотреть маршрут до {s}",
 };

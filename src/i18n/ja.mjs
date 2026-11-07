@@ -202,4 +202,6 @@ export default {
   ss_none: "過去 7 日間に障害はありません。",
   ss_outrow: "{s}：{from} – {to}（{err}）",
   ss_mine: "自分の回線でテストする",
+  // the route link after a slow service's time (Route Trace)
+  rt_go: "{s} までの経路を見る",
 };
