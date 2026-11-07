@@ -209,12 +209,15 @@
     return n;
   }
   // The eyes and head follow the mouse; on a touch screen they look where the finger lands, for a moment
+  // The dog's element is kept, not looked up each time: a visitor can take it off the page (an ad blocker's "hide
+  // element" did, 16 errors in a minute, yt1988/1ms-shell#83), and then there is nothing to follow
   if (!calm) {
+    const dogEl = $("#dog");
     let aim = null, raf = 0, lookT = 0;
     const look = () => {
       raf = 0;
-      if (!aim) { stage.style.setProperty("--ex", "0px"); stage.style.setProperty("--ey", "0px"); stage.style.setProperty("--look", "0deg"); return; }
-      const r = $("#dog").getBoundingClientRect(), w = Math.min(r.width, r.height * 16 / 9);
+      if (!aim || !dogEl.isConnected) { stage.style.setProperty("--ex", "0px"); stage.style.setProperty("--ey", "0px"); stage.style.setProperty("--look", "0deg"); return; }
+      const r = dogEl.getBoundingClientRect(), w = Math.min(r.width, r.height * 16 / 9);
       const hx = r.left + r.width / 2 + w * 0.3, hy = r.top + r.height * 0.4, dx = aim[0] - hx, dy = aim[1] - hy, d = Math.hypot(dx, dy) || 1;
       const f = Math.min(1, d / 300);
       stage.style.setProperty("--ex", (dx / d * 14 * f).toFixed(1) + "px");
@@ -224,7 +227,7 @@
     const to = p => { aim = p; if (!raf) raf = requestAnimationFrame(look); };
     // the mouse resting near the nose for a moment: the dog leans over and sniffs it
     let sniffT = 0, sniffSaid = 0;
-    const near = p => { const r = $("#dog").getBoundingClientRect(), w = Math.min(r.width, r.height * 16 / 9); return p && Math.hypot(p[0] - (r.left + r.width / 2 + w * 0.47), p[1] - (r.top + r.height * 0.55)) < Math.max(40, w * 0.35); };
+    const near = p => { if (!p || !dogEl.isConnected) return false; const r = dogEl.getBoundingClientRect(), w = Math.min(r.width, r.height * 16 / 9); return p && Math.hypot(p[0] - (r.left + r.width / 2 + w * 0.47), p[1] - (r.top + r.height * 0.55)) < Math.max(40, w * 0.35); };
     const sniffCheck = p => {
       if (!near(p)) { clearTimeout(sniffT); sniffT = 0; return; }
       if (sniffT) return;
