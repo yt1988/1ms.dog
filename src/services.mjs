@@ -25,7 +25,7 @@ export const CATS = ["ai", "web", "video", "social", "dev", "game", "cdn"];
 
 export const SERVICES = [
   // AI
-  { id: "chatgpt", name: "ChatGPT", cat: "ai", url: "https://chatgpt.com/favicon.ico", via: "Cloudflare", c: "#10a37f" },
+  { id: "chatgpt", name: "ChatGPT", cat: "ai", url: "https://chatgpt.com/cdn-cgi/trace", pop: "trace", via: "Cloudflare", c: "#10a37f" },
   { id: "claude", name: "Claude", cat: "ai", url: "https://claude.ai/cdn-cgi/trace", via: "Cloudflare", c: "#d97757" },
   { id: "gemini", name: "Gemini", cat: "ai", url: "https://gemini.google.com/generate_204", via: "Google", c: "#4f7cf5" },
   { id: "copilot", name: "Copilot", cat: "ai", url: "https://copilot.microsoft.com/cdn-cgi/trace", via: "Cloudflare", c: "#2a84e8" },
