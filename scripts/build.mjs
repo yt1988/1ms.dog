@@ -16,6 +16,9 @@ import { fillIn, isPlural } from "../src/lib.mjs";
 import KO from "../src/i18n/ko.mjs";
 import { CATS, SERVICES, PACKS, PACK_OF, SCALE, ZONES, USES, SUBS, TG_DC_OF, UNLOCK, pos } from "../src/services.mjs";
 
+// Browsers: ?. and ?? are syntax errors before Safari 13.1 and Chrome 80, and a syntax error stops the whole script,
+// so the bundles are built down to ES2019.
+const TARGET = "es2019";
 const SITE = (process.env.SITE_URL || "https://1ms.dog").replace(/\/+$/, "");
 const pub = new URL("../public/", import.meta.url), src = new URL("../src/", import.meta.url);
 // language, URL folder, og:locale, default local pack before the exit country is known; the first is the root
@@ -72,7 +75,7 @@ export async function build({ check = false } = {}) {
   const bands = `linear-gradient(90deg, var(--t1) 0 ${Z[0]}, var(--t2) ${Z[0]} ${Z[1]}, var(--t3) ${Z[1]} ${Z[2]}, var(--t4) ${Z[2]} ${Z[3]}, var(--t5) ${Z[3]} 100%)`;
   const cssFull = (await Promise.all(["fonts.css", "style.css", "layout.css"].map(f => readFile(new URL(f, src), "utf8")))).join("\n") + `\n.field, .slane { --bands: ${bands}; }\n`;
   // minified with esbuild (pinned version, so the output, and its hash, only changes when the source does)
-  const js = (await transform(appFull, { loader: "js", minify: true, target: "es2020", legalComments: "none" })).code;
+  const js = (await transform(appFull, { loader: "js", minify: true, target: TARGET, legalComments: "none" })).code;
   const css = (await transform(cssFull, { loader: "css", minify: true, legalComments: "none" })).code;
   const app = js;
   const jsName = `app.${hash(app)}.js`, cssName = `app.${hash(css)}.css`;
@@ -237,7 +240,7 @@ export async function build({ check = false } = {}) {
   // filled in the browser from /baseline.json by src/status.js. The table is in the HTML (crawlers and no-JS readers see
   // what is listed); the numbers change every hour, so they never are.
   const stLib = lib, stSrc = await readFile(new URL("status.js", src), "utf8");
-  const stJs = (await transform(stSrc.replace("/* @lib */", () => stLib), { loader: "js", minify: true, target: "es2020", legalComments: "none" })).code;
+  const stJs = (await transform(stSrc.replace("/* @lib */", () => stLib), { loader: "js", minify: true, target: TARGET, legalComments: "none" })).code;
   const stName = `status.${hash(stJs)}.js`;
   stringFiles["assets/" + stName] = stJs;
   // the header and the help dialog are the home page's own (src/page.html), so the controls sit where they do on every page

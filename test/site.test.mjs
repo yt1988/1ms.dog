@@ -117,3 +117,11 @@ test("the status page: one per language, every service listed, its script and da
   const csp = await readFile(new URL("../public/_headers", import.meta.url), "utf8");
   assert.match(csp, /connect-src 'self' https: wss:\/\/echo\.1ms\.dog:8443/, "the CSP lets the page reach the echo server");
 });
+
+test("the built scripts parse in older browsers: no optional chaining or nullish coalescing (ES2019)", async () => {
+  const dir = new URL("assets/", pub);
+  for (const f of (await readdir(dir)).filter(f => /^(app|status|l\.[a-z-]+)\.[0-9a-f]+\.js$/.test(f))) {
+    const s = await readFile(new URL(f, dir), "utf8");
+    assert.doesNotMatch(s, /\?\?|\?\.(?![0-9])/, f + " has ?. or ??");
+  }
+});

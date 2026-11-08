@@ -35,7 +35,7 @@
 // view's exact height before it is drawn: its Worker imports this file (it touches no DOM until render) and works it
 // out from the link, and writes the preview title with `verdict()`.
 
-export const VERSION = 2;
+export const VERSION = 3;
 
 const T = {
   en: { change: "Change", same: "About the same", lost: "No answer", back: "Answers", both_lost: "No answer either time",
@@ -228,10 +228,10 @@ const gapText = (ms, lang) => {
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const here = name => new URL(`${name}?v=${VERSION}`, import.meta.url).href;   // past old cached copies
 let cssP = null;
-const loadCSS = () => cssP ||= new Promise(res => {
+const loadCSS = () => cssP || (cssP = new Promise(res => {
   const l = document.createElement("link"); l.rel = "stylesheet"; l.href = here("compare.css");
   l.onload = l.onerror = res; document.head.appendChild(l);
-});
+}));
 const W = 1200;
 const roundRect = (x, a, b, w, h, r) => { x.beginPath(); x.moveTo(a + r, b); x.arcTo(a + w, b, a + w, b + h, r); x.arcTo(a + w, b + h, a, b + h, r); x.arcTo(a, b + h, a, b, r); x.arcTo(a, b, a + w, b, r); x.closePath(); };
 const clip = (x, s, w) => { s = String(s); if (x.measureText(s).width <= w) return s; while (s.length > 1 && x.measureText(s + "…").width > w) s = s.slice(0, -1); return s + "…"; };
