@@ -31,6 +31,10 @@
   const flag = cc => /^[A-Z]{2}$/.test(cc || "") ? `<img class="flag" src="/flags/${flagCode(cc)}.svg" alt="" width="20" height="15">` : "";
   /* @lib */
   const bust = u => u + (u.includes("?") ? "&" : "?") + "_1ms=" + Math.random().toString(36).slice(2, 10);
+  // Built to ES2019 syntax, but a missing function still throws: AbortSignal.timeout (Safari 16, Chrome 103) and
+  // Promise.any (Safari 14, Chrome 85) would stop the exit check on older browsers, so they are written out here
+  const timeout = ms => { const c = new AbortController(); setTimeout(() => c.abort(), ms); return c.signal; };
+  const anyOf = ps => new Promise((ok, no) => { let left = ps.length; if (!left) no(); for (const p of ps) Promise.resolve(p).then(ok, () => { if (!--left) no(); }); });
 
   /* ---------- theme and language (synced across the 1ms.dog tools) ---------- */
   const thBtn = $("#theme"), TH = ["system", "light", "dark"];
@@ -258,15 +262,15 @@
     "America/Toronto:CA America/Vancouver:CA America/Montreal:CA America/Edmonton:CA America/Mexico_City:MX America/Sao_Paulo:BR America/Santiago:CL " +
     "America/Bogota:CO America/Lima:PE America/Argentina/Buenos_Aires:AR Africa/Johannesburg:ZA Africa/Cairo:EG Africa/Lagos:NG Africa/Nairobi:KE")
     .split(" ").map(p => p.split(":")));
-  const getJ = (u, ms = 5000) => fetch(bust(u), { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(ms) }).then(r => r.ok ? r.json() : Promise.reject());
-  const firstIp = (list, f) => Promise.any(list.map(([u, k]) => getJ(u).then(j => j[k] && fam(j[k]) === f ? { ip: j[k] } : Promise.reject())));
+  const getJ = (u, ms = 5000) => fetch(bust(u), { cache: "no-store", credentials: "omit", signal: timeout(ms) }).then(r => r.ok ? r.json() : Promise.reject());
+  const firstIp = (list, f) => anyOf(list.map(([u, k]) => getJ(u).then(j => j[k] && fam(j[k]) === f ? { ip: j[k] } : Promise.reject())));
   // each check → { ip, geo? }, geo = { cc, city, asn, org }
   // The shell answers /_ms/me on every 1ms.dog host from what Cloudflare knows of this connection (no third party, not
   // cached; 1ms-shell docs/tool-contract.md), so the direct exit and its network come from there first. Self-hosted
   // copies get a 404 and rely on the others. The others still run: each is another site, and a proxy that routes by
   // site shows up as a different exit there, as does the other address family.
   const CHECKS = [
-    ["1ms.dog", () => fetch("/_ms/me", { cache: "no-store", signal: AbortSignal.timeout(3000) }).then(r => r.ok ? r.json() : Promise.reject())
+    ["1ms.dog", () => fetch("/_ms/me", { cache: "no-store", signal: timeout(3000) }).then(r => r.ok ? r.json() : Promise.reject())
       .then(j => j.ip ? { ip: j.ip, geo: j.country ? { cc: j.country, city: j.city, asn: j.asn, org: j.org } : null } : Promise.reject())],
     ["ipip.net", () => getJ("https://myip.ipip.net/json").then(j => ({ ip: j.data.ip }))],
     ["Cloudflare", () => getJ("https://speed.cloudflare.com/meta", 6000).then(j => ({ ip: j.clientIp, geo: { cc: j.country, city: j.city, asn: j.asn, org: j.asOrganization } }))],
@@ -306,7 +310,7 @@
 
   async function checkExits() {
     // this site's own Cloudflare trace says whether WARP carries the traffic
-    fetch("/cdn-cgi/trace", { cache: "no-store", signal: AbortSignal.timeout(5000) }).then(r => r.ok ? r.text() : "")
+    fetch("/cdn-cgi/trace", { cache: "no-store", signal: timeout(5000) }).then(r => r.ok ? r.text() : "")
       .then(x => { NET.warp = (/^warp=(\w+)/m.exec(x) || [])[1] || "off"; }).catch(() => {});
     // An address only a geo-less check saw (ipip.net, IPv4/IPv6-only hosts, WebRTC) is looked up right away; until
     // its network is known it isn't shown, so it never appears as an exit of its own and then merges into another.
@@ -536,7 +540,7 @@
   // the node from a sibling URL on the same edge network, once, while the timed requests run
   async function sidePop(s, r) {
     try {
-      const u = s.popUrl, x = await fetch(u, { mode: "cors", cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", signal: AbortSignal.timeout(WARM_TIMEOUT) });
+      const u = s.popUrl, x = await fetch(u, { mode: "cors", cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", signal: timeout(WARM_TIMEOUT) });
       const p = await POP[s.pop](x, u);
       if (p && R.get(s.id) === r) { r.pop = p; paintPop(s); }
     } catch (e) {}

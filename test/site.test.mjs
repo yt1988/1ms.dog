@@ -123,5 +123,7 @@ test("the built scripts parse in older browsers: no optional chaining or nullish
   for (const f of (await readdir(dir)).filter(f => /^(app|status|l\.[a-z-]+)\.[0-9a-f]+\.js$/.test(f))) {
     const s = await readFile(new URL(f, dir), "utf8");
     assert.doesNotMatch(s, /\?\?|\?\.(?![0-9])/, f + " has ?. or ??");
+    // syntax is rewritten by the build, missing functions aren't: these throw before Safari 16 / 14, Chrome 103 / 85
+    assert.doesNotMatch(s, /AbortSignal\.timeout|Promise\.any/, f + " calls a function older browsers lack");
   }
 });
