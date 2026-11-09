@@ -38,6 +38,22 @@ more (the line `httpslatency --compare` also marks): slow here, not slow everywh
 150 ms is enough. Both sit inside the time's column, which is wide enough for the number and both links, so the
 field's lanes keep their width.
 
+## The installer and release mirror
+
+`/i`, `/i.ps1` and `/dl/…` serve the command-line tool's releases from GitHub: `curl -fsSL https://1ms.dog/i | sh`
+works where GitHub is slow or blocked, and the installers and the tool's self-update ask the mirror before GitHub.
+GitHub itself answers 5xx or drops a connection for a minute now and then (2026-11-09 07:39 UTC: five 502s in 90
+seconds turned the weekly `check` red on every install route). So these routes are not allowed to fail just because
+GitHub did:
+
+- the ask for the newest release (`/releases/latest`, a HEAD) is tried twice, a second apart; a 4xx is not retried;
+- the version is kept for 10 minutes, and the last version GitHub gave is kept for a week: when both asks fail, that
+  older tag is served, and `/i` still installs that release from GitHub;
+- a release file is fetched once and kept immutable; if that fetch fails while the tag is known, the client is sent
+  to GitHub's copy of the same file (the documented installers follow redirects);
+- with no tag ever seen, `/v` and the installers answer 503 with a sentence saying GitHub is the problem, rather
+  than a bare 502, and `/dl/latest/<file>` points at GitHub's own `latest/download/` (which needs no tag).
+
 ## The status page
 
 - Same header and help dialog as every page. Its HTML is about 36 KB (84 rows plus the help), so its own budget is

@@ -16,7 +16,7 @@ group, shareable result links and a compare view, and a status page fed by a ser
 | --- | --- | --- |
 | The pages | `src/page.html`, `src/app.js` (with `src/lib.mjs` inlined), `src/layout.css`, `src/style.css`, `src/i18n/`, `src/services.mjs`, built into `public/` by `scripts/build.mjs` | Cloudflare Workers static assets |
 | The status page | `src/status.js`, built into `public/status/` and `public/<lang>/status/` | static assets, data from `/baseline.json` |
-| The Worker | `src/worker.js`: share-link previews (`/r/…`, `/c/…/…`), the command-line tool's installers and release mirror (`/i`, `/i.ps1`, `/v`, `/dl/…`), `/baseline.json` | Cloudflare Workers |
+| The Worker | `src/worker.js`: share-link previews (`/r/…`, `/c/…/…`), the command-line tool's installers and release mirror (`/i`, `/i.ps1`, `/v`, `/dl/…`; GitHub 5xxs are retried, and the last version it gave is the fallback), `/baseline.json` | Cloudflare Workers |
 | The Tokyo baseline | `httpslatency baseline` in github.com/yt1988/https-latency-test-cli, run hourly on a server in Tokyo; it publishes `summary.json`, which the Worker serves as `/baseline.json` | a Linux server (see that repository's AGENTS.md) |
 
 Rules the code keeps, and any change must too:

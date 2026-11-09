@@ -63,6 +63,75 @@ test("the command-line tool's installers and release files come from GitHub's la
   assert.equal(await (await get("/dl/v0.1.0/other-file")).text(), "asset");
 });
 
+test("a GitHub 502 on the release ask is tried once more, so the weekly check no longer turns a whole run red", async () => {
+  const { default: worker } = await import("../src/worker.js");
+  let calls = 0;
+  globalThis.caches = { default: { match: async () => null, put: async () => {} } };
+  globalThis.fetch = async () => {
+    calls++;
+    if (calls === 1) return new Response("bad gateway", { status: 502 });
+    return new Response(null, { status: 302, headers: { location: "https://github.com/yt1988/https-latency-test-cli/releases/tag/v0.2.0" } });
+  };
+  const env = { ASSETS: { fetch: async () => new Response("asset", { status: 404 }) } }, ctx = { waitUntil() {} };
+  const res = await worker.fetch(new Request("https://1ms.dog/v"), env, ctx);
+  assert.equal(res.status, 200);
+  assert.equal(await res.text(), "0.2.0\n");
+  assert.equal(calls, 2);
+});
+
+test("while GitHub stays down, the version it gave last still serves /v and the installers", async () => {
+  const { default: worker } = await import("../src/worker.js");
+  const store = { "/__latest-keep": "0.1.0", "/dl/v0.1.0/install.sh": "#!/bin/sh\n" };
+  globalThis.caches = { default: {
+    match: async k => { const p = new URL(typeof k === "string" ? k : k.url).pathname; return store[p] ? new Response(store[p]) : null; },
+    put: async () => {},
+  } };
+  let calls = 0;
+  globalThis.fetch = async () => { calls++; throw new TypeError("fetch failed"); };
+  const env = { ASSETS: { fetch: async () => new Response("asset", { status: 404 }) } }, ctx = { waitUntil() {} };
+  const get = p => worker.fetch(new Request("https://1ms.dog" + p), env, ctx);
+  assert.equal(await (await get("/v")).text(), "0.1.0\n");
+  const i = await get("/i");
+  assert.equal(i.status, 200);
+  assert.equal(await i.text(), "#!/bin/sh\n");
+  const l = await get("/dl/latest/httpslatency-linux-amd64");
+  assert.equal(l.status, 302);
+  assert.equal(l.headers.get("location"), "/dl/v0.1.0/httpslatency-linux-amd64");
+  assert.ok(calls >= 2, "the fallback is used only after GitHub was asked twice");
+});
+
+test("with no release ever seen, /v and /i say GitHub is the problem instead of a bare 502", async () => {
+  const { default: worker } = await import("../src/worker.js");
+  globalThis.caches = { default: { match: async () => null, put: async () => {} } };
+  globalThis.fetch = async () => new Response("bad gateway", { status: 502 });
+  const env = { ASSETS: { fetch: async () => new Response("asset", { status: 404 }) } }, ctx = { waitUntil() {} };
+  const get = p => worker.fetch(new Request("https://1ms.dog" + p), env, ctx);
+  const v = await get("/v");
+  assert.equal(v.status, 503);
+  assert.equal(v.headers.get("retry-after"), "60");
+  assert.match(await v.text(), /GitHub did not answer/);
+  const i = await get("/i");
+  assert.equal(i.status, 503);
+  assert.match(await i.text(), /GitHub is having trouble/);
+  // no tag at all: point at GitHub's own latest file rather than a dead end
+  const l = await get("/dl/latest/httpslatency-linux-amd64");
+  assert.equal(l.status, 302);
+  assert.equal(l.headers.get("location"), "https://github.com/yt1988/https-latency-test-cli/releases/latest/download/httpslatency-linux-amd64");
+});
+
+test("an installer file GitHub never answers sends the client to GitHub's copy, not a dead end", async () => {
+  const { default: worker } = await import("../src/worker.js");
+  globalThis.caches = { default: { match: async () => null, put: async () => {} } };
+  globalThis.fetch = async u => {
+    if (String(u).endsWith("/releases/latest")) return new Response(null, { status: 302, headers: { location: "https://github.com/yt1988/https-latency-test-cli/releases/tag/v0.1.0" } });
+    throw new TypeError("fetch failed");
+  };
+  const env = { ASSETS: { fetch: async () => new Response("asset", { status: 404 }) } }, ctx = { waitUntil() {} };
+  const i = await worker.fetch(new Request("https://1ms.dog/i"), env, ctx);
+  assert.equal(i.status, 302);
+  assert.equal(i.headers.get("location"), "https://github.com/yt1988/https-latency-test-cli/releases/download/v0.1.0/install.sh");
+});
+
 test("a compare link gets what changed as its preview title, its banner and its height before it is sent", async () => {
   const before = encodeShare({ ts: 1793433600000, pack: "na", groups: [{ cc: "JP", city: "", org: "", asn: null, proxy: true }],
     res: { google: 180, github: 159, chatgpt: 300, youtube: 190 } });

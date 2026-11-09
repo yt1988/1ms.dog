@@ -9,7 +9,9 @@
 //                         and the exact height of the groups
 //   /i, /i.ps1            the command-line tool's installers (install.sh, install.ps1 of its latest release):
 //                         curl -fsSL https://1ms.dog/i | sh   ·   irm https://1ms.dog/i.ps1 | iex
-//   /v                    the tool's latest version, "0.1.0", asked of GitHub and kept for 10 minutes
+//   /v                    the tool's latest version, "0.1.0", asked of GitHub and kept for 10 minutes. GitHub
+//                         wobbles: an ask is tried twice, and the last version it gave is kept a week as the
+//                         fallback, so the installer still works for a browser visitor while GitHub answers 502.
 //   /dl/<tag>/<file>      a file of that release, fetched from GitHub once and then kept (a tag's files never change);
 //                         <tag> may be "latest", which redirects to the current tag
 //   /baseline.json        the Tokyo baseline: 1ms.dog's server in Tokyo measures every service every hour
@@ -98,7 +100,7 @@ export default {
     const url = new URL(req.url), get = req.method === "GET" || req.method === "HEAD";
     if (get && (url.pathname === "/v" || INSTALLER[url.pathname])) {
       const v = await latest(url, ctx);
-      if (!v) return new Response("GitHub did not answer\n", { status: 502 });
+      if (!v) return unavailable();
       if (INSTALLER[url.pathname]) return release(`v${v}`, INSTALLER[url.pathname], req, ctx);
       return new Response(v + "\n", { headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=300" } });
     }
@@ -107,7 +109,8 @@ export default {
     if (dl && FILE.test(dl[2])) {
       if (dl[1] !== "latest") return release(dl[1], dl[2], req, ctx);
       const v = await latest(url, ctx);
-      if (!v) return new Response("GitHub did not answer\n", { status: 502 });
+      // no version from GitHub and none kept: GitHub's own "latest" file, which resolves on GitHub's side
+      if (!v) return toGitHub(null, dl[2]);
       return new Response(null, { status: 302, headers: { location: `/dl/v${v}/${dl[2]}`, "cache-control": "public, max-age=300" } });
     }
 
@@ -158,26 +161,77 @@ async function baseline(req, ctx) {
   return new Response(req.method === "HEAD" ? null : body, { headers: JSON_HEAD });
 }
 
-// the newest release's version, from the redirect GitHub gives for /releases/latest
+// The newest release's version, from the redirect GitHub gives for /releases/latest. GitHub answers a 5xx or drops
+// the connection for a minute now and then (2026-11-09 07:39 UTC: five 502s in 90 seconds, and every install route
+// red): ask twice, and when both asks fail fall back to the version GitHub gave last, kept a week, so an installer
+// still installs a slightly older release instead of failing. With no tag ever seen, the caller says so plainly.
+const GITHUB_TRY_MS = 1000;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 async function latest(url, ctx) {
-  const cache = caches.default, key = new URL("/__latest", url).toString();
-  const hit = await cache.match(key);
-  if (hit) return (await hit.text()).trim();
-  const res = await fetch(`https://github.com/${REPO}/releases/latest`, { method: "HEAD", redirect: "manual" });
-  const tag = (res.headers.get("location") || "").split("/").pop();
-  if (!/^v\d+\.\d+\.\d+$/.test(tag)) return null;
-  const v = tag.slice(1);
+  const cache = caches.default, key = new URL("/__latest", url).toString(), keep = new URL("/__latest-keep", url).toString();
+  let v = await kept(cache, key);
+  if (v) return v;
+  for (let tryNo = 0; tryNo < 2 && !v; tryNo++) {
+    if (tryNo) await sleep(GITHUB_TRY_MS);
+    try {
+      const res = await fetch(`https://github.com/${REPO}/releases/latest`, {
+        method: "HEAD", redirect: "manual", signal: AbortSignal.timeout(4000),
+      });
+      if (res.status >= 500) continue;                         // GitHub's own trouble: ask once more
+      const tag = (res.headers.get("location") || "").split("/").pop();
+      if (/^v\d+\.\d+\.\d+$/.test(tag)) v = tag.slice(1);
+      break;                                                   // a 4xx, or an answer without a tag: don't ask again
+    } catch (e) {}                                             // a dropped connection or a timeout
+  }
+  if (!v) {                                                    // GitHub is down: the last version it gave us
+    const old = await kept(cache, keep);
+    // keep asking GitHub at most once a minute while it is down, instead of on every visitor's request
+    if (old) ctx.waitUntil(cache.put(key, new Response(old, { headers: { "cache-control": "public, max-age=60" } })));
+    return old;
+  }
   ctx.waitUntil(cache.put(key, new Response(v, { headers: { "cache-control": "public, max-age=600" } })));
+  ctx.waitUntil(cache.put(keep, new Response(v, { headers: { "cache-control": "public, max-age=604800" } })));
   return v;
 }
+// a cached version, when it is one (a broken entry is ignored and asked again)
+async function kept(cache, key) {
+  try {
+    const hit = await cache.match(key);
+    const v = hit && (await hit.text()).trim();
+    return /^\d+\.\d+\.\d+$/.test(v) ? v : null;
+  } catch (e) { return null; }
+}
+// GitHub's own copy of a release file: tagged, or its "latest" (resolved on GitHub's side, so it needs no tag)
+const toGitHub = (tag, file) => new Response(null, { status: 302, headers: {
+  location: `https://github.com/${REPO}/releases/${tag ? `download/${tag}` : "latest/download"}/${file}`, "cache-control": "no-store" } });
+
+// GitHub is down and this site has never seen a release: say what happened and that it will pass, not a bare 502
+const unavailable = () => new Response(
+  "GitHub did not answer, and 1ms.dog has no copy of the tool's latest release yet.\n" +
+  "The tool itself is fine; GitHub is having trouble. Try again in a minute.\n",
+  { status: 503, headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store", "retry-after": "60" } });
 
 async function release(tag, file, req, ctx) {
   const cache = caches.default;
   const key = new Request(new URL(`/dl/${tag}/${file}`, req.url).toString());
   let res = await cache.match(key);
   if (!res) {
-    const up = await fetch(`https://github.com/${REPO}/releases/download/${tag}/${file}`, { redirect: "follow" });
-    if (!up.ok) return new Response(`${tag}/${file}: GitHub answered ${up.status}\n`, { status: up.status === 404 ? 404 : 502 });
+    let up = null, status = 0;
+    for (let tryNo = 0; tryNo < 2 && !up; tryNo++) {
+      if (tryNo) await sleep(GITHUB_TRY_MS);
+      try {
+        const r = await fetch(`https://github.com/${REPO}/releases/download/${tag}/${file}`, { redirect: "follow", signal: AbortSignal.timeout(15000) });
+        if (r.ok) { up = r; break; }
+        status = r.status;
+        if (r.status < 500) break;                            // a 404 is the answer: don't ask again
+      } catch (e) {}                                          // a dropped connection or a timeout
+    }
+    if (!up) {
+      if (status === 404) return new Response(`${tag}/${file}: GitHub answered 404\n`, { status: 404 });
+      // the file could not be fetched, though the tag is known: hand the client to GitHub's copy of that same file;
+      // `curl -fsSL … | sh` and `irm … | iex` follow redirects, so a documented install still works
+      return toGitHub(tag, file);
+    }
     const text = /\.(txt|sh|ps1)$/.test(file);
     // no content-length: GitHub may send the file compressed, and the body here is already decompressed
     res = new Response(up.body, {
