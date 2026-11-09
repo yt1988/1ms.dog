@@ -205,4 +205,6 @@ export default {
   ss_mine: "Tester depuis votre connexion",
   // the route link after a slow service's time (Route Trace)
   rt_go: "Voir la route jusqu’à {s}",
+  // the ping link after a slow service's time (Global Ping, 18 locations)
+  pg_go: "Ping de {s} depuis 18 emplacements",
 };

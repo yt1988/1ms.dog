@@ -204,4 +204,6 @@ export default {
   ss_mine: "自分の回線でテストする",
   // the route link after a slow service's time (Route Trace)
   rt_go: "{s} までの経路を見る",
+  // the ping link after a slow service's time (Global Ping, 18 locations)
+  pg_go: "18 か所から {s} に ping",
 };

@@ -206,4 +206,6 @@ export default {
   ss_mine: "내 연결로 테스트하기",
   // the route link after a slow service's time (Route Trace)
   rt_go: "{s}까지의 경로 보기",
+  // the ping link after a slow service's time (Global Ping, 18 locations)
+  pg_go: "18개 지역에서 {s}에 ping",
 };

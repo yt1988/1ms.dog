@@ -29,12 +29,14 @@ shares the connection with their timing. The server greets with `{"v":1,"pop":"â
 (up to 64 bytes, 60 messages or 30 seconds a connection, only from the site's origins). The privacy answer says that
 this happens.
 
-## Route links
+## Route and ping links
 
-A route icon after a slow service's time links to Route Trace (`<meta name="trace">`) with the host the page timed
+A slow service's time is followed by two icons: a route icon links to Route Trace (`<meta name="trace">`) and a ping
+icon to Global Ping (`<meta name="ping">`, 18 locations, packet loss included), each with the host the page timed
 filled in. Shown when the service didn't answer, or is past 150 ms **and** over twice the Tokyo median and 50 ms
 more (the line `httpslatency --compare` also marks): slow here, not slow everywhere. Without the baseline, past
-150 ms is enough. It sits inside the time's column, so the field's lanes keep their width.
+150 ms is enough. Both sit inside the time's column, which is wide enough for the number and both links, so the
+field's lanes keep their width.
 
 ## The status page
 

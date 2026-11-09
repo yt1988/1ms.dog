@@ -602,6 +602,8 @@
     return tk == null || (md > tk * 2 && md - tk > 50);
   };
   const RT_ICON = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="3.5" cy="12.5" r="1.5"/><circle cx="12.5" cy="3.5" r="1.5"/><path d="M5 12.5h4.5a2.5 2.5 0 0 0 0-5h-3a2.5 2.5 0 0 1 0-5H11"/></svg>';
+  // Global Ping's icon (the five bars of its page): how the service answers from 18 places, packet loss included
+  const PG_ICON = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 13v-3M5 13V8M8 13V5M11 13V9M14 13V7"/></svg>';
   function paintRow(s) {
     const el = document.getElementById("t-" + s.id); if (!el) return;
     const r = R.get(s.id), hot = D.spot === s.id ? " hot" : "";
@@ -614,9 +616,15 @@
     const p = md == null ? 100 : pos(md) * 100;
     b.style.transform = `translateX(${p}%)`; tail.style.transform = md == null ? "" : `scaleX(${p / 100})`;
     ms.textContent = md == null ? "✕" : fmt(md);
-    // slow or not back: a link to trace the route to that same host (Route Trace fills it in; the visitor starts it)
-    const th = slowRoute(s.id, md) && toolHref("trace", "?t=" + encodeURIComponent(new URL(s.url).hostname));
-    if (th) ms.insertAdjacentHTML("beforeend", `<a class="rt" href="${esc(th)}" target="_blank" rel="noopener" title="${esc(t("rt_go", { s: s.name }))}" aria-label="${esc(t("rt_go", { s: s.name }))}">${RT_ICON}</a>`);
+    // slow or not back: links to trace the route to that same host and to ping it from 18 places (Route Trace and
+    // Global Ping fill the target in; the visitor starts the test)
+    if (slowRoute(s.id, md)) {
+      const host = encodeURIComponent(new URL(s.url).hostname), tools = [];
+      const rt = toolHref("trace", "?t=" + host), pg = toolHref("ping", "?t=" + host);
+      if (rt) tools.push(`<a class="rt" href="${esc(rt)}" target="_blank" rel="noopener" title="${esc(t("rt_go", { s: s.name }))}" aria-label="${esc(t("rt_go", { s: s.name }))}">${RT_ICON}</a>`);
+      if (pg) tools.push(`<a class="pg" href="${esc(pg)}" target="_blank" rel="noopener" title="${esc(t("pg_go", { s: s.name }))}" aria-label="${esc(t("pg_go", { s: s.name }))}">${PG_ICON}</a>`);
+      if (tools.length) ms.insertAdjacentHTML("beforeend", tools.join(""));
+    }
     const ok = r.s.filter(x => x != null);
     el.title = [s.name + " · " + t("tier_" + tk), r.w != null ? `${t("d_cold")} ${fmt(r.w)} ms` : "",
       ok.length ? `${t("d_samples")}: ${ok.map(fmt).join(" · ")} ms` : "", ok.length > 1 ? `${t("d_jit")} ±${fmt(jitter(ok))} ms` : ""].filter(Boolean).join("\n");
