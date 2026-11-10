@@ -102,6 +102,12 @@ export function parseShare(code, packs) {
     if (!e) return null;
     res[e[1]] = e[2] === "x" ? null : parseInt(e[2], 36) / 10;
   }
+  // LINE was three ids (line, line-tw, line-sea) for one endpoint until 2026-11-10: a link from before then still
+  // opens, and its value becomes the one service's result.
+  for (const old of ["line-tw", "line-sea"]) if (old in res) {
+    if (res.line == null && res[old] != null) res.line = res[old];
+    delete res[old];
+  }
   return { ts: parseInt(m[1], 36) * 1000, pack: m[2], groups, res };
 }
 

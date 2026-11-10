@@ -99,6 +99,13 @@ test("share links round-trip and carry no IP addresses", () => {
   assert.equal(parseShare("#nothing", PACKS), null);
 });
 
+test("a link that measured LINE under its old ids opens as the one LINE service", () => {
+  const h = encodeShare({ ts: 1793433600000, pack: "tw", groups: [], res: { "line-tw": 42.1, "line-sea": 55, baidu: 20 } });
+  assert.deepEqual(parseShare(h, PACKS).res, { line: 42.1, baidu: 20 }, "the first old value fills line, the ids are gone");
+  const lost = parseShare(encodeShare({ ts: 1793433600000, pack: "jp", groups: [], res: { "line-sea": null } }), PACKS);
+  assert.deepEqual(lost.res, {}, "a lost old LINE reading adds nothing");
+});
+
 test("Korean particles follow how the name is read", async () => {
   const { fillIn } = await import("../src/lib.mjs");
   const fin = (await import("../src/i18n/ko.mjs")).default.josa_fin;
