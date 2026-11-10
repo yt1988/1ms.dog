@@ -85,6 +85,10 @@ export const SERVICES = [
 
 // Local packs: what people in a region open every day. PACK_OF maps exit country → pack. Every pack has the same
 // length: the pack switches once the exit country is known, and a longer one would push the page down.
+// LINE is one service (one endpoint, one page, one title) that three packs include: Taiwan, Japan and Southeast Asia.
+// The object is shared, so the page and the result exist once while each pack still shows it; a pack entry is a
+// reference, not a copy (see test/site.test.mjs).
+const LINE = { id: "line", name: "LINE", cat: "local", url: "https://line.me/favicon.ico", c: "#06c755" };
 export const PACKS = {
   cn: [
     { id: "baidu", name: "百度", cat: "local", url: "https://www.baidu.com/favicon.ico", c: "#2932e1" },
@@ -94,13 +98,13 @@ export const PACKS = {
   ],
   tw: [
     { id: "yahoo-tw", name: "Yahoo奇摩", cat: "local", url: "https://tw.yahoo.com/favicon.ico", c: "#6001d2" },
-    { id: "line-tw", name: "LINE", cat: "local", url: "https://line.me/favicon.ico", c: "#06c755" },
+    LINE,
     { id: "ettoday", name: "ETtoday", cat: "local", url: "https://www.ettoday.net/favicon.ico", c: "#e60012" },
     { id: "ptt", name: "PTT", cat: "local", url: "https://www.ptt.cc/cdn-cgi/trace", c: "#8b8b8b" },
   ],
   jp: [
     { id: "yahoo-jp", name: "Yahoo! JAPAN", cat: "local", url: "https://www.yahoo.co.jp/favicon.ico", c: "#ff0033" },
-    { id: "line", name: "LINE", cat: "local", url: "https://line.me/favicon.ico", c: "#06c755" },
+    LINE,
     { id: "rakuten", name: "楽天", cat: "local", url: "https://www.rakuten.co.jp/favicon.ico", c: "#bf0000" },
     { id: "niconico", name: "ニコニコ", cat: "local", url: "https://www.nicovideo.jp/favicon.ico", c: "#8b8b8b" },
   ],
@@ -126,7 +130,7 @@ export const PACKS = {
     { id: "shopee", name: "Shopee", cat: "local", url: "https://shopee.sg/favicon.ico", c: "#ee4d2d" },
     { id: "lazada", name: "Lazada", cat: "local", url: "https://www.lazada.sg/favicon.ico", c: "#0f146d" },
     { id: "grab", name: "Grab", cat: "local", url: "https://www.grab.com/robots.txt", c: "#00b14f" },
-    { id: "line-sea", name: "LINE", cat: "local", url: "https://line.me/favicon.ico", c: "#06c755" },
+    LINE,
   ],
   eu: [
     { id: "bbc", name: "BBC", cat: "local", url: "https://www.bbc.co.uk/favicon.ico", c: "#bb1919" },

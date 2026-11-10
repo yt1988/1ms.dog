@@ -99,11 +99,10 @@ test("every service has its own indexed page in every language, with its own tit
       assert.ok(h.includes(`<title>${esc(title)}</title>`), p + ": its own title");
       assert.ok(h.includes(`<h1>${esc(h1)}</h1>`), p + ": its own h1");
       assert.ok(title.includes(nameOf[id]), p + ": its title names its service");
-      // the title and h1 are the only thing that tells two service pages apart: two services must not share one. Three
-      // services are all called "LINE" (line, line-tw, line-sea), so their pages do share the name; only that is allowed.
+      // the title and h1 are the only thing that tells two service pages apart: two services must not share one
       for (const [seen, map] of [[title, titles], [h1, h1s]]) {
         const other = map.get(seen);
-        if (other) assert.equal(nameOf[other], nameOf[id], p + ": its title/h1 repeats " + other + "'s");
+        assert.equal(other, undefined, p + ": its title/h1 repeats " + other + "'s");
         map.set(seen, id);
       }
     }
@@ -131,8 +130,21 @@ test("every service and pack is in the page and the local packs cover their coun
   for (const p of Object.values(PACK_OF)) assert.ok(PACKS[p], p);
   // the pack switches once the exit country is known; a different length would move the page
   assert.equal(new Set(Object.values(PACKS).map(p => p.length)).size, 1, "every local pack has the same length");
-  const ids = [...SERVICES, ...Object.values(PACKS).flat()].map(s => s.id);
-  assert.equal(new Set(ids).size, ids.length, "service ids are unique");
+  // ids are unique where a page or a row is keyed by one: among the global services and within each pack. A local
+  // favorite several regions share (LINE: Taiwan, Japan, Southeast Asia) is the same object in each pack, so it gets
+  // one page and one row at a time, and must never be a copy.
+  assert.equal(new Set(SERVICES.map(s => s.id)).size, SERVICES.length, "global service ids are unique");
+  const owners = new Map();
+  for (const [pack, list] of Object.entries(PACKS)) {
+    assert.equal(new Set(list.map(s => s.id)).size, list.length, "pack " + pack + " repeats an id");
+    for (const s of list) {
+      const before = owners.get(s.id);
+      if (before) assert.equal(before, s, s.id + " is copied into two packs instead of shared");
+      else owners.set(s.id, s);
+    }
+  }
+  // removed service pages: the old ids are redirects in the Worker now, not pages
+  for (const gone of ["line-tw/index.html", "line-sea/index.html"]) assert.ok(!pages.includes(gone), gone + " is still built");
 });
 
 test("the status page: one per language, every service listed, its script and data, linked from every page's footer", async () => {
@@ -141,6 +153,8 @@ test("the status page: one per language, every service listed, its script and da
   for (const p of statusPages) {
     const h = await page(p);
     for (const id of all) assert.ok(h.includes(`data-id="${id}"`), p + ": lists " + id);
+    const listed = [...h.matchAll(/data-id="([\w-]+)"/g)].map(m => m[1]);
+    assert.equal(new Set(listed).size, listed.length, p + ": a service is listed once (a shared favorite is one row)");
     assert.match(h, /<script src="\/assets\/status\.[0-9a-f]+\.js" defer><\/script>/, p + ": its script");
     const st = JSON.parse(/<script type="application\/json" id="st">([^<]*)<\/script>/.exec(h)[1]);
     assert.ok(st.L.ss_outrow && st.scale, p + ": strings and scale for the script");

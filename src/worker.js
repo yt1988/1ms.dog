@@ -96,9 +96,22 @@ const REPO = "yt1988/https-latency-test-cli";
 const FILE = /^(httpslatency-[a-z0-9]+-[a-z0-9]+(\.exe)?|checksums\.txt|install\.sh|install\.ps1)$/;
 const INSTALLER = { "/i": "install.sh", "/i.ps1": "install.ps1" };
 
+// Service pages that no longer exist: LINE was once three ids (line, line-tw, line-sea) for the same endpoint and
+// page, one per regional pack; the packs now share one service, so the old addresses redirect to it in their language.
+const MOVED = { "line-tw": "line", "line-sea": "line" };
+const MOVED_RE = new RegExp("^/(?:(?:" + Object.keys(DIR).join("|") + ")/)?(" + Object.keys(MOVED).join("|") + ")/?$");
+export function movedService(pathname) {
+  const m = MOVED_RE.exec(pathname);
+  if (!m) return null;
+  const parts = pathname.split("/").filter(Boolean), lang = parts.length > 1 && DIR[parts[0]] ? parts[0] + "/" : "";
+  return "/" + lang + MOVED[m[1]] + "/";
+}
+
 export default {
   async fetch(req, env, ctx) {
     const url = new URL(req.url), get = req.method === "GET" || req.method === "HEAD";
+    const moved = get && movedService(url.pathname);
+    if (moved) return new Response(null, { status: 301, headers: { location: moved + url.search, "cache-control": "public, max-age=3600" } });
     if (get && (url.pathname === "/v" || INSTALLER[url.pathname])) {
       const v = await latest(url, ctx);
       if (!v) return INSTALLER[url.pathname] ? installerUnavailable(INSTALLER[url.pathname], req) : unavailable(req);

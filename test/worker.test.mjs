@@ -1,7 +1,7 @@
 // The Worker's preview text for shared result links (src/worker.js).
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { resultMeta } from "../src/worker.js";
+import { resultMeta, movedService } from "../src/worker.js";
 import { encodeShare } from "../src/lib.mjs";
 
 const code = encodeShare({ ts: 1793433600000, pack: "cn",
@@ -39,6 +39,18 @@ test("other paths are not result links; a code that can't be read is a 404", () 
   assert.deepEqual(resultMeta("/zh-cn/r/zz"), { bad: true });
   assert.deepEqual(resultMeta("/zh-cn/r/" + code.slice(0, -4)), { bad: true });    // cut off inside an entry
   assert.deepEqual(resultMeta("/zh-cn/r/" + code.slice(0, code.lastIndexOf("."))), { bad: true });   // before the results
+});
+
+test("the three LINE pages are one service now: the old addresses redirect to /line/ in the same language", () => {
+  assert.equal(movedService("/line-tw/"), "/line/");
+  assert.equal(movedService("/line-tw"), "/line/");
+  assert.equal(movedService("/line-sea/"), "/line/");
+  assert.equal(movedService("/zh-tw/line-tw/"), "/zh-tw/line/");
+  assert.equal(movedService("/ja/line-sea"), "/ja/line/");
+  // the service's own page, a short page name and a result link are not moved
+  assert.equal(movedService("/line/"), null);
+  assert.equal(movedService("/vk/"), null);
+  assert.equal(movedService("/zh-cn/r/abc"), null);
 });
 
 test("the command-line tool's installers and release files come from GitHub's latest release", async () => {

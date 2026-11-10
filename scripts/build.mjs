@@ -266,9 +266,11 @@ export async function build({ check = false } = {}) {
       `<meta property="og:type" content="website">`, `<meta property="og:site_name" content="1ms.dog">`, `<meta property="og:title" content="${esc(title)}">`,
       `<meta property="og:description" content="${esc(desc)}">`, `<meta property="og:url" content="${url}">`, `<meta property="og:image" content="${og}">`,
       `<meta property="og:locale" content="${locale}">`, `<meta name="twitter:card" content="summary_large_image">`].join("\n");
-    // a local pack's name is the region's; its services' own pages exist in every language
+    // a local pack's name is the region's; its services' own pages exist in every language. A favorite several packs
+    // share (LINE) is one service and one measurement, so it is listed once: the first region that has it.
+    const seenStatus = new Set();
     const rows = stGroups.map(([k, list]) => `<tbody><tr class="gh"><th colspan="5" scope="colgroup">${esc(k.startsWith("pk_") ? fill(T("lg_region"), { r: T(k) }) : T(k))}</th></tr>` +
-      list.map(x => `<tr data-id="${x.id}"><th scope="row"><a href="${path(slug, x.id)}">${stIcon(x.id)}${esc(x.name)}</a></th><td class="now cx">–</td><td class="sp"></td><td class="u24 cx">–</td><td class="u7 cx">–</td></tr>`).join("") + "</tbody>").join("\n");
+      list.filter(x => !seenStatus.has(x.id) && seenStatus.add(x.id)).map(x => `<tr data-id="${x.id}"><th scope="row"><a href="${path(slug, x.id)}">${stIcon(x.id)}${esc(x.name)}</a></th><td class="now cx">–</td><td class="sp"></td><td class="u24 cx">–</td><td class="u7 cx">–</td></tr>`).join("") + "</tbody>").join("\n");
     const st = { lang, scale: SCALE, L: Object.fromEntries(["ss_updated", "ss_stale", "ss_err", "ss_down", "ss_none", "ss_outrow", "josa_fin"].map(k => [k, T(k)])) };
     // help: what this page is first, then the home page's answers
     const qa = [[T("ss_h1"), esc(T("ss_intro"))], ...(d.docs || en.docs).map(([q, a]) => [q, esc(a)])];

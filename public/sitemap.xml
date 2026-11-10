@@ -691,19 +691,19 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/yahoo-tw/"/>
   </url>
   <url>
-    <loc>https://1ms.dog/line-tw/</loc>
+    <loc>https://1ms.dog/line/</loc>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line-tw/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line/"/>
   </url>
   <url>
     <loc>https://1ms.dog/ettoday/</loc>
@@ -749,21 +749,6 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/yahoo-jp/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/yahoo-jp/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/yahoo-jp/"/>
-  </url>
-  <url>
-    <loc>https://1ms.dog/line/</loc>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line/"/>
   </url>
   <url>
     <loc>https://1ms.dog/rakuten/</loc>
@@ -1019,21 +1004,6 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/grab/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/grab/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/grab/"/>
-  </url>
-  <url>
-    <loc>https://1ms.dog/line-sea/</loc>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line-sea/"/>
   </url>
   <url>
     <loc>https://1ms.dog/bbc/</loc>
@@ -2236,19 +2206,19 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/yahoo-tw/"/>
   </url>
   <url>
-    <loc>https://1ms.dog/zh-cn/line-tw/</loc>
+    <loc>https://1ms.dog/zh-cn/line/</loc>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line-tw/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line/"/>
   </url>
   <url>
     <loc>https://1ms.dog/zh-cn/ettoday/</loc>
@@ -2294,21 +2264,6 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/yahoo-jp/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/yahoo-jp/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/yahoo-jp/"/>
-  </url>
-  <url>
-    <loc>https://1ms.dog/zh-cn/line/</loc>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line/"/>
   </url>
   <url>
     <loc>https://1ms.dog/zh-cn/rakuten/</loc>
@@ -2564,21 +2519,6 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/grab/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/grab/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/grab/"/>
-  </url>
-  <url>
-    <loc>https://1ms.dog/zh-cn/line-sea/</loc>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line-sea/"/>
   </url>
   <url>
     <loc>https://1ms.dog/zh-cn/bbc/</loc>
@@ -3781,19 +3721,19 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/yahoo-tw/"/>
   </url>
   <url>
-    <loc>https://1ms.dog/zh-tw/line-tw/</loc>
+    <loc>https://1ms.dog/zh-tw/line/</loc>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line-tw/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line/"/>
   </url>
   <url>
     <loc>https://1ms.dog/zh-tw/ettoday/</loc>
@@ -3839,21 +3779,6 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/yahoo-jp/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/yahoo-jp/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/yahoo-jp/"/>
-  </url>
-  <url>
-    <loc>https://1ms.dog/zh-tw/line/</loc>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line/"/>
   </url>
   <url>
     <loc>https://1ms.dog/zh-tw/rakuten/</loc>
@@ -4109,21 +4034,6 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/grab/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/grab/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/grab/"/>
-  </url>
-  <url>
-    <loc>https://1ms.dog/zh-tw/line-sea/</loc>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line-sea/"/>
   </url>
   <url>
     <loc>https://1ms.dog/zh-tw/bbc/</loc>
@@ -5326,19 +5236,19 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/yahoo-tw/"/>
   </url>
   <url>
-    <loc>https://1ms.dog/ja/line-tw/</loc>
+    <loc>https://1ms.dog/ja/line/</loc>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line-tw/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line/"/>
   </url>
   <url>
     <loc>https://1ms.dog/ja/ettoday/</loc>
@@ -5384,21 +5294,6 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/yahoo-jp/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/yahoo-jp/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/yahoo-jp/"/>
-  </url>
-  <url>
-    <loc>https://1ms.dog/ja/line/</loc>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line/"/>
   </url>
   <url>
     <loc>https://1ms.dog/ja/rakuten/</loc>
@@ -5654,21 +5549,6 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/grab/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/grab/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/grab/"/>
-  </url>
-  <url>
-    <loc>https://1ms.dog/ja/line-sea/</loc>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line-sea/"/>
   </url>
   <url>
     <loc>https://1ms.dog/ja/bbc/</loc>
@@ -6871,19 +6751,19 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/yahoo-tw/"/>
   </url>
   <url>
-    <loc>https://1ms.dog/ko/line-tw/</loc>
+    <loc>https://1ms.dog/ko/line/</loc>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line-tw/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line/"/>
   </url>
   <url>
     <loc>https://1ms.dog/ko/ettoday/</loc>
@@ -6929,21 +6809,6 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/yahoo-jp/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/yahoo-jp/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/yahoo-jp/"/>
-  </url>
-  <url>
-    <loc>https://1ms.dog/ko/line/</loc>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line/"/>
   </url>
   <url>
     <loc>https://1ms.dog/ko/rakuten/</loc>
@@ -7199,21 +7064,6 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/grab/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/grab/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/grab/"/>
-  </url>
-  <url>
-    <loc>https://1ms.dog/ko/line-sea/</loc>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line-sea/"/>
   </url>
   <url>
     <loc>https://1ms.dog/ko/bbc/</loc>
@@ -8416,19 +8266,19 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/yahoo-tw/"/>
   </url>
   <url>
-    <loc>https://1ms.dog/es/line-tw/</loc>
+    <loc>https://1ms.dog/es/line/</loc>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line-tw/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line/"/>
   </url>
   <url>
     <loc>https://1ms.dog/es/ettoday/</loc>
@@ -8474,21 +8324,6 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/yahoo-jp/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/yahoo-jp/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/yahoo-jp/"/>
-  </url>
-  <url>
-    <loc>https://1ms.dog/es/line/</loc>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line/"/>
   </url>
   <url>
     <loc>https://1ms.dog/es/rakuten/</loc>
@@ -8744,21 +8579,6 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/grab/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/grab/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/grab/"/>
-  </url>
-  <url>
-    <loc>https://1ms.dog/es/line-sea/</loc>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line-sea/"/>
   </url>
   <url>
     <loc>https://1ms.dog/es/bbc/</loc>
@@ -9961,19 +9781,19 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/yahoo-tw/"/>
   </url>
   <url>
-    <loc>https://1ms.dog/fr/line-tw/</loc>
+    <loc>https://1ms.dog/fr/line/</loc>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line-tw/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line/"/>
   </url>
   <url>
     <loc>https://1ms.dog/fr/ettoday/</loc>
@@ -10019,21 +9839,6 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/yahoo-jp/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/yahoo-jp/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/yahoo-jp/"/>
-  </url>
-  <url>
-    <loc>https://1ms.dog/fr/line/</loc>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line/"/>
   </url>
   <url>
     <loc>https://1ms.dog/fr/rakuten/</loc>
@@ -10289,21 +10094,6 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/grab/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/grab/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/grab/"/>
-  </url>
-  <url>
-    <loc>https://1ms.dog/fr/line-sea/</loc>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line-sea/"/>
   </url>
   <url>
     <loc>https://1ms.dog/fr/bbc/</loc>
@@ -11506,19 +11296,19 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/yahoo-tw/"/>
   </url>
   <url>
-    <loc>https://1ms.dog/de/line-tw/</loc>
+    <loc>https://1ms.dog/de/line/</loc>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line-tw/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line/"/>
   </url>
   <url>
     <loc>https://1ms.dog/de/ettoday/</loc>
@@ -11564,21 +11354,6 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/yahoo-jp/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/yahoo-jp/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/yahoo-jp/"/>
-  </url>
-  <url>
-    <loc>https://1ms.dog/de/line/</loc>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line/"/>
   </url>
   <url>
     <loc>https://1ms.dog/de/rakuten/</loc>
@@ -11834,21 +11609,6 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/grab/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/grab/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/grab/"/>
-  </url>
-  <url>
-    <loc>https://1ms.dog/de/line-sea/</loc>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line-sea/"/>
   </url>
   <url>
     <loc>https://1ms.dog/de/bbc/</loc>
@@ -13051,19 +12811,19 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/yahoo-tw/"/>
   </url>
   <url>
-    <loc>https://1ms.dog/pt/line-tw/</loc>
+    <loc>https://1ms.dog/pt/line/</loc>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line-tw/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line/"/>
   </url>
   <url>
     <loc>https://1ms.dog/pt/ettoday/</loc>
@@ -13109,21 +12869,6 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/yahoo-jp/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/yahoo-jp/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/yahoo-jp/"/>
-  </url>
-  <url>
-    <loc>https://1ms.dog/pt/line/</loc>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line/"/>
   </url>
   <url>
     <loc>https://1ms.dog/pt/rakuten/</loc>
@@ -13379,21 +13124,6 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/grab/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/grab/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/grab/"/>
-  </url>
-  <url>
-    <loc>https://1ms.dog/pt/line-sea/</loc>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line-sea/"/>
   </url>
   <url>
     <loc>https://1ms.dog/pt/bbc/</loc>
@@ -14596,19 +14326,19 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/yahoo-tw/"/>
   </url>
   <url>
-    <loc>https://1ms.dog/ru/line-tw/</loc>
+    <loc>https://1ms.dog/ru/line/</loc>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line-tw/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line-tw/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line/"/>
   </url>
   <url>
     <loc>https://1ms.dog/ru/ettoday/</loc>
@@ -14654,21 +14384,6 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/yahoo-jp/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/yahoo-jp/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/yahoo-jp/"/>
-  </url>
-  <url>
-    <loc>https://1ms.dog/ru/line/</loc>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line/"/>
   </url>
   <url>
     <loc>https://1ms.dog/ru/rakuten/</loc>
@@ -14924,21 +14639,6 @@
     <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/grab/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/grab/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/grab/"/>
-  </url>
-  <url>
-    <loc>https://1ms.dog/ru/line-sea/</loc>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://1ms.dog/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://1ms.dog/zh-cn/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://1ms.dog/zh-tw/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://1ms.dog/ja/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://1ms.dog/ko/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://1ms.dog/es/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://1ms.dog/fr/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://1ms.dog/de/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://1ms.dog/pt/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://1ms.dog/ru/line-sea/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://1ms.dog/line-sea/"/>
   </url>
   <url>
     <loc>https://1ms.dog/ru/bbc/</loc>
