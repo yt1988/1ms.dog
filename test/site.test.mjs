@@ -3,8 +3,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
 import { LANGS } from "../scripts/build.mjs";
-import { SERVICES, PACKS, PACK_OF } from "../src/services.mjs";
-import { isPlural } from "../src/lib.mjs";
+import { CATS, SERVICES, PACKS, PACK_OF } from "../src/services.mjs";
+import { fillIn, isPlural } from "../src/lib.mjs";
 
 const pub = new URL("../public/", import.meta.url);
 const page = p => readFile(new URL(p + "index.html", pub), "utf8");
@@ -53,7 +53,8 @@ test("pages carry SEO tags", async () => {
   }
 });
 
-test("home, service and group pages each get their own layout; every page's footer links all indexed pages", async () => {
+test("home, service and group pages each get their own layout; every footer links the pages of its language", async () => {
+  const en = (await import("../src/i18n/en.mjs")).default, langOfSlug = new Map(LANGS.map(([l, s]) => [s, l])), landCache = new Map();
   for (const p of pages) {
     const h = await page(p), data = JSON.parse(/<script type="application\/json" id="data">([^<]*)<\/script>/.exec(h)[1]);
     const one = !!data.spot, grp = !!data.set;
@@ -64,23 +65,62 @@ test("home, service and group pages each get their own layout; every page's foot
     assert.doesNotMatch(h, /<!--\/?v[:-]/, p + ": variant markers left in the page");
     assert.doesNotMatch(h, /class="about"/, p + ": background text lives in the help dialog, not under the field");
     assert.match(h, /<meta name="robots" content="index, follow/, p + ": indexed pages say index");
-    // the footer sitemap links every page of the same language
+    // the footer sitemap: this language's home, the status page, every category, every region and the services that
+    // language searches for (the whole service list would push every page past its size budget; the pages are
+    // discoverable through sitemap.xml and, for local favorites, their region's page); every link opens a page that exists
     const lang = (p.match(/^(zh-cn|zh-tw|ja|ko|es|fr|de|pt|ru)\//) || ["", ""])[1], prefix = lang ? lang + "/" : "";
-    const same = pages.filter(q => lang ? q.startsWith(prefix) : !/^(zh-cn|zh-tw|ja|ko|es|fr|de|pt|ru)\//.test(q));
+    const langName = langOfSlug.get(lang);
+    if (!landCache.has(langName)) landCache.set(langName, (await import(`../src/i18n/${langName}.mjs`)).default.land || en.land);
     const nav = /<nav class="sitemap"[^>]*>([\s\S]*?)<\/nav>/.exec(h)[1];
-    for (const q of same) assert.ok(nav.includes(`href="/${q}"`), p + ": footer misses /" + q);
+    const required = ["", "status/", ...CATS.map(c => c + "/"), ...Object.keys(PACKS).map(r => "region/" + r + "/"), ...landCache.get(langName).map(id => id + "/")];
+    for (const q of required) assert.ok(nav.includes(`href="/${prefix}${q}"`), p + ": footer misses /" + prefix + q);
+    for (const [, href] of nav.matchAll(/href="([^"]+)"/g))
+      assert.ok([...pages, ...statusPages].includes(href.slice(1)), p + ": footer links " + href + ", which is not a page");
   }
 });
 
-test("every service has a page; the ones a language doesn't search for are noindex and out of the sitemap", async () => {
-  const all = [...SERVICES, ...Object.values(PACKS).flat()].map(s => s.id);
+test("every service has its own indexed page in every language, with its own title and h1, in the sitemap and llms.txt", async () => {
+  const all = [...SERVICES, ...Object.values(PACKS).flat()].map(s => s.id).filter((x, i, a) => a.indexOf(x) === i);
+  const nameOf = Object.fromEntries([...SERVICES, ...Object.values(PACKS).flat()].map(s => [s.id, s.name]));
+  const en = (await import("../src/i18n/en.mjs")).default, ko = (await import("../src/i18n/ko.mjs")).default;
+  const fill = (s, v) => fillIn(s, v, ko.josa_fin);                       // the same fill the build uses
+  const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const distinct = new Set(Object.values(nameOf));
+  const llms = await readFile(new URL("llms.txt", pub), "utf8");
+  for (const id of all) assert.ok(llms.includes(`https://1ms.dog/${id}/`), "llms.txt misses " + id);
   for (const [lang, slug] of LANGS) {
-    const d = (await import(`../src/i18n/${lang}.mjs`)).default, en = (await import("../src/i18n/en.mjs")).default, land = d.land || en.land;
+    const d = (await import(`../src/i18n/${lang}.mjs`)).default, T = k => d[k] ?? en[k];
+    const titles = new Map(), h1s = new Map();
     for (const id of all) {
       const p = (slug ? slug + "/" : "") + id + "/", h = await page(p);
-      const idx = land.includes(id);
-      assert.match(h, new RegExp(`<meta name="robots" content="${idx ? "index" : "noindex"}, follow`), p);
-      assert.equal(pages.includes(p), idx, p + ": in the sitemap only when indexed");
+      assert.match(h, /<meta name="robots" content="index, follow, max-image-preview:large">/, p + ": indexed");
+      assert.ok(pages.includes(p), p + ": in the sitemap");
+      const title = fill(T("lp_title"), { s: nameOf[id] }), h1 = fill(T("lp_h1"), { s: nameOf[id] });
+      assert.ok(h.includes(`<title>${esc(title)}</title>`), p + ": its own title");
+      assert.ok(h.includes(`<h1>${esc(h1)}</h1>`), p + ": its own h1");
+      assert.ok(title.includes(nameOf[id]), p + ": its title names its service");
+      // the title and h1 are the only thing that tells two service pages apart: two services must not share one. Three
+      // services are all called "LINE" (line, line-tw, line-sea), so their pages do share the name; only that is allowed.
+      for (const [seen, map] of [[title, titles], [h1, h1s]]) {
+        const other = map.get(seen);
+        if (other) assert.equal(nameOf[other], nameOf[id], p + ": its title/h1 repeats " + other + "'s");
+        map.set(seen, id);
+      }
+    }
+    assert.equal(titles.size, distinct.size, lang + ": one title per service name");
+    assert.equal(h1s.size, distinct.size, lang + ": one h1 per service name");
+  }
+});
+
+test("the field links every global service and this language's local pack; a region page links its whole pack", async () => {
+  for (const [lang, slug, , defPack] of LANGS) {
+    const prefix = slug ? slug + "/" : "";
+    const home = await page(prefix);
+    for (const s of SERVICES) assert.ok(home.includes(`href="/${prefix}${s.id}/"`), lang + ": the field misses " + s.id);
+    for (const s of PACKS[defPack]) assert.ok(home.includes(`href="/${prefix}${s.id}/"`), lang + ": the field misses local " + s.id);
+    for (const pack of Object.keys(PACKS)) {
+      const region = await page(prefix + "region/" + pack + "/");
+      for (const s of PACKS[pack]) assert.ok(region.includes(`href="/${prefix}${s.id}/"`), lang + "/region/" + pack + " misses " + s.id);
     }
   }
 });

@@ -91,14 +91,18 @@ export async function build({ check = false } = {}) {
     const m = /^region\/(\w+)$/.exec(sub || "");
     return m && PACKS[m[1]] ? { kind: "region", id: m[1], members: PACKS[m[1]] } : null;
   };
-  // Every service has its own page (the field links each name to it), local packs included. Only the services a
-  // language searches for (`land`) are indexed: hundreds of near-identical pages would read as thin content.
+  // Every service has its own page (the field links each name to it), local packs included, and all of them are indexed
+  // in every language: a service's page is what a search for "<service> latency / slow / down" should find, and each
+  // page carries its own facts (its peers, the edge network that answers it), so they are not copies. Group pages, the
+  // status page and the home page are indexed too.
   const ALL = [...SERVICES, ...Object.values(PACKS).flat()].filter((x, i, a) => a.findIndex(y => y.id === x.id) === i);
   const packOfService = id => Object.keys(PACKS).find(p => PACKS[p].some(x => x.id === id));
-  const has = (l, sub) => !sub || GROUP_SUBS.includes(sub) || ALL.some(x => x.id === sub);
-  const indexed = (l, sub) => !sub || sub === "status" || GROUP_SUBS.includes(sub) || landOf(l).includes(sub);
-  // hreflang and sitemap alternates point only at indexed versions (an alternate that is noindex is a search error)
-  const altsOf = sub => langs.filter(([l]) => sub === "status" || indexed(l, sub));
+  const indexed = (l, sub) => !sub || sub === "status" || GROUP_SUBS.includes(sub) || ALL.some(x => x.id === sub);
+  // a landing page's own preview card is drawn only for the services a language searches for (scripts/assets.mjs);
+  // the other service pages share the language's card
+  const cardOf = (l, sub) => landOf(l).includes(sub);
+  // every page is indexed in every language, so its hreflang lists all of them
+  const altsOf = sub => langs.filter(([l]) => indexed(l, sub));
   const path = (slug, sub) => "/" + (slug ? slug + "/" : "") + (sub ? sub + "/" : "");
   const RUNTIME_SKIP = new Set(["docs", "egress_link", "seo_title", "seo_desc", "seo_kw", "og_sub", "lede", "lp_title", "lp_desc", "lp_intro", "lp_h1", "lp_kw", "lp_peers", "lp_via", "lp_via_same", "land", "lg_title", "lg_desc", "lg_h1", "lg_kw", "lg_intro", "lg_about", "lg_region", "sm_cats", "sm_regions", "grp_best", "grp_worst", "sitemap_h", "sm_item", "cta_h", "cta_d", "cta_btn", "one_med", "one_cold", "one_jit",
     "name", "h1", "lang_label", "faq_h", "pack", "exit_h", "test_mine", "r_title_one", "r_title_other", "r_one"]);
@@ -128,7 +132,7 @@ export async function build({ check = false } = {}) {
       const alts = altsOf(sub).map(([l, sl]) => `<link rel="alternate" hreflang="${l}" href="${SITE + path(sl, sub)}">`).join("\n") +
         (indexed("en", sub) ?`\n<link rel="alternate" hreflang="x-default" href="${SITE + path("", sub)}">` : "");
       const docs = d.docs || en.docs;
-      const og = `${SITE}/og/${lang.toLowerCase()}${s && idx ? "/" + sub : ""}.png`;   // indexed service pages have their own card
+      const og = `${SITE}/og/${lang.toLowerCase()}${s && cardOf(lang, sub) ? "/" + sub : ""}.png`;   // an indexed service with its own card
       const graph = [
         { "@type": "WebSite", "@id": SITE + "/#site", name: "1ms.dog", url: SITE + "/", inLanguage: langs.map(([l]) => l) },
         { "@type": "WebApplication", name: s || g ? h1 : "1ms.dog", url, applicationCategory: "UtilitiesApplication",
@@ -330,7 +334,7 @@ ${common(stHelp)}
 > chosen by exit country. Everything runs client-side; no results are sent to 1ms.dog.
 
 - Home: ${SITE}/ (also ${langs.slice(1).map(([, s]) => "/" + s + "/").join(", ")})
-- Service pages: ${landOf("en").map(id => `${SITE}/${id}/`).join(", ")}
+- Service pages: every one of the ${ALL.length} services has its own page in every language: ${ALL.map(x => `${SITE}/${x.id}/`).join(", ")}
 - Group pages: ${GROUP_SUBS.map(g => `${SITE}/${g}/`).join(", ")}
 - Service status from Tokyo (latency and uptime of every service, measured every hour by 1ms.dog's server in Tokyo): ${SITE}/status/ (data: ${SITE}/baseline.json)
 - Services tested: ${SERVICES.map(s => s.name).join(", ")}

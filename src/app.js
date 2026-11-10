@@ -55,18 +55,31 @@
   const say = (k, v) => { bubble.textContent = t(k, v); bubble.classList.remove("pop"); void bubble.offsetWidth; bubble.classList.add("pop"); };
   // The running shiba is a SMIL animation. Inlined (instead of the <img>) it can run faster, slower or stop to match
   // the mood. If anything fails the <img> stays: the dog still runs, at one speed.
-  fetch("/assets/shiba-run.svg").then(r => r.text()).then(x => {
-    const svg = new DOMParser().parseFromString(x, "image/svg+xml").documentElement;
-    if (svg.nodeName !== "svg") return;
-    svg.setAttribute("viewBox", "150 20 700 420");
-    svg.removeAttribute("width"); svg.removeAttribute("height"); svg.setAttribute("aria-hidden", "true");
-    const node = document.importNode(svg, true);
-    $("#dogImg").replaceWith(node);
-    dogSvg = node;
-    try { rig(node); stage.classList.add("rigged"); } catch (e) {}
-    durs =[...node.querySelectorAll("animate, animateTransform, animateMotion")].map(a => [a, parseFloat(a.getAttribute("dur")) || 0.76]);
-    setMood(stage.dataset.mood);
-  }).catch(() => {});
+  // Let the first image finish before fetching/parsing a second copy for the interactive rig.
+  const dogImg = $("#dogImg");
+  let dogQueued = false;
+  function queueDogRig() {
+    if (dogQueued) return;
+    dogQueued = true;
+    requestAnimationFrame(() => setTimeout(inlineDog, 0));
+  }
+  dogImg.addEventListener("load", queueDogRig, { once: true });
+  dogImg.addEventListener("error", queueDogRig, { once: true });
+  if (dogImg.complete) queueDogRig();
+  function inlineDog() {
+    fetch("/assets/shiba-run.svg").then(r => { if (!r.ok) throw new Error("dog image"); return r.text(); }).then(x => {
+      const svg = new DOMParser().parseFromString(x, "image/svg+xml").documentElement;
+      if (svg.nodeName !== "svg") return;
+      svg.setAttribute("viewBox", "150 20 700 420");
+      svg.removeAttribute("width"); svg.removeAttribute("height"); svg.setAttribute("aria-hidden", "true");
+      const node = document.importNode(svg, true);
+      $("#dogImg").replaceWith(node);
+      dogSvg = node;
+      try { rig(node); stage.classList.add("rigged"); } catch (e) {}
+      durs =[...node.querySelectorAll("animate, animateTransform, animateMotion")].map(a => [a, parseFloat(a.getAttribute("dur")) || 0.76]);
+      setMood(stage.dataset.mood);
+    }).catch(() => {});
+  }
   function dogSpeed(f) {                                     // 1 = the drawing's own gallop
     stage.style.setProperty("--spd", (0.76 / (f || 1)).toFixed(3) + "s");
     if (!dogSvg) return;
