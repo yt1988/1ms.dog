@@ -11,7 +11,8 @@
 //                         curl -fsSL https://1ms.dog/i | sh   ·   irm https://1ms.dog/i.ps1 | iex
 //   /v                    the tool's latest version, "0.1.0", asked of GitHub and kept for 10 minutes. GitHub
 //                         wobbles: an ask is tried twice, and the last version it gave is kept a week as the
-//                         fallback, so the installer still works for a browser visitor while GitHub answers 502.
+//                         fallback. With nothing ever seen, /v answers 503 (the outage the check must see) while
+//                         /i and /i.ps1 answer 200 with a script that says so and stops.
 //   /dl/<tag>/<file>      a file of that release, fetched from GitHub once and then kept (a tag's files never change);
 //                         <tag> may be "latest", which redirects to the current tag
 //   /baseline.json        the Tokyo baseline: 1ms.dog's server in Tokyo measures every service every hour
@@ -100,7 +101,7 @@ export default {
     const url = new URL(req.url), get = req.method === "GET" || req.method === "HEAD";
     if (get && (url.pathname === "/v" || INSTALLER[url.pathname])) {
       const v = await latest(url, ctx);
-      if (!v) return unavailable();
+      if (!v) return INSTALLER[url.pathname] ? installerUnavailable(INSTALLER[url.pathname], req) : unavailable(req);
       if (INSTALLER[url.pathname]) return release(`v${v}`, INSTALLER[url.pathname], req, ctx);
       return new Response(v + "\n", { headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=300" } });
     }
@@ -205,11 +206,20 @@ async function kept(cache, key) {
 const toGitHub = (tag, file) => new Response(null, { status: 302, headers: {
   location: `https://github.com/${REPO}/releases/${tag ? `download/${tag}` : "latest/download"}/${file}`, "cache-control": "no-store" } });
 
-// GitHub is down and this site has never seen a release: say what happened and that it will pass, not a bare 502
-const unavailable = () => new Response(
-  "GitHub did not answer, and 1ms.dog has no copy of the tool's latest release yet.\n" +
-  "The tool itself is fine; GitHub is having trouble. Try again in a minute.\n",
-  { status: 503, headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store", "retry-after": "60" } });
+// GitHub is down and this site has never seen a release. /v is a 503 in words: that is a real outage the check must
+// see. The installers are run as scripts, so a 5xx would make `curl -fsSL … | sh` fail with nothing on screen and
+// `sh` would then "succeed" on empty input: they answer 200 with a script that says what happened and stops.
+function unavailable(req) {
+  const body = req.method === "HEAD" ? null : "GitHub is not answering right now, so the latest version of the tool is unavailable. Try again in a minute.\n";
+  return new Response(body, { status: 503, headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store", "retry-after": "60" } });
+}
+function installerUnavailable(file, req) {
+  const message = "GitHub is not answering right now, so the httpslatency installer cannot be fetched. Try again in a minute.";
+  const body = req.method === "HEAD" ? null
+    : file === "install.ps1" ? `throw "${message}"\n`
+    : `#!/bin/sh\necho "${message}" >&2\nexit 1\n`;
+  return new Response(body, { headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" } });
+}
 
 async function release(tag, file, req, ctx) {
   const cache = caches.default;

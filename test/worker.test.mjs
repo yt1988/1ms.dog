@@ -100,7 +100,7 @@ test("while GitHub stays down, the version it gave last still serves /v and the 
   assert.ok(calls >= 2, "the fallback is used only after GitHub was asked twice");
 });
 
-test("with no release ever seen, /v and /i say GitHub is the problem instead of a bare 502", async () => {
+test("with no release ever seen, /v is a clear 503 while the installers answer a 200 script that stops", async () => {
   const { default: worker } = await import("../src/worker.js");
   globalThis.caches = { default: { match: async () => null, put: async () => {} } };
   globalThis.fetch = async () => new Response("bad gateway", { status: 502 });
@@ -109,10 +109,21 @@ test("with no release ever seen, /v and /i say GitHub is the problem instead of 
   const v = await get("/v");
   assert.equal(v.status, 503);
   assert.equal(v.headers.get("retry-after"), "60");
-  assert.match(await v.text(), /GitHub did not answer/);
+  assert.match(await v.text(), /GitHub is not answering right now/);
+  // `curl -fsSL … | sh`: a 5xx would make curl write nothing and sh then exit 0 on empty input, so the installer is
+  // a script that says what happened and exits 1
   const i = await get("/i");
-  assert.equal(i.status, 503);
-  assert.match(await i.text(), /GitHub is having trouble/);
+  assert.equal(i.status, 200);
+  assert.equal(i.headers.get("content-type"), "text/plain; charset=utf-8");
+  const sh = await i.text();
+  assert.match(sh, /^#!\/bin\/sh\n/);
+  assert.match(sh, /GitHub is not answering right now/);
+  assert.match(sh, /exit 1/);
+  const ps = await get("/i.ps1");
+  assert.equal(ps.status, 200);
+  const pwsh = await ps.text();
+  assert.match(pwsh, /^throw "/);
+  assert.match(pwsh, /GitHub is not answering right now/);
   // no tag at all: point at GitHub's own latest file rather than a dead end
   const l = await get("/dl/latest/httpslatency-linux-amd64");
   assert.equal(l.status, 302);

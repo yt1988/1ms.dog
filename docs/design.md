@@ -51,8 +51,11 @@ GitHub did:
   older tag is served, and `/i` still installs that release from GitHub;
 - a release file is fetched once and kept immutable; if that fetch fails while the tag is known, the client is sent
   to GitHub's copy of the same file (the documented installers follow redirects);
-- with no tag ever seen, `/v` and the installers answer 503 with a sentence saying GitHub is the problem, rather
-  than a bare 502, and `/dl/latest/<file>` points at GitHub's own `latest/download/` (which needs no tag).
+- with no tag ever seen, `/v` answers 503 with a sentence saying GitHub is the problem (the outage the weekly
+  `check` must see), while `/i` and `/i.ps1` answer 200 with a short script that says so and exits 1 (or throws):
+  a 5xx would make `curl -fsSL … | sh` write nothing, and `sh` would then exit 0 on empty input, looking like a
+  successful install that installed nothing. `/dl/latest/<file>` points at GitHub's own `latest/download/` (which
+  needs no tag).
 
 ## The status page
 
