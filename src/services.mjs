@@ -10,6 +10,8 @@
 // name   brand name as the brand writes it
 // cat    group key, see CATS
 // url    what the browser requests (a random query string is added to skip caches)
+// raw    true: request the URL as it is, with no cache-busting query, for a host that caches by URL (the random
+//        query would reach its origin every time); `cache: no-store` still keeps the browser's own cache out
 // m      request method: GET (default), HEAD, or IMG (an <img> load, for hosts that reset fetch)
 // origin set when the service is hosted in one region (DeepSeek: mainland China): the far-away daily check treats it like
 //        a regional service
@@ -30,7 +32,7 @@ export const SERVICES = [
   { id: "gemini", name: "Gemini", cat: "ai", url: "https://gemini.google.com/generate_204", via: "Google", c: "#4f7cf5" },
   { id: "copilot", name: "Copilot", cat: "ai", url: "https://copilot.microsoft.com/cdn-cgi/trace", via: "Cloudflare", c: "#2a84e8" },
   { id: "grok", name: "Grok", cat: "ai", url: "https://grok.com/cdn-cgi/trace", via: "Cloudflare", c: "#8b8b8b" },
-  { id: "deepseek", name: "DeepSeek", cat: "ai", url: "https://chat.deepseek.com/favicon.svg", origin: "CN", c: "#4d6bfe" },
+  { id: "deepseek", name: "DeepSeek", cat: "ai", url: "https://fe-static.deepseek.com/chat/favicon.svg", origin: "CN", c: "#4d6bfe" },
 
   // Search & everyday web
   { id: "google", name: "Google", cat: "web", url: "https://www.google.com/generate_204", via: "Google", c: "#4285f4" },
@@ -91,10 +93,10 @@ export const SERVICES = [
 const LINE = { id: "line", name: "LINE", cat: "local", url: "https://line.me/favicon.ico", c: "#06c755" };
 export const PACKS = {
   cn: [
-    { id: "baidu", name: "百度", cat: "local", url: "https://www.baidu.com/favicon.ico", c: "#2932e1" },
+    { id: "baidu", name: "百度", cat: "local", url: "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png", c: "#2932e1" },
     { id: "bilibili", name: "哔哩哔哩", cat: "local", url: "https://www.bilibili.com/favicon.ico", c: "#fb7299" },
     { id: "wechat", name: "微信", cat: "local", url: "https://weixin.qq.com/favicon.ico", c: "#07c160" },
-    { id: "douyin", name: "抖音", cat: "local", url: "https://www.douyin.com/robots.txt", c: "#fe2c55" },
+    { id: "douyin", name: "抖音", cat: "local", url: "https://lf1-cdn-tos.bytegoofy.com/goofy/ies/douyin_web/public/favicon.ico", c: "#fe2c55" },
   ],
   tw: [
     { id: "yahoo-tw", name: "Yahoo奇摩", cat: "local", url: "https://tw.yahoo.com/favicon.ico", c: "#6001d2" },
@@ -106,10 +108,11 @@ export const PACKS = {
     { id: "yahoo-jp", name: "Yahoo! JAPAN", cat: "local", url: "https://www.yahoo.co.jp/favicon.ico", c: "#ff0033" },
     LINE,
     { id: "rakuten", name: "楽天", cat: "local", url: "https://www.rakuten.co.jp/favicon.ico", c: "#bf0000" },
-    { id: "niconico", name: "ニコニコ", cat: "local", url: "https://www.nicovideo.jp/favicon.ico", c: "#8b8b8b" },
+    // raw: the file host caches by URL; a random query goes back to S3 (srv≈270 ms), while the cached URL is an edge answer
+    { id: "niconico", name: "ニコニコ", cat: "local", url: "https://resource.video.nimg.jp/web/images/favicon_uni/favicon.ico", raw: true, c: "#8b8b8b" },
   ],
   kr: [
-    { id: "naver", name: "NAVER", cat: "local", url: "https://www.naver.com/robots.txt", c: "#03c75a" },
+    { id: "naver", name: "NAVER", cat: "local", url: "https://m.naver.com/favicon.ico", c: "#03c75a" },
     { id: "kakao", name: "Kakao", cat: "local", url: "https://www.kakaocorp.com/robots.txt", c: "#fee500" },
     { id: "coupang", name: "Coupang", cat: "local", url: "https://image7.coupangcdn.com/image/coupang/favicon/v2/favicon.ico", c: "#e52528" },
     { id: "daum", name: "Daum", cat: "local", url: "https://www.daum.net/favicon.ico", c: "#4a7cf6" },
@@ -128,8 +131,9 @@ export const PACKS = {
   ],
   sea: [
     { id: "shopee", name: "Shopee", cat: "local", url: "https://shopee.sg/favicon.ico", c: "#ee4d2d" },
-    { id: "lazada", name: "Lazada", cat: "local", url: "https://www.lazada.sg/favicon.ico", c: "#0f146d" },
-    { id: "grab", name: "Grab", cat: "local", url: "https://www.grab.com/robots.txt", c: "#00b14f" },
+    // raw: Alibaba's CDN also re-fetches a URL it has not cached; the plain URL stays on the edge (srv≈0 vs ≈60 ms)
+    { id: "lazada", name: "Lazada", cat: "local", url: "https://laz-img-cdn.alicdn.com/tfs/TB1PApewFT7gK0jSZFpXXaTkpXa-200-200.png", raw: true, c: "#0f146d" },
+    { id: "grab", name: "Grab", cat: "local", url: "https://assets.grab.com/wp-content/uploads/media/footer/AppStore.png", c: "#00b14f" },
     LINE,
   ],
   eu: [
