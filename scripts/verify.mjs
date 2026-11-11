@@ -26,8 +26,13 @@ const list = tries.length ? tries.map(([id, url]) => ({ ...(all.find(s => s.id =
   : pick.length ? all.filter(s => pick.includes(s.id)) : all;
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Safari/537.36";
 let bad = 0;
-const ids = new Set();
-for (const s of all) { if (ids.has(s.id)) { console.log(`duplicate id ${s.id}`); bad++; } ids.add(s.id); }
+// The same object may appear in several packs (LINE is one service shared by Taiwan, Japan and Southeast Asia): that
+// is one service, not a duplicate. Two different services with one id are the error (results and pages would merge).
+const seen = new Map();
+for (const s of all) {
+  if (seen.has(s.id) && seen.get(s.id) !== s) { console.log(`duplicate id ${s.id}`); bad++; }
+  if (!seen.has(s.id)) seen.set(s.id, s);
+}
 
 // one request on the given agent: status, headers, body size, and timings in ms (tcp, tls when a new socket opened)
 function get(s, agent) {
@@ -90,5 +95,7 @@ for (const s of list.filter(s => s.pop)) {
   const why = await popOk(s).catch(e => e.message);
   if (why) console.log(`warn ${s.id.padEnd(14)} edge node not readable: ${why}`);
 }
-console.log(`\n${out.filter(o => o.ok).length}/${out.length} ok` + (FAR ? `, ${out.filter(o => !o.ok && soft(o)).length} regional warnings` : ""));
+const ok = out.filter(o => o.ok).length, warn = out.filter(o => !o.ok && soft(o)).length;
+console.log(`\n${ok}/${out.length} ok` + (FAR ? `, ${warn} regional warnings` : "") + (bad ? `, ${bad} failed` : ""));
+if (bad) console.log(`exit 1: ${bad} failed check${bad === 1 ? "" : "s"} — the lines marked BAD or duplicate id above`);
 process.exitCode = bad ? 1 : 0;              // not exit(): let the fetch sockets above close first
