@@ -73,7 +73,7 @@ export async function build({ check = false } = {}) {
   // the lanes are colored by speed zone, at the same log-scale positions the page puts the balls
   const pct = ms => (pos(ms) * 100).toFixed(1) + "%", Z = ZONES.map(pct);
   const bands = `linear-gradient(90deg, var(--t1) 0 ${Z[0]}, var(--t2) ${Z[0]} ${Z[1]}, var(--t3) ${Z[1]} ${Z[2]}, var(--t4) ${Z[2]} ${Z[3]}, var(--t5) ${Z[3]} 100%)`;
-  const cssFull = (await Promise.all(["fonts.css", "style.css", "layout.css"].map(f => readFile(new URL(f, src), "utf8")))).join("\n") + `\n.field, .slane { --bands: ${bands}; }\n`;
+  const cssFull = (await Promise.all(["fonts.css", "base.css", "style.css", "layout.css"].map(f => readFile(new URL(f, src), "utf8")))).join("\n") + `\n.field, .slane { --bands: ${bands}; }\n`;
   // minified with esbuild (pinned version, so the output, and its hash, only changes when the source does)
   const js = (await transform(appFull, { loader: "js", minify: true, target: TARGET, legalComments: "none" })).code;
   const css = (await transform(cssFull, { loader: "css", minify: true, legalComments: "none" })).code;
