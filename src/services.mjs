@@ -112,7 +112,8 @@ export const PACKS = {
     { id: "niconico", name: "ニコニコ", cat: "local", url: "https://resource.video.nimg.jp/web/images/favicon_uni/favicon.ico", raw: true, c: "#8b8b8b" },
   ],
   kr: [
-    { id: "naver", name: "NAVER", cat: "local", url: "https://s.pstatic.net/static/www/u/2014/0328/mma_204243574.png", c: "#03c75a" },
+    // raw: the CDN caches by URL; a random query misses the US edge and re-fetches from Korea (srv≈181 ms)
+    { id: "naver", name: "NAVER", cat: "local", url: "https://s.pstatic.net/static/www/u/2014/0328/mma_204243574.png", raw: true, c: "#03c75a" },
     { id: "kakao", name: "Kakao", cat: "local", url: "https://www.kakaocorp.com/robots.txt", c: "#fee500" },
     { id: "coupang", name: "Coupang", cat: "local", url: "https://image7.coupangcdn.com/image/coupang/favicon/v2/favicon.ico", c: "#e52528" },
     { id: "daum", name: "Daum", cat: "local", url: "https://www.daum.net/favicon.ico", c: "#4a7cf6" },
