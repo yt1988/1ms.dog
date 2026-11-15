@@ -112,7 +112,7 @@ export const PACKS = {
     { id: "niconico", name: "ニコニコ", cat: "local", url: "https://resource.video.nimg.jp/web/images/favicon_uni/favicon.ico", raw: true, c: "#8b8b8b" },
   ],
   kr: [
-    { id: "naver", name: "NAVER", cat: "local", url: "https://m.naver.com/favicon.ico", c: "#03c75a" },
+    { id: "naver", name: "NAVER", cat: "local", url: "https://s.pstatic.net/static/www/u/2014/0328/mma_204243574.png", c: "#03c75a" },
     { id: "kakao", name: "Kakao", cat: "local", url: "https://www.kakaocorp.com/robots.txt", c: "#fee500" },
     { id: "coupang", name: "Coupang", cat: "local", url: "https://image7.coupangcdn.com/image/coupang/favicon/v2/favicon.ico", c: "#e52528" },
     { id: "daum", name: "Daum", cat: "local", url: "https://www.daum.net/favicon.ico", c: "#4a7cf6" },
@@ -125,7 +125,7 @@ export const PACKS = {
   ],
   in: [
     { id: "flipkart", name: "Flipkart", cat: "local", url: "https://static-assets-web.flixcart.com/favicon.ico", c: "#2874f0" },
-    { id: "hotstar", name: "JioHotstar", cat: "local", url: "https://www.hotstar.com/robots.txt", m: "HEAD", c: "#1f80e0" },
+    { id: "hotstar", name: "JioHotstar", cat: "local", url: "https://img.hotstar.com/image/upload/v1711625492/feature/rebranding/disney-plus-favicon.ico", c: "#1f80e0" },
     { id: "paytm", name: "Paytm", cat: "local", url: "https://paytm.com/favicon.ico", c: "#00baf2" },
     { id: "amazon-in", name: "Amazon.in", cat: "local", url: "https://www.amazon.in/favicon.ico", c: "#ff9900" },
   ],
