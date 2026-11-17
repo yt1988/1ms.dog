@@ -54,6 +54,16 @@ test("exits group by network and put local before proxy", () => {
   assert.equal(groupExits([{ ip: "104.28.1.1", by: "Cloudflare" }], cf, "on")[0].proxy, true);
 });
 
+test("an exit on a hosting provider's network is a proxy, not a direct line", () => {
+  const geo = {
+    "45.130.1.1": { cc: "US", city: "Los Angeles", asn: 0, org: "Fastnet Data" },
+    "115.192.1.1": { cc: "CN", city: "Hangzhou", asn: 4134, org: "China Telecom" },
+  };
+  const g = groupExits([{ ip: "45.130.1.1", by: "ip.sb" }, { ip: "115.192.1.1", by: "ipip.net" }], geo, "off");
+  assert.equal(g[0].cc, "CN"); assert.equal(g[0].proxy, false);
+  assert.equal(g[1].org, "Fastnet Data"); assert.equal(g[1].proxy, true);
+});
+
 test("the diagnosis says which side is slow", () => {
   const sg = (...meds) => segmentOf(meds, meds.map((_, i) => "s" + i));
   const near = sg(20, 30, 40, 25), far = sg(220, 250, 200, 300, null), farFast = sg(60, 70, 80), dead = sg(null, null, null);

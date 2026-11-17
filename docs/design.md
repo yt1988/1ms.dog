@@ -40,6 +40,15 @@ CSS) went from 964 to 904 ms. At a 3G-like profile (400 ms RTT, 50 KB/s) it was 
 never needed it; without the preload it is discovered when the stylesheet is parsed. The dog image itself is not
 the bottleneck: blocking it moves LCP to the h1 at about the same time.
 
+## Which exit is the proxy
+
+The label comes from the network's name, not from the route: an exit whose organization matches the hosting/VPS/cloud
+list in `src/lib.mjs` (`DC_RE`) reads as Proxy, anything else as Direct. Nothing in the browser proves which line is
+the visitor's own, so the list is the evidence used. Fastnet Data, a US hoster, was missing (2026-11-17): a visitor
+whose split-tunnel proxy exits there saw two "Direct" exits. Add a provider when a report shows the same. The device
+timezone is deliberately not part of the label (it is not proof of location); it only adds the note under the list
+when no exit is in the timezone's country.
+
 ## Route and ping links
 
 A slow service's time is followed by two icons: a route icon links to Route Trace (`<meta name="trace">`) and a ping
