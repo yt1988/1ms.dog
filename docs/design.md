@@ -29,6 +29,17 @@ shares the connection with their timing. The server greets with `{"v":1,"pop":"�
 (up to 64 bytes, 60 messages or 30 seconds a connection, only from the site's origins). The privacy answer says that
 this happens.
 
+## First paint: the font is not preloaded
+
+The page used to preload `geist-latin.woff2` (29 KB) with `fetchpriority` defaulting to high. On a throttled
+desktop (Slow 4G: 150 ms RTT, 200 KB/s; 4× CPU) that preload competed with the render-blocking stylesheet for the
+only connection the browser was still opening, and the stylesheet was 12 KB: `first-contentful-paint` came at
+964 ms with the preload and 756 ms without it, and the desktop LCP (the dog image, which can only paint after the
+CSS) went from 964 to 904 ms. At a 3G-like profile (400 ms RTT, 50 KB/s) it was 1,840 → 1,556 ms FCP and
+2,156 → 1,748 ms LCP, the range of the field's desktop p75. The font has `font-display: swap`, so first paint
+never needed it; without the preload it is discovered when the stylesheet is parsed. The dog image itself is not
+the bottleneck: blocking it moves LCP to the h1 at about the same time.
+
 ## Route and ping links
 
 A slow service's time is followed by two icons: a route icon links to Route Trace (`<meta name="trace">`) and a ping
