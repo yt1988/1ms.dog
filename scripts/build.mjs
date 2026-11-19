@@ -289,6 +289,7 @@ export async function build({ check = false } = {}) {
 <script>${PREPAINT}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 ${head}
+<link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/${cssName}">
 </head>
 <body>
