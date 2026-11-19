@@ -10,6 +10,7 @@
   const L = window.L1MS || {}, LANG = D.lang;                  // strings: /assets/l.<lang>.<hash>.js, loaded first
   const t = (k, v) => v ? fillIn(L[k] ?? k, v, L.josa_fin) : L[k] ?? k;
   const tn = (k, n, v) => t(pluralKey(L, k, n, LANG), v);   // a counted line, in the right plural form
+  const nm = svc => serviceName(svc, LANG);                  // a service's name in this page's language (src/lib.mjs)
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   // Connection Checkup (check.1ms.dog; 1ms-shell docs/checkup.md) frames the home page with ?embed=checkup. Only when
@@ -200,7 +201,7 @@
       if (now <= prev * 0.7) return later("mood_faster", { a: fmt(prev), b: fmt(now) }, "happy");
       if (now >= prev * 1.4) return later("mood_slower", { a: fmt(prev), b: fmt(now) }, "sad");
     }
-    const done = allServices().filter(s => R.get(s.id) && R.get(s.id).st === "done").map(s => [s.name, median(R.get(s.id).s)]);
+    const done = allServices().filter(s => R.get(s.id) && R.get(s.id).st === "done").map(s => [nm(s), median(R.get(s.id).s)]);
     if (done.length < 3) return;
     const lost = done.filter(d => d[1] == null), ok = done.filter(d => d[1] != null).sort((a, b) => a[1] - b[1]);
     const pick = a => a[Math.floor(Math.random() * a.length)];
@@ -394,8 +395,8 @@
   const EGRESS_AI = ["chatgpt", "claude", "grok", "copilot"];
   {
     const l = [!CHECK && toolHref("check") && ext("check", "", t("l_check")),
-      D.spot && EGRESS_AI.includes(D.spot) && toolHref("egress") && ext("egress", "chatgpt-ip/", t("l_ai", { s: SVC.list.find(s => s.id === D.spot).name })),
-      D.spot && SVC.unlock[D.spot] && toolHref("unlock") && ext("unlock", SVC.unlock[D.spot] + "/", t("unlock_one", { s: SVC.list.find(s => s.id === D.spot).name })),
+      D.spot && EGRESS_AI.includes(D.spot) && toolHref("egress") && ext("egress", "chatgpt-ip/", t("l_ai", { s: nm(SVC.list.find(s => s.id === D.spot)) })),
+      D.spot && SVC.unlock[D.spot] && toolHref("unlock") && ext("unlock", SVC.unlock[D.spot] + "/", t("unlock_one", { s: nm(SVC.list.find(s => s.id === D.spot)) })),
       toolHref("speed") && ext("speed", "", t("l_speed"))].filter(Boolean);
     const el = $("#vLinks"); el.innerHTML = l.join(""); el.hidden = !l.length;
   }
@@ -437,7 +438,7 @@
     if (!NET.done || NET.hidden || NET.groups.some(g => g.proxy)) return;   // a proxy exit is already shown
     const cc = (NET.groups[0] || {}).cc;
     if (!WALLED[cc]) return;
-    const got = WALLED[cc].filter(id => { const r = R.get(id); return r && median(r.s) != null; }).map(id => SVC.list.find(s => s.id === id).name);
+    const got = WALLED[cc].filter(id => { const r = R.get(id); return r && median(r.s) != null; }).map(id => nm(SVC.list.find(s => s.id === id)));
     if (got.length < 2) return;
     NET.hidden = t("r_proxied", { list: esc(got.slice(0, 4).join(", ")), c: esc(country(cc)) });
     renderNote();
@@ -446,7 +447,7 @@
   /* ---------- the field ---------- */
   const PACKS = SVC.packs, PACK_OF = SVC.packOf;
   let pack = D.pack;
-  const rowHtml = s => `<li class="row" id="t-${s.id}"><a class="nm" href="${D.paths[LANG]}${s.id}/">${esc(s.name)}</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li>`;
+  const rowHtml = s => `<li class="row" id="t-${s.id}"><a class="nm" href="${D.paths[LANG]}${s.id}/">${esc(nm(s))}</a><span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li>`;
   // a single-service page (/chatgpt/, /zh-cn/dockerhub/…) tests only that service, more thoroughly
   const ONE = D.spot ? [...SVC.list, ...Object.values(SVC.packs).flat()].find(s => s.id === D.spot) : null, ONE_N = 10;
   // a group page (/ai/, /region/jp/…) tests just that category's or region's services
@@ -634,12 +635,12 @@
     if (slowRoute(s.id, md)) {
       const host = encodeURIComponent(new URL(s.url).hostname), tools = [];
       const rt = toolHref("trace", "?t=" + host), pg = toolHref("ping", "?t=" + host);
-      if (rt) tools.push(`<a class="rt" href="${esc(rt)}" target="_blank" rel="noopener" title="${esc(t("rt_go", { s: s.name }))}" aria-label="${esc(t("rt_go", { s: s.name }))}">${RT_ICON}</a>`);
-      if (pg) tools.push(`<a class="pg" href="${esc(pg)}" target="_blank" rel="noopener" title="${esc(t("pg_go", { s: s.name }))}" aria-label="${esc(t("pg_go", { s: s.name }))}">${PG_ICON}</a>`);
+      if (rt) tools.push(`<a class="rt" href="${esc(rt)}" target="_blank" rel="noopener" title="${esc(t("rt_go", { s: nm(s) }))}" aria-label="${esc(t("rt_go", { s: nm(s) }))}">${RT_ICON}</a>`);
+      if (pg) tools.push(`<a class="pg" href="${esc(pg)}" target="_blank" rel="noopener" title="${esc(t("pg_go", { s: nm(s) }))}" aria-label="${esc(t("pg_go", { s: nm(s) }))}">${PG_ICON}</a>`);
       if (tools.length) ms.insertAdjacentHTML("beforeend", tools.join(""));
     }
     const ok = r.s.filter(x => x != null);
-    el.title = [s.name + " · " + t("tier_" + tk), r.w != null ? `${t("d_cold")} ${fmt(r.w)} ms` : "",
+    el.title = [nm(s) + " · " + t("tier_" + tk), r.w != null ? `${t("d_cold")} ${fmt(r.w)} ms` : "",
       ok.length ? `${t("d_samples")}: ${ok.map(fmt).join(" · ")} ms` : "", ok.length > 1 ? `${t("d_jit")} ±${fmt(jitter(ok))} ms` : ""].filter(Boolean).join("\n");
   }
 
@@ -741,7 +742,7 @@
   // the finished services among a list, as a segment (median, how many answered, which didn't)
   function segment(list) {
     const svcs = list.filter(s => s && R.get(s.id) && R.get(s.id).st === "done");
-    return segmentOf(svcs.map(s => median(R.get(s.id).s)), svcs.map(s => s.name));
+    return segmentOf(svcs.map(s => median(R.get(s.id).s)), svcs.map(nm));
   }
   // which side the slowness is on (src/lib.mjs: diagnose), plus each everyday use
   function verdict() {
@@ -760,13 +761,13 @@
     return s;
   }
   function renderVerdict(v) {
-    if (ONE) { $("#vHead").textContent = t("running_one", { s: ONE.name, d: 0, n: ONE_N }); $("#vText").textContent = t("v_one_wait", { s: ONE.name }); return; }
+    if (ONE) { $("#vHead").textContent = t("running_one", { s: nm(ONE), d: 0, n: ONE_N }); $("#vText").textContent = t("v_one_wait", { s: nm(ONE) }); return; }
     if (GRP) { $("#vHead").textContent = t("running", { d: 0, n: GRP.list.length }); $("#vText").textContent = t("v_grp_wait", { g: GRP.name }); return; }
     $("#vHead").textContent = v ? verdictHead(v) : t("running", { d: 0, n: allServices().length });
     // while testing, the same lines hold placeholders, so nothing moves when the verdict arrives
     $("#vText").textContent = v ? verdictText(v) : t("v_wait");
     // each use names the services it is judged on, and points at them in the field (hover, focus or tap)
-    const based = u => u.ids.map(id => SVC.list.find(s => s.id === id).name).join(t("v_join")) + (u.md != null ? ` · ${fmt(u.md)} ms` : "") +
+    const based = u => u.ids.map(id => nm(SVC.list.find(s => s.id === id))).join(t("v_join")) + (u.md != null ? ` · ${fmt(u.md)} ms` : "") +
       (u.lost.length ? ` · ${t("tier_lost")}: ${u.lost.join(t("v_join"))}` : "");
     $("#vUses").innerHTML = v ? v.uses.map(u => `<button type="button" class="use s-${u.st}" data-ids="${u.ids.join(",")}" title="${esc(based(u))}" aria-label="${esc(t("use_" + u.k) + " " + t("st_" + u.st) + ": " + based(u))}">${esc(t("use_" + u.k))}<b>${esc(t("st_" + u.st))}</b></button>`).join("")
       : USES.map(([k]) => `<span class="use">${esc(t("use_" + k))}<b>…</b></span>`).join("");
@@ -798,8 +799,8 @@
       $(id + " i").textContent = sub;
     };
     cell("#stMed", sg.md, sg.n ? tn("back", sg.ok, { ok: sg.ok, n: sg.n }) : "");
-    cell("#stBest", meds.length ? meds[0][1] : null, meds.length ? meds[0][0].name : "");
-    cell("#stWorst", meds.length > 1 ? meds[meds.length - 1][1] : null, meds.length > 1 ? meds[meds.length - 1][0].name : "");
+    cell("#stBest", meds.length ? meds[0][1] : null, meds.length ? nm(meds[0][0]) : "");
+    cell("#stWorst", meds.length > 1 ? meds[meds.length - 1][1] : null, meds.length > 1 ? nm(meds[meds.length - 1][0]) : "");
     return sg;
   }
   function summarizeGroup() {
@@ -827,15 +828,15 @@
     // every sample is a ball on the lane, the median a bigger one
     const at = v => (pos(v) * 100).toFixed(1) + "%";
     $("#dots").innerHTML = ok.map(v => `<i class="${tierOf(v)[1]}" style="left:${at(v)}"></i>`).join("") + (md != null ? `<b class="${cls}" style="left:${at(md)}"></b>` : "");
-    if (r.st === "run") { $("#vHead").textContent = t("running_one", { s: ONE.name, d: r.s.length, n: ONE_N }); $("#prog i").style.width = (100 * r.s.length / ONE_N) + "%"; }
+    if (r.st === "run") { $("#vHead").textContent = t("running_one", { s: nm(ONE), d: r.s.length, n: ONE_N }); $("#prog i").style.width = (100 * r.s.length / ONE_N) + "%"; }
     return { md, ok: ok.length ? 1 : 0, n: 1 };
   }
   function summarizeOne() {
     const r = R.get(ONE.id), ok = r ? r.s.filter(v => v != null) : [], md = median(ok), [tk] = tierOf(md);
     paintOne();
     const key = md == null ? "lost" : md <= 80 ? "fast" : md <= 150 ? "ok" : md <= 300 ? "slow" : "far";
-    $("#vHead").textContent = md == null ? t("vh_one_lost", { s: ONE.name }) : t("vh_one", { s: ONE.name, tier: t("tier_" + tk) });
-    $("#vText").textContent = t("v_one_" + key, { s: ONE.name });
+    $("#vHead").textContent = md == null ? t("vh_one_lost", { s: nm(ONE) }) : t("vh_one", { s: nm(ONE), tier: t("tier_" + tk) });
+    $("#vText").textContent = t("v_one_" + key, { s: nm(ONE) });
     const mood = md == null ? "lost" : tk;
     lastSum = { md, ok: ok.length ? 1 : 0, n: 1, tier: tk, mood }; paintShare();
     setMood(mood); say("mood_" + mood);
@@ -908,7 +909,7 @@
     const s = lastSum, card = cardLayout();
     share({
       // the header names what was tested (a group or one service); the home page's name is 1ms.dog, already the host there
-      lang: LANG, name: ONE ? ONE.name : GRP ? GRP.name : "", file: "1ms-dog",
+      lang: LANG, name: ONE ? nm(ONE) : GRP ? GRP.name : "", file: "1ms-dog",
       show: ["city", "isp"], never: ["ip", "colo"], canShow: NET.groups.some(g => g.city || g.org || g.asn),
       link: show => location.origin + PAGE + "r/" + resultCode(show),
       home: location.origin + PAGE,
@@ -1007,7 +1008,7 @@
       // the field: a single service's samples on one lane, the median the big ball
       if (ONE) {
         const r = R.get(ONE.id), ok = r ? r.s.filter(v => v != null) : [], md = median(ok), [, k] = tierOf(md), l0 = P + 200, l1 = W - P - 90, cy = top + 40;
-        x.fillStyle = C.fg; fit(x, ONE.name, 188, 22, 16, 600); x.fillText(clip(x, ONE.name, 188), P, cy + 8);
+        x.fillStyle = C.fg; fit(x, nm(ONE), 188, 22, 16, 600); x.fillText(clip(x, nm(ONE), 188), P, cy + 8);
         x.fillStyle = C.line; x.fillRect(l0, cy - 2, l1 - l0, 4);
         for (const v of ok) { x.beginPath(); x.arc(l0 + (l1 - l0) * pos(v), cy, 7, 0, Math.PI * 2); x.fillStyle = C[tierOf(v)[1]] + "88"; x.fill(); }
         if (md != null) { x.beginPath(); x.arc(l0 + (l1 - l0) * pos(md), cy, 12, 0, Math.PI * 2); x.fillStyle = C[k]; x.fill(); }
@@ -1020,7 +1021,7 @@
           x.fillStyle = C.muted; x.font = `600 15px ${F}`; x.fillText(g.name.toUpperCase(), x0, yy + 22); yy += GH;   // the title sits clear of the row above
           for (const sv of g.items) {
             const md = median(R.get(sv.id).s), [, k] = tierOf(md), l0 = x0 + laneX, l1 = x0 + cw - msW - 10, cy = yy + 6;
-            x.fillStyle = C.fg; x.font = `400 18px ${F}`; x.fillText(clip(x, sv.short || sv.name, laneX - 12), x0, yy + 12);
+            x.fillStyle = C.fg; x.font = `400 18px ${F}`; x.fillText(clip(x, sv.short || nm(sv), laneX - 12), x0, yy + 12);
             x.fillStyle = C.line; x.fillRect(l0, cy - 1.5, l1 - l0, 3);
             const px = md == null ? l1 : l0 + (l1 - l0) * pos(md);
             if (md != null) { x.fillStyle = C[k] + "99"; x.fillRect(l0, cy - 1.5, px - l0, 3); }
@@ -1097,7 +1098,7 @@
 
   const CMPS = CLINK && !CHECK && $("#cmpBox") ? [parseShare(CLINK[1], PACKS), parseShare(CLINK[2], PACKS)] : null;
   let cmpOn = false, CV = null, CS = null;
-  const names = Object.fromEntries([...SVC.list, ...Object.values(PACKS).flat()].map(s => [s.id, s.name]));
+  const names = Object.fromEntries([...SVC.list, ...Object.values(PACKS).flat()].map(s => [s.id, nm(s)]));
   // the same input the Worker gives it (src/worker.js compareView)
   const cmpView = compare => {
     const side = S => ({ ts: S.ts, sub: show => exitsText(show ? S.groups : bare(S).groups, country, t) });
@@ -1143,7 +1144,7 @@
   // with the switch off, the exit check still runs (a few small requests); the 40-service test waits for "Start"
   function waitForClick() {
     if (RUN || lastSum) return;
-    $("#vHead").textContent = t("vh_manual"); $("#vText").textContent = ONE ? t("v_one_wait", { s: ONE.name }) : GRP ? t("v_grp_wait", { g: GRP.name }) : t("v_manual");
+    $("#vHead").textContent = t("vh_manual"); $("#vText").textContent = ONE ? t("v_one_wait", { s: nm(ONE) }) : GRP ? t("v_grp_wait", { g: GRP.name }) : t("v_manual");
     setMood("idle");
     if (late()) { say("mood_late"); act("yawn", 1800); } else say("mood_idle");
   }

@@ -7,7 +7,9 @@
 // `npm run verify` checks all of this.
 //
 // id     stable key (results, landing pages /<id>/)
-// name   brand name as the brand writes it
+// name   brand name as the brand writes it, and the fallback when `names` has no entry for a language
+// names  the name in each of the 10 languages, for a brand whose own script is not the page's (百度 is Baidu on the
+//        English page, ビリビリ on the Japanese one); every non-Latin `name` must have all 10 (npm test checks)
 // cat    group key, see CATS
 // url    what the browser requests (a random query string is added to skip caches)
 // raw    true: request the URL as it is, with no cache-busting query, for a host that caches by URL (the random
@@ -93,13 +95,13 @@ export const SERVICES = [
 const LINE = { id: "line", name: "LINE", cat: "local", url: "https://line.me/favicon.ico", c: "#06c755" };
 export const PACKS = {
   cn: [
-    { id: "baidu", name: "百度", cat: "local", url: "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png", c: "#2932e1" },
-    { id: "bilibili", name: "哔哩哔哩", cat: "local", url: "https://www.bilibili.com/favicon.ico", c: "#fb7299" },
-    { id: "wechat", name: "微信", cat: "local", url: "https://weixin.qq.com/favicon.ico", c: "#07c160" },
-    { id: "douyin", name: "抖音", cat: "local", url: "https://lf1-cdn-tos.bytegoofy.com/goofy/ies/douyin_web/public/favicon.ico", c: "#fe2c55" },
+    { id: "baidu", name: "百度", names: { en: "Baidu", "zh-CN": "百度", "zh-TW": "百度", ja: "Baidu", ko: "바이두", es: "Baidu", fr: "Baidu", de: "Baidu", pt: "Baidu", ru: "Baidu" }, cat: "local", url: "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png", c: "#2932e1" },
+    { id: "bilibili", name: "哔哩哔哩", names: { en: "Bilibili", "zh-CN": "哔哩哔哩", "zh-TW": "嗶哩嗶哩", ja: "ビリビリ", ko: "빌리빌리", es: "Bilibili", fr: "Bilibili", de: "Bilibili", pt: "Bilibili", ru: "Bilibili" }, cat: "local", url: "https://www.bilibili.com/favicon.ico", c: "#fb7299" },
+    { id: "wechat", name: "微信", names: { en: "WeChat", "zh-CN": "微信", "zh-TW": "微信", ja: "WeChat", ko: "위챗", es: "WeChat", fr: "WeChat", de: "WeChat", pt: "WeChat", ru: "WeChat" }, cat: "local", url: "https://weixin.qq.com/favicon.ico", c: "#07c160" },
+    { id: "douyin", name: "抖音", names: { en: "Douyin", "zh-CN": "抖音", "zh-TW": "抖音", ja: "Douyin", ko: "더우인", es: "Douyin", fr: "Douyin", de: "Douyin", pt: "Douyin", ru: "Douyin" }, cat: "local", url: "https://lf1-cdn-tos.bytegoofy.com/goofy/ies/douyin_web/public/favicon.ico", c: "#fe2c55" },
   ],
   tw: [
-    { id: "yahoo-tw", name: "Yahoo奇摩", cat: "local", url: "https://tw.yahoo.com/favicon.ico", c: "#6001d2" },
+    { id: "yahoo-tw", name: "Yahoo奇摩", names: { en: "Yahoo Kimo", "zh-CN": "Yahoo奇摩", "zh-TW": "Yahoo奇摩", ja: "Yahoo Kimo", ko: "Yahoo Kimo", es: "Yahoo Kimo", fr: "Yahoo Kimo", de: "Yahoo Kimo", pt: "Yahoo Kimo", ru: "Yahoo Kimo" }, cat: "local", url: "https://tw.yahoo.com/favicon.ico", c: "#6001d2" },
     LINE,
     { id: "ettoday", name: "ETtoday", cat: "local", url: "https://www.ettoday.net/favicon.ico", c: "#e60012" },
     { id: "ptt", name: "PTT", cat: "local", url: "https://www.ptt.cc/cdn-cgi/trace", c: "#8b8b8b" },
@@ -107,9 +109,9 @@ export const PACKS = {
   jp: [
     { id: "yahoo-jp", name: "Yahoo! JAPAN", cat: "local", url: "https://www.yahoo.co.jp/favicon.ico", c: "#ff0033" },
     LINE,
-    { id: "rakuten", name: "楽天", cat: "local", url: "https://www.rakuten.co.jp/favicon.ico", c: "#bf0000" },
+    { id: "rakuten", name: "楽天", names: { en: "Rakuten", "zh-CN": "Rakuten", "zh-TW": "Rakuten", ja: "楽天", ko: "라쿠텐", es: "Rakuten", fr: "Rakuten", de: "Rakuten", pt: "Rakuten", ru: "Rakuten" }, cat: "local", url: "https://www.rakuten.co.jp/favicon.ico", c: "#bf0000" },
     // raw: the file host caches by URL; a random query goes back to S3 (srv≈270 ms), while the cached URL is an edge answer
-    { id: "niconico", name: "ニコニコ", cat: "local", url: "https://resource.video.nimg.jp/web/images/favicon_uni/favicon.ico", raw: true, c: "#8b8b8b" },
+    { id: "niconico", name: "ニコニコ", names: { en: "Niconico", "zh-CN": "Niconico", "zh-TW": "Niconico", ja: "ニコニコ", ko: "니코니코", es: "Niconico", fr: "Niconico", de: "Niconico", pt: "Niconico", ru: "Niconico" }, cat: "local", url: "https://resource.video.nimg.jp/web/images/favicon_uni/favicon.ico", raw: true, c: "#8b8b8b" },
   ],
   kr: [
     // raw: the CDN caches by URL; a random query misses the US edge and re-fetches from Korea (srv≈181 ms)
@@ -119,7 +121,7 @@ export const PACKS = {
     { id: "daum", name: "Daum", cat: "local", url: "https://www.daum.net/favicon.ico", c: "#4a7cf6" },
   ],
   ru: [
-    { id: "yandex", name: "Яндекс", cat: "local", url: "https://yandex.ru/favicon.ico", c: "#fc3f1d" },
+    { id: "yandex", name: "Яндекс", names: { en: "Yandex", "zh-CN": "Yandex", "zh-TW": "Yandex", ja: "Yandex", ko: "Yandex", es: "Yandex", fr: "Yandex", de: "Yandex", pt: "Yandex", ru: "Яндекс" }, cat: "local", url: "https://yandex.ru/favicon.ico", c: "#fc3f1d" },
     { id: "vk", name: "VK", cat: "local", url: "https://vk.com/favicon.ico", c: "#0077ff" },
     { id: "wildberries", name: "Wildberries", cat: "local", url: "https://www.wildberries.ru/favicon.ico", c: "#cb11ab" },
     { id: "mailru", name: "Mail.ru", cat: "local", url: "https://mail.ru/favicon.ico", c: "#005ff9" },

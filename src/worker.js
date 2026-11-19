@@ -22,7 +22,7 @@
 // The installer and the tool try these before GitHub, which is often slow or blocked in mainland China. A result or
 // compare link whose code can't be read (mangled, cut off, an unknown version), and anything else: the plain 404 (the
 // shell shows its 404 page).
-import { parseShare, median, tierOf, fmt, fillIn, diffShares, exitsText, regionName, pluralKey } from "./lib.mjs";
+import { parseShare, median, tierOf, fmt, fillIn, diffShares, exitsText, regionName, pluralKey, serviceName } from "./lib.mjs";
 import { compare } from "../public/assets/share/compare.js";
 import { SERVICES, PACKS, CATS, USES } from "./services.mjs";
 import en from "./i18n/en.mjs";
@@ -38,7 +38,9 @@ import ru from "./i18n/ru.mjs";
 
 const I = { en, "zh-CN": zhCN, "zh-TW": zhTW, ja, ko, es, fr, de, pt, ru };
 const DIR = Object.fromEntries(Object.keys(I).filter(l => l !== "en").map(l => [l.toLowerCase(), l]));   // folder → language
-const ONE = Object.fromEntries([...SERVICES, ...Object.values(PACKS).flat()].map(s => [s.id, s.name]));
+const ALL_SERVICES = [...SERVICES, ...Object.values(PACKS).flat()];
+// service id → its name in the page's language (src/lib.mjs: brands in another script carry all 10)
+const oneNames = lang => Object.fromEntries(ALL_SERVICES.map(s => [s.id, serviceName(s, lang)]));
 
 // What the preview says about a result link, or null when the path isn't one:
 // { page: the page it shows the result on, title, desc }, or { bad: true } when the code can't be read
@@ -52,7 +54,7 @@ export function resultMeta(path) {
   const page = "/" + (lang === "en" ? "" : lang.toLowerCase() + "/") + (parts[0] ? parts[0] + "/" : "");
   const S = parseShare(code, PACKS);
   if (!S) return { bad: true };
-  const L = I[lang], t = (k, v) => fillIn(L[k] ?? en[k], v, L.josa_fin), tn = (k, n, v) => t(pluralKey(L, k, n, lang), v);
+  const L = I[lang], t = (k, v) => fillIn(L[k] ?? en[k], v, L.josa_fin), tn = (k, n, v) => t(pluralKey(L, k, n, lang), v), ONE = oneNames(lang);
   const vals = Object.values(S.res), ok = vals.filter(v => v != null), spot = parts[0] && ONE[parts[0]] && parts[0] in S.res ? parts[0] : null;
   const md = spot ? S.res[spot] : median(ok), tier = t("tier_" + tierOf(md)[0]), ms = md != null ? fmt(md) : "–";
   let where = "";
@@ -73,7 +75,7 @@ export function resultMeta(path) {
 export function compareView(A, B, lang) {
   const L = I[lang], label = k => L[k] ?? en[k];
   const country = cc => { try { return regionName(cc, lang); } catch (e) { return cc; } };
-  const d = diffShares(A, B, { names: ONE, services: SERVICES, packs: PACKS, cats: CATS, uses: USES, label });
+  const d = diffShares(A, B, { names: oneNames(lang), services: SERVICES, packs: PACKS, cats: CATS, uses: USES, label });
   return compare({ lang, a: { ts: A.ts, sub: exitsText(A.groups, country, label) }, b: { ts: B.ts, sub: exitsText(B.groups, country, label) }, ...d });
 }
 function compareMeta(parts) {

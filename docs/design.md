@@ -116,5 +116,11 @@ GitHub did:
 
 ## Words
 
+- A local brand whose name is written in another script carries `names` in `src/services.mjs` for all 10 languages
+  (百度 / Baidu / ビリビリ), and every place that prints a service's name reads it through `serviceName`
+  (`src/lib.mjs`): pages and titles, the status page, share previews, the share card and the compare view. `npm test`
+  fails if a non-Latin name has no `names`, or if any language is missing. The Chinese and Japanese pages keep the
+  brands' own writing.
+
 - Counted lines use the language's plural forms (`key_one`, `key_few`, `key_many`, `key_other`, picked with
   `Intl.PluralRules`); the build ships a form only to the languages that have it.

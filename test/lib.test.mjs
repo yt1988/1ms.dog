@@ -1,8 +1,8 @@
 // The page's pure logic: speed levels, the diagnosis, exit grouping and share links.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { median, fmt, tierOf, posOf, netOf, sameNet, groupExits, segmentOf, grade, diagnose, useStatus, encodeShare, parseShare, regionName, flagCode } from "../src/lib.mjs";
-import { PACKS, SCALE } from "../src/services.mjs";
+import { median, fmt, tierOf, posOf, netOf, sameNet, groupExits, segmentOf, grade, diagnose, useStatus, encodeShare, parseShare, regionName, flagCode, serviceName } from "../src/lib.mjs";
+import { PACKS, SERVICES, SCALE } from "../src/services.mjs";
 
 test("median and number format", () => {
   assert.equal(median([3, 1, 2]), 2);
@@ -62,6 +62,18 @@ test("an exit on a hosting provider's network is a proxy, not a direct line", ()
   const g = groupExits([{ ip: "45.130.1.1", by: "ip.sb" }, { ip: "115.192.1.1", by: "ipip.net" }], geo, "off");
   assert.equal(g[0].cc, "CN"); assert.equal(g[0].proxy, false);
   assert.equal(g[1].org, "Fastnet Data"); assert.equal(g[1].proxy, true);
+});
+
+test("a brand written in another script has its name in all 10 languages", () => {
+  const langs = ["en", "zh-CN", "zh-TW", "ja", "ko", "es", "fr", "de", "pt", "ru"];
+  for (const s of [...SERVICES, ...Object.values(PACKS).flat()]) {
+    if (/[^\x00-\x7F]/.test(s.name)) assert.ok(s.names, s.id + ": a non-Latin name needs `names`");
+    if (!s.names) continue;
+    for (const l of langs) assert.ok(s.names[l] && s.names[l].trim(), s.id + ": no name for " + l);
+  }
+  const baidu = Object.values(PACKS).flat().find(s => s.id === "baidu");
+  assert.equal(serviceName(baidu, "zh-CN"), "百度");
+  assert.equal(serviceName(baidu, "en"), "Baidu");
 });
 
 test("the diagnosis says which side is slow", () => {

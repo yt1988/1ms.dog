@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
 import { LANGS } from "../scripts/build.mjs";
 import { CATS, SERVICES, PACKS, PACK_OF } from "../src/services.mjs";
-import { fillIn, isPlural } from "../src/lib.mjs";
+import { fillIn, isPlural, serviceName } from "../src/lib.mjs";
 
 const pub = new URL("../public/", import.meta.url);
 const page = p => readFile(new URL(p + "index.html", pub), "utf8");
@@ -80,16 +80,17 @@ test("home, service and group pages each get their own layout; every footer link
 });
 
 test("every service has its own indexed page in every language, with its own title and h1, in the sitemap and llms.txt", async () => {
-  const all = [...SERVICES, ...Object.values(PACKS).flat()].map(s => s.id).filter((x, i, a) => a.indexOf(x) === i);
-  const nameOf = Object.fromEntries([...SERVICES, ...Object.values(PACKS).flat()].map(s => [s.id, s.name]));
+  const byId = Object.fromEntries([...SERVICES, ...Object.values(PACKS).flat()].map(s => [s.id, s]));
+  const all = Object.keys(byId);
   const en = (await import("../src/i18n/en.mjs")).default, ko = (await import("../src/i18n/ko.mjs")).default;
   const fill = (s, v) => fillIn(s, v, ko.josa_fin);                       // the same fill the build uses
   const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-  const distinct = new Set(Object.values(nameOf));
   const llms = await readFile(new URL("llms.txt", pub), "utf8");
   for (const id of all) assert.ok(llms.includes(`https://1ms.dog/${id}/`), "llms.txt misses " + id);
   for (const [lang, slug] of LANGS) {
     const d = (await import(`../src/i18n/${lang}.mjs`)).default, T = k => d[k] ?? en[k];
+    const nameOf = Object.fromEntries(all.map(id => [id, serviceName(byId[id], lang)]));
+    const distinct = new Set(Object.values(nameOf));
     const titles = new Map(), h1s = new Map();
     for (const id of all) {
       const p = (slug ? slug + "/" : "") + id + "/", h = await page(p);

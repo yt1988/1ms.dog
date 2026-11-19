@@ -12,7 +12,7 @@ import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { transform } from "esbuild";
-import { fillIn, isPlural } from "../src/lib.mjs";
+import { fillIn, isPlural, serviceName } from "../src/lib.mjs";
 import KO from "../src/i18n/ko.mjs";
 import { CATS, SERVICES, PACKS, PACK_OF, SCALE, ZONES, USES, SUBS, TG_DC_OF, UNLOCK, pos } from "../src/services.mjs";
 
@@ -111,6 +111,7 @@ export async function build({ check = false } = {}) {
   const pages = [], stringFiles = {};
   for (const [lang, slug, locale, defPack] of langs) {
     const d = I[lang], T = k => d[k] ?? en[k] ?? k;
+    const sn = x => serviceName(x, lang);
     // The strings the browser code needs live in a small per-language script under /assets/ (cached for a year,
     // served without passing through the site's HTML rewriting), not inline in every page.
     // a plural form only where the language has it (otherwise the page falls back to key_other, not to English)
@@ -123,11 +124,11 @@ export async function build({ check = false } = {}) {
     const gName = g => g.kind === "cat" ? T("cat_" + g.id) : fill(T("lg_region"), { r: T("pk_" + g.id) });
     for (const sub of ["", ...ALL.map(x => x.id), ...GROUP_SUBS]) {
       const s = sub ? ALL.find(x => x.id === sub) || null : null, g = s ? null : groupOf(sub), idx = indexed(lang, sub);
-      const gn = g ? gName(g) : "", gList = g ? g.members.map(x => x.name) : [];
+      const gn = g ? gName(g) : "", gList = g ? g.members.map(sn) : [];
       const url = SITE + path(slug, sub);
-      const title = s ? fill(T("lp_title"), { s: s.name }) : g ? spaced(fill(T("lg_title"), { g: gn, list: gList.slice(0, 4).join(T("v_join")) })) : T("seo_title");
-      const desc = s ? fill(T("lp_desc"), { s: s.name }) : g ? spaced(fill(T("lg_desc"), { g: gn, list: gList.join(T("v_join")) })) : T("seo_desc");
-      const h1 = s ? fill(T("lp_h1"), { s: s.name }) : g ? spaced(fill(T("lg_h1"), { g: gn })) : T("h1");
+      const title = s ? fill(T("lp_title"), { s: sn(s) }) : g ? spaced(fill(T("lg_title"), { g: gn, list: gList.slice(0, 4).join(T("v_join")) })) : T("seo_title");
+      const desc = s ? fill(T("lp_desc"), { s: sn(s) }) : g ? spaced(fill(T("lg_desc"), { g: gn, list: gList.join(T("v_join")) })) : T("seo_desc");
+      const h1 = s ? fill(T("lp_h1"), { s: sn(s) }) : g ? spaced(fill(T("lg_h1"), { g: gn })) : T("h1");
       // hreflang lists the languages where this page is indexed; x-default is the English one when it is
       const alts = altsOf(sub).map(([l, sl]) => `<link rel="alternate" hreflang="${l}" href="${SITE + path(sl, sub)}">`).join("\n") +
         (indexed("en", sub) ?`\n<link rel="alternate" hreflang="x-default" href="${SITE + path("", sub)}">` : "");
@@ -143,11 +144,11 @@ export async function build({ check = false } = {}) {
       // answers are already in the page (help dialog); a second copy would only make every page bigger.
       if (s || g) graph.push({ "@type": "BreadcrumbList", itemListElement: [
         { "@type": "ListItem", position: 1, name: "1ms.dog", item: SITE + path(slug, "") },
-        { "@type": "ListItem", position: 2, name: s ? s.name : gn, item: url }] });
+        { "@type": "ListItem", position: 2, name: s ? sn(s) : gn, item: url }] });
       const head = [
         `<title>${esc(title)}</title>`,
         `<meta name="description" content="${esc(desc)}">`,
-        `<meta name="keywords" content="${esc(s ? fill(T("lp_kw"), { s: s.name }) : g ? fill(T("lg_kw"), { g: gn, list: gList.join(", ") }) : T("seo_kw"))}">`,
+        `<meta name="keywords" content="${esc(s ? fill(T("lp_kw"), { s: sn(s) }) : g ? fill(T("lg_kw"), { g: gn, list: gList.join(", ") }) : T("seo_kw"))}">`,
         // Baidu: don't transcode the page for mobile; it serves phones and desktops alike
         ...(lang === "zh-CN" ? [`<meta http-equiv="Cache-Control" content="no-transform">`, `<meta http-equiv="Cache-Control" content="no-siteapp">`, `<meta name="applicable-device" content="pc,mobile">`] : []),
         `<meta name="robots" content="${idx ? "index" : "noindex"}, follow, max-image-preview:large">`,
@@ -166,7 +167,7 @@ export async function build({ check = false } = {}) {
       ].join("\n");
 
       // every service is in the HTML, so crawlers and no-JS readers see what is tested. Local favorites come first.
-      const row = x => `<li class="row${s && x.id === s.id ? " hot" : ""}" id="t-${x.id}">${x.dc ? `<span class="nm">${esc(x.name)}</span>` : `<a class="nm" href="${path(slug, x.id)}"${x.short ? ` title="${esc(x.name)}"` : ""}>${esc(x.short || x.name)}</a>`}<span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li>`;
+      const row = x => `<li class="row${s && x.id === s.id ? " hot" : ""}" id="t-${x.id}">${x.dc ? `<span class="nm">${esc(sn(x))}</span>` : `<a class="nm" href="${path(slug, x.id)}"${x.short ? ` title="${esc(sn(x))}"` : ""}>${esc(x.short || sn(x))}</a>`}<span class="trk"><i class="tail"></i><i class="b"></i></span><b class="ms">–</b></li>`;
       const order = s ? [s.cat, ...CATS.filter(c => c !== s.cat)] : CATS;
       const packOpts = Object.keys(PACKS).map(p => `<option value="${p}"${p === defPack ? " selected" : ""}>${esc(T("pk_" + p))}</option>`).join("");
       const local = `<div class="grp"><h2>${esc(T("cat_local"))}<label class="sel"><span class="sr">${esc(T("pack"))}</span><select id="pack">${packOpts}</select></label></h2><ul id="localRows">${PACKS[defPack].map(row).join("")}</ul></div>`;
@@ -192,18 +193,18 @@ export async function build({ check = false } = {}) {
       if (s) {
         const join = list => list.join(T("v_join"));
         // compared with the same category, or for a local favorite, the rest of its region's pack
-        const peers = (s.cat === "local" ? PACKS[packOfService(s.id)] : SERVICES.filter(x => x.cat === s.cat)).filter(x => x.id !== s.id).map(x => x.name);
-        const same = s.via ? SERVICES.filter(x => x.via === s.via && x.id !== s.id).map(x => x.name) : [];
-        const facts = [fill(T("lp_peers"), { s: s.name, cat: T("cat_" + s.cat), list: join(peers) })];
-        if (s.via) facts.push(fill(T(same.length ? "lp_via_same" : "lp_via"), { s: s.name, via: s.via, list: join(same) }));
-        intro = `<p class="intro">${esc(fill(T("lp_intro"), { s: s.name }))}</p>`;
-        about = [fill(T("lp_h1"), { s: s.name }), facts.map(esc).join(" ")];
+        const peers = (s.cat === "local" ? PACKS[packOfService(s.id)] : SERVICES.filter(x => x.cat === s.cat)).filter(x => x.id !== s.id).map(sn);
+        const same = s.via ? SERVICES.filter(x => x.via === s.via && x.id !== s.id).map(sn) : [];
+        const facts = [fill(T("lp_peers"), { s: sn(s), cat: T("cat_" + s.cat), list: join(peers) })];
+        if (s.via) facts.push(fill(T(same.length ? "lp_via_same" : "lp_via"), { s: sn(s), via: s.via, list: join(same) }));
+        intro = `<p class="intro">${esc(fill(T("lp_intro"), { s: sn(s) }))}</p>`;
+        about = [fill(T("lp_h1"), { s: sn(s) }), facts.map(esc).join(" ")];
       }
       if (g) {
         intro = `<p class="intro">${esc(fill(T("lg_intro"), { n: g.members.length, g: gn, list: gList.join(T("v_join")) }))}</p>`;
         // links to the members' own pages, where this language has one
         const own = g.members.filter(x => landOf(lang).includes(x.id));
-        if (own.length) about = [h1, `${esc(T("lg_about"))} ${own.map(x => `<a href="${path(slug, x.id)}">${esc(fill(T("sm_item"), { s: x.name }))}</a>`).join(T("v_join"))}`];
+        if (own.length) about = [h1, `${esc(T("lg_about"))} ${own.map(x => `<a href="${path(slug, x.id)}">${esc(fill(T("sm_item"), { s: sn(x) }))}</a>`).join(T("v_join"))}`];
       }
       // help dialog: in the HTML (crawlers read it), one answer shown at a time; a landing page's facts come first
       const qa = [...(about ? [about] : []), ...docs.map(([q, a]) => [q, esc(a)])];
@@ -216,7 +217,7 @@ export async function build({ check = false } = {}) {
       const sitemapNav = `<b>${esc(T("sitemap_h"))}</b><a href="${path(slug, "")}"${sub ? "" : ' aria-current="page"'}>${esc(T("cta_btn"))}</a>` +
         `<a href="${path(slug, "status")}">${esc(T("ss_link"))}</a>` +
         landOf(lang).map(id => { const x = SERVICES.find(v => v.id === id);
-          return `<a href="${path(slug, id)}"${id === sub ? ' aria-current="page"' : ""}>${esc(fill(T("sm_item"), { s: x.name }))}</a>`; }).join("") +
+          return `<a href="${path(slug, id)}"${id === sub ? ' aria-current="page"' : ""}>${esc(fill(T("sm_item"), { s: sn(x) }))}</a>`; }).join("") +
         `<i class="br"></i><b>${esc(T("sm_cats"))}</b>` + CATS.map(c => `<a href="${path(slug, c)}"${c === sub ? ' aria-current="page"' : ""}>${esc(T("cat_" + c))}</a>`).join("") +
         `<i class="br"></i><b>${esc(T("sm_regions"))}</b>` + Object.keys(PACKS).map(p => `<a href="${path(slug, "region/" + p)}"${"region/" + p === sub ? ' aria-current="page"' : ""}>${esc(T("pk_" + p))}</a>`).join("");
 
@@ -226,7 +227,7 @@ export async function build({ check = false } = {}) {
       const variant = t0 => t0.replace(/<!--v:([\w,]+)-->\n?([\s\S]*?)<!--\/v-->\n?/g, (m, list, body) => list.split(",").some(v => modes.includes(v)) ? body : "");
       let html = variant(tpl)
         .replace(/(<(\w+)\b[^>]*\sdata-i="(\w+)"[^>]*>)([^<]*)(<\/\2>)/g, (m, open, tag, k, inner, close) => open + esc(T(k)) + close)
-        .replace("{{waitText}}", esc(s ? fill(T("v_one_wait"), { s: s.name }) : g ? fill(T("v_grp_wait"), { g: gn }) : T("v_wait"))).replace("{{sitemap}}", sitemapNav).replace("{{autoOn}}", s || g ? " checked" : "")
+        .replace("{{waitText}}", esc(s ? fill(T("v_one_wait"), { s: sn(s) }) : g ? fill(T("v_grp_wait"), { g: gn }) : T("v_wait"))).replace("{{sitemap}}", sitemapNav).replace("{{autoOn}}", s || g ? " checked" : "")
         .replace("{{lang}}", lang).replace("{{pathsAttr}}", esc(JSON.stringify(paths))).replace("{{rootAttr}}", slug || sub ? "" : " data-root")
         .replace("{{prepaint}}", PREPAINT).replace("{{head}}", head).replace("{{css}}", cssName).replace("{{js}}", jsName).replace("{{strings}}", sName)
         .split("{{homeHref}}").join(path(slug, "")).replace("{{langOpts}}", langOpts)
@@ -254,7 +255,7 @@ export async function build({ check = false } = {}) {
   const stHeader = /<header class="top">[\s\S]*?<\/header>/.exec(tpl)[0], stHelp = /<div class="scrim" id="help" hidden>[\s\S]*?\n<\/div>\n/.exec(tpl)[0];
   const stGroups = [...CATS.map(c => ["cat_" + c, SERVICES.filter(x => x.cat === c)]), ...Object.keys(PACKS).map(p => ["pk_" + p, PACKS[p], p])];
   for (const [lang, slug, locale] of langs) {
-    const d = I[lang], T = k => d[k] ?? en[k] ?? k;
+    const d = I[lang], T = k => d[k] ?? en[k] ?? k, sn = x => serviceName(x, lang);
     const url = SITE + path(slug, "status"), n = ALL.length;
     const title = fill(T("ss_title"), { n }), desc = fill(T("ss_desc"), { n });
     const alts = langs.map(([l, sl]) => `<link rel="alternate" hreflang="${l}" href="${SITE + path(sl, "status")}">`).join("\n") + `\n<link rel="alternate" hreflang="x-default" href="${SITE + path("", "status")}">`;
@@ -270,7 +271,7 @@ export async function build({ check = false } = {}) {
     // share (LINE) is one service and one measurement, so it is listed once: the first region that has it.
     const seenStatus = new Set();
     const rows = stGroups.map(([k, list]) => `<tbody><tr class="gh"><th colspan="5" scope="colgroup">${esc(k.startsWith("pk_") ? fill(T("lg_region"), { r: T(k) }) : T(k))}</th></tr>` +
-      list.filter(x => !seenStatus.has(x.id) && seenStatus.add(x.id)).map(x => `<tr data-id="${x.id}"><th scope="row"><a href="${path(slug, x.id)}">${stIcon(x.id)}${esc(x.name)}</a></th><td class="now cx">–</td><td class="sp"></td><td class="u24 cx">–</td><td class="u7 cx">–</td></tr>`).join("") + "</tbody>").join("\n");
+      list.filter(x => !seenStatus.has(x.id) && seenStatus.add(x.id)).map(x => `<tr data-id="${x.id}"><th scope="row"><a href="${path(slug, x.id)}">${stIcon(x.id)}${esc(sn(x))}</a></th><td class="now cx">–</td><td class="sp"></td><td class="u24 cx">–</td><td class="u7 cx">–</td></tr>`).join("") + "</tbody>").join("\n");
     const st = { lang, scale: SCALE, L: Object.fromEntries(["ss_updated", "ss_stale", "ss_err", "ss_down", "ss_none", "ss_outrow", "josa_fin"].map(k => [k, T(k)])) };
     // help: what this page is first, then the home page's answers
     const qa = [[T("ss_h1"), esc(T("ss_intro"))], ...(d.docs || en.docs).map(([q, a]) => [q, esc(a)])];
@@ -339,7 +340,7 @@ ${common(stHelp)}
 - Service pages: every one of the ${ALL.length} services has its own page in every language: ${ALL.map(x => `${SITE}/${x.id}/`).join(", ")}
 - Group pages: ${GROUP_SUBS.map(g => `${SITE}/${g}/`).join(", ")}
 - Service status from Tokyo (latency and uptime of every service, measured every hour by 1ms.dog's server in Tokyo): ${SITE}/status/ (data: ${SITE}/baseline.json)
-- Services tested: ${SERVICES.map(s => s.name).join(", ")}
+- Services tested: ${SERVICES.map(s => serviceName(s, "en")).join(", ")}
 - Speed grades (median HTTPS round trip): 1ms dog < 2 ms, Zoomies ≤ 30, Sprint ≤ 80, Trot ≤ 150, Stroll ≤ 300, Nap > 300, Not back = no connection in 5 s
 `;
 
