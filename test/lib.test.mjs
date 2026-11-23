@@ -3,7 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { median, fmt, tierOf, posOf, net16, sameNet, exitGroups, segmentOf, grade, diagnose, useStatus, encodeShare, parseShare, regionName, flagCode, serviceName } from "../src/lib.mjs";
 import { PACKS, SERVICES, SCALE } from "../src/services.mjs";
-import { kindOf } from "../src/egress.js";
+import { kindOf, tzCountry } from "../src/egress.js";
 
 test("median and number format", () => {
   assert.equal(median([3, 1, 2]), 2);
@@ -55,6 +55,9 @@ test("exits group by network and put local before proxy", () => {
   assert.equal(exitGroups([{ ip: "104.28.1.1", by: "Cloudflare" }], cf, "on")[0].proxy, true);
   assert.equal(kindOf({ org: "", asn: 13335 }, { warp: "off" }).why, "dc");
   assert.equal(kindOf({ org: "", asn: 13335 }, { warp: "on" }).why, "warp");
+  // the shared VERSION 3 timezone table is the page's, so zones the old local table missed now produce the note
+  assert.equal(tzCountry("America/Phoenix"), "US");
+  assert.equal(tzCountry("Africa/Nairobi"), "KE");
 });
 
 test("the anchors say which path an exit takes; the kind still comes from its own network", () => {

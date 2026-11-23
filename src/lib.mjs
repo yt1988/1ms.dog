@@ -57,7 +57,9 @@ export function exitGroups(seen, geo, warp, anchors = {}) {
   };
   for (const { ip, by } of seen) {
     const g0 = geoOf(geo, ip);
-    answers.push({ id: by, group: groupOf(by), ip, org: g0 && g0.org, asn: g0 && g0.asn, family: fam(ip) });
+    // The IPv4-only and IPv6-only checks are single-stack probes: the core compares each with the reference exit of
+    // its own family, so a dual-stack line is not counted as split just because its two addresses differ.
+    answers.push({ id: by, group: groupOf(by), ip, org: g0 && g0.org, asn: g0 && g0.asn, family: fam(ip), stack: by === "IPv4" || by === "IPv6" });
   }
   const { exits } = classify({ answers, anchors, warp });
   return exits.map(e => {
