@@ -384,7 +384,10 @@ html.embed .field { padding: 10px 14px 4px; }
 #left-eye-ink, #left-eye-highlight, #right-eye-ink, #right-eye-highlight { transform: translate(var(--ex, 0px), var(--ey, 0px)); transition: transform .15s ease-out; }
 
 /* balls coming back to the mouth; the dog snaps each one up */
-.ball { position: absolute; left: 104%; bottom: 0; width: max(6px, 5.5%); aspect-ratio: 1; border-radius: 50%; background: var(--muted); box-shadow: inset -2px -2px 0 rgba(0,0,0,.18);
+/* a circle from width + padding, not aspect-ratio: Safari 27 ignores the ratio on this absolutely positioned
+   element while its left/bottom animate and stretches it to the container's height, so the balls flew over the
+   dog as tall ellipses (2026-11-23). The padding's percentage is the container's width, like the width itself. */
+.ball { position: absolute; left: 104%; bottom: 0; width: max(6px, 5.5%); height: 0; padding-bottom: max(6px, 5.5%); border-radius: 50%; background: var(--muted); box-shadow: inset -2px -2px 0 rgba(0,0,0,.18);
   animation: fetch-ball 1.1s cubic-bezier(.3, .6, .4, 1) forwards; }
 .ball.c0 { background: var(--t0); } .ball.c1 { background: var(--t1); } .ball.c2 { background: var(--t2); }
 .ball.c3 { background: var(--t3); } .ball.c4 { background: var(--t4); } .ball.c5 { background: var(--t5); }

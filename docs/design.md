@@ -113,6 +113,10 @@ GitHub did:
   taps from zooming iOS Safari.
 - The dog's element is looked up once: an ad blocker can take it off the page, and the pointer-following must then do
   nothing instead of throwing.
+- The balls that come back are squares built from `width` + `padding-bottom`, not `aspect-ratio`: in Safari 27 an
+  absolutely positioned element whose `left` and `bottom` animate and whose height is `auto` ignores the ratio and
+  stretches to the container's height, so the balls became tall ellipses flying over the dog (seen on 2026-11-23).
+  The padding percentage resolves against the container's width, so the box stays square in every browser.
 
 ## Words
 
