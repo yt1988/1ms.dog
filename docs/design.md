@@ -103,8 +103,8 @@ GitHub did:
 
 ## Exit checks
 
-- The rules are not this repository's: `src/egress.js` is a verbatim copy of the shell's `src/egress.js` (VERSION 5,
-  commit `4a3258a`), and the shell's `docs/egress-contract.md` is the source. Change the rules there and re-vendor;
+- The rules are not this repository's: `src/egress.js` is a verbatim copy of the shell's `src/egress.js` (VERSION 6,
+  commit `aa4e9f8`), and the shell's `docs/egress-contract.md` is the source. Change the rules there and re-vendor;
   do not edit the tables here.
 - Two anchors — a mainland domain and the Tokyo probe — answer which route an exit takes (`path`: `cn`, `intl`,
   `both`, `other`, `unknown-path`). Whether the exit itself is direct or a proxy (`kind`) comes from its own network
@@ -120,7 +120,7 @@ GitHub did:
   about a second instead of waiting for it.
 - Cloudflare's network is a proxy exit whether WARP is on or off (its ASN 13335 is in the shared table, and an
   organization named Cloudflare matches the list too); WARP only changes the reason, `warp` instead of `dc`.
-- VERSION 5 (`4a3258a`) carries the IANA timezone table (with the aliases whose clock data points across continents corrected by hand) and the rules the page relies on: the IPv4-only and IPv6-only checks are marked
+- VERSION 6 (`aa4e9f8`) carries the IANA timezone table (each zone keeps the country of its place, not of its link target) and the rules the page relies on: the IPv4-only and IPv6-only checks are marked
   `stack: true` so the core compares them with the reference exit of their own family (a dual-stack line is not
   "split" just because its two addresses differ), WebRTC is compared by network rather than by exact address, and
   the page keeps no tables of its own.

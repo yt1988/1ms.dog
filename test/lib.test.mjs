@@ -60,9 +60,11 @@ test("exits group by network and put local before proxy", () => {
   assert.equal(tzCountry("Africa/Nairobi"), "KE");
   assert.equal(tzCountry("Europe/Andorra"), "AD");   // only in the full table
   assert.equal(tzCountry("Pacific/Apia"), "WS");
-  // backward links whose clock data points across continents follow the place, not the link target (VERSION 5)
+  // a zone keeps the country of its place, not of the zone its clock matches (VERSION 6)
   for (const [z, cc] of [["Iceland", "IS"], ["Africa/Timbuktu", "ML"], ["Africa/Asmera", "ER"], ["America/Virgin", "VI"],
-    ["Pacific/Ponape", "FM"], ["Pacific/Truk", "FM"], ["Pacific/Yap", "FM"], ["Antarctica/South_Pole", "AQ"], ["America/Coral_Harbour", "CA"]])
+    ["Pacific/Ponape", "FM"], ["Pacific/Truk", "FM"], ["Pacific/Yap", "FM"], ["Antarctica/South_Pole", "AQ"], ["America/Coral_Harbour", "CA"],
+    ["Europe/Amsterdam", "NL"], ["Africa/Accra", "GH"], ["Europe/Copenhagen", "DK"], ["Pacific/Chuuk", "FM"], ["Pacific/Majuro", "MH"],
+    ["Pacific/Wake", "UM"], ["Pacific/Wallis", "WF"]])
     assert.equal(tzCountry(z), cc, z);
 });
 
