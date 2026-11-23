@@ -265,17 +265,7 @@
   // checks in different places at once (a site in mainland China, Cloudflare, two independent geo services, IPv4-only
   // and IPv6-only hosts, WebRTC over UDP) and group what they see by network: usually one exit, often a local one
   // plus a proxy. Every check answers CORS, so this works from the static page.
-  const TZ_CC = Object.fromEntries(("Asia/Shanghai:CN Asia/Chongqing:CN Asia/Harbin:CN Asia/Urumqi:CN Asia/Hong_Kong:HK Asia/Macau:MO Asia/Taipei:TW Asia/Tokyo:JP " +
-    "Asia/Seoul:KR Asia/Singapore:SG Asia/Kuala_Lumpur:MY Asia/Bangkok:TH Asia/Jakarta:ID Asia/Manila:PH Asia/Ho_Chi_Minh:VN Asia/Saigon:VN " +
-    "Asia/Kolkata:IN Asia/Calcutta:IN Asia/Dubai:AE Asia/Riyadh:SA Asia/Qatar:QA Asia/Jerusalem:IL Asia/Tel_Aviv:IL Asia/Karachi:PK Asia/Tehran:IR " +
-    "Europe/London:GB Europe/Dublin:IE Europe/Paris:FR Europe/Berlin:DE Europe/Amsterdam:NL Europe/Brussels:BE Europe/Zurich:CH Europe/Rome:IT " +
-    "Europe/Madrid:ES Europe/Lisbon:PT Europe/Stockholm:SE Europe/Oslo:NO Europe/Helsinki:FI Europe/Copenhagen:DK Europe/Warsaw:PL Europe/Vienna:AT " +
-    "Europe/Prague:CZ Europe/Moscow:RU Europe/Istanbul:TR Europe/Kiev:UA Europe/Kyiv:UA Europe/Athens:GR Europe/Bucharest:RO Europe/Budapest:HU " +
-    "Australia/Sydney:AU Australia/Melbourne:AU Australia/Brisbane:AU Australia/Perth:AU Australia/Adelaide:AU Pacific/Auckland:NZ " +
-    "America/New_York:US America/Chicago:US America/Denver:US America/Los_Angeles:US America/Phoenix:US America/Anchorage:US Pacific/Honolulu:US " +
-    "America/Toronto:CA America/Vancouver:CA America/Montreal:CA America/Edmonton:CA America/Mexico_City:MX America/Sao_Paulo:BR America/Santiago:CL " +
-    "America/Bogota:CO America/Lima:PE America/Argentina/Buenos_Aires:AR Africa/Johannesburg:ZA Africa/Cairo:EG Africa/Lagos:NG Africa/Nairobi:KE")
-    .split(" ").map(p => p.split(":")));
+
   const getJ = (u, ms = 5000) => fetch(bust(u), { cache: "no-store", credentials: "omit", signal: timeout(ms) }).then(r => r.ok ? r.json() : Promise.reject());
   const firstIp = (list, f) => anyOf(list.map(([u, k]) => getJ(u).then(j => j[k] && fam(j[k]) === f ? { ip: j[k] } : Promise.reject())));
   // each check → { ip, geo? }, geo = { cc, city, asn, org }
@@ -284,6 +274,10 @@
   // copies get a 404 and rely on the others. The others still run: each is another site, and a proxy that routes by
   // site shows up as a different exit there, as does the other address family.
   const CHECKS = [
+    // Our own two anchors (docs/egress-contract.md): a mainland domain no split-tunnel list carries and the Tokyo
+    // probe. They say which path an exit takes; the direct/proxy verdict still comes from the exit's own network.
+    ["probe cn", () => getJ(ANCHORS.cn, 6000).then(j => j.ip ? { ip: j.ip } : Promise.reject())],
+    ["probe intl", () => getJ(ANCHORS.intl, 6000).then(j => j.ip ? { ip: j.ip } : Promise.reject())],
     ["1ms.dog", () => fetch("/_ms/me", { cache: "no-store", signal: timeout(3000) }).then(r => r.ok ? r.json() : Promise.reject())
       .then(j => j.ip ? { ip: j.ip, geo: j.country ? { cc: j.country, city: j.city, asn: j.asn, org: j.org } : null } : Promise.reject())],
     ["ipip.net", () => getJ("https://myip.ipip.net/json").then(j => ({ ip: j.data.ip }))],
@@ -353,7 +347,11 @@
     NET.done = true; group(); renderExits();
     if (NET.groups[0] && NET.groups[0].cc) pickPack(NET.groups[0].cc);
   }
-  const group = () => { NET.groups = groupExits(NET.seen, NET.geo, NET.warp); };
+  const group = () => {
+    const anchors = {};                                       // what the probes saw, when they answered
+    for (const s of NET.seen) { if (s.by === "probe cn") anchors.cn = s.ip; else if (s.by === "probe intl") anchors.intl = s.ip; }
+    NET.groups = exitGroups(NET.seen, NET.geo, NET.warp, anchors);
+  };
   let tipEl;
   function tip(el) {
     const show = () => {
@@ -415,7 +413,9 @@
       const org = g.org ? `<span class="o">${esc(g.org)}</span>` + (g.asn ? "<span>·</span>" + asLink(g.asn) : "") : "";
       // which checks saw this exit: a small "!" after the network, hovering (or focusing) it shows the list
       const by = g.by.length ? `<span class="src" tabindex="0" role="img" aria-label="${esc(t("seen_by", { list: g.by.join(", ") }))}">!</span>` : "";
-      return `<li class="ex"><span class="kind ${g.proxy ? "proxy" : "local"}">${esc(t(g.proxy ? "k_proxy" : "k_local"))}</span>` +
+      const kind = g.kind || (g.proxy ? "proxy" : "direct");
+      const tag = kind === "unknown" ? "" : `<span class="kind ${kind === "proxy" ? "proxy" : "local"}">${esc(t(kind === "proxy" ? "k_proxy" : "k_local"))}</span>`;
+      return `<li class="ex">${tag}` +
         `<span class="where">${flag(g.cc)}<b>${esc(where || "?")}</b>${org ? `<span class="m">${org}</span>` : ""}${by}</span>` +
         `<span class="ips">${ips}</span></li>`;
     }).join("");
@@ -426,7 +426,7 @@
   function renderNote() {
     const G = NET.groups, main = G[0], notes = [];
     if (!NET.done || !main) return;
-    const tz = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) { return ""; } })(), tzc = TZ_CC[tz];
+    const tz = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) { return ""; } })(), tzc = tzCountry(tz);
     if (tzc && main.cc && tzc !== main.cc && !G.some(g => g.cc === tzc) && !(tzc === "CN" && ["HK", "MO"].includes(main.cc))) notes.push(t("r_tz", { a: esc(country(tzc)), b: esc(country(main.cc)) }));
     if (NET.hidden) notes.push(NET.hidden);
     const el = $("#exNote"); el.innerHTML = notes.join("<br>"); el.hidden = !notes.length;

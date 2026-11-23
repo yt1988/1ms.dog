@@ -1,5 +1,6 @@
 // The page's pure logic: no DOM, no network. test/lib.test.mjs imports it as a module; scripts/build.mjs drops the
 // `export` keywords and inlines it into the page bundle at the /* @lib */ marker in src/app.js.
+import { classify } from "./egress.js";
 
 /* ---------- numbers ---------- */
 export const fmt = ms => ms < 10 ? ms.toFixed(1) : String(Math.round(ms));
@@ -20,8 +21,8 @@ const v6g = a => {
   return [...H, ...Array(Math.max(0, 8 - H.length - T.length)).fill("0"), ...T].map(g => g.padStart(4, "0"));
 };
 // CGNAT pools and temporary IPv6 addresses move around inside a /16 or /64: same network
-export const netOf = x => fam(x) === 6 ? v6g(x).slice(0, 4).join(":") : x.split(".").slice(0, 2).join(".");
-export const sameNet = (a, b) => fam(a) === fam(b) && netOf(a) === netOf(b);
+export const net16 = x => fam(x) === 6 ? v6g(x).slice(0, 4).join(":") : x.split(".").slice(0, 2).join(".");
+export const sameNet = (a, b) => fam(a) === fam(b) && net16(a) === net16(b);
 export const asnNum = v => { const m = /(\d+)/.exec(String(v || "")); return m ? +m[1] : null; };
 
 /* ---------- exits ---------- */
@@ -32,28 +33,40 @@ export const flagCode = cc => cc === "TW" ? "cn" : cc.toLowerCase();
 // A service's name in the page's language: most brands write themselves the same way everywhere; the ones in another
 // script carry `names` for all 10 languages (npm test checks every one is there).
 export const serviceName = (s, lang) => (s.names && s.names[lang]) || s.name;
-export const DC_RE = /amazon|google|microsoft|azure|digitalocean|vultr|choopa|constant company|linode|akamai|ovh|hetzner|oracle|alibaba|aliyun|tencent|huawei|m247|datacamp|cloudflare|leaseweb|contabo|hostinger|it7|racknerd|colocrossing|psychz|zenlayer|g-core|gcore|hostwinds|scaleway|ionos|kamatera|upcloud|bandwagon|dmit|cogent|quadranet|servers\.com|packet|equinix|fastly|cdn77|datapacket|tzulo|hostdare|greencloud|nexeon|frantech|buyvm|fastnet data|hosting|vps|data ?cent/i;
 // geo for an address: its own, or that of an address on the same network
 export function geoOf(geo, ip) {
   if (geo[ip]) return geo[ip];
   const y = Object.keys(geo).find(x => sameNet(x, ip));
   return y ? geo[y] : null;
 }
-// seen: [{ ip, by }] from the checks; geo: ip → { cc, city, asn, org }; warp: Cloudflare trace's warp field.
-// One group per network (ASN when known), so an ISP's IPv4 and IPv6 addresses are one exit. Local exits first, then
-// proxies; within each, the network most checks agree on (a fixed order, so rows don't swap as answers arrive).
-export function groupExits(seen, geo, warp) {
-  const G = [];
+// Which route each check asks through, for the shared core's path comparison (docs/egress-contract.md §1–2):
+// ipip.net is a mainland destination, the two probes are our anchors, WebRTC is UDP evidence, the rest are abroad.
+const CHECK_GROUP = { "probe cn": "cn", "probe intl": "intl", "ipip.net": "cn", WebRTC: "udp" };
+const groupOf = name => CHECK_GROUP[name] || "intl";
+// seen: [{ ip, by }] from the checks; geo: ip → { cc, city, asn, org }; warp: Cloudflare trace's warp field;
+// anchors: { cn, intl } the addresses the two probes saw.
+// The grouping and the direct/proxy/unknown verdict come from src/egress.js (vendored core): one group per ASN (or
+// /16, /64), direct before proxy. `path` is kept beside `proxy`: an exit can be direct on its own network and still
+// follow neither anchor, which is why the two are separate.
+export function exitGroups(seen, geo, warp, anchors = {}) {
+  const answers = [], same = (a, b) => {
+    const ga = geoOf(geo, a), gb = geoOf(geo, b);
+    if (ga && gb && ga.asn && gb.asn) return ga.asn === gb.asn;
+    if ((ga && ga.asn) || (gb && gb.asn)) return false;
+    return sameNet(a, b);
+  };
   for (const { ip, by } of seen) {
-    const g0 = geoOf(geo, ip), key = g0 && g0.asn ? "as" + g0.asn : "net" + netOf(ip);
-    let g = G.find(x => x.key === key);
-    if (!g) { g = { key, ips: [], by: [], cc: "", city: "", asn: null, org: "" }; G.push(g); }
-    if (!g.ips.includes(ip)) g.ips.push(ip);
-    if (!g.by.includes(by)) g.by.push(by);
-    if (g0) { g.cc = g.cc || g0.cc || ""; g.city = g.city || g0.city || ""; g.asn = g.asn || g0.asn || null; g.org = g.org || g0.org || ""; }
+    const g0 = geoOf(geo, ip);
+    answers.push({ id: by, group: groupOf(by), ip, org: g0 && g0.org, asn: g0 && g0.asn, family: fam(ip) });
   }
-  for (const g of G) g.proxy = !!(g.org && DC_RE.test(g.org)) || (g.asn === 13335 && !!warp && warp !== "off");
-  return G.sort((a, b) => a.proxy - b.proxy || b.by.length - a.by.length);
+  const { exits } = classify({ answers, anchors, warp });
+  return exits.map(e => {
+    const ips = [e.v4, e.v6].filter(Boolean);
+    for (const { ip } of seen) if (!ips.includes(ip) && ips.some(x => same(x, ip))) ips.push(ip);
+    const g0 = ips.map(ip => geoOf(geo, ip)).find(Boolean) || {};
+    return { key: e.key, ips, by: e.seenBy, cc: g0.cc || "", city: g0.city || "", asn: e.asn, org: e.org,
+      proxy: e.kind === "proxy", kind: e.kind, path: e.path };
+  });
 }
 
 /* ---------- verdict ---------- */

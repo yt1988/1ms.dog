@@ -1,7 +1,7 @@
 // The page's pure logic: speed levels, the diagnosis, exit grouping and share links.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { median, fmt, tierOf, posOf, netOf, sameNet, groupExits, segmentOf, grade, diagnose, useStatus, encodeShare, parseShare, regionName, flagCode, serviceName } from "../src/lib.mjs";
+import { median, fmt, tierOf, posOf, net16, sameNet, exitGroups, segmentOf, grade, diagnose, useStatus, encodeShare, parseShare, regionName, flagCode, serviceName } from "../src/lib.mjs";
 import { PACKS, SERVICES, SCALE } from "../src/services.mjs";
 
 test("median and number format", () => {
@@ -27,7 +27,7 @@ test("dog speeds and field position", () => {
 test("same network: /16 for IPv4, /64 for IPv6, never across families", () => {
   assert.ok(sameNet("114.254.73.157", "114.254.1.2"));
   assert.ok(!sameNet("114.254.73.157", "114.255.1.2"));
-  assert.equal(netOf("2408:8207:265b:52d0:19c6:4c04:6862:f972"), "2408:8207:265b:52d0");
+  assert.equal(net16("2408:8207:265b:52d0:19c6:4c04:6862:f972"), "2408:8207:265b:52d0");
   assert.ok(sameNet("2408:8207:265b:52d0::1", "2408:8207:265b:52d0:aaaa::2"));
   assert.ok(!sameNet("2408::1", "10.0.0.1"));
 });
@@ -42,16 +42,31 @@ test("exits group by network and put local before proxy", () => {
     "114.254.73.157": { cc: "CN", city: "Beijing", asn: 4808, org: "China Unicom Beijing" },
     "2408:8207:265b:52d0::9": { cc: "CN", city: "Beijing", asn: 4808, org: "China Unicom" },
   };
-  const g = groupExits(seen, geo, "off");
+  const g = exitGroups(seen, geo, "off");
   assert.equal(g.length, 2);
   assert.equal(g[0].asn, 4808); assert.equal(g[0].proxy, false);
   assert.deepEqual(g[0].ips, ["114.254.73.157", "2408:8207:265b:52d0::9"]);
   assert.deepEqual(g[0].by, ["ipip.net", "Cloudflare", "IPv6"]);
   assert.equal(g[1].asn, 16509); assert.equal(g[1].proxy, true);
-  // Cloudflare's network is a proxy only when WARP is on
+  // Cloudflare's own network is in the shared core's data-centre ASN list, so it reads as a proxy either way
   const cf = { "104.28.1.1": { cc: "US", city: "", asn: 13335, org: "" } };
-  assert.equal(groupExits([{ ip: "104.28.1.1", by: "Cloudflare" }], cf, "off")[0].proxy, false);
-  assert.equal(groupExits([{ ip: "104.28.1.1", by: "Cloudflare" }], cf, "on")[0].proxy, true);
+  assert.equal(exitGroups([{ ip: "104.28.1.1", by: "Cloudflare" }], cf, "off")[0].proxy, true);
+  assert.equal(exitGroups([{ ip: "104.28.1.1", by: "Cloudflare" }], cf, "on")[0].proxy, true);
+});
+
+test("the anchors say which path an exit takes; the kind still comes from its own network", () => {
+  const geo = {
+    "114.254.1.1": { cc: "CN", city: "Beijing", asn: 4808, org: "China Unicom" },
+    "3.115.1.1": { cc: "JP", city: "Tokyo", asn: 16509, org: "Amazon.com" },
+  };
+  const both = exitGroups([{ ip: "114.254.1.1", by: "probe cn" }, { ip: "3.115.1.1", by: "probe intl" }], geo, "off", { cn: "114.254.1.1", intl: "3.115.1.1" });
+  assert.equal(both[0].kind, "direct"); assert.equal(both[0].path, "cn");
+  assert.equal(both[1].kind, "proxy"); assert.equal(both[1].path, "intl");
+  // an anchor matching does not make a hosting network direct, and an unknown network is not direct either
+  const one = exitGroups([{ ip: "3.115.1.1", by: "probe intl" }], geo, "off", { intl: "3.115.1.1" });
+  assert.equal(one[0].proxy, true); assert.equal(one[0].path, "intl");
+  const none = exitGroups([{ ip: "198.51.100.7", by: "ip.sb" }], {}, "off", { intl: "3.115.1.1" });
+  assert.equal(none[0].kind, "unknown"); assert.equal(none[0].proxy, false); assert.equal(none[0].path, "other");
 });
 
 test("an exit on a hosting provider's network is a proxy, not a direct line", () => {
@@ -59,7 +74,7 @@ test("an exit on a hosting provider's network is a proxy, not a direct line", ()
     "45.130.1.1": { cc: "US", city: "Los Angeles", asn: 0, org: "Fastnet Data" },
     "115.192.1.1": { cc: "CN", city: "Hangzhou", asn: 4134, org: "China Telecom" },
   };
-  const g = groupExits([{ ip: "45.130.1.1", by: "ip.sb" }, { ip: "115.192.1.1", by: "ipip.net" }], geo, "off");
+  const g = exitGroups([{ ip: "45.130.1.1", by: "ip.sb" }, { ip: "115.192.1.1", by: "ipip.net" }], geo, "off");
   assert.equal(g[0].cc, "CN"); assert.equal(g[0].proxy, false);
   assert.equal(g[1].org, "Fastnet Data"); assert.equal(g[1].proxy, true);
 });

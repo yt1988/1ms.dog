@@ -64,11 +64,13 @@ export async function build({ check = false } = {}) {
   const tpl = await readFile(new URL("page.html", src), "utf8");
 
   const svc = { list: SERVICES.map(({ via, origin, ...s }) => s), packs: PACKS, packOf: PACK_OF, scale: SCALE, cats: CATS, uses: USES, subs: SUBS, tgDcOf: TG_DC_OF, unlock: UNLOCK };
-  // src/lib.mjs (the pure logic the tests import) goes inside the app's scope, at its /* @lib */ marker
-  const lib = (await readFile(new URL("lib.mjs", src), "utf8")).replace(/^export /gm, "");
+  // src/lib.mjs (the pure logic the tests import) and the vendored egress core go inside the app's scope, at its
+  // /* @lib */ marker. The core's `export` keywords and lib's one import line come off for the browser build.
+  const core = (await readFile(new URL("egress.js", src), "utf8")).replace(/^export /gm, "");
+  const lib = (await readFile(new URL("lib.mjs", src), "utf8")).replace(/^export /gm, "").replace(/^import .*;\n/gm, "");
   const appSrc = await readFile(new URL("app.js", src), "utf8");
   if (!appSrc.includes("/* @lib */")) throw new Error("src/app.js has no /* @lib */ marker");
-  const appFull = `const SVC = ${JSON.stringify(svc)};\n` + appSrc.replace("/* @lib */", () => lib);
+  const appFull = `const SVC = ${JSON.stringify(svc)};\n` + appSrc.replace("/* @lib */", () => core + "\n" + lib);
   new Function(appFull);                                                // must parse
   // the lanes are colored by speed zone, at the same log-scale positions the page puts the balls
   const pct = ms => (pos(ms) * 100).toFixed(1) + "%", Z = ZONES.map(pct);

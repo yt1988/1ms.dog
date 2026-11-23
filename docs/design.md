@@ -101,6 +101,22 @@ GitHub did:
   same-origin`, so the browser dropped it and the page showed it as not back; it is timed on its Cloudflare trace
   instead. The daily `verify --far` catches these.
 
+## Exit checks
+
+- The rules are not this repository's: `src/egress.js` is a verbatim copy of the shell's `src/egress.js` (VERSION 1,
+  commit `3b38822`), and the shell's `docs/egress-contract.md` is the source. Change the rules there and re-vendor;
+  do not edit the tables here.
+- Two anchors — a mainland domain and the Tokyo probe — answer which route an exit takes (`path`: `cn`, `intl`,
+  `both`, `other`, `unknown-path`). Whether the exit itself is direct or a proxy (`kind`) comes from its own network
+  (organization, ASN, VPN name, WARP). The two are kept apart on purpose: a direct exit can still follow neither
+  anchor, and an anchor matching does not make a proxy direct. The page shows only `kind` (直连 / 代理); `path` stays
+  on the group as evidence. An exit with no organization or ASN is `unknown` and gets no label, never 直连.
+- The third-party checks (`ip.sb`, `ipinfo.io`, `ipip.net`, Cloudflare, the IPv4-only and IPv6-only hosts, WebRTC)
+  still run and feed the same grouping, so the panel keeps showing every exit it can see.
+- One known difference from the contract: the shared `DC_ASN` table contains Cloudflare's ASN 13335, so a
+  Cloudflare exit reads as a proxy even when WARP is off; the contract's "13335 + WARP" clause is then redundant.
+  Reported to the shell side rather than patched here.
+
 ## The dog
 
 - An inline SVG animated with SMIL; its speed follows the result (`dogSpeed()` changes the animations' durations).
