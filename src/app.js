@@ -273,13 +273,17 @@
   // cached; 1ms-shell docs/tool-contract.md), so the direct exit and its network come from there first. Self-hosted
   // copies get a 404 and rely on the others. The others still run: each is another site, and a proxy that routes by
   // site shows up as a different exit there, as does the other address family.
+  // What the site's own edge says about this connection, asked once: the direct exit's geo and whether the
+  // mainland anchor is worth a request.
+  const own = fetch("/_ms/me", { cache: "no-store", signal: timeout(3000) }).then(r => r.ok ? r.json() : Promise.reject()).catch(() => null);
   const CHECKS = [
     // Our own two anchors (docs/egress-contract.md): a mainland domain no split-tunnel list carries and the Tokyo
     // probe. They say which path an exit takes; the direct/proxy verdict still comes from the exit's own network.
-    ["probe cn", () => getJ(ANCHORS.cn, 6000).then(j => j.ip ? { ip: j.ip } : Promise.reject())],
+    // The mainland one is skipped for visitors outside China (src/lib.mjs cnVisitor): a cross-border request there
+    // only holds the panel for its timeout.
+    ["probe cn", () => own.then(j => cnVisitor(j && j.country, TZ) ? getJ(ANCHORS.cn, 2500).then(k => k.ip ? { ip: k.ip } : Promise.reject()) : Promise.reject())],
     ["probe intl", () => getJ(ANCHORS.intl, 6000).then(j => j.ip ? { ip: j.ip } : Promise.reject())],
-    ["1ms.dog", () => fetch("/_ms/me", { cache: "no-store", signal: timeout(3000) }).then(r => r.ok ? r.json() : Promise.reject())
-      .then(j => j.ip ? { ip: j.ip, geo: j.country ? { cc: j.country, city: j.city, asn: j.asn, org: j.org } : null } : Promise.reject())],
+    ["1ms.dog", () => own.then(j => j && j.ip ? { ip: j.ip, geo: j.country ? { cc: j.country, city: j.city, asn: j.asn, org: j.org } : null } : Promise.reject())],
     ["ipip.net", () => getJ("https://myip.ipip.net/json").then(j => ({ ip: j.data.ip }))],
     ["Cloudflare", () => getJ("https://speed.cloudflare.com/meta", 6000).then(j => ({ ip: j.clientIp, geo: { cc: j.country, city: j.city, asn: j.asn, org: j.asOrganization } }))],
     ["ip.sb", () => getJ("https://api.ip.sb/geoip").then(j => ({ ip: j.ip, geo: { cc: j.country_code, city: j.city, asn: j.asn, org: j.isp || j.asn_organization } }))],
@@ -309,6 +313,7 @@
     } catch (e) { return []; } finally { try { pc && pc.close(); } catch (e) {} }
   }
 
+  const TZ = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) { return ""; } })();
   const NET = { seen: [], geo: {}, warp: "off", done: false, groups: [] };
   const masked = () => store.get(K.mask) === "1";
   const eye = $("#eye");
@@ -426,7 +431,7 @@
   function renderNote() {
     const G = NET.groups, main = G[0], notes = [];
     if (!NET.done || !main) return;
-    const tz = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) { return ""; } })(), tzc = tzCountry(tz);
+    const tzc = tzCountry(TZ);
     if (tzc && main.cc && tzc !== main.cc && !G.some(g => g.cc === tzc) && !(tzc === "CN" && ["HK", "MO"].includes(main.cc))) notes.push(t("r_tz", { a: esc(country(tzc)), b: esc(country(main.cc)) }));
     if (NET.hidden) notes.push(NET.hidden);
     const el = $("#exNote"); el.innerHTML = notes.join("<br>"); el.hidden = !notes.length;

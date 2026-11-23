@@ -113,6 +113,11 @@ GitHub did:
   on the group as evidence. An exit with no organization or ASN is `unknown` and gets no label, never 直连.
 - The third-party checks (`ip.sb`, `ipinfo.io`, `ipip.net`, Cloudflare, the IPv4-only and IPv6-only hosts, WebRTC)
   still run and feed the same grouping, so the panel keeps showing every exit it can see.
+- The mainland anchor is requested only when the visitor is likely in mainland China: the site's edge (`/_ms/me`)
+  says CN, or the device's timezone is CN (a proxy can hide the first but not the clock). For anyone else the
+  request would be a cross-border wait that usually cannot answer, so it is skipped and the panel is not held for
+  its timeout (2.5 s when it is asked). Measured on a simulated US visitor: no request to the probe, panel filled in
+  about a second instead of waiting for it.
 - Cloudflare's network is a proxy exit whether WARP is on or off (its ASN 13335 is in the shared table, and an
   organization named Cloudflare matches the list too); WARP only changes the reason, `warp` instead of `dc`.
 - VERSION 4 (`3d6aad3`) carries the full IANA timezone table (552 entries) and the rules the page relies on: the IPv4-only and IPv6-only checks are marked

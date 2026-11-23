@@ -1,7 +1,7 @@
 // The page's pure logic: speed levels, the diagnosis, exit grouping and share links.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { median, fmt, tierOf, posOf, net16, sameNet, exitGroups, segmentOf, grade, diagnose, useStatus, encodeShare, parseShare, regionName, flagCode, serviceName } from "../src/lib.mjs";
+import { median, fmt, tierOf, posOf, net16, sameNet, exitGroups, cnVisitor, segmentOf, grade, diagnose, useStatus, encodeShare, parseShare, regionName, flagCode, serviceName } from "../src/lib.mjs";
 import { PACKS, SERVICES, SCALE } from "../src/services.mjs";
 import { kindOf, tzCountry } from "../src/egress.js";
 
@@ -60,6 +60,13 @@ test("exits group by network and put local before proxy", () => {
   assert.equal(tzCountry("Africa/Nairobi"), "KE");
   assert.equal(tzCountry("Europe/Andorra"), "AD");   // only in the full table
   assert.equal(tzCountry("Pacific/Apia"), "WS");
+});
+
+test("the mainland anchor is asked for only from China", () => {
+  assert.equal(cnVisitor("CN", "UTC"), true);
+  assert.equal(cnVisitor("US", "Asia/Shanghai"), true);      // a proxy can hide the edge's country, not the clock
+  assert.equal(cnVisitor("US", "America/New_York"), false);
+  assert.equal(cnVisitor(null, "Europe/Berlin"), false);
 });
 
 test("the anchors say which path an exit takes; the kind still comes from its own network", () => {

@@ -1,6 +1,6 @@
 // The page's pure logic: no DOM, no network. test/lib.test.mjs imports it as a module; scripts/build.mjs drops the
 // `export` keywords and inlines it into the page bundle at the /* @lib */ marker in src/app.js.
-import { classify } from "./egress.js";
+import { classify, tzCountry } from "./egress.js";
 
 /* ---------- numbers ---------- */
 export const fmt = ms => ms < 10 ? ms.toFixed(1) : String(Math.round(ms));
@@ -39,6 +39,10 @@ export function geoOf(geo, ip) {
   const y = Object.keys(geo).find(x => sameNet(x, ip));
   return y ? geo[y] : null;
 }
+// The mainland anchor is only worth asking when the visitor is likely in mainland China: the site's edge says so,
+// or the device's timezone is China's (a proxy can hide the first, but not the clock). Elsewhere the request would
+// only be a cross-border wait.
+export const cnVisitor = (country, tz) => country === "CN" || tzCountry(tz) === "CN";
 // Which route each check asks through, for the shared core's path comparison (docs/egress-contract.md §1–2):
 // ipip.net is a mainland destination, the two probes are our anchors, WebRTC is UDP evidence, the rest are abroad.
 const CHECK_GROUP = { "probe cn": "cn", "probe intl": "intl", "ipip.net": "cn", WebRTC: "udp" };
