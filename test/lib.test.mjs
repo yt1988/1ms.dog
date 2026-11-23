@@ -58,6 +58,8 @@ test("exits group by network and put local before proxy", () => {
   // the shared VERSION 3 timezone table is the page's, so zones the old local table missed now produce the note
   assert.equal(tzCountry("America/Phoenix"), "US");
   assert.equal(tzCountry("Africa/Nairobi"), "KE");
+  assert.equal(tzCountry("Europe/Andorra"), "AD");   // only in the full table
+  assert.equal(tzCountry("Pacific/Apia"), "WS");
 });
 
 test("the anchors say which path an exit takes; the kind still comes from its own network", () => {
