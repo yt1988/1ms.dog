@@ -39,6 +39,30 @@ export function geoOf(geo, ip) {
   const y = Object.keys(geo).find(x => sameNet(x, ip));
   return y ? geo[y] : null;
 }
+// The deployment's page token (docs/tool-contract.md "端点鉴权": v1.<exp>.<nonce>.<scope>.<hmac>). A token close
+// to expiry is refreshed before measuring, so a tab left open does not start with a 401. The HMAC is the server's
+// to check; the page only reads `exp`.
+export const tokenExpiresSoon = (token, nowSec = Date.now() / 1000) => {
+  const exp = Number(String(token || "").split(".")[1]);
+  return !!token && (!Number.isFinite(exp) || exp - nowSec < 60);
+};
+// One anchor request with that token: refresh first when it is near expiry, send it when there is one, and on a
+// 401 take a new token and retry exactly once. Anything else (or a second 401) is "this endpoint is unavailable".
+export async function anchorJSON(url, { token = "", request, refresh, now } = {}) {
+  let tok = token;
+  if (tok && tokenExpiresSoon(tok, now)) tok = (await refresh()) || "";
+  const call = t => request(url, t ? { authorization: "Bearer " + t } : {});
+  let res = await call(tok);
+  if (res && res.status === 401) {
+    const fresh = (await refresh()) || "";
+    if (!fresh) throw new Error("anchor unauthorized");
+    res = await call(fresh);
+    if (res.status === 401) throw new Error("anchor unauthorized");
+  }
+  if (!res || !res.ok) throw new Error("anchor unavailable");
+  return res.json();
+}
+
 // The mainland anchor is only worth asking when the visitor is likely in mainland China: the site's edge says so,
 // or the device's timezone is China's (a proxy can hide the first, but not the clock). Elsewhere the request would
 // only be a cross-border wait.

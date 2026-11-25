@@ -277,6 +277,21 @@
   // injects <meta name="ms-anchors"> for every tool page when this deployment has them. Without it both probes are
   // simply unavailable and the panel shows whatever the other checks saw.
   const ANCH = readAnchors();
+  // The page token the shell signs into <meta name="ms-auth"> (docs/tool-contract.md "端点鉴权"): sent with the two
+  // anchor requests only, refreshed from /_ms/token when near expiry or after a 401, and left out when absent.
+  const authToken = () => { const m = document.querySelector('meta[name="ms-auth"]'); return (m && m.getAttribute("content")) || ""; };
+  const setAuth = v => {
+    let m = document.querySelector('meta[name="ms-auth"]');
+    if (!m) { m = document.createElement("meta"); m.setAttribute("name", "ms-auth"); document.head.append(m); }
+    m.setAttribute("content", v);
+  };
+  const refreshAuth = () => fetch("/_ms/token", { cache: "no-store", signal: timeout(3000) })
+    .then(r => r.ok ? r.json() : null).then(j => { const v = (j && j.token) || ""; if (v) setAuth(v); return v; }).catch(() => "");
+  const anchorJ = (url, ms) => anchorJSON(url, {
+    token: authToken(),
+    request: (u, headers) => fetch(bust(u), { cache: "no-store", credentials: "omit", signal: timeout(ms), headers }),
+    refresh: refreshAuth,
+  });
   // What the site's own edge says about this connection, asked once: the direct exit's geo and whether the
   // mainland anchor is worth a request.
   const own = fetch("/_ms/me", { cache: "no-store", signal: timeout(3000) }).then(r => r.ok ? r.json() : Promise.reject()).catch(() => null);
@@ -284,8 +299,8 @@
     // Our own two anchors: a mainland domain no split-tunnel list carries and the overseas probe. They say which
     // path an exit takes; the direct/proxy verdict still comes from the exit's own network. The mainland one is
     // skipped for visitors outside China (src/lib.mjs cnVisitor): a cross-border request there only holds the panel.
-    ["probe cn", () => !ANCH.cn ? Promise.reject() : own.then(j => cnVisitor(j && j.country, TZ) ? getJ(ANCH.cn, 2500).then(k => k.ip ? { ip: k.ip } : Promise.reject()) : Promise.reject())],
-    ["probe intl", () => !ANCH.intl ? Promise.reject() : getJ(ANCH.intl, 6000).then(j => j.ip ? { ip: j.ip } : Promise.reject())],
+    ["probe cn", () => !ANCH.cn ? Promise.reject() : own.then(j => cnVisitor(j && j.country, TZ) ? anchorJ(ANCH.cn, 2500).then(k => k.ip ? { ip: k.ip } : Promise.reject()) : Promise.reject())],
+    ["probe intl", () => !ANCH.intl ? Promise.reject() : anchorJ(ANCH.intl, 6000).then(j => j.ip ? { ip: j.ip } : Promise.reject())],
     ["1ms.dog", () => own.then(j => j && j.ip ? { ip: j.ip, geo: j.country ? { cc: j.country, city: j.city, asn: j.asn, org: j.org } : null } : Promise.reject())],
     ["ipip.net", () => getJ("https://myip.ipip.net/json").then(j => ({ ip: j.data.ip }))],
     ["Cloudflare", () => getJ("https://speed.cloudflare.com/meta", 6000).then(j => ({ ip: j.clientIp, geo: { cc: j.country, city: j.city, asn: j.asn, org: j.asOrganization } }))],

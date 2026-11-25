@@ -1,7 +1,7 @@
 // The page's pure logic: speed levels, the diagnosis, exit grouping and share links.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { median, fmt, tierOf, posOf, net16, sameNet, exitGroups, cnVisitor, segmentOf, grade, diagnose, useStatus, encodeShare, parseShare, regionName, flagCode, serviceName } from "../src/lib.mjs";
+import { median, fmt, tierOf, posOf, net16, sameNet, exitGroups, cnVisitor, anchorJSON, tokenExpiresSoon, segmentOf, grade, diagnose, useStatus, encodeShare, parseShare, regionName, flagCode, serviceName } from "../src/lib.mjs";
 import { PACKS, SERVICES, SCALE } from "../src/services.mjs";
 import { kindOf, tzCountry, readAnchors } from "../src/egress.js";
 
@@ -73,6 +73,50 @@ test("the anchors come only from the injected meta; none means no probes", () =>
   assert.deepEqual(readAnchors(doc(null)), { cn: "", intl: "" });
   assert.deepEqual(readAnchors(doc("cn=https://a/conn;intl=https://b/conn")), { cn: "https://a/conn", intl: "https://b/conn" });
   assert.deepEqual(readAnchors(doc("intl=https://b/conn")), { cn: "", intl: "https://b/conn" });
+});
+
+test("anchor requests carry the page token, refresh once on 401, and skip the header without one", async () => {
+  const ok = data => ({ status: 200, ok: true, json: async () => data });
+  const bad = { status: 401, ok: false, json: async () => ({}) };
+  const calls = [], tokens = [];
+  const request = (url, headers) => { calls.push(headers); return Promise.resolve(ok({ ip: "1.1.1.1" })); };
+  // no token: no Authorization header, no refresh
+  await anchorJSON("https://a/conn", { request, refresh: async () => { tokens.push(1); return "nope"; } });
+  assert.deepEqual(calls.at(-1), {});
+  assert.equal(tokens.length, 0);
+  // a token is sent as a bearer
+  calls.length = 0;
+  await anchorJSON("https://a/conn", { token: "v1.9999999999.abc.probe.xyz", request, refresh: async () => "" });
+  assert.deepEqual(calls.at(-1), { authorization: "Bearer v1.9999999999.abc.probe.xyz" });
+  // 401: one refresh, one retry with the new token
+  calls.length = 0; let n = 0;
+  const data = await anchorJSON("https://a/conn", {
+    token: "v1.9999999999.abc.probe.xyz",
+    request: (url, headers) => { calls.push(headers); return Promise.resolve(calls.length === 1 ? bad : ok({ ip: "2.2.2.2" })); },
+    refresh: async () => { n++; return "v1.2.n.s.h"; },
+  });
+  assert.equal(n, 1); assert.equal(calls.length, 2);
+  assert.deepEqual(calls[1], { authorization: "Bearer v1.2.n.s.h" });
+  assert.equal(data.ip, "2.2.2.2");
+  // a second 401 gives up: exactly two requests, one refresh
+  calls.length = 0; n = 0;
+  await assert.rejects(() => anchorJSON("https://a/conn", {
+    token: "v1.9999999999.abc.probe.xyz",
+    request: (url, headers) => { calls.push(headers); return Promise.resolve(bad); },
+    refresh: async () => { n++; return "v1.2.n.s.h"; },
+  }));
+  assert.equal(calls.length, 2); assert.equal(n, 1);
+  // a token within a minute of expiry is refreshed before the first request
+  calls.length = 0; n = 0;
+  await anchorJSON("https://a/conn", {
+    token: "v1." + (1000 + 30) + ".n.s.h",
+    now: 1000,
+    request: (url, headers) => { calls.push(headers); return Promise.resolve(ok({})); },
+    refresh: async () => { n++; return "v1.2.n.s.h"; },
+  });
+  assert.equal(n, 1); assert.deepEqual(calls[0], { authorization: "Bearer v1.2.n.s.h" });
+  assert.equal(tokenExpiresSoon("v1." + (1000 + 30) + ".n.s.h", 1000), true);
+  assert.equal(tokenExpiresSoon("v1." + (1000 + 61) + ".n.s.h", 1000), false);
 });
 
 test("the mainland anchor is asked for only from China", () => {

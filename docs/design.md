@@ -117,6 +117,10 @@ GitHub did:
   pages and the build does not carry the value; the repo holds no probe address. With no meta both probe checks
   reject at once: the panel still shows every exit the other checks saw, with no path evidence. CI and local builds
   run that fallback, and the tests cover it.
+- The anchors take the page token the shell signs into `<meta name="ms-auth">` (docs/tool-contract.md "端点鉴权"):
+  `Authorization: Bearer …` on those two requests only. A token within a minute of expiry is refreshed from
+  `/_ms/token` before measuring, and any 401 does the same and retries exactly once; a second failure (or no token)
+  leaves that probe unavailable, like the no-meta case. Without the meta no header is sent at all.
 - The third-party checks (`ip.sb`, `ipinfo.io`, `ipip.net`, Cloudflare, the IPv4-only and IPv6-only hosts, WebRTC)
   still run and feed the same grouping, so the panel keeps showing every exit it can see.
 - The mainland anchor is requested only when the visitor is likely in mainland China: the site's edge (`/_ms/me`)
