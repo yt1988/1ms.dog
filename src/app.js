@@ -273,9 +273,9 @@
   // cached; 1ms-shell docs/tool-contract.md), so the direct exit and its network come from there first. Self-hosted
   // copies get a 404 and rely on the others. The others still run: each is another site, and a proxy that routes by
   // site shows up as a different exit there, as does the other address family.
-  // The two anchors are deploy-time data, not page content (docs/tool-contract.md §2): the Worker or the build
-  // writes <meta name="ms-anchors"> when this deployment has them. Without it both probes are simply unavailable and
-  // the panel shows whatever the other checks saw.
+  // The two anchors are deploy-time data, not page content (docs/tool-contract.md §2): the site's front Worker
+  // injects <meta name="ms-anchors"> for every tool page when this deployment has them. Without it both probes are
+  // simply unavailable and the panel shows whatever the other checks saw.
   const ANCH = readAnchors();
   // What the site's own edge says about this connection, asked once: the direct exit's geo and whether the
   // mainland anchor is worth a request.
