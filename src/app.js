@@ -273,16 +273,19 @@
   // cached; 1ms-shell docs/tool-contract.md), so the direct exit and its network come from there first. Self-hosted
   // copies get a 404 and rely on the others. The others still run: each is another site, and a proxy that routes by
   // site shows up as a different exit there, as does the other address family.
+  // The two anchors are deploy-time data, not page content (docs/tool-contract.md §2): the Worker or the build
+  // writes <meta name="ms-anchors"> when this deployment has them. Without it both probes are simply unavailable and
+  // the panel shows whatever the other checks saw.
+  const ANCH = readAnchors();
   // What the site's own edge says about this connection, asked once: the direct exit's geo and whether the
   // mainland anchor is worth a request.
   const own = fetch("/_ms/me", { cache: "no-store", signal: timeout(3000) }).then(r => r.ok ? r.json() : Promise.reject()).catch(() => null);
   const CHECKS = [
-    // Our own two anchors (docs/egress-contract.md): a mainland domain no split-tunnel list carries and the Tokyo
-    // probe. They say which path an exit takes; the direct/proxy verdict still comes from the exit's own network.
-    // The mainland one is skipped for visitors outside China (src/lib.mjs cnVisitor): a cross-border request there
-    // only holds the panel for its timeout.
-    ["probe cn", () => own.then(j => cnVisitor(j && j.country, TZ) ? getJ(ANCHORS.cn, 2500).then(k => k.ip ? { ip: k.ip } : Promise.reject()) : Promise.reject())],
-    ["probe intl", () => getJ(ANCHORS.intl, 6000).then(j => j.ip ? { ip: j.ip } : Promise.reject())],
+    // Our own two anchors: a mainland domain no split-tunnel list carries and the overseas probe. They say which
+    // path an exit takes; the direct/proxy verdict still comes from the exit's own network. The mainland one is
+    // skipped for visitors outside China (src/lib.mjs cnVisitor): a cross-border request there only holds the panel.
+    ["probe cn", () => !ANCH.cn ? Promise.reject() : own.then(j => cnVisitor(j && j.country, TZ) ? getJ(ANCH.cn, 2500).then(k => k.ip ? { ip: k.ip } : Promise.reject()) : Promise.reject())],
+    ["probe intl", () => !ANCH.intl ? Promise.reject() : getJ(ANCH.intl, 6000).then(j => j.ip ? { ip: j.ip } : Promise.reject())],
     ["1ms.dog", () => own.then(j => j && j.ip ? { ip: j.ip, geo: j.country ? { cc: j.country, city: j.city, asn: j.asn, org: j.org } : null } : Promise.reject())],
     ["ipip.net", () => getJ("https://myip.ipip.net/json").then(j => ({ ip: j.data.ip }))],
     ["Cloudflare", () => getJ("https://speed.cloudflare.com/meta", 6000).then(j => ({ ip: j.clientIp, geo: { cc: j.country, city: j.city, asn: j.asn, org: j.asOrganization } }))],

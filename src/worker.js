@@ -93,6 +93,20 @@ function compareMeta(parts) {
       share: `<button class="btn icon" id="cmpShare" type="button" title="${share}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr">${share}</span></button>` } };
 }
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+// Measurement endpoints are deploy-time data (docs/tool-contract.md §2): env.MS_ANCHORS is written into <head>
+// as <meta name="ms-anchors"> when this deployment has it. Nothing set → the page gets no meta and its probes are
+// unavailable; the page still shows every exit the other checks saw.
+export const anchorsMeta = v => v ? `<meta name="ms-anchors" content="${esc(v)}">` : "";
+async function injectAnchors(res, value, req) {
+  if (!value || req.method === "HEAD" || res.status !== 200) return res;
+  if (!/text\/html/i.test(res.headers.get("content-type") || "")) return res;
+  const out = await new HTMLRewriter()
+    .on("head", { element(e) { e.append(anchorsMeta(value), { html: true }); } })
+    .transform(res).arrayBuffer();
+  const h = new Headers(res.headers);
+  h.delete("etag");                                          // the body changed, so the old validator no longer holds
+  return new Response(out, { status: 200, headers: h });
+}
 
 const REPO = "yt1988/https-latency-test-cli";
 const FILE = /^(httpslatency-[a-z0-9]+-[a-z0-9]+(\.exe)?|checksums\.txt|install\.sh|install\.ps1)$/;
@@ -131,7 +145,7 @@ export default {
     }
 
     const meta = get && resultMeta(url.pathname);
-    if (!meta || meta.bad) return env.ASSETS.fetch(req);
+    if (!meta || meta.bad) return injectAnchors(await env.ASSETS.fetch(req), env && env.MS_ANCHORS, req);
     const res = await env.ASSETS.fetch(new Request(new URL(meta.page, url), req));
     if (res.status !== 200) return res;
     // never indexed (canonical still points at the page); the result in the title and description
@@ -142,7 +156,10 @@ export default {
       .on('meta[property="og:title"], meta[name="twitter:title"]', set(meta.title))
       .on('meta[name="description"], meta[property="og:description"], meta[name="twitter:description"]', set(meta.desc))
       .on('meta[property="og:url"]', set(url.origin + url.pathname))
-      .on("head", { element(e) { if (meta.cmp) e.append('<link rel="stylesheet" href="/assets/share/compare.css">', { html: true }); } })
+      .on("head", { element(e) {
+        if (meta.cmp) e.append('<link rel="stylesheet" href="/assets/share/compare.css">', { html: true });
+        if (env && env.MS_ANCHORS) e.append(anchorsMeta(env.MS_ANCHORS), { html: true });
+      } })
       .on("#sharedTxt", { element(e) { if (meta.cmp) e.after(meta.cmp.head, { html: true }); } })
       .on("#testMine", { element(e) { if (meta.cmp) e.before(meta.cmp.share, { html: true }); } })
       .on("#cmpBox", { element(e) { if (meta.cmp) e.setAttribute("style", meta.cmp.style); } })

@@ -20,6 +20,9 @@ import { CATS, SERVICES, PACKS, PACK_OF, SCALE, ZONES, USES, SUBS, TG_DC_OF, UNL
 // so the bundles are built down to ES2019.
 const TARGET = "es2019";
 const SITE = (process.env.SITE_URL || "https://1ms.dog").replace(/\/+$/, "");
+// Measurement endpoints are deploy-time data (docs/tool-contract.md §2): an optional build parameter for static
+// deployments without the Worker; empty by default, and never a repository value.
+const MS_ANCHORS = process.env.MS_ANCHORS || "";
 const pub = new URL("../public/", import.meta.url), src = new URL("../src/", import.meta.url);
 // language, URL folder, og:locale, default local pack before the exit country is known; the first is the root
 export const LANGS = [["en", "", "en_US", "na"], ["zh-CN", "zh-cn", "zh_CN", "cn"], ["zh-TW", "zh-tw", "zh_TW", "tw"], ["ja", "ja", "ja_JP", "jp"],
@@ -155,6 +158,7 @@ export async function build({ check = false } = {}) {
         ...(lang === "zh-CN" ? [`<meta http-equiv="Cache-Control" content="no-transform">`, `<meta http-equiv="Cache-Control" content="no-siteapp">`, `<meta name="applicable-device" content="pc,mobile">`] : []),
         `<meta name="robots" content="${idx ? "index" : "noindex"}, follow, max-image-preview:large">`,
         `<meta name="application-name" content="1ms.dog">`,
+        ...(MS_ANCHORS ? [`<meta name="ms-anchors" content="${esc(MS_ANCHORS)}">`] : []),
         `<meta name="theme-color" content="#f6f6f7" media="(prefers-color-scheme: light)">`,
         `<meta name="theme-color" content="#1c1c1c" media="(prefers-color-scheme: dark)">`,
         `<link rel="canonical" href="${url}">`, alts,

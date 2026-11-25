@@ -103,14 +103,19 @@ GitHub did:
 
 ## Exit checks
 
-- The rules are not this repository's: `src/egress.js` is a verbatim copy of the shell's `src/egress.js` (VERSION 6,
-  commit `aa4e9f8`), and the shell's `docs/egress-contract.md` is the source. Change the rules there and re-vendor;
+- The rules are not this repository's: `src/egress.js` is a verbatim copy of the shell's `src/egress.js` (VERSION 7,
+  commit `414073e`), and the shell's `docs/egress-contract.md` is the source. Change the rules there and re-vendor;
   do not edit the tables here.
-- Two anchors — a mainland domain and the Tokyo probe — answer which route an exit takes (`path`: `cn`, `intl`,
-  `both`, `other`, `unknown-path`). Whether the exit itself is direct or a proxy (`kind`) comes from its own network
-  (organization, ASN, VPN name, WARP). The two are kept apart on purpose: a direct exit can still follow neither
-  anchor, and an anchor matching does not make a proxy direct. The page shows only `kind` (直连 / 代理); `path` stays
-  on the group as evidence. An exit with no organization or ASN is `unknown` and gets no label, never 直连.
+- Two anchors answer which route an exit takes (`path`: `cn`, `intl`, `both`, `other`, `unknown-path`). Whether the
+  exit itself is direct or a proxy (`kind`) comes from its own network (organization, ASN, VPN name, WARP). The two
+  are kept apart on purpose: a direct exit can still follow neither anchor, and an anchor matching does not make a
+  proxy direct. The page shows only `kind` (直连 / 代理); `path` stays on the group as evidence. An exit with no
+  organization or ASN is `unknown` and gets no label, never 直连.
+- Where the anchors live is deploy-time data, not repository content (the shell's `docs/tool-contract.md` §2): the
+  page reads `<meta name="ms-anchors" content="cn=…;intl=…">`, which `src/worker.js` writes from `env.MS_ANCHORS`
+  (HTMLRewriter, skipped when unset) and `scripts/build.mjs` writes from a `MS_ANCHORS` build parameter. The repo
+  holds no probe address. With no meta both probe checks reject at once: the panel still shows every exit the other
+  checks saw, with no path evidence. CI and local builds run that fallback, and the tests cover it.
 - The third-party checks (`ip.sb`, `ipinfo.io`, `ipip.net`, Cloudflare, the IPv4-only and IPv6-only hosts, WebRTC)
   still run and feed the same grouping, so the panel keeps showing every exit it can see.
 - The mainland anchor is requested only when the visitor is likely in mainland China: the site's edge (`/_ms/me`)
@@ -120,7 +125,7 @@ GitHub did:
   about a second instead of waiting for it.
 - Cloudflare's network is a proxy exit whether WARP is on or off (its ASN 13335 is in the shared table, and an
   organization named Cloudflare matches the list too); WARP only changes the reason, `warp` instead of `dc`.
-- VERSION 6 (`aa4e9f8`) carries the IANA timezone table (each zone keeps the country of its place, not of its link target) and the rules the page relies on: the IPv4-only and IPv6-only checks are marked
+- VERSION 7 (`414073e`) carries the IANA timezone table (each zone keeps the country of its place, not of its link target) and the rules the page relies on: the IPv4-only and IPv6-only checks are marked
   `stack: true` so the core compares them with the reference exit of their own family (a dual-stack line is not
   "split" just because its two addresses differ), WebRTC is compared by network rather than by exact address, and
   the page keeps no tables of its own.

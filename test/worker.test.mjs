@@ -1,11 +1,17 @@
 // The Worker's preview text for shared result links (src/worker.js).
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { resultMeta, movedService } from "../src/worker.js";
+import { resultMeta, movedService, anchorsMeta } from "../src/worker.js";
 import { encodeShare } from "../src/lib.mjs";
 
 const code = encodeShare({ ts: 1793433600000, pack: "cn",
   groups: [{ cc: "CN", city: "", org: "", asn: null, proxy: false }], res: { baidu: 21.3, chatgpt: 188, claude: null } });
+
+test("the anchors meta is written only when the deployment has anchors", () => {
+  assert.equal(anchorsMeta(""), "");
+  assert.equal(anchorsMeta('cn=https://a/conn;intl=https://b/conn'), '<meta name="ms-anchors" content="cn=https://a/conn;intl=https://b/conn">');
+  assert.equal(anchorsMeta('cn=https://a/?x=1&y=2'), '<meta name="ms-anchors" content="cn=https://a/?x=1&amp;y=2">');
+});
 
 test("a result link gets the result as its preview title, on the page it was shared from", () => {
   const home = resultMeta("/zh-cn/r/" + code);

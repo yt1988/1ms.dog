@@ -3,7 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { median, fmt, tierOf, posOf, net16, sameNet, exitGroups, cnVisitor, segmentOf, grade, diagnose, useStatus, encodeShare, parseShare, regionName, flagCode, serviceName } from "../src/lib.mjs";
 import { PACKS, SERVICES, SCALE } from "../src/services.mjs";
-import { kindOf, tzCountry } from "../src/egress.js";
+import { kindOf, tzCountry, readAnchors } from "../src/egress.js";
 
 test("median and number format", () => {
   assert.equal(median([3, 1, 2]), 2);
@@ -66,6 +66,13 @@ test("exits group by network and put local before proxy", () => {
     ["Europe/Amsterdam", "NL"], ["Africa/Accra", "GH"], ["Europe/Copenhagen", "DK"], ["Pacific/Chuuk", "FM"], ["Pacific/Majuro", "MH"],
     ["Pacific/Wake", "UM"], ["Pacific/Wallis", "WF"]])
     assert.equal(tzCountry(z), cc, z);
+});
+
+test("the anchors come only from the injected meta; none means no probes", () => {
+  const doc = content => ({ querySelector: () => content == null ? null : { getAttribute: () => content } });
+  assert.deepEqual(readAnchors(doc(null)), { cn: "", intl: "" });
+  assert.deepEqual(readAnchors(doc("cn=https://a/conn;intl=https://b/conn")), { cn: "https://a/conn", intl: "https://b/conn" });
+  assert.deepEqual(readAnchors(doc("intl=https://b/conn")), { cn: "", intl: "https://b/conn" });
 });
 
 test("the mainland anchor is asked for only from China", () => {
