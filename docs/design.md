@@ -115,7 +115,9 @@ GitHub did:
   page reads `<meta name="ms-anchors" content="cn=…;intl=…">`, which `src/worker.js` writes from `env.MS_ANCHORS`
   (HTMLRewriter, skipped when unset) and `scripts/build.mjs` writes from a `MS_ANCHORS` build parameter. The repo
   holds no probe address. With no meta both probe checks reject at once: the panel still shows every exit the other
-  checks saw, with no path evidence. CI and local builds run that fallback, and the tests cover it.
+  checks saw, with no path evidence. CI and local builds run that fallback, and the tests cover it. When the
+  Worker injects, it derives the page's ETag from the asset's own ETag and a digest of the injected line, so a
+  revalidation still answers 304 and the page's `no-cache` contract is unchanged.
 - The third-party checks (`ip.sb`, `ipinfo.io`, `ipip.net`, Cloudflare, the IPv4-only and IPv6-only hosts, WebRTC)
   still run and feed the same grouping, so the panel keeps showing every exit it can see.
 - The mainland anchor is requested only when the visitor is likely in mainland China: the site's edge (`/_ms/me`)

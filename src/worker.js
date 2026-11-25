@@ -97,14 +97,27 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
 // as <meta name="ms-anchors"> when this deployment has it. Nothing set → the page gets no meta and its probes are
 // unavailable; the page still shows every exit the other checks saw.
 export const anchorsMeta = v => v ? `<meta name="ms-anchors" content="${esc(v)}">` : "";
+// The injected page is the asset's body plus one fixed line, so its validator is the asset's ETag plus a digest of
+// that line: a revalidation still costs a 304 when the deployment's anchors have not changed.
+async function anchorsTag(origin, value) {
+  if (!origin) return null;
+  const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(anchorsMeta(value)));
+  const hex = [...new Uint8Array(d)].slice(0, 8).map(b => b.toString(16).padStart(2, "0")).join("");
+  return "W/" + origin.replace(/^W\//, "").replace(/"$/, '-a' + hex + '"');
+}
 async function injectAnchors(res, value, req) {
-  if (!value || req.method === "HEAD" || res.status !== 200) return res;
-  if (!/text\/html/i.test(res.headers.get("content-type") || "")) return res;
+  if (!value || req.method === "HEAD" || !/text\/html/i.test(res.headers.get("content-type") || "")) return res;
+  const tag = await anchorsTag(res.headers.get("etag"), value);
+  const want = (req.headers.get("if-none-match") || "").split(",").map(s => s.trim());
+  if (tag && res.status === 200 && want.includes(tag)) {
+    return new Response(null, { status: 304, headers: { etag: tag, "cache-control": res.headers.get("cache-control") || "no-cache" } });
+  }
+  if (res.status !== 200) return res;                        // a 304 from the asset: no body to rewrite
   const out = await new HTMLRewriter()
     .on("head", { element(e) { e.append(anchorsMeta(value), { html: true }); } })
     .transform(res).arrayBuffer();
   const h = new Headers(res.headers);
-  h.delete("etag");                                          // the body changed, so the old validator no longer holds
+  if (tag) h.set("etag", tag); else h.delete("etag");
   return new Response(out, { status: 200, headers: h });
 }
 
