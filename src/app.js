@@ -682,12 +682,13 @@
     if (full && !ctl.signal.aborted && !ONE && !GRP && !CHECK) tokyoTrip();
     if (CHECK && full && !ctl.signal.aborted) EXITS.then(checkupResult);
   }
-  // After a full run (so it never shares the line with the services' timing): a few tiny messages to 1ms.dog's server
-  // in Tokyo over a WebSocket (it greets, then echoes each text frame), one at a time, the first not counted. A round
-  // trip to one fixed place, for comparing routes; nothing is logged there. Silent when it can't connect.
-  const ECHO = "wss://echo.1ms.dog:8443/ws", TRIPS = 15;
+  // After a full run (so it never shares the line with the services' timing): a few tiny messages to the echo server
+  // named in <meta name="ms-egress"> (`ws=`), over a WebSocket (it greets, then echoes each text frame), one at a time,
+  // the first not counted. A round trip to one fixed place, for comparing routes; nothing is logged there. Silent when
+  // the tag is absent (self-hosted) or it can't connect.
+  const ECHO = endpoints("ms-egress").ws || "", TRIPS = 15;
   function tokyoTrip() {
-    if (!window.WebSocket || !$("#exNote")) return;
+    if (!ECHO || !window.WebSocket || !$("#exNote")) return;
     let el = $("#exTyo");
     if (!el) { el = document.createElement("p"); el.className = "ex-note tyo"; el.id = "exTyo"; el.hidden = true; $("#exNote").after(el); }
     let ws, rtt = [], sent = 0, at = 0;

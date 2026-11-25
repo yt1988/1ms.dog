@@ -179,3 +179,18 @@ test("a compare link gets what changed as its preview title, its banner and its 
   assert.deepEqual(resultMeta(`/c/${before}/zz`), { bad: true });
   assert.equal(resultMeta(`/chatgpt/c/${before}/${after}`), null);
 });
+
+test("the baseline comes from env.DATA_URL; without it the endpoint is unavailable and nothing is fetched", async () => {
+  const { default: worker } = await import("../src/worker.js");
+  globalThis.caches = { default: { match: async () => null, put: async () => {} } };
+  const env = { ASSETS: { fetch: async () => new Response("asset", { status: 404 }) } }, ctx = { waitUntil() {} };
+  const asked = [];
+  globalThis.fetch = async u => { asked.push(String(u)); return new Response('{"v":1,"services":{}}', { status: 200 }); };
+  const none = await worker.fetch(new Request("https://1ms.dog/baseline.json"), env, ctx);
+  assert.equal(none.status, 503);
+  assert.deepEqual(JSON.parse(await none.text()), { v: 1, services: {} });
+  assert.equal(asked.length, 0, "no fallback address is written into the Worker");
+  const ok = await worker.fetch(new Request("https://1ms.dog/baseline.json"), { ...env, DATA_URL: "https://results.example.com/data/" }, ctx);
+  assert.equal(ok.status, 200);
+  assert.deepEqual(asked, ["https://results.example.com/data/index/summary.json"]);
+});

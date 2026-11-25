@@ -120,7 +120,7 @@ export default {
       if (INSTALLER[url.pathname]) return release(`v${v}`, INSTALLER[url.pathname], req, ctx);
       return new Response(v + "\n", { headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=300" } });
     }
-    if (get && url.pathname === "/baseline.json") return baseline(req, ctx);
+    if (get && url.pathname === "/baseline.json") return baseline(req, ctx, env);
     const dl = get && /^\/dl\/(latest|v\d+\.\d+\.\d+)\/([^/]+)$/.exec(url.pathname);
     if (dl && FILE.test(dl[2])) {
       if (dl[1] !== "latest") return release(dl[1], dl[2], req, ctx);
@@ -153,16 +153,18 @@ export default {
   },
 };
 
-const BASELINE = "https://data.1ms.dog:2083/index/summary.json";
 const JSON_HEAD = { "content-type": "application/json; charset=utf-8", "cache-control": "public, max-age=60", "access-control-allow-origin": "*" };
-async function baseline(req, ctx) {
+async function baseline(req, ctx, env) {
+  const unavailable = () => new Response('{"v":1,"services":{}}', { status: 503, headers: { ...JSON_HEAD, "cache-control": "no-store" } });
+  const base = (env.DATA_URL || "").replace(/\/+$/, "");
+  if (!base) return unavailable();
   const cache = caches.default, fresh = new Request(new URL("/__baseline", req.url)), keep = new Request(new URL("/__baseline-keep", req.url));
   let body = null;
   const hit = await cache.match(fresh);
   if (hit) body = await hit.text();
   else {
     try {
-      const up = await fetch(BASELINE, { signal: AbortSignal.timeout(4000), cf: { cacheTtl: 0 } });
+      const up = await fetch(base + "/index/summary.json", { signal: AbortSignal.timeout(4000), cf: { cacheTtl: 0 } });
       if (up.ok) { const t = await up.text(); if (JSON.parse(t).v === 1) body = t; }
     } catch (e) {}
     if (body) {
@@ -173,7 +175,7 @@ async function baseline(req, ctx) {
       if (old) body = await old.text();
     }
   }
-  if (!body) return new Response('{"v":1,"services":{}}', { status: 503, headers: { ...JSON_HEAD, "cache-control": "no-store" } });
+  if (!body) return unavailable();
   return new Response(req.method === "HEAD" ? null : body, { headers: JSON_HEAD });
 }
 

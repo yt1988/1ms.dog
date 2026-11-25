@@ -72,8 +72,10 @@ GitHub Actions: `test.yml` runs `npm test` on every push; `endpoints.yml` runs `
 
 ## Deploy
 
-`wrangler.toml` defines the Worker `1ms-index`: static assets from `public/` and `src/worker.js`. It needs no
-secrets. Deploy with `npx wrangler deploy` (a Cloudflare account logged in with `npx wrangler login`) and bind your
+`wrangler.toml` defines the Worker `1ms-index`: static assets from `public/` and `src/worker.js`. The one optional
+secret is `DATA_URL` (the results directory); set it with `wrangler secret put DATA_URL` or in the dashboard, never in
+`wrangler.toml` — a plain `[vars]` value is wiped by the next Workers Builds deploy. Deploy with `npx wrangler deploy`
+(a Cloudflare account logged in with `npx wrangler login`) and bind your
 domain to the Worker in the dashboard, or connect the repository through Cloudflare Workers Builds so a push to
 `main` deploys within about a minute. After deploying, open the site and check that the new `assets/app.<hash>.js`
 and `.css` are served and the page works.
@@ -81,12 +83,13 @@ and `.css` are served and the page works.
 What the page uses outside this repository, each optional (the page works without it). Point them at your own or
 leave them out:
 
-- `BASELINE` in `src/worker.js`: the URL of a `summary.json` written by `httpslatency baseline` (the CLI
-  repository's AGENTS.md says how to run it). The Worker serves it as `/baseline.json`, fresh for a minute, the last
-  good copy kept a week. Without it the lane marks, the route links' comparison and the status page stay empty.
-- `ECHO` in `src/app.js`: a WebSocket echo server (greets with `{"v":1,"pop":"…"}`, then echoes text frames); after a
-  full run the page times 15 round trips to it. Its origin must be in the CSP's `connect-src` (`scripts/build.mjs`).
-  Without it the line doesn't show.
+- `env.DATA_URL` (the secret above): the base of a results directory where `httpslatency baseline --out` wrote
+  `index/summary.json` (the CLI repository's AGENTS.md says how to run it). The Worker serves it as `/baseline.json`,
+  fresh for a minute, the last good copy kept a week. Without it the endpoint answers 503 and the lane marks, the
+  route links' comparison and the status page stay empty.
+- the `ws=` key of `<meta name="ms-egress">`: a WebSocket echo server (greets with `{"v":1,"pop":"…"}`, then echoes
+  text frames); after a full run the page times 15 round trips to it. The tag is injected by the site's front Worker
+  (`docs/tool-contract.md` §2), which also adds its origin to the CSP's `connect-src`. Without it the line doesn't show.
 - `/_ms/me` on the page's own origin: the visitor's IP and location as the edge sees the connection, when a front
   Worker answers it; otherwise the page falls back to public lookup services.
 - `<meta name="<tool>">` tags (egress, asn, trace, …): links to sister tools, shown only when a front Worker adds them.

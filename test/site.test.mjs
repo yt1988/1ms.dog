@@ -170,7 +170,7 @@ test("the status page: one per language, every service listed, its script and da
   const home = await page("");
   assert.ok(/<nav class="sitemap"[^>]*>[\s\S]*?href="\/status\/"/.test(home), "home footer links the status page");
   const csp = await readFile(new URL("../public/_headers", import.meta.url), "utf8");
-  assert.match(csp, /connect-src 'self' https: wss:\/\/echo\.1ms\.dog:8443/, "the CSP lets the page reach the echo server");
+  assert.match(csp, /connect-src 'self' https:;/, "the CSP allows the page's measurements; the front Worker adds the echo origin");
 });
 
 test("the built scripts parse in older browsers: no optional chaining or nullish coalescing (ES2019)", async () => {
