@@ -932,7 +932,9 @@
     res: Object.fromEntries(allServices().filter(s => R.get(s.id) && R.get(s.id).st === "done").map(s => [s.id, median(R.get(s.id).s)])) });
   if ($("#share")) $("#share").onclick = async () => {
     if (!lastSum) return;
-    const { share } = await import("/assets/share/share.js?v=10");
+    const mod = await import("/assets/share/share.js?v=11").catch(() => null);
+    if (!mod) { window.msShareDown && window.msShareDown(); return; }
+    const { share } = mod;
     const s = lastSum, card = cardLayout();
     share({
       // the header names what was tested (a group or one service); the home page's name is 1ms.dog, already the host there
@@ -1084,7 +1086,7 @@
     NET.groups = S.groups; NET.done = true; renderExits(); $("#eye").hidden = true;
     for (const s of allServices()) if (s.id in S.res) { R.set(s.id, { w: null, s: S.res[s.id] == null ? [] : [S.res[s.id]], st: "done" }); paintRow(s); }
     summarize(false);
-    const { received } = await import("/assets/share/share.js?v=10");
+    const { received } = await import("/assets/share/share.js?v=11");
     RCV = received({ lang: LANG, ts: S.ts, at: $(".hero"), test: () => { VS = encodeShare(SHARED); leaveShared(); start(3); } });
   }
   let sharedOn = false;
@@ -1145,7 +1147,9 @@
   // the head and the share button are in the banner only on a compare page: the Worker puts them there (src/worker.js)
   if ($("#cmpShare")) $("#cmpShare").onclick = async () => {
     if (!CV) return;
-    const { share } = await import("/assets/share/share.js?v=10");
+    const mod = await import("/assets/share/share.js?v=11").catch(() => null);
+    if (!mod) { window.msShareDown && window.msShareDown(); return; }
+    const { share } = mod;
     const code = (S, show) => encodeShare(show ? S : bare(S));
     share({
       lang: LANG, name: $("h1").textContent, file: "1ms-dog-compare",
