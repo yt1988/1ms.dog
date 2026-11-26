@@ -52,7 +52,7 @@
     for (const p of pts) { if (!p) { pen = false; continue; } d += (pen ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1); pen = true; }
     const last = [...pts].reverse().find(Boolean);
     // a faint dotted base under it, so the column reads as a chart before a day of hours has filled it
-    return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true"><line class="bl" x1="0" y1="${H - 1}" x2="${W}" y2="${H - 1}"/><path d="${d}"/>${last ? `<circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="2"/>` : ""}</svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true"><line class="bl" x1="0" y1="${H - 1}" x2="${W}" y2="${H - 1}"/><path d="${d}"/>${last ? `<circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="2"/>` : ""}</svg>`;
   }
 
   fetch("/baseline.json").then(r => r.json()).then(j => {

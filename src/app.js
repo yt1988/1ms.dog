@@ -396,8 +396,11 @@
   // <meta name="<id>">; without it (a copy hosted elsewhere) there is no link.
   const LANG_DIR = LANG === "en" ? "/" : "/" + LANG.toLowerCase() + "/";     // every tool uses the same language folders
   const toolHref = (id, p = "") => { const m = document.querySelector(`meta[name="${id}"]`), h = m && m.content.replace(/\/+$/, ""); return h ? h + LANG_DIR + p : ""; };
-  // a sentence link to another tool ends in the external-link icon (the shared one, docs/tool-contract.md in 1ms-shell)
-  const EXT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg>';
+  // a sentence link to another tool ends in the external-link icon (the shared one, docs/tool-contract.md in 1ms-shell).
+  // `cls` draws the same icon in the command-line dialog under its own class; the xmlns is there because Dark Reader
+  // reloads each <svg> as its own document, where a serialized element carries no namespace (see docs/design.md).
+  const extIcon = cls => `<svg${cls ? ` class="${cls}"` : ""} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 10v3.5H2.5V4H6"/></svg>`;
+  const EXT = extIcon("");
   const toolA = (id, p, txt, cls, title) => { const h = toolHref(id, p); return h ? `<a${cls ? ` class="${cls}"` : ""} href="${esc(h)}" target="_blank" rel="noopener"${title ? ` title="${esc(title)}"` : ""}>${esc(txt)}</a>` : esc(txt); };
   for (const a of document.querySelectorAll("a[data-tool]")) { const h = toolHref(a.dataset.tool); if (h) { a.href = h; a.hidden = false; } }
   const ext = (id, p, txt) => `<a class="ext" href="${esc(toolHref(id, p))}" target="_blank" rel="noopener">${esc(txt)}${EXT}</a>`;
@@ -638,9 +641,9 @@
     const b = BASE && BASE[id], tk = b ? b.med24 ?? (b.last && !b.last.err ? b.last.ms : null) : null;
     return tk == null || (md > tk * 2 && md - tk > 50);
   };
-  const RT_ICON = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="3.5" cy="12.5" r="1.5"/><circle cx="12.5" cy="3.5" r="1.5"/><path d="M5 12.5h4.5a2.5 2.5 0 0 0 0-5h-3a2.5 2.5 0 0 1 0-5H11"/></svg>';
+  const RT_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="3.5" cy="12.5" r="1.5"/><circle cx="12.5" cy="3.5" r="1.5"/><path d="M5 12.5h4.5a2.5 2.5 0 0 0 0-5h-3a2.5 2.5 0 0 1 0-5H11"/></svg>';
   // Global Ping's icon (the five bars of its page): how the service answers from 18 places, packet loss included
-  const PG_ICON = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 13v-3M5 13V8M8 13V5M11 13V9M14 13V7"/></svg>';
+  const PG_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 13v-3M5 13V8M8 13V5M11 13V9M14 13V7"/></svg>';
   function paintRow(s) {
     const el = document.getElementById("t-" + s.id); if (!el) return;
     const r = R.get(s.id), hot = D.spot === s.id ? " hot" : "";
@@ -896,7 +899,7 @@
   // comes from the card's install line, so a self-hosted copy hands out its own). Each command line is its own copy
   // button: a click copies it, and its mark turns to a tick for a moment
   function cliBody() {
-    const site = /^curl -fsSL (\S+)\/i/.exec($(".cli code").textContent)[1], ext = EXT.replace("<svg ", '<svg class="ext" ');
+    const site = /^curl -fsSL (\S+)\/i/.exec($(".cli code").textContent)[1], ext = extIcon("ext");
     const marks = [...$$(".cli .cmdline svg")].map(x => x.outerHTML).join("");
     const line = (cmd, note) => `<button class="cmdline" type="button" data-copy title="${esc(t("copy"))}"><code>${esc(cmd)}</code>${marks}</button>` + (note ? `<span class="note">${esc(t(note))}</span>` : "");
     const sec = (h, body) => `<section class="rblk"><b>${esc(t(h))}</b>${body}</section>`, win = `${site}/dl/latest/httpslatency-windows-amd64.exe`;
@@ -905,7 +908,7 @@
       sec("cli_opts", line("httpslatency -c ai,video,game", "cli_o_cat") + line("httpslatency -s chatgpt,github -n 10", "cli_o_svc") +
         line("httpslatency -6", "cli_o_v6") + line("httpslatency --json > latency.json", "cli_o_json")) +
       sec("cli_win", line(`irm ${site}/i.ps1 | iex`, "cli_win_s") + `<a class="dl" href="${esc(win)}">httpslatency-windows-amd64.exe ↓</a>`) +
-      `<a class="cli-gh" href="${esc($(".cli-gh").href)}" target="_blank" rel="noopener noreferrer"><svg class="gh-ic" viewBox="0 0 16 16" aria-hidden="true"><use href="#ghMark"/></svg>${esc(t("cli_src"))}${ext}</a>`;
+      `<a class="cli-gh" href="${esc($(".cli-gh").href)}" target="_blank" rel="noopener noreferrer"><svg class="gh-ic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true"><use href="#ghMark"/></svg>${esc(t("cli_src"))}${ext}</a>`;
   }
   $$("[data-cli]").forEach(b => { b.onclick = () => { if (!$("#cliB").firstChild) $("#cliB").innerHTML = cliBody(); openDlg("cli"); }; });
   document.addEventListener("click", e => {

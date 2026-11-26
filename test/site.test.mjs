@@ -182,3 +182,17 @@ test("the built scripts parse in older browsers: no optional chaining or nullish
     assert.doesNotMatch(s, /AbortSignal\.timeout|Promise\.any/, f + " calls a function older browsers lack");
   }
 });
+
+test("every icon the scripts build at runtime carries its namespace", async () => {
+  // Dark Reader re-loads each <svg> as its own data:image/svg+xml document, and a serialized element has no xmlns
+  // (the namespace is not an attribute): such an icon fails to decode and disappears. The shell's front Worker adds
+  // xmlns to the svgs already in the HTML; the ones these scripts create are only ever right if they say it here.
+  const dir = new URL("assets/", pub);
+  for (const f of (await readdir(dir)).filter(f => /^(app|status)\.[0-9a-f]+\.js$/.test(f))) {
+    const s = (await readFile(new URL(f, dir), "utf8")).replace(/\\"/g, '"');
+    for (let i = s.indexOf("<svg"); i >= 0; i = s.indexOf("<svg", i + 1)) {
+      const tag = s.slice(i, s.indexOf(">", i) + 1);
+      assert.match(tag, / xmlns="http:\/\/www\.w3\.org\/2000\/svg"/, f + ": an svg without xmlns: " + tag.slice(0, 60));
+    }
+  }
+});

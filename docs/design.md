@@ -152,6 +152,15 @@ GitHub did:
   stretches to the container's height, so the balls became tall ellipses flying over the dog (seen on 2026-11-23).
   The padding percentage resolves against the container's width, so the box stays square in every browser.
 
+## Icons the page builds itself
+
+Dark Reader (and similar extensions) replaces every `<svg>` with an image loaded from its serialized `outerHTML` as
+`data:image/svg+xml`. A DOM namespace is not an attribute, so the serialization of a parsed element has no `xmlns`, and
+the standalone document then fails to decode (#146). The shell's front Worker adds `xmlns` to the svgs already in the
+HTML; the ones the page's scripts build at runtime (the external-link icon, the route and Global Ping icons, the
+GitHub mark in the command-line dialog, and the status page's 24-hour lines) must carry it themselves. `npm test`
+fails on a runtime `<svg` without it.
+
 ## Words
 
 - A local brand whose name is written in another script carries `names` in `src/services.mjs` for all 10 languages
