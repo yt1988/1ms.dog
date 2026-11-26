@@ -90,7 +90,7 @@ function compareMeta(parts) {
   return { page: "/" + (lang === "en" ? "" : lang.toLowerCase() + "/"), title: v.title + " · 1ms.dog",
     desc: [v.detail, `${all.name} ${ms(all.a)}→${ms(all.b)} ms`].filter(Boolean).join(" · "),
     cmp: { head: `<div class="cmp-head" id="cmpHead">${c.headHTML()}</div>`, style: `--cmp-h1:${c.layout.one}px;--cmp-h2:${c.layout.two}px`,
-      share: `<button class="btn icon" id="cmpShare" type="button" title="${share}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr">${share}</span></button>` } };
+      share: `<button class="btn icon" id="cmpShare" type="button" title="${share}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M3 8v5.5h10V8"/></svg><span class="sr">${share}</span></button>` } };
 }
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 

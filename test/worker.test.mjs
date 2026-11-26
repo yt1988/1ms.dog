@@ -169,6 +169,8 @@ test("a compare link gets what changed as its preview title, its banner and its 
   assert.match(zh.cmp.head, /日本 · 代理/);
   // groups: AI (ChatGPT), web (Google), video (YouTube), dev (GitHub); two columns of two
   assert.equal(zh.cmp.style, "--cmp-h1:298px;--cmp-h2:142px");
+  // the share button's icon says its namespace here too: the page's own markup must hold up without a shell rewriter
+  assert.match(zh.cmp.share, /<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 16 16"/);
   assert.match(resultMeta(`/c/${before}/${after}/`).title, /^B is faster: 4 faster · Google 180→12 ms · 1ms\.dog$/);
   // the same line twice, a minute apart: almost identical, and the title says so
   const again = encodeShare({ ts: 1793520060000, pack: "na", groups: [{ cc: "US", city: "", org: "", asn: null, proxy: false }],

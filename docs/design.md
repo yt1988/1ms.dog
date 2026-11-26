@@ -158,8 +158,9 @@ Dark Reader (and similar extensions) replaces every `<svg>` with an image loaded
 `data:image/svg+xml`. A DOM namespace is not an attribute, so the serialization of a parsed element has no `xmlns`, and
 the standalone document then fails to decode (#146). The shell's front Worker adds `xmlns` to the svgs already in the
 HTML; the ones the page's scripts build at runtime (the external-link icon, the route and Global Ping icons, the
-GitHub mark in the command-line dialog, and the status page's 24-hour lines) must carry it themselves. `npm test`
-fails on a runtime `<svg` without it.
+GitHub mark in the command-line dialog, and the status page's 24-hour lines) must carry it themselves, as must the
+compare page's share button, which this repository's Worker writes into the HTML. `npm test` fails on a runtime `<svg`
+without it, and the Worker test checks the compare page's.
 
 ## Words
 
